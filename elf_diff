@@ -1,0 +1,467 @@
+#!/usr/bin/python
+  
+# -*- coding: utf-8 -*-
+
+# -*- mode: python -*-
+#
+# compare_firmware_symbols
+#
+# Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
+#
+# This program is free software: you can redistribute it and/or modify it under it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+#
+  
+#import string
+#import os
+
+class Settings(object):
+   
+   def __init__(self):
+      
+      import argparse
+      import sys
+
+      parser = argparse.ArgumentParser(description='Compare elf binaries and list the differences in the disassembly.')
+      parser.add_argument('--old', dest='old_binary_filename', help='The old elf binary')
+      parser.add_argument('--new', dest='new_binary_filename', help='The new elf binary')
+      parser.add_argument('--bin-dir', default='/usr/bin', dest='bin_dir', help='The place where the binaries live')
+      parser.add_argument('--bin-prefix', default='', dest='bin_prefix', help='A prefix to be added to all binutils commands')
+      
+      actual_args = list()
+      for arg_pos in range(1, len(sys.argv)):
+         arg = sys.argv[arg_pos]
+         if arg == "--":
+               break
+         actual_args.append(arg)
+           
+      args = parser.parse_args(actual_args)
+   
+      self.old_binary_filename = args.old_binary_filename
+      self.new_binary_filename = args.new_binary_filename
+      
+      self.bin_dir = args.bin_dir
+      self.bin_prefix = args.bin_prefix
+      
+      self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
+      self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
+      self.size_command = self.bin_dir + "/" + self.bin_prefix + "size"
+      
+      self.validate()
+      
+   def validate(self):
+
+      import os.path
+      import sys
+      
+      if not os.path.isfile(self.old_binary_filename):
+         print "Old binary \'%s\' is not a file or cannot be found" % (self.old_binary_filename)
+         sys.exit(1)
+         
+      if not os.path.isfile(self.new_binary_filename):
+         print "New binary \'%s\' is not a file or cannot be found" % (self.new_binary_filename)
+         sys.exit(1)
+         
+      if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
+         print "objdump command \'%s\' is either not a file or not executable" % (self.objdump_command)
+         sys.exit(1)
+         
+      if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
+         print "nm command \'%s\' is either not a file or not executable" % (self.nm_command)
+         sys.exit(1)
+               
+      if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
+         print "size command \'%s\' is either not a file or not executable" % (self.size_command)
+         sys.exit(1)
+         
+class Symbol(object):
+   
+   def __init__(self, name):
+      self.name = name
+      self.instruction_lines = []
+      self.size = 0
+      
+   def addInstuctions(self, instruction_line):
+      self.instruction_lines.append(instruction_line)
+      
+   def __eq__(self, other):
+      if not self.name == other.name:
+         #print "Symbol name differs"
+         return False
+      
+      if not self.size == other.size:
+         return False
+      
+      if not len(self.instruction_lines) == len(other.instruction_lines):
+         #print "Instructions differ"
+         return False
+      
+      symbol_diff = [i for i, j in zip(self.instruction_lines, other.instruction_lines) if i != j]
+      if len(symbol_diff) > 0:
+         #print "Symbols differ"
+         return False
+      
+      #print "Symbols equal"
+      return True
+   
+   def getDifferencesAsString(self, other, indent):
+      
+      import difflib
+      #from difflib_data import *
+
+      diff = difflib.ndiff(self.instruction_lines, other.instruction_lines)
+      #print list(diff)
+      return indent + ("\n" + indent).join(list(diff))
+   
+   def getInstructionsBlock(self, indent):
+      return indent + ("\n" + indent).join(self.instruction_lines)
+      
+class Binary(object):
+   
+   def __init__(self, settings, filename):
+      
+      self.settings = settings
+      self.filename = filename
+      self.symbols = {}
+      
+      self.parseSymbols()
+      
+   def readObjdumpOutput(self):
+      
+      import subprocess
+      
+      cmd = [self.settings.objdump_command, '-d', '-C', self.filename]
+      proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+      o, e = proc.communicate()
+      
+      output = o.decode('ascii')
+      #error = e.decode('ascii')
+      
+      return output
+   
+   def readNMOutput(self):
+      
+      import subprocess
+      
+      cmd = [self.settings.nm_command, '--print-size', '--size-sort', '--radix=d', '-C', self.filename]
+      proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+      o, e = proc.communicate()
+      
+      output = o.decode('ascii')
+      #error = e.decode('ascii')
+      
+      return output
+   
+   def readSizeOutput(self):
+            
+      import subprocess
+      
+      cmd = [self.settings.size_command, self.filename]
+      proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+      o, e = proc.communicate()
+      
+      output = o.decode('ascii')
+      #error = e.decode('ascii')
+      
+      return output
+   
+   def parseSymbols(self):
+      
+      import re
+      
+      size_output = self.readSizeOutput()
+      
+      size_re = re.compile("^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
+      for line in size_output.split("\n"):
+         size_match = re.match(size_re, line)
+         if size_match:
+            self.text_size = int(size_match.group(1))
+            self.data_size = int(size_match.group(2))
+            self.bss_size = int(size_match.group(3))
+            self.overall_size = int(size_match.group(4))
+                               
+            self.progmem_size = self.text_size + self.data_size
+            self.static_ram_size = self.data_size + self.bss_size
+            
+            break
+         
+      objdump_output = self.readObjdumpOutput()
+      
+      #print "Output:"
+      #print "%s" % (objdump_output)
+      
+      header_line_re = re.compile("^[0-9A-Fa-f]+ <(.+)>:")
+      instruction_line_re = re.compile("^\s*[0-9A-Fa-f]+:\s+(.*)")
+      empty_line_re = re.compile("^\s*$")
+                                  
+      cur_symbol = None
+      n_symbols = 0
+      
+      for line in objdump_output.split("\n"):
+         
+         header_match = re.match(header_line_re, line)
+         if header_match:
+            cur_symbol = Symbol(header_match.group(1))
+            n_symbols += 1
+            #print "Found symbol %s" % (header_match.group(1))
+         else:
+            instruction_line_match = re.match(instruction_line_re, line)
+            if instruction_line_match:
+               #print "Found instruction line \'%s\'" % (instruction_line_match.group(1))
+               cur_symbol.addInstuctions(instruction_line_match.group(1))
+            else:
+               empty_line_match = re.match(empty_line_re, line)
+               if empty_line_match:
+                  if cur_symbol:
+                     self.symbols[cur_symbol.name] = cur_symbol
+                     cur_symbol = None
+      
+      nm_output = self.readNMOutput()
+      
+      nm_regex = re.compile("^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s\w\s(.+)")
+      for line in nm_output.split("\n"):
+         nm_match = re.match(nm_regex, line)
+         
+         if nm_match:
+            symbol_size_str = nm_match.group(1)
+            symbol_name = nm_match.group(2)
+            #print "Symbol %s: %d bytes" % (symbol_name, int(symbol_size_str))
+            
+            if not symbol_name in self.symbols.keys():
+               data_symbol = Symbol(symbol_name)
+               data_symbol.size = int(symbol_size_str)
+               self.symbols[symbol_name] = data_symbol
+            else:
+               self.symbols[symbol_name].size = int(symbol_size_str)
+         
+   def __eq__(self, other):
+      
+      if len(self.symbols) != len(other.symbols):
+         #print "Number of symbols differs"
+         return False
+      
+      # Check if symbol names differ
+      
+      self_symbols = set(self.symbols.keys())
+      other_symbols = set(other.symbols.keys())
+      
+      only_in_self = self_symbols - other_symbols
+      if len(only_in_self) > 0:
+         #print "Some symbols only in self"
+         return False
+      
+      only_in_other = other_symbols - self_symbols
+      if len(only_in_other) > 0:
+         #print "Some symbols only in other"
+         return False
+      
+      # Check if actual symbols differ
+      
+      for symbol_name in self.symbols.keys():
+         
+         this_symbol = self.symbols[symbol_name]
+         other_symbol = other.symbols[symbol_name]
+         
+         if not (this_symbol == other_symbol):
+            return False
+         
+      #print "Symbols identical"
+         
+      return True
+   
+   def __ne__(self, other):
+      """Overrides the default implementation (unnecessary in Python 3)"""
+      return not self.__eq__(other)
+   
+   def getTendencySymbol(self, from_size, to_size):
+      if from_size > to_size:
+         return "*"
+      return ""
+         
+   def formatMemChange(self, what, from_size, to_size):
+      tendency_symbol = self.getTendencySymbol(from_size, to_size)
+      difference = to_size - from_size
+      return "%s: %d -> %d bytes (%+d bytes) %s" % (what, from_size, to_size, difference, tendency_symbol)
+   
+   def listDifferences(self, other):
+      
+      print "Binary size:"
+      if self.progmem_size == other.progmem_size:
+         print "   no changes"
+      else:
+         print "   " + self.formatMemChange("overall", self.progmem_size, other.progmem_size)
+         print "   " + self.formatMemChange("text", self.text_size, other.text_size)
+         print "   " + self.formatMemChange("data", self.data_size, other.data_size)
+         
+      print "" 
+      
+      print "Static RAM consumption:"
+      if self.static_ram_size == other.static_ram_size:
+         print "   no changes"
+      else:
+         print "   " + self.formatMemChange("overall", self.static_ram_size, other.static_ram_size)
+         print "   " + self.formatMemChange("data", self.data_size, other.data_size)
+         print "   " + self.formatMemChange("bss", self.bss_size, other.bss_size)
+           
+      print ""    
+      print "text: code instructions"
+      print "data: initilized global or static variables"
+      print "bss: uninitialized global or static variables"
+         
+      print ""
+      
+      print "%d symbols found in %s" % (len(self.symbols.keys()), self.filename)
+      print "%d symbols found in %s" % (len(other.symbols.keys()), other.filename)
+      
+      print ""
+      
+      # Check if symbol names differ
+      
+      self_symbols = set(self.symbols.keys())
+      other_symbols = set(other.symbols.keys())
+
+      only_in_self = self_symbols - other_symbols
+      only_in_other = other_symbols - self_symbols
+      
+      common_symbol_names = [value for value in self.symbols.keys() if value in other.symbols.keys()] 
+      
+      n_size_changes = 0
+      for symbol_name in sorted(common_symbol_names):
+         this_symbol = self.symbols[symbol_name]
+         other_symbol = other.symbols[symbol_name]
+         if this_symbol.size != other_symbol.size:
+            n_size_changes += 1
+      
+      if n_size_changes != 0:
+         print "%d Symbols changed size:" % (n_size_changes)
+         
+         for symbol_name in sorted(common_symbol_names):
+            this_symbol = self.symbols[symbol_name]
+            other_symbol = other.symbols[symbol_name]
+            if this_symbol.size != other_symbol.size:
+               print "   %s: %d -> %d bytes" % (symbol_name, this_symbol.size, other_symbol.size)
+         
+      print ""
+      
+      if len(only_in_self) > 0:
+         
+         n_bytes_disappeared = 0
+         n_symbols_disappeared = 0
+         for symbol_name in sorted(only_in_self):
+            symbol = self.symbols[symbol_name]
+            n_bytes_disappeared += symbol.size
+            n_symbols_disappeared += 1
+            
+         print "%d symbols dissappeared (%d bytes, see details below):" % (n_symbols_disappeared, n_bytes_disappeared)
+         
+         for symbol_name in sorted(only_in_self):
+            symbol = self.symbols[symbol_name]
+            print "   %s: %d bytes" % (symbol_name, symbol.size)
+               
+      print ""
+      
+      if len(only_in_other) > 0:
+         
+         n_bytes_new = 0
+         n_symbols_new = 0
+         for symbol_name in sorted(only_in_other):
+            symbol = other.symbols[symbol_name]
+            n_bytes_new += symbol.size
+            n_symbols_new += 1
+            
+         print "%d new symbols (%d bytes, see details below):" % (n_symbols_new, n_bytes_new)
+         
+         for symbol_name in sorted(only_in_other):
+            symbol = other.symbols[symbol_name]
+            print "   %s: %d bytes" % (symbol_name, symbol.size)
+               
+      print ""
+      
+      n_assemblies_differ = 0
+      for symbol_name in sorted(common_symbol_names):
+         this_symbol = self.symbols[symbol_name]
+         other_symbol = other.symbols[symbol_name]
+         
+         if not this_symbol.__eq__(other_symbol):
+            n_assemblies_differ += 1
+            
+      print "########################################################################"
+      print "Details follow"
+      print "########################################################################"
+      
+      print ""
+      
+      print "The following %d symbols' assembly differs\n" % (n_assemblies_differ)
+      
+      for symbol_name in sorted(common_symbol_names):
+         
+         #print "Symbol %s" % (symbol_name)
+         
+         this_symbol = self.symbols[symbol_name]
+         other_symbol = other.symbols[symbol_name]
+         
+         if not this_symbol.__eq__(other_symbol):
+            symbol_differences = this_symbol.getDifferencesAsString(other_symbol, "   ")
+            if this_symbol.size == other_symbol.size:
+               size_info = "size unchanged"
+            else:
+               size_info = "%d -> %d bytes" % (this_symbol.size, other_symbol.size)
+            print "******************************************************************"
+            print "%s (%s)" % (symbol_name, size_info)
+            print "******************************************************************"
+            print "%s\n" % (symbol_differences)
+                  
+      if len(only_in_self) > 0:
+         print "Symbols disappeared:"
+         for symbol_name in sorted(only_in_self):
+            symbol = self.symbols[symbol_name]
+            print "******************************************************************"
+            print "%s: %d bytes" % (symbol_name, symbol.size)
+            print "******************************************************************"
+            print symbol.getInstructionsBlock("   ") + "\n"
+      
+      if len(only_in_other) > 0:
+         print "New symbols:"
+         for symbol_name in sorted(only_in_other):
+            symbol = other.symbols[symbol_name]
+            print "******************************************************************"
+            print "%s: %d bytes" % (symbol_name, symbol.size)
+            print "******************************************************************"
+            print symbol.getInstructionsBlock("   ") + "\n"
+            
+def main():
+  
+   settings = Settings()
+   
+   print "ELF binary comparison\n"
+   print "   (c) 2019 by noseglasses (shinynoseglasses@gmail.com)\n"
+   
+   print "Comparing binaries"
+   print "   old: %s" % (settings.old_binary_filename)
+   print "   new: %s" % (settings.new_binary_filename)
+   
+   old_binary = Binary(settings, settings.old_binary_filename)
+   new_binary = Binary(settings, settings.new_binary_filename)
+   
+   print ""
+   
+   if old_binary == new_binary:
+      print "   No symbol differences"
+      return
+   
+   old_binary.listDifferences(new_binary)
+  
+if __name__ == "__main__":
+   main()
