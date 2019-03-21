@@ -364,6 +364,8 @@ class Driver(object):
          css_class = "deterioration"
       elif difference < 0:
          css_class = "improvement"
+      else:
+         css_class = "unchanged"
          
       return "<span  class=\"%s\">%+d</span>" % (css_class, difference)
    
