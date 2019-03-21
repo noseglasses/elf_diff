@@ -21,19 +21,42 @@
        th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
        content: " \25B4\25BE" 
     }
-    thead tr { display: block; } /* makes it sizeable */
+    thead { display: table-header-group; } /* makes it sizeable */
     tbody { 
-      display: block; /* makes it sizeable */
+      display: table-header-group; /* makes it sizeable */
       /*height: 170px;*/ /* height of scrollable area */
       /*overflow: auto;*/ /* scroll rather than overflow */
-      width: 100%; /* fill the box */
+      /*width: 100%;*/ /* fill the box */
     }
     /*thead th { width: 250px; }*/ /* fixed width for THs */
     /*tbody td { width: 242px; }*/ /* fixed width for TDs */
     /* the tbody needs to be 16px less than the thead, for the scrollbar */
     
+    .fixed_table thead { 
+       display: table-header-group; 
+       width: 500px;
+    }
+    .fixed_table tbody { 
+       display: table-header-group; 
+       width: 500px;
+    }
+    
     .deterioration { background: #FF0000; }
     .improvement { background: #00FF00; } 
+    
+    table.quad_col th:nth-child(1) { text-align: left; }
+    table.quad_col th:nth-child(2) { text-align: right; }
+    table.quad_col th:nth-child(3) { text-align: right; }
+    table.quad_col th:nth-child(4) { text-align: right; }
+    table.quad_col td:nth-child(1) { text-align: left; }
+    table.quad_col td:nth-child(2) { text-align: right; }
+    table.quad_col td:nth-child(3) { text-align: right; }
+    table.quad_col td:nth-child(4) { text-align: right; }
+    
+    table.bin_col th:nth-child(1) { text-align: left; }
+    table.bin_col th:nth-child(2) { text-align: right; }
+    table.bin_col td:nth-child(1) { text-align: left; }
+    table.bin_col td:nth-child(2) { text-align: right; }
     
   </style>
 </head>
@@ -41,16 +64,19 @@
 <body>
 
 <H1>ELF binary comparison</H1>
-© 2019 by noseglasses (shinynoseglasses@gmail.com)
 
-<H2>Comparing binaries</H2>
+<H2>Binaries</H2>
 <p>old: {{old_binary_file}}</p>
 <p>new: {{new_binary_file}}</p>
 
 <H2>Resource Consumption</H2>
 <H3>Binary Size</H3>
-<table>
-    <thead><tr><th></th><th>Old</th><th>New</th><th>Change</th><th></th></thead>
+<table class = "fixed_table quad_col">
+    <col align="left">
+    <col align="right">
+    <col align="right">
+    <col align="right">
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Change/bytes</th></thead>
     <tbody>
       <tr><td>overall</td><td>{{code_size_old_overall}}</td><td>{{code_size_new_overall}}</td><td>{{code_size_change_overall}}</td></tr>
       <tr><td>text</td><td>{{text_size_old_overall}}</td><td>{{text_size_new_overall}}</td><td>{{text_size_change_overall}}</td></tr>
@@ -58,32 +84,38 @@
     </tbody>
   </table>
 <H3>Static RAM</H3>
-<table>
-    <thead><tr><th></th><th>Old</th><th>New</th><th>Change</th></thead>
+<table class = "fixed_table quad_col">
+    <col align="left">
+    <col align="right">
+    <col align="right">
+    <col align="right">
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Change/bytes</th></thead>
     <tbody>
       <tr><td>overall</td><td>{{static_ram_old_overall}}</td><td>{{static_ram_new_overall}}</td><td>{{static_ram_change_overall}}</td></tr>
       <tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
-      <tr><td>data</td><td>{{bss_size_old_overall}}</td><td>{{bss_size_new_overall}}</td><td>{{bss_size_change_overall}}</td></tr>
+      <tr><td>bss</td><td>{{bss_size_old_overall}}</td><td>{{bss_size_new_overall}}</td><td>{{bss_size_change_overall}}</td></tr>
     </tbody>
   </table>
 <H3>Legend</H3>
 <table>
+    <col align="left">
+    <col align="left">
     <tbody>
-      <tr><td>text</td><td>code instructions</td></tr>
-      <tr><td>data</td><td>initilized global or static variables</td></tr>
+      <tr><td>text</td><td>instructions</td></tr>
+      <tr><td>data</td><td>initialized global or static variables</td></tr>
       <tr><td>bss</td><td>uninitialized global or static variables</td></tr>
     </tbody>
   </table>
   
 <H2>Symbols</H2>
-<p>{{total_symbols_old}} found in {{old_binary_file}}</p>
-<p>{{total_symbols_new}} found in {{new_binary_file}}</p>
+<p>{{total_symbols_old}} symbols found in {{old_binary_file}}</p>
+<p>{{total_symbols_new}} symbols found in {{new_binary_file}}</p>
 
 <H3>Persisting Symbols</H3>
 
 <p>{{num_persisting_symbols}} symbols persisted but changed size</p>
 
-  <table class="sortable">
+  <table class="sortable quad_col">
     <thead><tr><th>Symbol</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Change/bytes</th></thead>
     <tbody>
       {{persisting_symbols_table}}
@@ -94,7 +126,7 @@
 
 <p>{{num_disappeared_symbols}} symbols disappeared</p>
 
-  <table class="sortable">
+  <table class="sortable bin_col">
     <thead><tr><th>Symbol</th><th>Size/bytes</th></thead>
     <tbody>
       {{disappeared_symbols_table}}
@@ -105,7 +137,7 @@
 
 <p>{{num_new_symbols}} symbols were newly introduced</p>
 
-  <table class="sortable">
+  <table class="sortable bin_col">
     <thead><tr><th>Symbol</th><th>Size/bytes</th></thead>
     <tbody>
       {{new_symbols_table}}
@@ -130,8 +162,8 @@
 </pre>
 
 <footer>
-© 2019 by noseglasses (shinynoseglasses@gmail.com)
-Sortable tables from https://kryogenix.org/
+<p>© 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
+<p>Sortable tables from <a href="https://kryogenix.org">kryogenix.org</a></p>
 </footer>
 
 </body>
