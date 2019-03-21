@@ -20,9 +20,6 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-  
-#import string
-#import os
 
 class Settings(object):
    
@@ -36,6 +33,8 @@ class Settings(object):
       parser.add_argument('--new', dest='new_binary_filename', help='The new elf binary')
       parser.add_argument('--bin-dir', default='/usr/bin', dest='bin_dir', help='The place where the binaries live')
       parser.add_argument('--bin-prefix', default='', dest='bin_prefix', help='A prefix to be added to all binutils commands')
+      parser.add_argument('--text-file', default=None, dest='text_file', help='A text file to write output to')
+      parser.add_argument('--html-file', default=None, dest='html_file', help='A html file to write output to')
       
       actual_args = list()
       for arg_pos in range(1, len(sys.argv)):
@@ -51,6 +50,9 @@ class Settings(object):
       
       self.bin_dir = args.bin_dir
       self.bin_prefix = args.bin_prefix
+      
+      self.text_file = args.text_file
+      self.html_file = args.html_file
       
       self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
       self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
@@ -254,15 +256,15 @@ class Binary(object):
       
       # Check if symbol names differ
       
-      self_symbols = set(self.symbols.keys())
-      other_symbols = set(other.symbols.keys())
+      old_symbols = set(self.symbols.keys())
+      new_symbols = set(other.symbols.keys())
       
-      only_in_self = self_symbols - other_symbols
+      only_in_self = old_symbols - new_symbols
       if len(only_in_self) > 0:
          #print "Some symbols only in self"
          return False
       
-      only_in_other = other_symbols - self_symbols
+      only_in_other = new_symbols - old_symbols
       if len(only_in_other) > 0:
          #print "Some symbols only in other"
          return False
@@ -271,10 +273,10 @@ class Binary(object):
       
       for symbol_name in self.symbols.keys():
          
-         this_symbol = self.symbols[symbol_name]
-         other_symbol = other.symbols[symbol_name]
+         old_symbol = self.symbols[symbol_name]
+         new_symbol = other.symbols[symbol_name]
          
-         if not (this_symbol == other_symbol):
+         if not (old_symbol == new_symbol):
             return False
          
       #print "Symbols identical"
@@ -284,6 +286,119 @@ class Binary(object):
    def __ne__(self, other):
       """Overrides the default implementation (unnecessary in Python 3)"""
       return not self.__eq__(other)
+            
+class Driver(object):
+   
+   def __init__(self):
+  
+      self.settings = Settings()
+      
+      self.old_binary = Binary(self.settings, self.settings.old_binary_filename)
+      self.new_binary = Binary(self.settings, self.settings.new_binary_filename)
+      
+      self.prepareMeasures()
+            
+      if self.settings.html_file:
+         self.writeHTMLFile()
+      else:
+         if self.settings.text_file:
+            self.settings.out = open(self.settings.text_file, "w")
+         else:
+            import sys
+            self.settings.out = sys.stdout
+            
+         self.writeTextFile()
+      
+   def prepareMeasures(self):
+      
+      self.common_symbol_names = sorted([value for value in self.old_binary.symbols.keys() if value in self.new_binary.symbols.keys()])
+      
+      self.old_symbol_names = set(self.old_binary.symbols.keys())
+      self.new_symbol_names = set(self.new_binary.symbols.keys())
+
+      self.symbols_only_in_old = sorted(self.old_symbol_names - self.new_symbol_names)
+      self.symbols_only_in_new = sorted(self.new_symbol_names - self.old_symbol_names)
+      
+      self.computeNumSymbolsPersisting()
+      self.computeNumSymbolsDisappeared()
+      self.computeNumSymbolsNew()
+      
+      self.computeNumAssembliesDiffer()
+
+   def computeNumSymbolsPersisting(self):
+      
+      self.num_symbol_size_changes = 0
+      for symbol_name in self.common_symbol_names:
+         old_symbol = self.old_binary.symbols[symbol_name]
+         new_symbol = self.new_binary.symbols[symbol_name]
+         if old_symbol.size != new_symbol.size:
+            self.num_symbol_size_changes += 1
+   
+   def computeNumSymbolsDisappeared(self):
+      self.num_bytes_disappeared = 0
+      self.num_symbols_disappeared = len(self.symbols_only_in_old)
+      for symbol_name in self.symbols_only_in_old:
+         symbol = self.old_binary.symbols[symbol_name]
+         self.num_bytes_disappeared += symbol.size
+         
+   def computeNumSymbolsNew(self):
+      self.num_bytes_new = 0
+      self.num_symbols_new = len(self.symbols_only_in_new)
+      for symbol_name in self.symbols_only_in_new:
+         symbol = self.new_binary.symbols[symbol_name]
+         self.num_bytes_new += symbol.size
+   
+   def computeNumAssembliesDiffer(self):
+      self.num_assemblies_differ = 0
+      for symbol_name in self.common_symbol_names:
+         old_symbol = self.old_binary.symbols[symbol_name]
+         new_symbol = self.new_binary.symbols[symbol_name]
+         
+         if not old_symbol.__eq__(new_symbol):
+            self.num_assemblies_differ += 1
+            
+   def getMemChangeHTML(self, from_size, to_size):
+      difference = to_size - from_size
+      
+      if difference > 0:
+         css_class = "deterioration"
+      elif difference < 0:
+         css_class = "improvement"
+         
+      return "<span  class=\"%s\">%+d</span>" % (css_class, difference)
+   
+   def generatePersistingSymbolsTableHTML(self):
+      
+      table_html = ""
+      
+      for symbol_name in self.common_symbol_names:
+         old_symbol = self.old_binary.symbols[symbol_name]
+         new_symbol = self.new_binary.symbols[symbol_name]
+         
+         if old_symbol.size != new_symbol.size:
+            table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (symbol_name, old_symbol.size, new_symbol.size, self.getMemChangeHTML(old_symbol.size, new_symbol.size))
+            
+      return table_html
+         
+   def generateDisappearedSymbolsTableHTML(self):
+      
+      table_html = ""
+      
+      for symbol_name in self.symbols_only_in_old:
+         symbol = self.old_binary.symbols[symbol_name]
+         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name, symbol.size)
+            
+      return table_html    
+   
+   def generateNewSymbolsTableHTML(self):
+      
+      table_html = ""
+      
+      for symbol_name in self.symbols_only_in_new:
+         symbol = self.new_binary.symbols[symbol_name]
+         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name, symbol.size)
+            
+      return table_html
    
    def getTendencySymbol(self, from_size, to_size):
       if from_size > to_size:
@@ -295,173 +410,233 @@ class Binary(object):
       difference = to_size - from_size
       return "%s: %d -> %d bytes (%+d bytes) %s" % (what, from_size, to_size, difference, tendency_symbol)
    
-   def listDifferences(self, other):
+   def generatePersistentSymbolDetails(self):
       
-      print "Binary size:"
-      if self.progmem_size == other.progmem_size:
-         print "   no changes"
-      else:
-         print "   " + self.formatMemChange("overall", self.progmem_size, other.progmem_size)
-         print "   " + self.formatMemChange("text", self.text_size, other.text_size)
-         print "   " + self.formatMemChange("data", self.data_size, other.data_size)
+      text = ""
+      
+      for symbol_name in self.common_symbol_names:
          
-      print "" 
-      
-      print "Static RAM consumption:"
-      if self.static_ram_size == other.static_ram_size:
-         print "   no changes"
-      else:
-         print "   " + self.formatMemChange("overall", self.static_ram_size, other.static_ram_size)
-         print "   " + self.formatMemChange("data", self.data_size, other.data_size)
-         print "   " + self.formatMemChange("bss", self.bss_size, other.bss_size)
-           
-      print ""    
-      print "text: code instructions"
-      print "data: initilized global or static variables"
-      print "bss: uninitialized global or static variables"
+         old_symbol = self.old_binary.symbols[symbol_name]
+         new_symbol = self.new_binary.symbols[symbol_name]
          
-      print ""
-      
-      print "%d symbols found in %s" % (len(self.symbols.keys()), self.filename)
-      print "%d symbols found in %s" % (len(other.symbols.keys()), other.filename)
-      
-      print ""
-      
-      # Check if symbol names differ
-      
-      self_symbols = set(self.symbols.keys())
-      other_symbols = set(other.symbols.keys())
-
-      only_in_self = self_symbols - other_symbols
-      only_in_other = other_symbols - self_symbols
-      
-      common_symbol_names = [value for value in self.symbols.keys() if value in other.symbols.keys()] 
-      
-      n_size_changes = 0
-      for symbol_name in sorted(common_symbol_names):
-         this_symbol = self.symbols[symbol_name]
-         other_symbol = other.symbols[symbol_name]
-         if this_symbol.size != other_symbol.size:
-            n_size_changes += 1
-      
-      if n_size_changes != 0:
-         print "%d Symbols changed size:" % (n_size_changes)
-         
-         for symbol_name in sorted(common_symbol_names):
-            this_symbol = self.symbols[symbol_name]
-            other_symbol = other.symbols[symbol_name]
-            if this_symbol.size != other_symbol.size:
-               print "   %s: %d -> %d bytes" % (symbol_name, this_symbol.size, other_symbol.size)
-         
-      print ""
-      
-      if len(only_in_self) > 0:
-         
-         n_bytes_disappeared = 0
-         n_symbols_disappeared = 0
-         for symbol_name in sorted(only_in_self):
-            symbol = self.symbols[symbol_name]
-            n_bytes_disappeared += symbol.size
-            n_symbols_disappeared += 1
-            
-         print "%d symbols dissappeared (%d bytes, see details below):" % (n_symbols_disappeared, n_bytes_disappeared)
-         
-         for symbol_name in sorted(only_in_self):
-            symbol = self.symbols[symbol_name]
-            print "   %s: %d bytes" % (symbol_name, symbol.size)
-               
-      print ""
-      
-      if len(only_in_other) > 0:
-         
-         n_bytes_new = 0
-         n_symbols_new = 0
-         for symbol_name in sorted(only_in_other):
-            symbol = other.symbols[symbol_name]
-            n_bytes_new += symbol.size
-            n_symbols_new += 1
-            
-         print "%d new symbols (%d bytes, see details below):" % (n_symbols_new, n_bytes_new)
-         
-         for symbol_name in sorted(only_in_other):
-            symbol = other.symbols[symbol_name]
-            print "   %s: %d bytes" % (symbol_name, symbol.size)
-               
-      print ""
-      
-      n_assemblies_differ = 0
-      for symbol_name in sorted(common_symbol_names):
-         this_symbol = self.symbols[symbol_name]
-         other_symbol = other.symbols[symbol_name]
-         
-         if not this_symbol.__eq__(other_symbol):
-            n_assemblies_differ += 1
-            
-      print "########################################################################"
-      print "Details follow"
-      print "########################################################################"
-      
-      print ""
-      
-      print "The following %d symbols' assembly differs\n" % (n_assemblies_differ)
-      
-      for symbol_name in sorted(common_symbol_names):
-         
-         #print "Symbol %s" % (symbol_name)
-         
-         this_symbol = self.symbols[symbol_name]
-         other_symbol = other.symbols[symbol_name]
-         
-         if not this_symbol.__eq__(other_symbol):
-            symbol_differences = this_symbol.getDifferencesAsString(other_symbol, "   ")
-            if this_symbol.size == other_symbol.size:
+         if not old_symbol.__eq__(new_symbol):
+            symbol_differences = old_symbol.getDifferencesAsString(new_symbol, "   ")
+            if old_symbol.size == new_symbol.size:
                size_info = "size unchanged"
             else:
-               size_info = "%d -> %d bytes" % (this_symbol.size, other_symbol.size)
-            print "******************************************************************"
-            print "%s (%s)" % (symbol_name, size_info)
-            print "******************************************************************"
-            print "%s\n" % (symbol_differences)
-                  
-      if len(only_in_self) > 0:
-         print "Symbols disappeared:"
-         for symbol_name in sorted(only_in_self):
-            symbol = self.symbols[symbol_name]
-            print "******************************************************************"
-            print "%s: %d bytes" % (symbol_name, symbol.size)
-            print "******************************************************************"
-            print symbol.getInstructionsBlock("   ") + "\n"
-      
-      if len(only_in_other) > 0:
-         print "New symbols:"
-         for symbol_name in sorted(only_in_other):
-            symbol = other.symbols[symbol_name]
-            print "******************************************************************"
-            print "%s: %d bytes" % (symbol_name, symbol.size)
-            print "******************************************************************"
-            print symbol.getInstructionsBlock("   ") + "\n"
+               size_info = self.formatMemChange("", old_symbol.size, new_symbol.size)
+            text += "******************************************************************\n"
+            text += "%s (%s)\n" % (symbol_name, size_info)
+            text += "******************************************************************\n"
+            text += "%s\n" % (symbol_differences)
             
-def main():
+      return text
+   
+   def generateDisappearedSymbolDetails(self):
+      
+      text = ""
+      
+      if len(self.symbols_only_in_old) > 0:
+         for symbol_name in self.symbols_only_in_old:
+            symbol = self.old_binary.symbols[symbol_name]
+            text += "******************************************************************\n"
+            text += "%s: %d bytes\n" % (symbol_name, symbol.size)
+            text += "******************************************************************\n"
+            text += symbol.getInstructionsBlock("   ") + "\n"
+            
+      return text
+   
+   def generateNewSymbolDetails(self):
+      
+      text = ""
+      
+      if len(self.symbols_only_in_new) > 0:
+         for symbol_name in self.symbols_only_in_new:
+            symbol = self.new_binary.symbols[symbol_name]
+            text += "******************************************************************\n"
+            text += "%s: %d bytes\n" % (symbol_name, symbol.size)
+            text += "******************************************************************\n"
+            text += symbol.getInstructionsBlock("   ") + "\n"
+            
+      return text
+   
+   def writeHTMLFile(self):
+      
+      persisting_symbols_raw = self.generatePersistentSymbolDetails()
+      persisting_symbols_raw = persisting_symbols_raw.replace("<", "&lt;")
+      persisting_symbols_raw = persisting_symbols_raw.replace(">", "&gt;")
+      
+      disappeared_symbols_raw = self.generateDisappearedSymbolDetails()
+      disappeared_symbols_raw = disappeared_symbols_raw.replace("<", "&lt;")
+      disappeared_symbols_raw = disappeared_symbols_raw.replace(">", "&gt;")
+      
+      new_symbols_raw = self.generateNewSymbolDetails()
+      new_symbols_raw = new_symbols_raw.replace("<", "&lt;")
+      new_symbols_raw = new_symbols_raw.replace(">", "&gt;")
+      
+      keywords = {
+          "title" : "ELF binary comparison - (c) 2019 by noseglasses"
+            
+         ,"old_binary_file" : self.settings.old_binary_filename
+         ,"new_binary_file" : self.settings.new_binary_filename
+         
+         ,"code_size_old_overall" : str(self.old_binary.progmem_size)
+         ,"code_size_new_overall" : str(self.new_binary.progmem_size)
+         ,"code_size_change_overall" : self.getMemChangeHTML(self.old_binary.progmem_size, self.new_binary.progmem_size)
+         ,"static_ram_old_overall" : str(self.old_binary.static_ram_size)
+         ,"static_ram_new_overall" : str(self.new_binary.static_ram_size)
+         ,"static_ram_change_overall" : self.getMemChangeHTML(self.old_binary.static_ram_size, self.new_binary.static_ram_size)
+         ,"text_size_old_overall" : str(self.old_binary.text_size)
+         ,"text_size_new_overall" : str(self.new_binary.text_size)
+         ,"text_size_change_overall" : self.getMemChangeHTML(self.old_binary.text_size, self.new_binary.text_size)
+         ,"data_size_old_overall" : str(self.old_binary.data_size)
+         ,"data_size_new_overall" : str(self.new_binary.data_size)
+         ,"data_size_change_overall" : self.getMemChangeHTML(self.old_binary.data_size, self.new_binary.data_size)
+         ,"bss_size_old_overall" : str(self.old_binary.bss_size)
+         ,"bss_size_new_overall" : str(self.new_binary.bss_size)
+         ,"bss_size_change_overall" : self.getMemChangeHTML(self.old_binary.bss_size, self.new_binary.bss_size)
+         
+         ,"total_symbols_old" : str(len(self.old_binary.symbols.keys()))
+         ,"total_symbols_new" : str(len(self.new_binary.symbols.keys()))
+                  
+         ,"num_persisting_symbols" : str(len(self.common_symbol_names))
+         ,"num_disappeared_symbols" : str(self.num_symbols_disappeared)
+         ,"num_new_symbols" : str(self.num_symbols_new)
+         
+         ,"persisting_symbols_table" : self.generatePersistingSymbolsTableHTML()
+         ,"disappeared_symbols_table" : self.generateDisappearedSymbolsTableHTML()
+         ,"new_symbols_table" : self.generateNewSymbolsTableHTML()
+         
+         ,"persisting_symbols_raw" : persisting_symbols_raw
+         ,"disappeared_symbols_raw" : disappeared_symbols_raw
+         ,"new_symbols_raw" : new_symbols_raw
+      }
+      
+      import jinja2
+      from jinja2 import Environment, FileSystemLoader, StrictUndefined
+      
+      import os, inspect
+      
+      repo_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+      
+      env = Environment(loader=FileSystemLoader(repo_path), \
+                                       undefined = StrictUndefined)
+           
+      #addGlobalJinjaFunction(GetComponentLink)
+        
+      try:
+         creator = env.get_template("template.html")
+         
+      except jinja2.exceptions.TemplateError as e:
+         print "Error creating jinja creator\n" + str(e)
+         sys.exit(1)
+         
+      try:
+         replacedContent = creator.render(keywords)
+      except (jinja2.exceptions.TemplateError) as e:
+         print "Error rendering jinja file \'" + \
+            self.settings.html_file + "\'\n" + str(e)
+         sys.exit(1)
+      
+      htmlFile = open(self.settings.html_file, 'w')
+      
+      htmlFile.write(replacedContent.encode('utf8'))
+      
+      htmlFile.close()
   
-   settings = Settings()
-   
-   print "ELF binary comparison\n"
-   print "   (c) 2019 by noseglasses (shinynoseglasses@gmail.com)\n"
-   
-   print "Comparing binaries"
-   print "   old: %s" % (settings.old_binary_filename)
-   print "   new: %s" % (settings.new_binary_filename)
-   
-   old_binary = Binary(settings, settings.old_binary_filename)
-   new_binary = Binary(settings, settings.new_binary_filename)
-   
-   print ""
-   
-   if old_binary == new_binary:
-      print "   No symbol differences"
-      return
-   
-   old_binary.listDifferences(new_binary)
+   def writeTextFile(self):
+      
+      out = self.settings.out
+      
+      out.write("ELF binary comparison\n")
+      out.write("   (c) 2019 by noseglasses (shinynoseglasses@gmail.com)\n")
+      
+      out.write("Comparing binaries\n")
+      out.write("   old: %s\n" % (self.settings.old_binary_filename))
+      out.write("   new: %s\n" % (self.settings.new_binary_filename))
+      
+      out.write("\n")
+      
+      if self.old_binary == self.new_binary:
+         out.write("   No symbol differences\n")
+         return
+      
+      out.write("Binary size:\n")
+      if self.old_binary.progmem_size == self.new_binary.progmem_size:
+         out.write("   no changes\n")
+      else:
+         out.write("   " + self.formatMemChange("overall", self.old_binary.progmem_size, self.new_binary.progmem_size) + "\n")
+         out.write("   " + self.formatMemChange("text", self.old_binary.text_size, self.new_binary.text_size) + "\n")
+         out.write("   " + self.formatMemChange("data", self.old_binary.data_size, self.new_binary.data_size) + "\n")
+         
+      out.write("\n")
+      
+      out.write("Static RAM consumption:\n")
+      if self.old_binary.static_ram_size == self.new_binary.static_ram_size:
+         out.write("   no changes\n")
+      else:
+         out.write("   " + self.formatMemChange("overall", self.old_binary.static_ram_size, self.new_binary.static_ram_size) + "\n")
+         out.write("   " + self.formatMemChange("data", self.old_binary.data_size, self.new_binary.data_size) + "\n")
+         out.write("   " + self.formatMemChange("bss", self.old_binary.bss_size, self.new_binary.bss_size) + "\n")
+           
+      out.write("\n") 
+      out.write("text: code instructions\n")
+      out.write("data: initilized global or static variables\n")
+      out.write("bss: uninitialized global or static variables\n")
+         
+      out.write("\n")
+      
+      out.write("%d symbols found in %s\n" % (len(self.old_binary.symbols.keys()), self.settings.old_binary_filename))
+      out.write("%d symbols found in %s\n" % (len(self.new_binary.symbols.keys()), self.settings.new_binary_filename))
+      
+      out.write("\n")
+      
+      out.write("%d symbols persisted\n" % (len(self.common_symbol_names)))
+      
+      out.write("\n")
+      
+      if self.num_symbol_size_changes != 0:
+         out.write("%d symbols changed size:\n" % (self.num_symbol_size_changes))
+         
+         for symbol_name in self.common_symbol_names:
+            old_symbol = self.old_binary.symbols[symbol_name]
+            new_symbol = self.new_binary.symbols[symbol_name]
+            if old_symbol.size != new_symbol.size:
+               out.write("   " + self.formatMemChange(symbol_name, old_symbol.size, new_symbol.size) + "\n")
+         
+      out.write("\n")
+      
+      if len(self.symbols_only_in_old) > 0:
+         
+         out.write("%d symbols dissappeared (%d bytes, see details below):" % (self.num_symbols_disappeared, self.num_bytes_disappeared) + "\n")
+         
+         for symbol_name in self.symbols_only_in_old:
+            symbol = self.old_binary.symbols[symbol_name]
+            out.write("   %s: %d bytes" % (symbol_name, symbol.size) + "\n")
+               
+      out.write("\n")
+      
+      if len(self.symbols_only_in_new) > 0:
+
+         out.write("%d new symbols (%d bytes, see details below):" % (self.num_symbols_new, self.num_bytes_new) + "\n")
+         
+         for symbol_name in self.symbols_only_in_new:
+            symbol = self.new_binary.symbols[symbol_name]
+            out.write("   %s: %d bytes" % (symbol_name, symbol.size) + "\n")
+               
+      out.write("\n")
+            
+      out.write("########################################################################\n")
+      out.write("Details follow\n")
+      out.write("########################################################################\n")
+      
+      out.write("\n")
+      
+      out.write("The following %d symbols' assembly differs\n" % (self.num_assemblies_differ) + "\n")
+
+      out.write(self.generatePersistentSymbolDetails())
+      out.write(self.generateDisappearedSymbolDetails())
+      out.write(self.generateNewSymbolDetails())
   
 if __name__ == "__main__":
-   main()
+   driver = Driver()
