@@ -378,7 +378,8 @@ class Driver(object):
          new_symbol = self.new_binary.symbols[symbol_name]
          
          if old_symbol.size != new_symbol.size:
-            table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (symbol_name, old_symbol.size, new_symbol.size, self.getMemChangeHTML(old_symbol.size, new_symbol.size))
+            symbol_name_html = self.fixStringForHTML(symbol_name)
+            table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, old_symbol.size, new_symbol.size, self.getMemChangeHTML(old_symbol.size, new_symbol.size))
             
       return table_html
          
@@ -387,8 +388,9 @@ class Driver(object):
       table_html = ""
       
       for symbol_name in self.symbols_only_in_old:
+         symbol_name_html = self.fixStringForHTML(symbol_name)
          symbol = self.old_binary.symbols[symbol_name]
-         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name, symbol.size)
+         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, symbol.size)
             
       return table_html    
    
@@ -397,8 +399,9 @@ class Driver(object):
       table_html = ""
       
       for symbol_name in self.symbols_only_in_new:
+         symbol_name_html = self.fixStringForHTML(symbol_name)
          symbol = self.new_binary.symbols[symbol_name]
-         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name, symbol.size)
+         table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, symbol.size)
             
       return table_html
    
@@ -462,22 +465,19 @@ class Driver(object):
             
       return text
    
+   def fixStringForHTML(self, string):
+      s1 = string.replace("<", "&lt;")
+      return s1.replace(">", "&gt;")
+      
+   
    def writeHTMLFile(self):
       
-      persisting_symbols_raw = self.generatePersistentSymbolDetails()
-      persisting_symbols_raw = persisting_symbols_raw.replace("<", "&lt;")
-      persisting_symbols_raw = persisting_symbols_raw.replace(">", "&gt;")
-      
-      disappeared_symbols_raw = self.generateDisappearedSymbolDetails()
-      disappeared_symbols_raw = disappeared_symbols_raw.replace("<", "&lt;")
-      disappeared_symbols_raw = disappeared_symbols_raw.replace(">", "&gt;")
-      
-      new_symbols_raw = self.generateNewSymbolDetails()
-      new_symbols_raw = new_symbols_raw.replace("<", "&lt;")
-      new_symbols_raw = new_symbols_raw.replace(">", "&gt;")
+      persisting_symbols_raw = self.fixStringForHTML(self.generatePersistentSymbolDetails())
+      disappeared_symbols_raw = self.fixStringForHTML(self.generateDisappearedSymbolDetails())
+      new_symbols_raw = self.fixStringForHTML(self.generateNewSymbolDetails())
       
       keywords = {
-          "title" : "ELF binary comparison - (c) 2019 by noseglasses"
+          "title" : u"ELF binary comparison - (c) 2019 by noseglasses"
             
          ,"old_binary_file" : self.settings.old_binary_filename
          ,"new_binary_file" : self.settings.new_binary_filename
