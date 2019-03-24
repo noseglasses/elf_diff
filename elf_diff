@@ -25,16 +25,23 @@ class Settings(object):
    
    def __init__(self):
       
+      self.remove_html_file = False
+      
       import argparse
       import sys
 
       parser = argparse.ArgumentParser(description='Compare elf binaries and list the differences in the disassembly.')
-      parser.add_argument('--old', dest='old_binary_filename', help='The old elf binary')
-      parser.add_argument('--new', dest='new_binary_filename', help='The new elf binary')
+      parser.add_argument('--old', default = None, dest='old_binary_filename', help='The old elf binary')
+      parser.add_argument('--new', default = None, dest='new_binary_filename', help='The new elf binary')
+      parser.add_argument("binaries", nargs='*', default = None, help='The binaries (this is an alternative to --old and --new)')
+      parser.add_argument('--old-alias', default = None, dest='old_alias', help='An alias string that is supposed to be used to reference the old binary')
+      parser.add_argument('--new-alias', default = None, dest='new_alias', help='An alias string that is supposed to be used to reference the new binary')
       parser.add_argument('--bin-dir', default='/usr/bin', dest='bin_dir', help='The place where the binaries live')
       parser.add_argument('--bin-prefix', default='', dest='bin_prefix', help='A prefix to be added to all binutils commands')
       parser.add_argument('--text-file', default=None, dest='text_file', help='A text file to write output to')
       parser.add_argument('--html-file', default=None, dest='html_file', help='A html file to write output to')
+      parser.add_argument('--pdf-file', default=None, dest='pdf_file', help='A pdf file to write output to (details are skipped in pdf files)')
+      parser.add_argument('--project-title', default=None, dest='project_title', help='A project title to use in reports')
       
       actual_args = list()
       for arg_pos in range(1, len(sys.argv)):
@@ -44,19 +51,63 @@ class Settings(object):
          actual_args.append(arg)
            
       args = parser.parse_args(actual_args)
-   
-      self.old_binary_filename = args.old_binary_filename
-      self.new_binary_filename = args.new_binary_filename
       
+      if len(args.binaries) == 0:
+         if not args.old_binary_filename:
+            print "No old binary filename defined"
+            exit(1)
+         else:
+            self.old_binary_filename = args.old_binary_filename
+            
+         if not args.new_binary_filename:
+            print "No new binary filename defined"
+            exit(1)
+         else:
+            self.new_binary_filename = args.new_binary_filename
+      elif len(args.binaries) == 2:
+         if args.old_binary_filename:
+            print "Old binary filename redundantly defined"
+            exit(1)
+         else:
+            self.old_binary_filename = args.binaries[0]
+            
+         if args.new_binary_filename:
+            print "Old binary filename redundantly defined"
+            exit(1)
+         else:
+            self.new_binary_filename = args.binaries[1]
+      else:
+         print "Please specify either none or two binaries"
+         exit(1)
+      
+      if args.old_alias:
+         self.old_alias = args.old_alias
+      else:
+         self.old_alias = self.old_binary_filename
+      
+      if args.new_alias:
+         self.new_alias = args.new_alias
+      else:
+         self.new_alias = self.new_binary_filename
+         
       self.bin_dir = args.bin_dir
       self.bin_prefix = args.bin_prefix
       
       self.text_file = args.text_file
       self.html_file = args.html_file
+      self.pdf_file = args.pdf_file
+      
+      if self.pdf_file and not self.html_file:
+         import tempfile
+         self.html_file = tempfile._get_default_tempdir() + \
+            "/" + next(tempfile._get_candidate_names()) + ".html"
+         self.remove_html_file = True
       
       self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
       self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
       self.size_command = self.bin_dir + "/" + self.bin_prefix + "size"
+      
+      self.project_title = args.project_title
       
       self.validate()
       
@@ -297,18 +348,31 @@ class Driver(object):
       self.new_binary = Binary(self.settings, self.settings.new_binary_filename)
       
       self.prepareMeasures()
+      
+      file_output_requested = False
             
       if self.settings.html_file:
+         file_output_requested = True
          self.writeHTMLFile()
-      else:
-         if self.settings.text_file:
-            self.settings.out = open(self.settings.text_file, "w")
-         else:
-            import sys
-            self.settings.out = sys.stdout
+
+      if self.settings.text_file:
+         file_output_requested = True
+         self.settings.out = open(self.settings.text_file, "w")
+         
+      if self.settings.pdf_file:
+         file_output_requested = True
+         import pdfkit
+         pdfkit.from_url(self.settings.html_file, self.settings.pdf_file)
+         if self.settings.remove_html_file:
+            import os
+            os.remove(self.settings.html_file)
+               
+      if not file_output_requested:
+         import sys
+         self.settings.out = sys.stdout
             
          self.writeTextFile()
-      
+         
    def prepareMeasures(self):
       
       self.common_symbol_names = sorted([value for value in self.old_binary.symbols.keys() if value in self.new_binary.symbols.keys()])
@@ -357,8 +421,8 @@ class Driver(object):
          if not old_symbol.__eq__(new_symbol):
             self.num_assemblies_differ += 1
             
-   def getMemChangeHTML(self, from_size, to_size):
-      difference = to_size - from_size
+   def getMemChangeHTML(self, old_size, new_size):
+      difference = new_size - old_size
       
       if difference > 0:
          css_class = "deterioration"
@@ -373,7 +437,23 @@ class Driver(object):
       
       table_html = ""
       
+      import operator
+      
+      diff_by_symbol = {}
       for symbol_name in self.common_symbol_names:
+         old_symbol = self.old_binary.symbols[symbol_name]
+         new_symbol = self.new_binary.symbols[symbol_name]
+         
+         difference = new_symbol.size - old_symbol.size
+         
+         diff_by_symbol[symbol_name] = difference
+         
+      sorted_by_diff = sorted(diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True)   
+      
+      for symbol_tuple in sorted_by_diff:
+         
+         symbol_name = symbol_tuple[0]
+         
          old_symbol = self.old_binary.symbols[symbol_name]
          new_symbol = self.new_binary.symbols[symbol_name]
          
@@ -382,12 +462,14 @@ class Driver(object):
             table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, old_symbol.size, new_symbol.size, self.getMemChangeHTML(old_symbol.size, new_symbol.size))
             
       return table_html
-         
+      
    def generateDisappearedSymbolsTableHTML(self):
       
       table_html = ""
       
-      for symbol_name in self.symbols_only_in_old:
+      for symbol_name in sorted(self.symbols_only_in_old, \
+                                key=lambda symbol_name: self.old_binary.symbols[symbol_name].size, \
+                                reverse = True):
          symbol_name_html = self.fixStringForHTML(symbol_name)
          symbol = self.old_binary.symbols[symbol_name]
          table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, symbol.size)
@@ -398,7 +480,9 @@ class Driver(object):
       
       table_html = ""
       
-      for symbol_name in self.symbols_only_in_new:
+      for symbol_name in sorted(self.symbols_only_in_new, \
+                                key=lambda symbol_name: self.new_binary.symbols[symbol_name].size, \
+                                reverse = True):
          symbol_name_html = self.fixStringForHTML(symbol_name)
          symbol = self.new_binary.symbols[symbol_name]
          table_html += "<tr><td>%s</td><td>%s</td></tr>\n" % (symbol_name_html, symbol.size)
@@ -469,18 +553,34 @@ class Driver(object):
       s1 = string.replace("<", "&lt;")
       return s1.replace(">", "&gt;")
       
-   
    def writeHTMLFile(self):
       
-      persisting_symbols_raw = self.fixStringForHTML(self.generatePersistentSymbolDetails())
-      disappeared_symbols_raw = self.fixStringForHTML(self.generateDisappearedSymbolDetails())
-      new_symbols_raw = self.fixStringForHTML(self.generateNewSymbolDetails())
+      import os, inspect
+      
+      repo_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+      
+      # If we generate a pdf files, we skip the details
+      #
+      if self.settings.pdf_file:
+         persisting_symbols_raw = "skipped"
+         disappeared_symbols_raw = "skipped"
+         new_symbols_raw = "skipped"
+      else:
+         persisting_symbols_raw = self.fixStringForHTML(self.generatePersistentSymbolDetails())
+         disappeared_symbols_raw = self.fixStringForHTML(self.generateDisappearedSymbolDetails())
+         new_symbols_raw = self.fixStringForHTML(self.generateNewSymbolDetails())
+      
+      if self.settings.project_title:
+         doc_title = self.settings.project_title
+      else:
+         doc_title = "ELF Binary Comparison"
       
       keywords = {
-          "title" : u"ELF binary comparison - (c) 2019 by noseglasses"
-            
-         ,"old_binary_file" : self.settings.old_binary_filename
-         ,"new_binary_file" : self.settings.new_binary_filename
+          "page_title" : u"ELF Binary Comparison - (c) 2019 by noseglasses"
+         ,"doc_title" : doc_title   
+         ,"elf_diff_repo_base" : repo_path
+         ,"old_binary_file" : self.settings.old_alias
+         ,"new_binary_file" : self.settings.new_alias
          
          ,"code_size_old_overall" : str(self.old_binary.progmem_size)
          ,"code_size_new_overall" : str(self.new_binary.progmem_size)
@@ -517,10 +617,6 @@ class Driver(object):
       import jinja2
       from jinja2 import Environment, FileSystemLoader, StrictUndefined
       
-      import os, inspect
-      
-      repo_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-      
       env = Environment(loader=FileSystemLoader(repo_path), \
                                        undefined = StrictUndefined)
            
@@ -550,12 +646,17 @@ class Driver(object):
       
       out = self.settings.out
       
-      out.write("ELF binary comparison\n")
+      if self.settings.project_title:
+         title = self.settings.project_title + " - Binary Comparison"
+      else:
+         title = "ELF Binary Comparison"
+      
+      out.write("%s\n" % (title))
       out.write("   (c) 2019 by noseglasses (shinynoseglasses@gmail.com)\n")
       
       out.write("Comparing binaries\n")
-      out.write("   old: %s\n" % (self.settings.old_binary_filename))
-      out.write("   new: %s\n" % (self.settings.new_binary_filename))
+      out.write("   old: %s\n" % (self.settings.old_alias))
+      out.write("   new: %s\n" % (self.settings.new_alias))
       
       out.write("\n")
       
@@ -588,8 +689,8 @@ class Driver(object):
          
       out.write("\n")
       
-      out.write("%d symbols found in %s\n" % (len(self.old_binary.symbols.keys()), self.settings.old_binary_filename))
-      out.write("%d symbols found in %s\n" % (len(self.new_binary.symbols.keys()), self.settings.new_binary_filename))
+      out.write("%d symbols found in %s\n" % (len(self.old_binary.symbols.keys()), self.settings.old_alias))
+      out.write("%d symbols found in %s\n" % (len(self.new_binary.symbols.keys()), self.settings.new_alias))
       
       out.write("\n")
       

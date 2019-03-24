@@ -4,8 +4,8 @@
 <meta charset=utf-8>
 
 <meta name="robots" content="noindex">
-<title>{{title}}</title>
-  <script src="sorttable.js"></script>
+<title>{{page_title}}</title>
+  <script src="{{elf_diff_repo_base}}/sorttable.js"></script>
   <style>
     /* Appearance */
     body, table { font-family: sans-serif; }
@@ -64,7 +64,7 @@
 
 <body>
 
-<H1>ELF Binary Comparison</H1>
+<H1>{{doc_title}} - Binary Comparison</H1>
 
 <H2>Binaries</H2>
 <p>old: {{old_binary_file}}</p>
@@ -163,7 +163,7 @@
 </pre>
 
 <footer>
-<p>© 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
+<p>Genererated by elf_diff (https://github.com/CapeLeidokos/elf_diff) © 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
 <p>Sortable tables from <a href="https://kryogenix.org">kryogenix.org</a></p>
 </footer>
 
