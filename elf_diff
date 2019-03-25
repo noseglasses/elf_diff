@@ -39,6 +39,7 @@ class Settings(object):
       parser.add_argument('--new-alias', default = None, dest='new_alias', help='An alias string that is supposed to be used to reference the new binary')
       parser.add_argument('--old-info-file', default = None, dest='old_info_file', help='A text file with information about the old binary')
       parser.add_argument('--new-info-file', default = None, dest='new_info_file', help='A text file with information about the new binary')
+      parser.add_argument('--build-info', default = "", dest='build_info', help='A string with build information')      
       parser.add_argument('--bin-dir', default='/usr/bin', dest='bin_dir', help='The place where the binaries live')
       parser.add_argument('--bin-prefix', default='', dest='bin_prefix', help='A prefix to be added to all binutils commands')
       parser.add_argument('--text-file', default=None, dest='text_file', help='A text file to write output to')
@@ -114,6 +115,8 @@ class Settings(object):
       
       self.old_info_file = args.old_info_file
       self.new_info_file = args.new_info_file
+      
+      self.build_info = args.build_info
       
       self.validate()
       
@@ -644,6 +647,8 @@ class Driver(object):
          ,"old_binary_info" : self.settings.old_binary_info
          ,"new_binary_info" : self.settings.new_binary_info
          
+         ,"build_info": self.settings.build_info
+         
          ,"date" : datetime.datetime.now()
       }
       
@@ -680,7 +685,7 @@ class Driver(object):
       out = self.settings.out
       
       if self.settings.project_title:
-         title = self.settings.project_title + " - Binary Comparison"
+         title = self.settings.project_title
       else:
          title = "ELF Binary Comparison"
       
@@ -693,6 +698,11 @@ class Driver(object):
       
       out.write("\n")
       
+      if self.settings.build_info != "":
+         out.write("Build Info:\n") 
+         out.write(self.settings.build_info + "\n")
+         out.write("\n")
+         
       if self.old_binary == self.new_binary:
          out.write("   No symbol differences\n")
          return
@@ -761,7 +771,15 @@ class Driver(object):
             out.write("   %s: %d bytes" % (symbol_name, symbol.size) + "\n")
                
       out.write("\n")
-            
+      
+      out.write("Binary Info:\n")
+      out.write("Old:\n")
+      out.write(self.settings.old_binary_info + "\n")
+      out.write("New:\n")
+      out.write(self.settings.new_binary_info + "\n")
+      
+      out.write("\n")
+      
       out.write("########################################################################\n")
       out.write("Details follow\n")
       out.write("########################################################################\n")
