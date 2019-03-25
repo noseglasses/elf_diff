@@ -8,6 +8,8 @@ elf_diff
    [--new binary_file]
    [--old-alias old_alias]
    [--new-alias new_alias]
+   [--old-info-file old_info_file]
+   [--new-info-file new_info_file]
    [--bin-dir binary_directory]
    [--bin-prefix binary_prefix]
    [--text-file text_output_file]
@@ -21,6 +23,8 @@ elf_diff
 * new_binary_file: The second input elf binary (considered to be the new state).
 * old_alias: An alias string that is used to reference the old binary in reports.
 * new_alias: An alias string that is used to reference the new binary in reports.
+* old_info_file: A text file containing information about the old binary.
+* new_info_file: A text file containing information about the new binary.
 * binary_directory: A directory where binutils executables can be found (defaults to `/usr/bin`).
 * binary_prefix: A prefix that is added to all binutils executables (e.g. `avr-`).
 * text_file: If defined, text output is redirected to this file.

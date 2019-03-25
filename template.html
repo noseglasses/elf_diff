@@ -66,6 +66,8 @@
 
 <H1>{{doc_title}} - Binary Comparison</H1>
 
+generated: {{date}}
+
 <H2>Binaries</H2>
 <p>old: {{old_binary_file}}</p>
 <p>new: {{new_binary_file}}</p>
@@ -144,6 +146,18 @@
       {{new_symbols_table}}
     </tbody>
   </table>
+  
+<H2>Binary Details</H2>
+
+<H3>{{old_binary_file}}</H3>
+<pre>
+{{old_binary_info}}
+</pre>
+
+<H3>{{new_binary_file}}</H3>
+<pre>
+{{new_binary_info}}
+</pre>
 
 <H2>Symbol Details</H2>
 

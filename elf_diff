@@ -21,6 +21,8 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys
+      
 class Settings(object):
    
    def __init__(self):
@@ -28,7 +30,6 @@ class Settings(object):
       self.remove_html_file = False
       
       import argparse
-      import sys
 
       parser = argparse.ArgumentParser(description='Compare elf binaries and list the differences in the disassembly.')
       parser.add_argument('--old', default = None, dest='old_binary_filename', help='The old elf binary')
@@ -36,6 +37,8 @@ class Settings(object):
       parser.add_argument("binaries", nargs='*', default = None, help='The binaries (this is an alternative to --old and --new)')
       parser.add_argument('--old-alias', default = None, dest='old_alias', help='An alias string that is supposed to be used to reference the old binary')
       parser.add_argument('--new-alias', default = None, dest='new_alias', help='An alias string that is supposed to be used to reference the new binary')
+      parser.add_argument('--old-info-file', default = None, dest='old_info_file', help='A text file with information about the old binary')
+      parser.add_argument('--new-info-file', default = None, dest='new_info_file', help='A text file with information about the new binary')
       parser.add_argument('--bin-dir', default='/usr/bin', dest='bin_dir', help='The place where the binaries live')
       parser.add_argument('--bin-prefix', default='', dest='bin_prefix', help='A prefix to be added to all binutils commands')
       parser.add_argument('--text-file', default=None, dest='text_file', help='A text file to write output to')
@@ -109,6 +112,9 @@ class Settings(object):
       
       self.project_title = args.project_title
       
+      self.old_info_file = args.old_info_file
+      self.new_info_file = args.new_info_file
+      
       self.validate()
       
    def validate(self):
@@ -135,6 +141,26 @@ class Settings(object):
       if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
          print "size command \'%s\' is either not a file or not executable" % (self.size_command)
          sys.exit(1)
+         
+      if self.old_info_file:
+         if os.path.isfile(self.old_info_file):
+            with open(self.old_info_file, "r") as f:
+               self.old_binary_info = f.read()
+         else:
+            print "Unable to find old info file \'%s\'" % (self.old_info_file)
+            sys.exit(1)
+      else:
+         self.old_binary_info = ""
+         
+      if self.new_info_file:
+         if os.path.isfile(self.new_info_file):
+            with open(self.new_info_file, "r") as f:
+               self.new_binary_info = f.read()
+         else:
+            print "Unable to find new info file \'%s\'" % (self.new_info_file)
+            sys.exit(1)
+      else:
+         self.new_binary_info = ""         
          
 class Symbol(object):
    
@@ -555,9 +581,11 @@ class Driver(object):
       
    def writeHTMLFile(self):
       
-      import os, inspect
+      import os, inspect, datetime
       
-      repo_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+      repo_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
+      
+      print "repo_path = " + repo_path
       
       # If we generate a pdf files, we skip the details
       #
@@ -612,6 +640,11 @@ class Driver(object):
          ,"persisting_symbols_raw" : persisting_symbols_raw
          ,"disappeared_symbols_raw" : disappeared_symbols_raw
          ,"new_symbols_raw" : new_symbols_raw
+         
+         ,"old_binary_info" : self.settings.old_binary_info
+         ,"new_binary_info" : self.settings.new_binary_info
+         
+         ,"date" : datetime.datetime.now()
       }
       
       import jinja2
