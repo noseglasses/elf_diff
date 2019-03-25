@@ -4,7 +4,7 @@
 
 # -*- mode: python -*-
 #
-# compare_firmware_symbols
+# elf_diff
 #
 # Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
 #
