@@ -27,8 +27,6 @@ class Settings(object):
    
    def __init__(self):
       
-      self.remove_html_file = False
-      
       import argparse
 
       parser = argparse.ArgumentParser(description='Compare elf binaries and list the differences in the disassembly.')
@@ -100,12 +98,6 @@ class Settings(object):
       self.text_file = args.text_file
       self.html_file = args.html_file
       self.pdf_file = args.pdf_file
-      
-      if self.pdf_file and not self.html_file:
-         import tempfile
-         self.html_file = tempfile._get_default_tempdir() + \
-            "/" + next(tempfile._get_candidate_names()) + ".html"
-         self.remove_html_file = True
       
       self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
       self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
@@ -382,19 +374,28 @@ class Driver(object):
             
       if self.settings.html_file:
          file_output_requested = True
-         self.writeHTMLFile()
+         self.writeHTMLFile(self.settings.html_file, skip_details = False)
 
       if self.settings.text_file:
          file_output_requested = True
          self.settings.out = open(self.settings.text_file, "w")
          
       if self.settings.pdf_file:
+         
+         import tempfile
+         
+         tmp_html_file = tempfile._get_default_tempdir() + \
+            "/" + next(tempfile._get_candidate_names()) + ".html"
+         
+         self.writeHTMLFile(tmp_html_file, skip_details = True)
+         
          file_output_requested = True
+         
          import pdfkit
-         pdfkit.from_url(self.settings.html_file, self.settings.pdf_file)
-         if self.settings.remove_html_file:
-            import os
-            os.remove(self.settings.html_file)
+         pdfkit.from_url(tmp_html_file, self.settings.pdf_file)
+         
+         import os
+         os.remove(tmp_html_file)
                
       if not file_output_requested:
          import sys
@@ -582,7 +583,7 @@ class Driver(object):
       s1 = string.replace("<", "&lt;")
       return s1.replace(">", "&gt;")
       
-   def writeHTMLFile(self):
+   def writeHTMLFile(self, html_filename, skip_details):
       
       import os, inspect, datetime
       
@@ -592,7 +593,7 @@ class Driver(object):
       
       # If we generate a pdf files, we skip the details
       #
-      if self.settings.pdf_file:
+      if skip_details:
          persisting_symbols_raw = "skipped"
          disappeared_symbols_raw = "skipped"
          new_symbols_raw = "skipped"
@@ -671,10 +672,10 @@ class Driver(object):
          replacedContent = creator.render(keywords)
       except (jinja2.exceptions.TemplateError) as e:
          print "Error rendering jinja file \'" + \
-            self.settings.html_file + "\'\n" + str(e)
+            html_filename + "\'\n" + str(e)
          sys.exit(1)
       
-      htmlFile = open(self.settings.html_file, 'w')
+      htmlFile = open(html_filename, 'w')
       
       htmlFile.write(replacedContent.encode('utf8'))
       
