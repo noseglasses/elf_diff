@@ -602,7 +602,7 @@ class Driver(object):
          new_symbols_raw = self.fixStringForHTML(self.generateNewSymbolDetails())
       
       if self.settings.project_title:
-         doc_title = self.settings.project_title
+         doc_title = self.fixStringForHTML(self.settings.project_title)
       else:
          doc_title = "ELF Binary Comparison"
       
@@ -610,8 +610,8 @@ class Driver(object):
           "page_title" : u"ELF Binary Comparison - (c) 2019 by noseglasses"
          ,"doc_title" : doc_title   
          ,"elf_diff_repo_base" : repo_path
-         ,"old_binary_file" : self.settings.old_alias
-         ,"new_binary_file" : self.settings.new_alias
+         ,"old_binary_file" : self.fixStringForHTML(self.settings.old_alias)
+         ,"new_binary_file" : self.fixStringForHTML(self.settings.new_alias)
          
          ,"code_size_old_overall" : str(self.old_binary.progmem_size)
          ,"code_size_new_overall" : str(self.new_binary.progmem_size)
@@ -644,10 +644,10 @@ class Driver(object):
          ,"disappeared_symbols_raw" : disappeared_symbols_raw
          ,"new_symbols_raw" : new_symbols_raw
          
-         ,"old_binary_info" : self.settings.old_binary_info
-         ,"new_binary_info" : self.settings.new_binary_info
+         ,"old_binary_info" : self.fixStringForHTML(self.settings.old_binary_info)
+         ,"new_binary_info" : self.fixStringForHTML(self.settings.new_binary_info)
          
-         ,"build_info": self.settings.build_info
+         ,"build_info": self.fixStringForHTML(self.settings.build_info)
          
          ,"date" : datetime.datetime.now()
       }
