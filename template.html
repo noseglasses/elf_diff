@@ -41,24 +41,79 @@
        width: 500px;
     }
     
-    .deterioration { background: #FF0000; }
-    .improvement { background: #00FF00; } 
+    .deterioration { background: #FFAAAA; }
+    .improvement { background: #AAFFAA; } 
     .unchanged { }
+    .diff_chg { background: #FFAAAA; } 
     
-    table.quad_col th:nth-child(1) { text-align: left; }
+    table.size_overview th:nth-child(1) { text-align: left; }
+    table.size_overview th:nth-child(2) { text-align: right; }
+    table.size_overview th:nth-child(3) { text-align: right; }
+    table.size_overview th:nth-child(4) { text-align: right; }
+    table.size_overview td:nth-child(1) { text-align: left; }
+    table.size_overview td:nth-child(2) { text-align: right; }
+    table.size_overview td:nth-child(3) { text-align: right; }
+    table.size_overview td:nth-child(4) { text-align: right; }
+    
+    table.persisting_symbols th:nth-child(1) { text-align: left; }
+    table.persisting_symbols th:nth-child(2) { text-align: right; }
+    table.persisting_symbols th:nth-child(3) { text-align: right; }
+    table.persisting_symbols th:nth-child(4) { text-align: right; }
+    table.persisting_symbols th:nth-child(5) { text-align: right; }
+    table.persisting_symbols td:nth-child(1) { text-align: left; }
+    table.persisting_symbols td:nth-child(2) { text-align: right; }
+    table.persisting_symbols td:nth-child(3) { text-align: right; }
+    table.persisting_symbols td:nth-child(4) { text-align: right; }
+    table.persisting_symbols td:nth-child(5) { text-align: right; }
+    
+   table.quad_col th:nth-child(1) { text-align: left; }
     table.quad_col th:nth-child(2) { text-align: right; }
     table.quad_col th:nth-child(3) { text-align: right; }
     table.quad_col th:nth-child(4) { text-align: right; }
+    table.quad_col th:nth-child(5) { text-align: right; }
     table.quad_col td:nth-child(1) { text-align: left; }
     table.quad_col td:nth-child(2) { text-align: right; }
     table.quad_col td:nth-child(3) { text-align: right; }
     table.quad_col td:nth-child(4) { text-align: right; }
+    table.quad_col td:nth-child(5) { text-align: right; }
+    
+    table.similar_symbols th:nth-child(1) { text-align: left; }
+    table.similar_symbols th:nth-child(2) { text-align: right; }
+    table.similar_symbols th:nth-child(3) { text-align: left; }
+    table.similar_symbols th:nth-child(4) { text-align: right; }
+    table.similar_symbols th:nth-child(5) { text-align: right; }
+    table.similar_symbols td:nth-child(1) { text-align: left; }
+    table.similar_symbols td:nth-child(2) { text-align: right; }
+    table.similar_symbols td:nth-child(3) { text-align: left; }
+    table.similar_symbols td:nth-child(4) { text-align: right; }
+    table.similar_symbols td:nth-child(5) { text-align: right; }
     
     table.bin_col th:nth-child(1) { text-align: left; }
     table.bin_col th:nth-child(2) { text-align: right; }
+    table.bin_col th:nth-child(3) { text-align: right; }
     table.bin_col td:nth-child(1) { text-align: left; }
     table.bin_col td:nth-child(2) { text-align: right; }
-    
+    table.bin_col td:nth-child(3) { text-align: right; }
+        
+    a:link {
+      text-decoration: none;
+      color: black;
+    }
+
+    a:visited {
+      text-decoration: none;
+      color: black;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: blue;
+    }
+
+    a:active {
+      text-decoration: underline;
+      color: blue;
+    }
   </style>
 </head>
 
@@ -74,7 +129,7 @@ generated: {{date}}
 
 <H2>Resource Consumption</H2>
 <H3>Program Storage</H3>
-<table class = "fixed_table quad_col">
+<table class = "fixed_table size_overview">
     <col align="left">
     <col align="right">
     <col align="right">
@@ -87,7 +142,7 @@ generated: {{date}}
     </tbody>
   </table>
 <H3>Static RAM</H3>
-<table class = "fixed_table quad_col">
+<table class = "fixed_table size_overview">
     <col align="left">
     <col align="right">
     <col align="right">
@@ -116,10 +171,10 @@ generated: {{date}}
 
 <H3>Persisting Symbols</H3>
 
-<p>{{num_persisting_symbols}} symbols persisted but changed size</p>
+<p>{{num_persisting_symbols}} symbols persisted but changed size ({{persisting_symbols_delta}} bytes of program memory)</p>
 
-  <table class="sortable quad_col">
-    <thead><tr><th>Symbol</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Change/bytes</th></thead>
+  <table class="sortable persisting_symbols">
+    <thead><tr><th>Symbol</th><th>Type</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Change/bytes</th></thead>
     <tbody>
       {{persisting_symbols_table}}
     </tbody>
@@ -127,10 +182,10 @@ generated: {{date}}
   
 <H3>Symbols Disappeared </H3>
 
-<p>{{num_disappeared_symbols}} symbols disappeared</p>
+<p>{{num_disappeared_symbols}} symbols disappeared ({{disappeared_symbols_size}} bytes of program memory)</p>
 
   <table class="sortable bin_col">
-    <thead><tr><th>Symbol</th><th>Size/bytes</th></thead>
+    <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
     <tbody>
       {{disappeared_symbols_table}}
     </tbody>
@@ -138,12 +193,23 @@ generated: {{date}}
   
 <H3>New Symbols</H3>
 
-<p>{{num_new_symbols}} symbols were newly introduced</p>
+<p>{{num_new_symbols}} symbols were newly introduced ({{new_symbols_size}} bytes of program memory)</p>
 
   <table class="sortable bin_col">
-    <thead><tr><th>Symbol</th><th>Size/bytes</th></thead>
+    <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
     <tbody>
       {{new_symbols_table}}
+    </tbody>
+  </table>
+  
+<H3>Similar Symbols</H3>
+
+<p>{{num_similar_symbols}} pairs of symbols with similar signature have been found. Please note that those symbols are not necessarily related. Only name and - if possible - the class name are compared.</p>
+
+  <table class="sortable similar_symbols">
+    <thead><tr><th>Old Symbol</th><th>Old Type</th><th>New Symbol</th><th>New Type</th><th>Delta/bytes</th></thead>
+    <tbody>
+      {{similar_symbols_table}}
     </tbody>
   </table>
   
@@ -167,19 +233,13 @@ generated: {{date}}
 <H2>Symbol Details</H2>
 
 <H3>Persisting Symbols</H3>
-<pre>
-{{persisting_symbols_raw}}
-</pre>
+{{persisting_symbols_html}}
 
 <H3>Symbols Disappeared</H3>
-<pre>
-{{disappeared_symbols_raw}}
-</pre>
+{{disappeared_symbols_html}}
 
 <H3>New Symbols</H3>
-<pre>
-{{new_symbols_raw}}
-</pre>
+{{new_symbols_html}}
 
 <footer>
 <p>Genererated by elf_diff (https://github.com/CapeLeidokos/elf_diff) © 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
