@@ -640,11 +640,13 @@ class Driver(object):
          old_symbol_name_html = fixStringForHTML(old_symbol.name)
          new_symbol_name_html = fixStringForHTML(new_symbol.name)
          
-         table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
+         table_html += "<tr><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td></tr>\n" % ( \
                               generateSymbolTableEntryLight(old_symbol_name_html), \
-                              old_symbol.type, \
                               generateSymbolTableEntryLight(new_symbol_name_html), \
+                              old_symbol.type, \
                               new_symbol.type, \
+                              old_symbol.size, \
+                              new_symbol.size, \
                               self.getMemChangeHTML(old_symbol.size, new_symbol.size))
       
       return [table_html, len(symbol_pairs)]

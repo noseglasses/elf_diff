@@ -79,14 +79,12 @@
     
     table.similar_symbols th:nth-child(1) { text-align: left; }
     table.similar_symbols th:nth-child(2) { text-align: right; }
-    table.similar_symbols th:nth-child(3) { text-align: left; }
+    table.similar_symbols th:nth-child(3) { text-align: right; }
     table.similar_symbols th:nth-child(4) { text-align: right; }
-    table.similar_symbols th:nth-child(5) { text-align: right; }
     table.similar_symbols td:nth-child(1) { text-align: left; }
     table.similar_symbols td:nth-child(2) { text-align: right; }
-    table.similar_symbols td:nth-child(3) { text-align: left; }
+    table.similar_symbols td:nth-child(3) { text-align: right; }
     table.similar_symbols td:nth-child(4) { text-align: right; }
-    table.similar_symbols td:nth-child(5) { text-align: right; }
     
     table.bin_col th:nth-child(1) { text-align: left; }
     table.bin_col th:nth-child(2) { text-align: right; }
@@ -134,7 +132,7 @@ generated: {{date}}
     <col align="right">
     <col align="right">
     <col align="right">
-    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Change/bytes</th></thead>
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       <tr><td>overall</td><td>{{code_size_old_overall}}</td><td>{{code_size_new_overall}}</td><td>{{code_size_change_overall}}</td></tr>
       <tr><td>text</td><td>{{text_size_old_overall}}</td><td>{{text_size_new_overall}}</td><td>{{text_size_change_overall}}</td></tr>
@@ -147,7 +145,7 @@ generated: {{date}}
     <col align="right">
     <col align="right">
     <col align="right">
-    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Change/bytes</th></thead>
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       <tr><td>overall</td><td>{{static_ram_old_overall}}</td><td>{{static_ram_new_overall}}</td><td>{{static_ram_change_overall}}</td></tr>
       <tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
@@ -174,7 +172,7 @@ generated: {{date}}
 <p>{{num_persisting_symbols}} symbols persisted but changed size ({{persisting_symbols_delta}} bytes of program memory)</p>
 
   <table class="sortable persisting_symbols">
-    <thead><tr><th>Symbol</th><th>Type</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Change/bytes</th></thead>
+    <thead><tr><th>Symbol</th><th>Type</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       {{persisting_symbols_table}}
     </tbody>
@@ -207,7 +205,7 @@ generated: {{date}}
 <p>{{num_similar_symbols}} pairs of symbols with similar signature have been found. Please note that those symbols are not necessarily related. Only name and - if possible - the class name are compared.</p>
 
   <table class="sortable similar_symbols">
-    <thead><tr><th>Old Symbol</th><th>Old Type</th><th>New Symbol</th><th>New Type</th><th>Delta/bytes</th></thead>
+    <thead><tr><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       {{similar_symbols_table}}
     </tbody>
