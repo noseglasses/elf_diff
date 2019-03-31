@@ -51,6 +51,11 @@ def highlightNumberHTML(number):
 def listUnion(l1, l2):
    return sorted(list(set(l1) & set(l2)))
 
+symbol_type_class_method = 1
+symbol_type_global_function = 2
+symbol_type_class_data = 4
+symbol_type_global_data = 3
+
 class Settings(object):
    
    def __init__(self):
@@ -255,19 +260,98 @@ class Symbol(object):
          self.klass = match.group(4)
          self.actual_name = match.group(5)
          self.parameters = match.group(7)
+         self.symbol_parse_success = True
       else:
          self.actual_name = self.name
+         self.symbol_parse_success = False
+         return
+         
+      if self.klass:
+         if self.parameters:
+            self.symbol_type = symbol_type_class_method
+         else:
+            self.symbol_type = symbol_type_class_data
+      else:
+         if self.parameters:
+            self.symbol_type = symbol_type_global_function
+         else:
+            self.symbol_type = symbol_type_global_data
          
    def init(self):
       self.parseSignature()
+      
+   def isMethodRenamedInClass(self, other):
+      return self.namespace == other.namespace \
+         and self.klass == other.klass \
+         and self.parameters == other.parameters
+   
+   def isMethodSignatureChangedInClass(self, other):
+      return self.namespace == other.namespace \
+         and self.klass == other.klass \
+         and self.actual_name == other.actual_name
+   
+   def doActualNameAndSignatureMatch(self, other):
+      return self.actual_name == other.actual_name \
+         and self.parameters == other.parameters
+   
+   def isClassRenamed(self, other):
+      return self.doActualNameAndSignatureMatch(other)
          
    def isSimilar(self, other):
       
-      if self.klass:
-         return    (self.klass == other.klass) \
-               and (self.actual_name == other.actual_name)
-            
-      return (self.actual_name == other.actual_name)
+      if not (self.symbol_parse_success and other.symbol_parse_success):
+         return False
+      
+      # Similarities
+      #
+      # Within the symbol_types
+      #
+      # symbol_type_class_method <-> symbol_type_global_function
+      # symbol_type_class_data <-> symbol_type_global_data
+      
+      if self.symbol_type == symbol_type_class_method:
+         if other.symbol_type == symbol_type_class_method:
+            return self.isMethodRenamedInClass(other) \
+                  or self.isMethodSignatureChangedInClass(other) \
+                  or self.isClassRenamed(other)
+               
+         elif other.symbol_type == symbol_type_global_function:
+            # Method moved to global?
+            return self.actual_name == other.actual_name \
+               and self.parameters == other.parameters
+               
+      elif self.symbol_type == symbol_type_global_function:
+         if other.symbol_type == symbol_type_global_function:
+            # Global function renamed?
+            return self.actual_name == other.actual_name \
+               and self.parameters == other.parameters
+         
+         elif other.symbol_type == symbol_type_class_method:
+            # Function moved to class?
+            return self.actual_name == other.actual_name \
+               and self.parameters == other.parameters
+      elif self.symbol_type == symbol_type_class_data:
+         if other.symbol_type == symbol_type_class_data:
+            # Class data renamed?
+            return self.klass == other.klass \
+               and self.namespace == other.namespace \
+               and self.size == other.size
+         elif other.symbol_type == symbol_type_global_data:
+            # Datum moved from class to global?
+            return self.actual_name == other.actual_name \
+               and self.size == other.size
+      elif self.symbol_type == symbol_type_global_data:
+         if other.symbol_type == symbol_type_class_data:
+            # Datum moved from global to class?
+            return self.actual_name == other.actual_name \
+               and self.size == other.size
+         elif other.symbol_type == symbol_type_global_data:
+            # compare namespace and size
+            # Global symbol renamed?
+            return self.namespace == other.namespace \
+               and self.size == other.size
+      
+      return False
       
 class Binary(object):
    
@@ -498,37 +582,15 @@ class Driver(object):
       
    def determineSimilarSymbols(self):
       
-      oldSymbolsByActualName = {}
-      newSymbolsByActualName = {}
-      
       symbol_pairs = []
       
-      for symbol_name in self.symbols_only_in_old:
-         symbol = self.old_binary.symbols[symbol_name]
-         if symbol.actual_name in oldSymbolsByActualName.keys():
-            oldSymbolsByActualName[symbol.actual_name].append(symbol)
-         else:
-            oldSymbolsByActualName[symbol.actual_name] = [symbol]
-            
-      for symbol_name in self.symbols_only_in_new:
-         symbol = self.new_binary.symbols[symbol_name]
-         if symbol.actual_name in newSymbolsByActualName.keys():
-            newSymbolsByActualName[symbol.actual_name].append(symbol)
-         else:
-            newSymbolsByActualName[symbol.actual_name] = [symbol]
+      for old_symbol_name in self.symbols_only_in_old:
+         old_symbol = self.old_binary.symbols[old_symbol_name]
+         for new_symbol_name in self.symbols_only_in_new:
+            new_symbol = self.new_binary.symbols[new_symbol_name]
       
-      common_symbol_actual_names = listUnion(oldSymbolsByActualName.keys(), \
-                                             newSymbolsByActualName.keys())
-      
-      for symbol_actual_name in common_symbol_actual_names:
-         
-         old_symbols = oldSymbolsByActualName[symbol_actual_name]
-         new_symbols = newSymbolsByActualName[symbol_actual_name]
-         
-         for old_symbol in old_symbols:
-            for new_symbol in new_symbols:
-               if old_symbol.isSimilar(new_symbol):
-                  symbol_pairs.append([old_symbol, new_symbol])
+            if old_symbol.isSimilar(new_symbol):
+               symbol_pairs.append([old_symbol, new_symbol])
                                 
       return symbol_pairs
    
