@@ -25,18 +25,34 @@ import sys
 import re
    
 def fixStringForHTML(string):
-   s1 = string.replace("<", "&lt;")
-   return s1.replace(">", "&gt;")
+   return string.replace("<", "&lt;").replace(">", "&gt;")
       
 def generateSymbolTableEntry(symbol_name):
-   return "<a name=\"table_%s\"><a href=\"#details_%s\">%s</a></a>" % (symbol_name, symbol_name, symbol_name)
+   return "<a name=\"table_%s\"><a href=\"#details_%s\">%s</a></a>" % \
+          (symbol_name, symbol_name, symbol_name)
 
 def generateSymbolTableEntryLight(symbol_name):
-   return "<a href=\"#details_%s\">%s</a>" % (symbol_name, symbol_name)
+   return "<a href=\"#details_%s\">%s</a>" % \
+          (symbol_name, symbol_name)
 
 def generateSymbolDetailsTitle(symbol_name):
-   return "<a name=\"details_%s\"><a href=\"#table_%s\">%s</a></a>" % (symbol_name, symbol_name, symbol_name)
+   return "<a name=\"details_%s\"><a href=\"#table_%s\">%s</a></a>" % \
+          (symbol_name, symbol_name, tagSymbolName(symbol_name))
+
+def generateSimilarSymbolTableEntry(similar_pair_id):
+   return "<a name=\"similar_table_%s\"><a href=\"#similar_details_%s\">%s</a></a>" % \
+          (similar_pair_id, similar_pair_id, similar_pair_id)
                
+def generateSimilarSymbolDetailsTitle(similar_pair_id):
+   return "<a name=\"similar_details_%s\"><a href=\"#similar_table_%s\">%s</a></a>" % \
+          (similar_pair_id, similar_pair_id, similar_pair_id)
+       
+def tagSymbolName(symbol_name):
+   return "<span class=\"symbol_name\">%s</span>" % (symbol_name)
+
+def formatNumberHTML(number):
+   return "<span class=\"number\">%s</span>" % (number)
+
 def highlightNumberHTML(number):
    
    if number > 0:
@@ -46,7 +62,7 @@ def highlightNumberHTML(number):
    else:
       css_class = "unchanged"
       
-   return "<span  class=\"%s\">%+d</span>" % (css_class, number)
+   return "<span  class=\"%s number\">%+d</span>" % (css_class, number)
 
 def listUnion(l1, l2):
    return sorted(list(set(l1) & set(l2)))
@@ -180,7 +196,7 @@ class Settings(object):
             print "Unable to find old info file \'%s\'" % (self.old_info_file)
             sys.exit(1)
       else:
-         self.old_binary_info = ""
+         self.old_binary_info = "<none>"
          
       if self.new_info_file:
          if os.path.isfile(self.new_info_file):
@@ -190,7 +206,7 @@ class Settings(object):
             print "Unable to find new info file \'%s\'" % (self.new_info_file)
             sys.exit(1)
       else:
-         self.new_binary_info = ""         
+         self.new_binary_info = "<none>"     
          
 class Symbol(object):
    
@@ -574,6 +590,8 @@ class Driver(object):
       self.symbols_only_in_old = sorted(self.old_symbol_names - self.new_symbol_names)
       self.symbols_only_in_new = sorted(self.new_symbol_names - self.old_symbol_names)
       
+      self.similar_symbols = self.determineSimilarSymbols()
+      
       self.computeNumSymbolsPersisting()
       self.computeNumSymbolsDisappeared()
       self.computeNumSymbolsNew()
@@ -581,6 +599,8 @@ class Driver(object):
       self.computeNumAssembliesDiffer()
       
    def determineSimilarSymbols(self):
+      
+      import operator
       
       symbol_pairs = []
       
@@ -592,7 +612,28 @@ class Driver(object):
             if old_symbol.isSimilar(new_symbol):
                symbol_pairs.append([old_symbol, new_symbol])
                                 
-      return symbol_pairs
+                                
+      # First sort symbol pairs by size difference
+      #
+      diff_by_symbol_pair = {}
+      for i in range(0, len(symbol_pairs)):
+         symbol_pair = symbol_pairs[i]
+         
+         old_symbol = symbol_pair[0]
+         new_symbol = symbol_pair[1]
+               
+         difference = new_symbol.size - old_symbol.size
+         
+         diff_by_symbol_pair[i] = difference
+         
+      sorted_by_diff = sorted(diff_by_symbol_pair.items(), key=operator.itemgetter(1), reverse=True)  
+      
+      sorted_symbol_pairs = []
+      for symbol_tuple in sorted_by_diff:
+         index = symbol_tuple[0]
+         sorted_symbol_pairs.append(symbol_pairs[index])
+                                
+      return sorted_symbol_pairs
    
    def computeNumSymbolsPersisting(self):
       
@@ -664,54 +705,11 @@ class Driver(object):
             table_html += "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
                               generateSymbolTableEntry(symbol_name_html), \
                               new_symbol.type, \
-                              old_symbol.size, \
-                              new_symbol.size, \
+                              formatNumberHTML(old_symbol.size), \
+                              formatNumberHTML(new_symbol.size), \
                               self.getMemChangeHTML(old_symbol.size, new_symbol.size))
             
       return [table_html, highlightNumberHTML(size_delta)]
-   
-   def generateSimilarSymbolsTableHTML(self):
-      
-      import operator
-      
-      symbol_pairs = self.determineSimilarSymbols()
-           
-      table_html = ""
-      
-      diff_by_symbol_pair = {}
-      for i in range(0, len(symbol_pairs)):
-         symbol_pair = symbol_pairs[i]
-         
-         old_symbol = symbol_pair[0]
-         new_symbol = symbol_pair[1]
-               
-         difference = new_symbol.size - old_symbol.size
-         
-         diff_by_symbol_pair[i] = difference
-         
-      sorted_by_diff = sorted(diff_by_symbol_pair.items(), key=operator.itemgetter(1), reverse=True)  
-      
-      for symbol_tuple in sorted_by_diff:
-         
-         index = symbol_tuple[0]
-         symbol_pair = symbol_pairs[index]
-         
-         old_symbol = symbol_pair[0]
-         new_symbol = symbol_pair[1]
-         
-         old_symbol_name_html = fixStringForHTML(old_symbol.name)
-         new_symbol_name_html = fixStringForHTML(new_symbol.name)
-         
-         table_html += "<tr><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td></tr>\n" % ( \
-                              generateSymbolTableEntryLight(old_symbol_name_html), \
-                              generateSymbolTableEntryLight(new_symbol_name_html), \
-                              old_symbol.type, \
-                              new_symbol.type, \
-                              old_symbol.size, \
-                              new_symbol.size, \
-                              self.getMemChangeHTML(old_symbol.size, new_symbol.size))
-      
-      return [table_html, len(symbol_pairs)]
       
    def generateDisappearedSymbolsTableHTML(self):
       
@@ -726,7 +724,7 @@ class Driver(object):
          table_html += "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
                               generateSymbolTableEntry(symbol_name_html), \
                               symbol.type, \
-                              symbol.size)
+                              formatNumberHTML(symbol.size))
          
          if symbol.livesInProgramMemory():
             overal_symbol_size += symbol.size
@@ -746,12 +744,39 @@ class Driver(object):
          table_html += "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
                               generateSymbolTableEntry(symbol_name_html), \
                               symbol.type, \
-                              symbol.size)
+                              formatNumberHTML(symbol.size))
          
          if symbol.livesInProgramMemory():
             overal_symbol_size += symbol.size
             
       return [table_html, highlightNumberHTML(overal_symbol_size)]
+      
+   def generateSimilarSymbolsTableHTML(self):
+           
+      table_html = ""
+      
+      index = 0
+      for symbol_pair in self.similar_symbols:
+         
+         index = index + 1
+         
+         old_symbol = symbol_pair[0]
+         new_symbol = symbol_pair[1]
+         
+         old_symbol_name_html = fixStringForHTML(old_symbol.name)
+         new_symbol_name_html = fixStringForHTML(new_symbol.name)
+         
+         table_html += "<tr><td>%s</td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td></tr>\n" % ( \
+                              generateSimilarSymbolTableEntry(str(index)), \
+                              generateSymbolTableEntryLight(old_symbol_name_html), \
+                              generateSymbolTableEntryLight(new_symbol_name_html), \
+                              old_symbol.type, \
+                              new_symbol.type, \
+                              formatNumberHTML(old_symbol.size), \
+                              formatNumberHTML(new_symbol.size), \
+                              self.getMemChangeHTML(old_symbol.size, new_symbol.size))
+      
+      return [table_html, len(self.similar_symbols)]
    
    def getTendencySymbol(self, from_size, to_size):
       if from_size > to_size:
@@ -879,7 +904,59 @@ class Driver(object):
          html += "</pre>"
             
       return html
+         
+   def generateSimilarSymbolDetailsString(self):
       
+      text = ""
+      
+      for symbol_pair in self.similar_symbols:
+         
+         old_symbol = symbol_pair[0]
+         new_symbol = symbol_pair[1]
+         
+         symbol_differences = old_symbol.getDifferencesAsString(new_symbol, "   ")
+
+         text += "******************************************************************\n"
+         text += "%s (%s bytes)\n" % (old_symbol.name, old_symbol.size)
+         text += "%s (%s bytes)\n" % (new_symbol.name, new_symbol.size)
+         text += "******************************************************************\n"
+         text += "%s\n" % (symbol_differences)
+            
+      return text
+   
+   def generateSimilarSymbolDetailsHTML(self):
+      
+      html = ""
+      
+      index = 0;
+      for symbol_pair in self.similar_symbols:
+         
+         index = index + 1
+         
+         old_symbol = symbol_pair[0]
+         new_symbol = symbol_pair[1]
+         
+         old_symbol_name_html = fixStringForHTML(old_symbol.name)
+         new_symbol_name_html = fixStringForHTML(new_symbol.name)
+            
+         symbol_differences = old_symbol.getDifferencesAsHTML(new_symbol, "   ")
+         
+         if old_symbol.size == new_symbol.size:
+            size_info = "size unchanged"
+         else:
+            size_info = self.formatMemChange("", old_symbol.size, new_symbol.size)
+            
+         html += "<%s>Similar pair %s (%s)</%s>\n" % ( \
+                                          self.settings.symbolsHTMLHeader, \
+                                          generateSimilarSymbolDetailsTitle(str(index)), \
+                                          size_info, \
+                                          self.settings.symbolsHTMLHeader)
+         html += "<p>Old: %s</p>\n" % (generateSymbolDetailsTitle(old_symbol_name_html))
+         html += "<p>New: %s</p>\n" % (generateSymbolDetailsTitle(new_symbol_name_html))
+         html += "%s\n" % (symbol_differences)
+            
+      return html
+   
    def writeHTMLFile(self, html_filename, skip_details):
       
       import os, inspect, datetime
@@ -891,13 +968,15 @@ class Driver(object):
       # If we generate a pdf files, we skip the details
       #
       if skip_details:
-         persisting_symbols_html = "skipped"
-         disappeared_symbols_html = "skipped"
-         new_symbols_html = "skipped"
+         persisting_symbol_details_html = "skipped"
+         disappeared_symbol_details_html = "skipped"
+         new_symbol_details_html = "skipped"
+         similar_symbol_details_html = "skipped"
       else:
-         persisting_symbols_html = self.generatePersistentSymbolDetailsHTML()
-         disappeared_symbols_html = self.generateDisappearedSymbolDetailsHTML()
-         new_symbols_html = self.generateNewSymbolDetailsHTML()
+         persisting_symbol_details_html = self.generatePersistentSymbolDetailsHTML()
+         disappeared_symbol_details_html = self.generateDisappearedSymbolDetailsHTML()
+         new_symbol_details_html = self.generateNewSymbolDetailsHTML()
+         similar_symbol_details_html = self.generateSimilarSymbolDetailsHTML()
       
       if self.settings.project_title:
          doc_title = fixStringForHTML(self.settings.project_title)
@@ -949,16 +1028,17 @@ class Driver(object):
          ,"disappeared_symbols_size" : disappeared_symbols_size
          ,"new_symbols_size" : new_symbols_size
          
-         ,"persisting_symbols_html" : persisting_symbols_html
-         ,"disappeared_symbols_html" : disappeared_symbols_html
-         ,"new_symbols_html" : new_symbols_html
+         ,"persisting_symbol_details_html" : persisting_symbol_details_html
+         ,"disappeared_symbol_details_html" : disappeared_symbol_details_html
+         ,"new_symbol_details_html" : new_symbol_details_html
+         ,"similar_symbol_details_html" : similar_symbol_details_html
          
          ,"old_binary_info" : fixStringForHTML(self.settings.old_binary_info)
          ,"new_binary_info" : fixStringForHTML(self.settings.new_binary_info)
          
          ,"build_info": fixStringForHTML(self.settings.build_info)
          
-         ,"date" : datetime.datetime.now()
+         ,"date" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
       }
       
       import jinja2
@@ -1081,6 +1161,19 @@ class Driver(object):
                
       out.write("\n")
       
+      if len(self.similar_symbols) > 0:
+
+         out.write("%d similar symbol pairs:\n" % (len(self.similar_symbols)))
+         
+         for symbol_pair in self.similar_symbols:
+            old_symbol = symbol_pair[0]
+            new_symbol = symbol_pair[1]
+            out.write("   %s: %d bytes" % (old_symbol.name, old_symbol.size) + "\n")
+            out.write("   %s: %d bytes" % (new_symbol.name, new_symbol.size) + "\n")
+            out.write("\n")
+               
+      out.write("\n")
+      
       out.write("Binary Info:\n")
       out.write("Old:\n")
       out.write(self.settings.old_binary_info + "\n")
@@ -1096,10 +1189,14 @@ class Driver(object):
       out.write("\n")
       
       out.write("The following %d symbols' assembly differs\n" % (self.num_assemblies_differ) + "\n")
-
       out.write(self.generatePersistentSymbolDetailsString())
+      
+      out.write("Disappeared symbols\n")
       out.write(self.generateDisappearedSymbolDetailsString())
+      out.write("New symbols\n")
       out.write(self.generateNewSymbolDetailsString())
+      out.write("Similar symbols\n")
+      out.write(self.generateSimilarSymbolDetailsString())
   
 if __name__ == "__main__":
    driver = Driver()

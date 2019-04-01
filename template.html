@@ -51,47 +51,51 @@
     table.size_overview th:nth-child(3) { text-align: right; }
     table.size_overview th:nth-child(4) { text-align: right; }
     table.size_overview td:nth-child(1) { text-align: left; }
-    table.size_overview td:nth-child(2) { text-align: right; }
-    table.size_overview td:nth-child(3) { text-align: right; }
-    table.size_overview td:nth-child(4) { text-align: right; }
+    table.size_overview td:nth-child(2) { text-align: right; font-family: monospace;}
+    table.size_overview td:nth-child(3) { text-align: right; font-family: monospace;}
+    table.size_overview td:nth-child(4) { text-align: right; font-family: monospace;}
     
     table.persisting_symbols th:nth-child(1) { text-align: left; }
     table.persisting_symbols th:nth-child(2) { text-align: right; }
     table.persisting_symbols th:nth-child(3) { text-align: right; }
     table.persisting_symbols th:nth-child(4) { text-align: right; }
     table.persisting_symbols th:nth-child(5) { text-align: right; }
-    table.persisting_symbols td:nth-child(1) { text-align: left; }
-    table.persisting_symbols td:nth-child(2) { text-align: right; }
-    table.persisting_symbols td:nth-child(3) { text-align: right; }
-    table.persisting_symbols td:nth-child(4) { text-align: right; }
-    table.persisting_symbols td:nth-child(5) { text-align: right; }
+    table.persisting_symbols td:nth-child(1) { text-align: left; font-family: monospace;}
+    table.persisting_symbols td:nth-child(2) { text-align: right; font-family: monospace;}
+    table.persisting_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
+    table.persisting_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
+    table.persisting_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
     
    table.quad_col th:nth-child(1) { text-align: left; }
     table.quad_col th:nth-child(2) { text-align: right; }
     table.quad_col th:nth-child(3) { text-align: right; }
     table.quad_col th:nth-child(4) { text-align: right; }
     table.quad_col th:nth-child(5) { text-align: right; }
-    table.quad_col td:nth-child(1) { text-align: left; }
-    table.quad_col td:nth-child(2) { text-align: right; }
-    table.quad_col td:nth-child(3) { text-align: right; }
-    table.quad_col td:nth-child(4) { text-align: right; }
-    table.quad_col td:nth-child(5) { text-align: right; }
+    table.quad_col td:nth-child(1) { text-align: left; font-family: monospace;}
+    table.quad_col td:nth-child(2) { text-align: right; font-family: monospace;}
+    table.quad_col td:nth-child(3) { text-align: right; font-family: monospace;}
+    table.quad_col td:nth-child(4) { text-align: right; font-family: monospace;}
+    table.quad_col td:nth-child(5) { text-align: right; font-family: monospace;}
     
     table.similar_symbols th:nth-child(1) { text-align: left; }
-    table.similar_symbols th:nth-child(2) { text-align: right; }
+    table.similar_symbols th:nth-child(2) { text-align: left; }
     table.similar_symbols th:nth-child(3) { text-align: right; }
     table.similar_symbols th:nth-child(4) { text-align: right; }
-    table.similar_symbols td:nth-child(1) { text-align: left; }
-    table.similar_symbols td:nth-child(2) { text-align: right; }
-    table.similar_symbols td:nth-child(3) { text-align: right; }
-    table.similar_symbols td:nth-child(4) { text-align: right; }
+    table.similar_symbols th:nth-child(5) { text-align: right; }
+    table.similar_symbols td:nth-child(1) { text-align: left; font-family: monospace;}
+    table.similar_symbols td:nth-child(2) { text-align: left; font-family: monospace;}
+    table.similar_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
+    table.similar_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
+    table.similar_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
     
     table.bin_col th:nth-child(1) { text-align: left; }
     table.bin_col th:nth-child(2) { text-align: right; }
     table.bin_col th:nth-child(3) { text-align: right; }
-    table.bin_col td:nth-child(1) { text-align: left; }
-    table.bin_col td:nth-child(2) { text-align: right; }
-    table.bin_col td:nth-child(3) { text-align: right; }
+    table.bin_col td:nth-child(1) { text-align: left; font-family: monospace;}
+    table.bin_col td:nth-child(2) { text-align: right; font-family: monospace;}
+    table.bin_col td:nth-child(3) { text-align: right; font-family: monospace;}
+    
+    table.diff td {font-family: monospace;}
         
     a:link {
       text-decoration: none;
@@ -112,6 +116,13 @@
       text-decoration: underline;
       color: blue;
     }
+    
+    .symbol_name {
+      font-family: monospace;
+    } 
+   .number {
+      font-family: monospace;
+    } 
   </style>
 </head>
 
@@ -202,10 +213,12 @@ generated: {{date}}
   
 <H3>Similar Symbols</H3>
 
-<p>{{num_similar_symbols}} pairs of similar symbols have been found. Please note that those symbols are not necessarily related. Those symbol pairs have been listed for which similarities between the symbols' properties (namespace, class name, function/method name, parameter signature have been detected.</p>
+<p>{{num_similar_symbols}} pairs of similar symbols have been found. Similarities may be due to symbols having been renamed or moved between classes and namespaces.
+
+Please note that the listed pairs are not necessarily related. The table tries to aid finding actually related symbol pairs by listing those pairs that exhibit similarities in terms of namespaces, class names, function/method names or parameter signatures.</p>
 
   <table class="sortable similar_symbols">
-    <thead><tr><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th></thead>
+    <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       {{similar_symbols_table}}
     </tbody>
@@ -231,13 +244,16 @@ generated: {{date}}
 <H2>Symbol Details</H2>
 
 <H3>Persisting Symbols</H3>
-{{persisting_symbols_html}}
+{{persisting_symbol_details_html}}
 
 <H3>Symbols Disappeared</H3>
-{{disappeared_symbols_html}}
+{{disappeared_symbol_details_html}}
 
 <H3>New Symbols</H3>
-{{new_symbols_html}}
+{{new_symbol_details_html}}
+
+<H3>Similar Symbols</H3>
+{{similar_symbol_details_html}}
 
 <footer>
 <p>Genererated by elf_diff (https://github.com/CapeLeidokos/elf_diff) © 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
