@@ -1,3 +1,25 @@
+<!--
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,46 +27,9 @@
 
 <meta name="robots" content="noindex">
 <title>{{page_title}}</title>
-  <script src="{{elf_diff_repo_base}}/sorttable.js"></script>
+  <script src="{{elf_diff_repo_base}}/js/sorttable.js"></script>
+  <link rel="stylesheet" href="{{elf_diff_repo_base}}/css/elf_diff_general.css">
   <style>
-    /* Appearance */
-    body, table { font-family: sans-serif; }
-    table { border-collapse: collapse; }
-    td, th { padding: 6px; }
-    th { background: #333; color: white; }
-    /*tbody tr:nth-child(odd) { background: #dfdfdf; }*/
-    /*table { border: 1px solid red; }*/
-    
-    /* Scrollability of table */
-    /*table { width: 500px; }*/ /* fixed width table */
-    table.sortable  
-       th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
-       content: " \25B4\25BE" 
-    }
-    thead { display: table-header-group; } /* makes it sizeable */
-    tbody { 
-      display: table-header-group; /* makes it sizeable */
-      /*height: 170px;*/ /* height of scrollable area */
-      /*overflow: auto;*/ /* scroll rather than overflow */
-      /*width: 100%;*/ /* fill the box */
-    }
-    /*thead th { width: 250px; }*/ /* fixed width for THs */
-    /*tbody td { width: 242px; }*/ /* fixed width for TDs */
-    /* the tbody needs to be 16px less than the thead, for the scrollbar */
-    
-    .fixed_table thead { 
-       display: table-header-group; 
-       width: 500px;
-    }
-    .fixed_table tbody { 
-       display: table-header-group; 
-       width: 500px;
-    }
-    
-    .deterioration { background: #FFAAAA; }
-    .improvement { background: #AAFFAA; } 
-    .unchanged { }
-    .diff_chg { background: #FFAAAA; } 
     
     table.size_overview th:nth-child(1) { text-align: left; }
     table.size_overview th:nth-child(2) { text-align: right; }
@@ -96,33 +81,7 @@
     table.bin_col td:nth-child(3) { text-align: right; font-family: monospace;}
     
     table.diff td {font-family: monospace;}
-        
-    a:link {
-      text-decoration: none;
-      color: black;
-    }
 
-    a:visited {
-      text-decoration: none;
-      color: black;
-    }
-
-    a:hover {
-      text-decoration: underline;
-      color: blue;
-    }
-
-    a:active {
-      text-decoration: underline;
-      color: blue;
-    }
-    
-    .symbol_name {
-      font-family: monospace;
-    } 
-   .number {
-      font-family: monospace;
-    } 
   </style>
 </head>
 
@@ -180,67 +139,83 @@ generated: {{date}}
 
 <H3>Persisting Symbols</H3>
 
-<p>{{num_persisting_symbols}} symbols persisted but changed size ({{persisting_symbols_delta}} bytes of program memory)</p>
-
-  <table class="sortable persisting_symbols">
+<p>{{num_persisting_symbols}} symbols persisted but potentially changed size ({{persisting_symbols_delta}} bytes of program memory)</p>
+   {% if persisting_symbols_table_visible == True %}
+   <table class="sortable persisting_symbols">
     <thead><tr><th>Symbol</th><th>Type</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Delta/bytes</th></thead>
     <tbody>
       {{persisting_symbols_table}}
     </tbody>
   </table>
-  
+   {% endif %}
 <H3>Symbols Disappeared </H3>
 
 <p>{{num_disappeared_symbols}} symbols disappeared ({{disappeared_symbols_size}} bytes of program memory)</p>
 
-  <table class="sortable bin_col">
-    <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
-    <tbody>
-      {{disappeared_symbols_table}}
-    </tbody>
-  </table>
-  
+   {% if disappeared_symbols_table_visible == True %}
+   <table class="sortable bin_col">
+      <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
+         <tbody>
+            {{disappeared_symbols_table}}
+         </tbody>
+   </table>
+   {% endif %}
 <H3>New Symbols</H3>
 
 <p>{{num_new_symbols}} symbols were newly introduced ({{new_symbols_size}} bytes of program memory)</p>
 
-  <table class="sortable bin_col">
-    <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
-    <tbody>
+   {% if new_symbols_table_visible == True %}
+   <table class="sortable bin_col">
+      <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
+      <tbody>
       {{new_symbols_table}}
-    </tbody>
-  </table>
+      </tbody>
+   </table>
+   {% endif %}
   
 <H3>Similar Symbols</H3>
 
-<p>{{num_similar_symbols}} pairs of similar symbols have been found. Similarities may be due to symbols having been renamed or moved between classes and namespaces.
+<p>{{num_similar_symbols}} pairs of similar symbols have been found.</p>
+
+   {% if similar_symbols_table_visible == True %}
+<p>Similarities may be due to symbols having been renamed or moved between classes and namespaces.
 
 Please note that the listed pairs are not necessarily related. The table tries to aid finding actually related symbol pairs by listing those pairs that exhibit similarities in terms of namespaces, class names, function/method names or parameter signatures.</p>
 
-  <table class="sortable similar_symbols">
-    <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th></thead>
-    <tbody>
+   <table class="sortable similar_symbols">
+      <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th></thead>
+      <tbody>
       {{similar_symbols_table}}
-    </tbody>
-  </table>
+      </tbody>
+   </table>
+   {% endif %}
   
+{% if binary_details_visible == True %}
 <H2>Binary Details</H2>
+{% endif %}
 
+{% if old_binary_info_visible == True %}
 <H3>{{old_binary_file}}</H3>
 <pre>
 {{old_binary_info}}
 </pre>
+{% endif %}
 
+{% if new_binary_info_visible == True %}
 <H3>{{new_binary_file}}</H3>
 <pre>
 {{new_binary_info}}
 </pre>
+{% endif %}
 
+{% if build_info_visible == True %}
 <H2>Build Info</H2>
 <pre>
 {{build_info}}
 </pre>
+{% endif %}
 
+{% if details_visibility == True %}
 <H2>Symbol Details</H2>
 
 <H3>Persisting Symbols</H3>
@@ -254,10 +229,10 @@ Please note that the listed pairs are not necessarily related. The table tries t
 
 <H3>Similar Symbols</H3>
 {{similar_symbol_details_html}}
-
+{% endif %}
 <footer>
-<p>Genererated by elf_diff (https://github.com/CapeLeidokos/elf_diff) © 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
-<p>Sortable tables from <a href="https://kryogenix.org">kryogenix.org</a></p>
+<p>Generated by elf_diff (https://github.com/CapeLeidokos/elf_diff) © 2019 by noseglasses (shinynoseglasses@gmail.com)</p>
+<p>Sortable tables from <a href="https://kryogenix.org/code/browser/sorttable">kryogenix.org</a></p>
 </footer>
 
 </body>

@@ -1,0 +1,86 @@
+/*
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+/* Appearance */
+body, table { font-family: sans-serif; }
+table { border-collapse: collapse; }
+td, th { padding: 6px; }
+th { background: #333; color: white; }
+
+/* Frames around table cells */
+table, th, td {
+   border: 1px solid black;
+}
+
+/* Striped tables */
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+/* Sortability of tables */
+table.sortable  
+   th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+   content: " \25B4\25BE" 
+}
+
+thead { display: table-header-group; } /* makes it sizeable */
+tbody { display: table-header-group; /* makes it sizeable */ }
+
+.fixed_table thead { 
+   display: table-header-group; 
+   width: 500px;
+}
+.fixed_table tbody { 
+   display: table-header-group; 
+   width: 500px;
+}
+
+.deterioration { background: #FFAAAA; }
+.improvement { background: #AAFFAA; } 
+.unchanged { }
+.diff_chg { background: #FFAAAA; } 
+
+a:link {
+   text-decoration: none;
+   color: black;
+}
+
+a:visited {
+   text-decoration: none;
+   color: black;
+}
+
+a:hover {
+   text-decoration: underline;
+   color: blue;
+}
+
+a:active {
+   text-decoration: underline;
+   color: blue;
+}
+
+.symbol_name {
+   font-family: monospace;
+} 
+.number {
+   font-family: monospace;
+}
