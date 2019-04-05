@@ -67,10 +67,8 @@ def highlightNumberHTML(number):
 def listUnion(l1, l2):
    return sorted(list(set(l1) & set(l2)))
 
-symbol_type_class_method = 1
-symbol_type_global_function = 2
-symbol_type_class_data = 4
-symbol_type_global_data = 3
+symbol_type_function = 1
+symbol_type_data = 2
 
 class Settings(object):
    
@@ -269,103 +267,67 @@ class Symbol(object):
       
    def parseSignature(self):
       
-      symbol_regex = "((([\w:]*)?::)?([\w]+)::)?(\w+)(\((.*)\))?"
+      symbol_regex = "((([\S]*)?::)?)?(\w+)(\((.*)\))?"
       match = re.match(symbol_regex, self.name)
       if match:
          self.namespace = match.group(3)
-         self.klass = match.group(4)
-         self.actual_name = match.group(5)
-         self.parameters = match.group(7)
+         self.actual_name = match.group(4)
+         self.parameters = match.group(6)
          self.symbol_parse_success = True
       else:
          self.actual_name = self.name
          self.symbol_parse_success = False
          return
-         
-      if self.klass:
-         if self.parameters:
-            self.symbol_type = symbol_type_class_method
-         else:
-            self.symbol_type = symbol_type_class_data
+
+      if self.parameters:
+         self.symbol_type = symbol_type_function
       else:
-         if self.parameters:
-            self.symbol_type = symbol_type_global_function
-         else:
-            self.symbol_type = symbol_type_global_data
+         self.symbol_type = symbol_type_data
          
    def init(self):
       self.parseSignature()
       
-   def isMethodRenamedInClass(self, other):
+   def wasFunctionRenamed(self, other):
       return self.namespace == other.namespace \
-         and self.klass == other.klass \
          and self.parameters == other.parameters
    
-   def isMethodSignatureChangedInClass(self, other):
+   def hasFunctionSignatureChanged(self, other):
       return self.namespace == other.namespace \
-         and self.klass == other.klass \
          and self.actual_name == other.actual_name
    
-   def doActualNameAndSignatureMatch(self, other):
+   def wasFunctionMoved(self, other):
       return self.actual_name == other.actual_name \
          and self.parameters == other.parameters
-   
-   def isClassRenamed(self, other):
-      return self.doActualNameAndSignatureMatch(other)
+      
+   def wasDataMoved(self, other):
+      return self.actual_name == other.actual_name \
+         and self.size == other.size
+      
+   def wasDataResized(self, other):
+      return self.actual_name == other.actual_name \
+         and self.namespace == other.namespace
+      
+   def wasDataRenamed(self, other):
+      return self.namespace == other.namespace \
+         and self.size == other.size
          
    def isSimilar(self, other):
       
       if not (self.symbol_parse_success and other.symbol_parse_success):
          return False
       
-      # Similarities
-      #
-      # Within the symbol_types
-      #
-      # symbol_type_class_method <-> symbol_type_global_function
-      # symbol_type_class_data <-> symbol_type_global_data
-      
-      if self.symbol_type == symbol_type_class_method:
-         if other.symbol_type == symbol_type_class_method:
-            return self.isMethodRenamedInClass(other) \
-                  or self.isMethodSignatureChangedInClass(other) \
-                  or self.isClassRenamed(other)
-               
-         elif other.symbol_type == symbol_type_global_function:
-            # Method moved to global?
-            return self.actual_name == other.actual_name \
-               and self.parameters == other.parameters
-               
-      elif self.symbol_type == symbol_type_global_function:
-         if other.symbol_type == symbol_type_global_function:
-            # Global function renamed?
-            return self.actual_name == other.actual_name \
-               and self.parameters == other.parameters
-         
-         elif other.symbol_type == symbol_type_class_method:
-            # Function moved to class?
-            return self.actual_name == other.actual_name \
-               and self.parameters == other.parameters
-      elif self.symbol_type == symbol_type_class_data:
-         if other.symbol_type == symbol_type_class_data:
+      if self.symbol_type == symbol_type_function:
+         if other.symbol_type == symbol_type_function:
+            return   self.wasFunctionRenamed(other) \
+                  or self.hasFunctionSignatureChanged(other) \
+                  or self.wasFunctionMoved(other)
+
+      elif self.symbol_type == symbol_type_data:
+         if other.symbol_type == symbol_type_data:
             # Class data renamed?
-            return self.klass == other.klass \
-               and self.namespace == other.namespace \
-               and self.size == other.size
-         elif other.symbol_type == symbol_type_global_data:
-            # Datum moved from class to global?
-            return self.actual_name == other.actual_name \
-               and self.size == other.size
-      elif self.symbol_type == symbol_type_global_data:
-         if other.symbol_type == symbol_type_class_data:
-            # Datum moved from global to class?
-            return self.actual_name == other.actual_name \
-               and self.size == other.size
-         elif other.symbol_type == symbol_type_global_data:
-            # compare namespace and size
-            # Global symbol renamed?
-            return self.namespace == other.namespace \
-               and self.size == other.size
+            return   self.wasDataMoved(other) \
+                  or self.wasDataResized(other) \
+                  or self.wasDataRenamed(other)
       
       return False
       
@@ -388,8 +350,8 @@ class Binary(object):
 
       o, e = proc.communicate()
       
-      output = o.decode('ascii')
-      #error = e.decode('ascii')
+      output = o.decode('utf8')
+      #error = e.decode('utf8')
       
       return output
    
@@ -402,8 +364,8 @@ class Binary(object):
 
       o, e = proc.communicate()
       
-      output = o.decode('ascii')
-      #error = e.decode('ascii')
+      output = o.decode('utf8')
+      #error = e.decode('utf8')
       
       return output
    
@@ -416,8 +378,8 @@ class Binary(object):
 
       o, e = proc.communicate()
       
-      output = o.decode('ascii')
-      #error = e.decode('ascii')
+      output = o.decode('utf8')
+      #error = e.decode('utf8')
       
       return output
    
