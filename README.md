@@ -1,3 +1,8 @@
+
+__Recently, quite a lot of people seem to be interested in this tool. That's pretty cool!__
+__I am currently working on a proper documentation and a travis test-bench to make this thing a bit more reliable and easy to use.__
+__Stay tuned.__
+
 # elf_diff - A Tool to compare elf binaries
 
 ## Usage
