@@ -27,7 +27,7 @@ import inspect
 
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
-sys.path.append(bin_path + "/../src")
+sys.path.append(bin_path + "/../python")
 
 from elf_diff.settings import Settings
 from elf_diff.mass_report import generateMassReport
