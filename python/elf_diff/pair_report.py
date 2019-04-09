@@ -36,6 +36,8 @@ class PairReport(Report):
       
       self.binary_pair = BinaryPair(settings, settings.old_binary_filename, \
                                               settings.new_binary_filename)
+   def getReportBasename(self):
+      return "pair_report"
       
    def validateSettings(self):
       if not self.settings.old_binary_filename:
@@ -178,31 +180,6 @@ class PairReport(Report):
       
       return [table_html, table_visible, len(self.binary_pair.similar_symbols)]
    
-   #def generatePersistentSymbolDetailsString(self):
-      
-      #old_binary = self.binary_pair.old_binary
-      #new_binary = self.binary_pair.new_binary
-      
-      #text = ""
-      
-      #for symbol_name in self.binary_pair.persisting_symbol_names:
-         
-         #old_symbol = old_binary.symbols[symbol_name]
-         #new_symbol = new_binary.symbols[symbol_name]
-         
-         #if not old_symbol.__eq__(new_symbol):
-            #symbol_differences = old_symbol.getDifferencesAsString(new_symbol, "   ")
-            #if old_symbol.size == new_symbol.size:
-               #size_info = "size unchanged"
-            #else:
-               #size_info = formatMemChange("", old_symbol.size, new_symbol.size)
-            #text += "******************************************************************\n"
-            #text += "%s (%s)\n" % (symbol_name, size_info)
-            #text += "******************************************************************\n"
-            #text += "%s\n" % (symbol_differences)
-            
-      #return text
-   
    def generatePersistentSymbolDetailsHTML(self):
       
       old_binary = self.binary_pair.old_binary
@@ -234,20 +211,6 @@ class PairReport(Report):
             
       return "\n".join(html_lines)
    
-   #def generateDisappearedSymbolDetailsString(self):
-      
-      #text = ""
-      
-      #if len(self.binary_pair.disappeared_symbol_names) > 0:
-         #for symbol_name in self.binary_pair.disappeared_symbol_names:
-            #symbol = self.binary_pair.old_binary.symbols[symbol_name]
-            #text += "******************************************************************\n"
-            #text += "%s: %d bytes\n" % (symbol_name, symbol.size)
-            #text += "******************************************************************\n"
-            #text += symbol.getInstructionsBlock("   ") + "\n"
-            
-      #return text
-   
    def generateDisappearedSymbolDetailsHTML(self):
       
       html_lines = []
@@ -266,20 +229,6 @@ class PairReport(Report):
          html_lines.append("</pre>")
             
       return "\n".join(html_lines)
-   
-   #def generateNewSymbolDetailsString(self):
-      
-      #text = ""
-      
-      #if len(self.binary_pair.new_symbol_names) > 0:
-         #for symbol_name in self.binary_pair.new_symbol_names:
-            #symbol = self.binary_pair.new_binary.symbols[symbol_name]
-            #text += "******************************************************************\n"
-            #text += "%s: %d bytes\n" % (symbol_name, symbol.size)
-            #text += "******************************************************************\n"
-            #text += symbol.getInstructionsBlock("   ") + "\n"
-            
-      #return text
       
    def generateNewSymbolDetailsHTML(self):
       
@@ -299,25 +248,6 @@ class PairReport(Report):
          html_lines.append("</pre>")
             
       return "\n".join(html_lines)
-         
-   #def generateSimilarSymbolDetailsString(self):
-      
-      #text = ""
-      
-      #for symbol_pair in self.binary_pair.similar_symbols:
-         
-         #old_symbol = symbol_pair[0]
-         #new_symbol = symbol_pair[1]
-         
-         #symbol_differences = old_symbol.getDifferencesAsString(new_symbol, "   ")
-
-         #text += "******************************************************************\n"
-         #text += "%s (%s bytes)\n" % (old_symbol.name, old_symbol.size)
-         #text += "%s (%s bytes)\n" % (new_symbol.name, new_symbol.size)
-         #text += "******************************************************************\n"
-         #text += "%s\n" % (symbol_differences)
-            
-      #return text
    
    def generateSimilarSymbolDetailsHTML(self):
       
@@ -470,138 +400,6 @@ class PairReport(Report):
    
    def getHTMLTemplate(self):
       return PairReport.html_template_file
-  
-   #def writeText(self, out_file, skip_details = False):
-      
-      #out = out_file
-      
-      #if self.settings.project_title:
-         #title = self.settings.project_title
-      #else:
-         #title = "ELF Binary Comparison"
-            
-      #old_binary = self.binary_pair.old_binary
-      #new_binary = self.binary_pair.new_binary
-      
-      #out.write("%s\n" % (title))
-      #out.write("   (c) 2019 by noseglasses (shinynoseglasses@gmail.com)\n")
-      
-      #out.write("Comparing binaries\n")
-      #out.write("   old: %s\n" % (self.settings.old_alias))
-      #out.write("   new: %s\n" % (self.settings.new_alias))
-      
-      #out.write("\n")
-      
-      #if self.settings.build_info != "":
-         #out.write("Build Info:\n") 
-         #out.write(self.settings.build_info + "\n")
-         #out.write("\n")
-         
-      #if old_binary == new_binary:
-         #out.write("   No symbol differences\n")
-         #return
-      
-      #out.write("Binary size:\n")
-      #if old_binary.progmem_size == new_binary.progmem_size:
-         #out.write("   no changes\n")
-      #else:
-         #out.write("   " + formatMemChange("overall", old_binary.progmem_size, new_binary.progmem_size) + "\n")
-         #out.write("   " + formatMemChange("text", old_binary.text_size, new_binary.text_size) + "\n")
-         #out.write("   " + formatMemChange("data", old_binary.data_size, new_binary.data_size) + "\n")
-         
-      #out.write("\n")
-      
-      #out.write("Static RAM consumption:\n")
-      #if old_binary.static_ram_size == new_binary.static_ram_size:
-         #out.write("   no changes\n")
-      #else:
-         #out.write("   " + formatMemChange("overall", old_binary.static_ram_size, new_binary.static_ram_size) + "\n")
-         #out.write("   " + formatMemChange("data", old_binary.data_size, new_binary.data_size) + "\n")
-         #out.write("   " + formatMemChange("bss", old_binary.bss_size, new_binary.bss_size) + "\n")
-           
-      #out.write("\n") 
-      #out.write("text: code instructions\n")
-      #out.write("data: initilized global or static variables\n")
-      #out.write("bss: uninitialized global or static variables\n")
-         
-      #out.write("\n")
-      
-      #out.write("%d symbols found in %s\n" % (len(old_binary.symbols.keys()), self.settings.old_alias))
-      #out.write("%d symbols found in %s\n" % (len(new_binary.symbols.keys()), self.settings.new_alias))
-      
-      #out.write("\n")
-      
-      #out.write("%d symbols persisted\n" % (len(self.binary_pair.persisting_symbol_names)))
-      
-      #out.write("\n")
-      
-      #if self.binary_pair.num_symbol_size_changes != 0:
-         #out.write("%d symbols changed size:\n" % (self.binary_pair.num_symbol_size_changes))
-         
-         #for symbol_name in self.binary_pair.persisting_symbol_names:
-            #old_symbol = old_binary.symbols[symbol_name]
-            #new_symbol = new_binary.symbols[symbol_name]
-            #if old_symbol.size != new_symbol.size:
-               #out.write("   " + formatMemChange(symbol_name, old_symbol.size, new_symbol.size) + "\n")
-         
-      #out.write("\n")
-      
-      #if len(self.binary_pair.disappeared_symbol_names) > 0:
-         
-         #out.write("%d symbols dissappeared (%d bytes, see details below):" % (self.binary_pair.num_symbols_disappeared, self.binary_pair.num_bytes_disappeared) + "\n")
-         
-         #for symbol_name in self.binary_pair.disappeared_symbol_names:
-            #symbol = old_binary.symbols[symbol_name]
-            #out.write("   %s: %d bytes" % (symbol_name, symbol.size) + "\n")
-               
-      #out.write("\n")
-      
-      #if len(self.binary_pair.new_symbol_names) > 0:
-
-         #out.write("%d new symbols (%d bytes, see details below):" % (self.binary_pair.num_symbols_new, self.binary_pair.num_bytes_new) + "\n")
-         
-         #for symbol_name in self.binary_pair.new_symbol_names:
-            #symbol = new_binary.symbols[symbol_name]
-            #out.write("   %s: %d bytes" % (symbol_name, symbol.size) + "\n")
-               
-      #out.write("\n")
-      
-      #if len(self.binary_pair.similar_symbols) > 0:
-
-         #out.write("%d similar symbol pairs:\n" % (len(self.binary_pair.similar_symbols)))
-         
-         #for symbol_pair in self.binary_pair.similar_symbols:
-            #old_symbol = symbol_pair[0]
-            #new_symbol = symbol_pair[1]
-            #out.write("   %s: %d bytes" % (old_symbol.name, old_symbol.size) + "\n")
-            #out.write("   %s: %d bytes" % (new_symbol.name, new_symbol.size) + "\n")
-            #out.write("\n")
-               
-      #out.write("\n")
-      
-      #out.write("Binary Info:\n")
-      #out.write("Old:\n")
-      #out.write(self.settings.old_binary_info + "\n")
-      #out.write("New:\n")
-      #out.write(self.settings.new_binary_info + "\n")
-      
-      #out.write("\n")
-      
-      #out.write("########################################################################\n")
-      #out.write("Details follow\n")
-      #out.write("########################################################################\n")
-      
-      #out.write("\n")
-      
-      #out.write("The following %d symbols' assembly differs\n" % (self.binary_pair.num_assemblies_differ) + "\n")
-      #out.write(self.generatePersistentSymbolDetailsString())
-      
-      #out.write("Disappeared symbols\n")
-      #out.write(self.generateDisappearedSymbolDetailsString())
-      #out.write("New symbols\n")
-      #out.write(self.generateNewSymbolDetailsString())
-      #out.write("Similar symbols\n")
-      #out.write(self.generateSimilarSymbolDetailsString())
       
 def generatePairReport(settings):
    PairReport(settings).generate()

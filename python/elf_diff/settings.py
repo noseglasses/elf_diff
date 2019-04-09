@@ -66,33 +66,33 @@ class Settings(object):
    def setupParameters(self):
       
       self.parameters = [ \
-         Parameter("old_binary_filename", "The old elf binary", deprecated_alias = "old"), \
-         Parameter("new_binary_filename", "The new elf binary", deprecated_alias = "new"), \
+         Parameter("old_binary_filename", "The old version of the elf binary.", deprecated_alias = "old"), \
+         Parameter("new_binary_filename", "The new version of the elf binary.", deprecated_alias = "new"), \
           \
-         Parameter("old_alias", "An alias string that is supposed to be used to reference the old binary", deprecated_alias = "old-alias"), \
-         Parameter("new_alias", "An alias string that is supposed to be used to reference the new binary", deprecated_alias = "new-alias"), \
+         Parameter("old_alias", "An alias string that is supposed to be used to reference the old binary version.", deprecated_alias = "old-alias"), \
+         Parameter("new_alias", "An alias string that is supposed to be used to reference the new binary version.", deprecated_alias = "new-alias"), \
           \
-         Parameter("old_info_file", "A text file with information about the old binary", deprecated_alias = "old-info-file"), \
-         Parameter("new_info_file", "A text file with information about the new binary", deprecated_alias = "new-info-file"), \
+         Parameter("old_info_file", "A text file that contains information about the old binary version.", deprecated_alias = "old-info-file"), \
+         Parameter("new_info_file", "A text file that contains information about the new binary version.", deprecated_alias = "new-info-file"), \
           \
-         Parameter("build_info", "A string with build information", deprecated_alias = "build-info", default = ""), \
+         Parameter("build_info", "A string that contains build information that is to be added to the report.", deprecated_alias = "build-info", default = ""), \
           \
-         Parameter("bin_dir", "The place where the binaries live", deprecated_alias = "bin-dir", default = "/usr/bin"), \
+         Parameter("bin_dir", "A place where the binutils live.", deprecated_alias = "bin-dir", default = "/usr/bin"), \
           \
-         Parameter("bin_prefix", "The place where the binaries live", deprecated_alias = "bin-prefix", default = ""), \
+         Parameter("bin_prefix", "A prefix that is added to binutils executables.", deprecated_alias = "bin-prefix", default = ""), \
           \
          #Parameter("text_file", "A text file to write output to", deprecated_alias = "text-file"), \
-         Parameter("html_file", "A html file to write output to", deprecated_alias = "html-file"), \
-         Parameter("pdf_file", "A pdf file to write output to (details are skipped in pdf files)", deprecated_alias = "pdf-file"), \
+         Parameter("html_file", "The filename of the generated HTML report.", deprecated_alias = "html-file"), \
+         Parameter("pdf_file", "The filename of the generated pdf report. (details are skipped in pdf files).", deprecated_alias = "pdf-file"), \
           \
-         Parameter("project_title", "A project title to use in reports", deprecated_alias = "project-title"), \
+         Parameter("project_title", "A project title to use for all reports.", deprecated_alias = "project-title"), \
           \
-         Parameter("driver_file", "A yaml file that contains settings and driver information", deprecated_alias = "driver-file"), \
-         Parameter("driver_template_file", "A yaml file that is generated at the end of the run (contains default parameters if no action parameters were specified)"), \
+         Parameter("driver_file", "A yaml file that contains settings and driver information.", deprecated_alias = "driver-file"), \
+         Parameter("driver_template_file", "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read."), \
          \
-         Parameter("symbols_html_header", "The type of html tag to use for symbol headers", default = "H4", no_cmd_line = True), \
-         Parameter("html_template_dir", "A directory that contains template html files", no_cmd_line = True), \
-         Parameter("mass_report", "Forces a mass report being generated", default = False, is_flag = True) \
+         Parameter("symbols_html_header", "The type of html tag to use for symbol headers.", default = "H4", no_cmd_line = True), \
+         Parameter("html_template_dir", "A directory that contains template html files. Defaults to elf_diff's own html directory.", no_cmd_line = True), \
+         Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True) \
       ]
       
    def presetDefaults(self):
@@ -110,7 +110,7 @@ class Settings(object):
       
       import argparse
 
-      parser = argparse.ArgumentParser(description='Compare elf binaries and list the differences in the disassembly.')
+      parser = argparse.ArgumentParser(description='Compares elf binaries and lists differences in symbol sizes, the disassemblies, etc.')
       
       for parameter in self.parameters:
          
@@ -140,7 +140,7 @@ class Settings(object):
                            action = action, \
                            help = parameter.description + " (deprecated)")
             
-      parser.add_argument("binaries", nargs='*', default = None, help='The binaries (this is an alternative to --old and --new)')
+      parser.add_argument("binaries", nargs='*', default = None, help='The binaries to be compared (this is an alternative to --old_binary_filename and --new_binary_filename)')
       
       actual_args = list()
       for arg_pos in range(1, len(sys.argv)):

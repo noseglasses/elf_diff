@@ -36,7 +36,10 @@ class MassReport(Report):
          unrecoverableError("No mass report binary_pairs members defined in driver file")
       
       self.generatePairReports()
-      
+         
+   def getReportBasename(self):
+      return "mass_report"
+   
    def generatePairReports(self):
       
       self.binary_pairs = []

@@ -30,9 +30,13 @@ class Report(object):
       import codecs
             
       if self.settings.html_file:
-         print "Writing html file " + self.settings.html_file
-         with codecs.open(self.settings.html_file, "w", "utf-8") as f:
-            self.writeHTML(f)
+         html_file = "elf_diff_" + self.getReportBasename() + ".html"
+      else:
+         html_file = self.settings.html_file
+         
+      print "Writing html file " + html_file
+      with codecs.open(html_file, "w", "utf-8") as f:
+         self.writeHTML(f)
          
       if self.settings.pdf_file:
          
