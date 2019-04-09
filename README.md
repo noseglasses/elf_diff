@@ -51,7 +51,7 @@ elf_diff my_old_binary.elf my_new_binary.elf
 
 Mass reports require a driver file (yaml syntax) that specifies a list of binaries to compare pair-wise. 
 
-Let"s assume you have two pairs of binaries that reside in a directory `/home/my_user`.
+Let's assume you have two pairs of binaries that reside in a directory `/home/my_user`.
 ```
 binary_a_old.elf <-> binary_a_new.elf
 binary_b_old.elf <-> binary_b_new.elf
@@ -71,7 +71,7 @@ binary_pairs:
 
 The `short_name` parameters are used in the result tables to reference the respective binary pairs.
 
-Using the driver file, we can now run a mass-report as 
+By using the driver file, we can now run a mass-report as 
 ```
 elf_diff --mass_report --driver_file my_elf_diff_driver.yaml
 ```
@@ -90,7 +90,7 @@ or from within a driver file, e.g.
 pdf_file: "my_pair_report.pdf"
 ```
 
-### Using an Alternative HTML File Location
+### Specifying an Alternative HTML File Location
 
 Similar to specifying an explicit filename for pdf files, the same can be done for our HTML output files, either via the command line
 ```
@@ -164,3 +164,7 @@ elf_diff --driver_template_file my_template.yaml
 ```
 
 Template files contain the default values of all available parameters, or - if the temple file is generated in the same session where a report was created - the template file will contain the actual settings used for the report generation.
+
+### Text Output
+
+Early versions of this tool supported text output instead of HTML or pdf files. Text output has been removed as it is simple to generate text representations of HTML tables using external tools. Most GNU/Linux distributions e.g. ship with a tool called `html2text` that is well suited to do the job.
