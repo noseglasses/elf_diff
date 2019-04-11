@@ -19,6 +19,9 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+from elf_diff.html import postHighlightSourceCodeRemoveTags
+from elf_diff.html import postHighlightSourceCode
+
 class Symbol(object):
    
    type_function = 1
@@ -60,19 +63,21 @@ class Symbol(object):
 
       diff = difflib.ndiff(self.instruction_lines, other.instruction_lines)
       #print list(diff)
-      return indent + ("\n" + indent).join(list(diff))
+      return postHighlightSourceCodeRemoveTags(indent + ("\n" + indent).join(list(diff)))
    
    def getDifferencesAsHTML(self, other, indent):
    
       import difflib
-      diff_class = difflib.HtmlDiff(tabsize=3, wrapcolumn=80)
+      diff_class = difflib.HtmlDiff(tabsize=3, wrapcolumn=200)
       
-      return diff_class.make_table(self.instruction_lines, \
+      diff_table = diff_class.make_table(self.instruction_lines, \
                                    other.instruction_lines, \
                                    fromdesc='Old', \
                                    todesc='New', \
                                    context=True, \
                                    numlines=1000)
+   
+      return postHighlightSourceCode(diff_table)
    
    def getInstructionsBlock(self, indent):
       return indent + ("\n" + indent).join(self.instruction_lines)

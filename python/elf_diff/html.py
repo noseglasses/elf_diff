@@ -61,6 +61,17 @@ def highlightNumber(number):
       
    return "<span  class=\"%s number\">%+d</span>" % (css_class, number)
 
+def preHighlightSourceCode(src):
+   return "__ED_SOURCE_START__%s__ED_SOURCE_END__" % (src)
+
+def postHighlightSourceCode(src):
+   return src.replace("__ED_SOURCE_START__", "<span class=\"source\">") \
+             .replace("__ED_SOURCE_END__", "</span>")
+
+def postHighlightSourceCodeRemoveTags(src):
+   return src.replace("__ED_SOURCE_START__", "") \
+             .replace("__ED_SOURCE_END__", "")
+
 def formatNumberDelta(old_size, new_size):
    difference = new_size - old_size
    return highlightNumber(new_size - old_size)

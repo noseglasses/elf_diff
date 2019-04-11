@@ -84,3 +84,8 @@ a:active {
 .number {
    font-family: monospace;
 }
+
+.source {
+   color: royalblue;
+   font-weight: bold;
+}

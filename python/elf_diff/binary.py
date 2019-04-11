@@ -22,6 +22,7 @@
 from elf_diff.symbol import Symbol
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.error_handling import warning
+from elf_diff.html import preHighlightSourceCode
 
 class Binary(object):
    
@@ -139,7 +140,7 @@ class Binary(object):
                n_instruction_lines = n_instruction_lines + 1
             else:
                if cur_symbol:
-                  cur_symbol.addInstructions(line)
+                  cur_symbol.addInstructions(preHighlightSourceCode(line))
 
       if cur_symbol:
          self.addSymbol(cur_symbol)
