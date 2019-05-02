@@ -160,8 +160,7 @@ class Settings(object):
          try:
             my_yaml = yaml.load(stream)
          except yaml.YAMLError as exc:
-            print(exc)
-            return
+            unrecoverableError(exc)
          
       for parameter in self.parameters:
          
@@ -173,13 +172,29 @@ class Settings(object):
       
       if "binary_pairs" in my_yaml.keys():
          
+         bin_pair_id = 1
+         
          for data_set in my_yaml["binary_pairs"]:
             
-            bp = BinaryPairSettings(data_set.get("short_name"), \
-                                    data_set.get("old_binary"), \
-                                    data_set.get("new_binary"))
+            short_name = data_set.get("short_name")
+            if not short_name:
+               unrecoverableError("No short_name defined for binary pair " + str(bin_pair_id))
+               
+            old_binary = data_set.get("old_binary")
+            if not old_binary:
+               unrecoverableError("No old_binary defined for binary pair " + str(bin_pair_id))
+               
+            new_binary = data_set.get("new_binary")
+            if not new_binary:
+               unrecoverableError("No new_binary defined for binary pair " + str(bin_pair_id))
+            
+            bp = BinaryPairSettings(short_name, \
+                                    old_binary, \
+                                    new_binary)
                
             self.mass_report_members.append(bp)
+            
+            bin_pair_id += 1
             
    def considerCommandLineArgs(self, cmd_line_args):
       
@@ -256,7 +271,7 @@ class Settings(object):
       if not self.new_alias:
          self.new_alias = self.new_binary_filename
 
-   def writeParameterTemplateFile(self, filename):
+   def writeParameterTemplateFile(self, filename, output_actual_values = False):
       
       import datetime
       
@@ -268,9 +283,17 @@ class Settings(object):
          
          for parameter in self.parameters:
             
+            if output_actual_values:
+               value = getattr(self, parameter.name)
+               if not value:
+                  value = parameter.default
+                  
+            else:
+               value = parameter.default
+            
             f.write("# {desc}\n".format(desc = parameter.description))
             f.write("#\n")
-            f.write("{name}: {value}\n".format(name = parameter.name, value = parameter.default))
+            f.write("{name}: \"{value}\"\n".format(name = parameter.name, value = value))
             f.write("\n")
          
    def isFirmwareBinaryDefined(self):

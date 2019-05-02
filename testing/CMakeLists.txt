@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-# -*- mode: python -*-
+# -*- mode: c++ -*-
 #
 # elf_diff
 #
@@ -18,20 +16,12 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-   
-from __future__ import print_function
-import sys
-import traceback
+cmake_minimum_required(VERSION 2.8)
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+project(elf_diff_test)
 
-def unrecoverableError(msg):
-   
-   eprint("Error: {msg}".format(msg = msg))
-   
-   traceback.print_stack()
-   sys.exit(1)
-   
-def warning(msg):
-   eprint("Warning: {msg}".format(msg = msg))
+add_library(elf_diff_test_static_1_old STATIC src/old/test.cpp)
+add_library(elf_diff_test_static_1_new STATIC src/new/test.cpp)
+
+add_library(elf_diff_test_static_2_old STATIC src/old/test.cpp)
+add_library(elf_diff_test_static_2_new STATIC src/new/test.cpp)

@@ -1,7 +1,16 @@
+![status][st:stable]
+[![Build Status][travis:linux:image]][travis:linux:target]
+[![Latest version][version:image]][version:target]
 
-__Recently, quite a lot of people seem to be interested in this tool. That's pretty cool!__
-__I am currently working on a travis test-bench to make this thing a bit more reliable.__
-__Stay tuned.__
+[travis:linux:image]: https://img.shields.io/travis/CapeLeidokos/elf_diff.svg?style=for-the-badge&label=Linux&branch=master
+[travis:linux:target]: https://travis-ci.org/CapeLeidokos/elf_diff
+
+[version:image]: https://img.shields.io/github/release/CapeLeidokos/elf_diff.svg?style=for-the-badge
+[version:target]: https://github.com/CapeLeidokos/elf_diff/releases
+
+[st:stable]: https://img.shields.io/badge/stable-✔-black.svg?style=for-the-badge&colorA=44cc11&colorB=494e52
+[st:broken]: https://img.shields.io/badge/broken-X-black.svg?style=for-the-badge&colorA=e05d44&colorB=494e52
+[st:experimental]: https://img.shields.io/badge/experimental----black.svg?style=for-the-badge&colorA=dfb317&colorB=494e52
 
 # elf_diff - A Tool to compare elf binaries
 
@@ -20,6 +29,8 @@ _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the 
 ## Requirements
 
 _elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `python/requirements.txt`) for more information.
+
+elf_diff works and is automatically tested with Python 2 and 3.
 
 ## Setup
 
@@ -63,7 +74,6 @@ binary_pairs:
     - old_binary: "/home/my_user/binary_a_old.elf"
       new_binary: "/home/my_user/binary_a_new.elf"
       short_name: "A short name"
-binary_pairs:
     - old_binary: "/home/my_user/binary_b_old.elf"
       new_binary: "/home/my_user/binary_b_new.elf"
       short_name: "B short name"
