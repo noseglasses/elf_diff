@@ -30,6 +30,8 @@ _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the 
 
 _elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `python/requirements.txt`) for more information.
 
+elf_diff works and is automatically tested with Python 2 and 3.
+
 ## Setup
 
 The following procedure is required to setup _elf_diff_.
