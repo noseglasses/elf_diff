@@ -112,8 +112,8 @@ class Binary(object):
          
       objdump_output = self.readObjdumpOutput()
       
-      #print "Output:"
-      #print "%s" % (objdump_output)
+      #print("Output:")
+      #print("%s" % (objdump_output))
       
       header_line_re = re.compile("^[0-9A-Fa-f]+ <(.+)>:")
       instruction_line_re = re.compile("^(\s*)[0-9A-Fa-f]+:\s+(.*)")
@@ -131,11 +131,11 @@ class Binary(object):
                self.addSymbol(cur_symbol)
             cur_symbol = Symbol(header_match.group(1))
             n_symbols += 1
-            #print "Found symbol %s" % (header_match.group(1))
+            #print("Found symbol %s" % (header_match.group(1)))
          else:
             instruction_line_match = re.match(instruction_line_re, line)
             if instruction_line_match:
-               #print "Found instruction line \'%s\'" % (instruction_line_match.group(1))
+               #print("Found instruction line \'%s\'" % (instruction_line_match.group(1)))
                cur_symbol.addInstructions(instruction_line_match.group(1) + instruction_line_match.group(2))
                n_instruction_lines = n_instruction_lines + 1
             else:
@@ -155,7 +155,7 @@ class Binary(object):
             symbol_size_str = nm_match.group(1)
             symbol_type = nm_match.group(2)
             symbol_name = nm_match.group(3)
-            #print "Symbol %s: %d bytes" % (symbol_name, int(symbol_size_str))
+            #print("Symbol %s: %d bytes" % (symbol_name, int(symbol_size_str)))
             
             if not symbol_name in self.symbols.keys():
                data_symbol = Symbol(symbol_name)
@@ -174,7 +174,7 @@ class Binary(object):
    def __eq__(self, other):
       
       if len(self.symbols) != len(other.symbols):
-         #print "Number of symbols differs"
+         #print("Number of symbols differs")
          return False
       
       # Check if symbol names differ
@@ -184,12 +184,12 @@ class Binary(object):
       
       only_in_self = old_symbols - new_symbols
       if len(only_in_self) > 0:
-         #print "Some symbols only in self"
+         #print("Some symbols only in self")
          return False
       
       only_in_other = new_symbols - old_symbols
       if len(only_in_other) > 0:
-         #print "Some symbols only in other"
+         #print("Some symbols only in other")
          return False
       
       # Check if actual symbols differ
@@ -202,7 +202,7 @@ class Binary(object):
          if not (old_symbol == new_symbol):
             return False
          
-      #print "Symbols identical"
+      #print("Symbols identical")
          
       return True
    

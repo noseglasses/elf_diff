@@ -38,22 +38,22 @@ class Symbol(object):
       
    def __eq__(self, other):
       if not self.name == other.name:
-         #print "Symbol name differs"
+         #print("Symbol name differs")
          return False
       
       if not self.size == other.size:
          return False
       
       if not len(self.instruction_lines) == len(other.instruction_lines):
-         #print "Instructions differ"
+         #print("Instructions differ")
          return False
       
       symbol_diff = [i for i, j in zip(self.instruction_lines, other.instruction_lines) if i != j]
       if len(symbol_diff) > 0:
-         #print "Symbols differ"
+         #print("Symbols differ")
          return False
       
-      #print "Symbols equal"
+      #print("Symbols equal")
       return True
    
    def getDifferencesAsString(self, other, indent):
@@ -116,7 +116,6 @@ class Symbol(object):
    
    def hasFunctionSignatureChanged(self, other):
       return self.namespace == other.namespace \
-         and self.klass == other.klass \
          and self.actual_name == other.actual_name
    
    def wasFunctionMoved(self, other):
