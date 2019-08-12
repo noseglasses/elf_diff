@@ -115,7 +115,7 @@ class Binary(object):
       #print("Output:")
       #print("%s" % (objdump_output))
       
-      header_line_re = re.compile("^[0-9A-Fa-f]+ <(.+)>:")
+      header_line_re = re.compile("^(0x)?[0-9A-Fa-f]+ <(.+)>:")
       instruction_line_re = re.compile("^(\s*)[0-9A-Fa-f]+:\s+(.*)")
       #empty_line_re = re.compile("^\s*$")
                                   
@@ -129,9 +129,9 @@ class Binary(object):
          if header_match:
             if cur_symbol:
                self.addSymbol(cur_symbol)
-            cur_symbol = Symbol(header_match.group(1))
+            cur_symbol = Symbol(header_match.group(2))
             n_symbols += 1
-            #print("Found symbol %s" % (header_match.group(1)))
+            #print("Found symbol %s" % (header_match.group(2)))
          else:
             instruction_line_match = re.match(instruction_line_re, line)
             if instruction_line_match:
