@@ -45,7 +45,7 @@ class BinaryPair(object):
          
    def prepareMeasures(self):
       
-      from elf_diff.aux import listIntersection
+      from elf_diff.auxiliary import listIntersection
       
       self.old_symbol_names = set(self.old_binary.symbols.keys())
       self.new_symbol_names = set(self.new_binary.symbols.keys())

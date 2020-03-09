@@ -22,7 +22,7 @@ from elf_diff.report import Report
 from elf_diff.binary_pair import BinaryPair
 import elf_diff.html as html
 from elf_diff.error_handling import unrecoverableError
-from elf_diff.aux import formatMemChange
+from elf_diff.auxiliary import formatMemChange
       
 class PairReport(Report):
    
