@@ -97,7 +97,7 @@ class Binary(object):
       size_output = self.readSizeOutput()
       
       size_re = re.compile("^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
-      for line in size_output.split("\n"):
+      for line in size_output.splitlines():
          size_match = re.match(size_re, line)
          if size_match:
             self.text_size = int(size_match.group(1))
@@ -123,7 +123,7 @@ class Binary(object):
       n_symbols = 0
       n_instruction_lines = 0
       
-      for line in objdump_output.split("\n"):
+      for line in objdump_output.splitlines():
          
          header_match = re.match(header_line_re, line)
          if header_match:
@@ -148,7 +148,7 @@ class Binary(object):
       nm_output = self.readNMOutput()
       
       nm_regex = re.compile("^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
-      for line in nm_output.split("\n"):
+      for line in nm_output.splitlines():
          nm_match = re.match(nm_regex, line)
          
          if nm_match:
