@@ -12,9 +12,29 @@
 [st:broken]: https://img.shields.io/badge/broken-X-black.svg?style=for-the-badge&colorA=e05d44&colorB=494e52
 [st:experimental]: https://img.shields.io/badge/experimental----black.svg?style=for-the-badge&colorA=dfb317&colorB=494e52
 
-# elf_diff - A Tool to compare elf binaries
+# elf_diff - A Tool to Compare Elf Binaries
 
-## A Brief Introduction
+## Example Output
+
+Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated.
+
+## Purpose
+
+* resource/performance optimization
+* debugging
+* learning/teaching
+
+The main purpose of _elf_diff_ is to determine how specific changes to a piece of software affect resource consumption and performance. The tool may also serve to compare two independent change sets or just to have fun and learn how changes reflect in the generated assembly code.
+
+The following information is part of _elf_diff_'s report pages:
+* differences in the amount of program storage and static RAM usage
+* symbols that are only present in one of the two versions
+* symbols whose naming or call signature is similar in both versions, e.g. as a result of symbol renaming or subtly changing call signatures
+* assembly code discrepancies of functions with identical names and call signatures
+
+As _elf_diff_ operates on elf-files, it is fairly language and platform agnostic. All it requires to work is a suitable set of [GNU Binutils](https://en.wikipedia.org/wiki/GNU_Binutils) for the target platform.
+
+## Introduction
 
 This tool compares pairs of ELF binary files and provides information about differences in the contained symbols with respect to the space that they occupy in program memory (functions and global data) and in RAM (global data). Binary pairs that are passed to _elf_diff_ are typically two versions of the same program/library/firmware. _elf_diff_ can help you to find out about the impact of your changes on your code's resource consumption.
 
