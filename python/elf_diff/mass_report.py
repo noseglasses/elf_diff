@@ -21,7 +21,7 @@
 
 from elf_diff.report import Report
 from elf_diff.binary_pair import BinaryPair
-
+from elf_diff.error_handling import unrecoverableError
 import elf_diff.html as html
 
 class MassReport(Report):
