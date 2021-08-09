@@ -1,9 +1,5 @@
-![status][st:stable]
-[![Build Status][travis:linux:image]][travis:linux:target]
+[![Python application](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml/badge.svg)](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml)
 [![Latest version][version:image]][version:target]
-
-[travis:linux:image]: https://img.shields.io/travis/CapeLeidokos/elf_diff.svg?style=for-the-badge&label=Linux&branch=master
-[travis:linux:target]: https://travis-ci.org/CapeLeidokos/elf_diff
 
 [version:image]: https://img.shields.io/github/release/CapeLeidokos/elf_diff.svg?style=for-the-badge
 [version:target]: https://github.com/CapeLeidokos/elf_diff/releases
