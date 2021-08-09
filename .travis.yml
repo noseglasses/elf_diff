@@ -13,13 +13,14 @@ before_install:
   - sudo apt-get install -y xvfb
   
 install:
-  - pip install -r python/requirements.txt
+  - python3 -m pip install -r python/requirements.txt
   
 # elf_diff uses the pdfkit python package which uses wkhtmltopdf
 # under the hood which needs an x-server.
 #
 script: 
-  - xvfb-run -a -s "-screen 0 640x480x16" python testing/test.py
+  - xvfb-run -a -s "-screen 0 640x480x16" python3 testing/test.py
+  - python3 testing/test_cpp_symbols.py
   
 notifications:
   email:
