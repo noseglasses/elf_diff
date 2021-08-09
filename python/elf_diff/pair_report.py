@@ -23,6 +23,8 @@ from elf_diff.binary_pair import BinaryPair
 import elf_diff.html as html
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.auxiliary import formatMemChange
+import progressbar
+import sys
       
 class PairReport(Report):
    
@@ -67,8 +69,11 @@ class PairReport(Report):
       sorted_by_diff = sorted(diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True)   
       
       size_delta = 0
-      
-      for symbol_tuple in sorted_by_diff:
+          
+      print("Rendering persisting symbols HTML table...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(sorted_by_diff))):
+         symbol_tuple = sorted_by_diff[i]
          
          symbol_name = symbol_tuple[0]
          
@@ -101,9 +106,14 @@ class PairReport(Report):
       table_html = ""
       overal_symbol_size = 0
       
-      for symbol_name in sorted(self.binary_pair.disappeared_symbol_names, \
+      symbols_sorted = sorted(self.binary_pair.disappeared_symbol_names, \
                                 key=lambda symbol_name: old_binary.symbols[symbol_name].size, \
-                                reverse = True):
+                                reverse = True)
+                                
+      print("Rendering disappeared symbols HTML table...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(symbols_sorted))):
+         symbol_name = symbols_sorted[i]
          symbol_name_html = html.escapeString(symbol_name)
          symbol = old_binary.symbols[symbol_name]
          table_html += "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
@@ -127,10 +137,15 @@ class PairReport(Report):
       
       table_html = ""
       overal_symbol_size = 0
-      
-      for symbol_name in sorted(self.binary_pair.new_symbol_names, \
+           
+      symbols_sorted = sorted(self.binary_pair.new_symbol_names, \
                                 key=lambda symbol_name: new_binary.symbols[symbol_name].size, \
-                                reverse = True):
+                                reverse = True)
+                                
+      print("Rendering new symbols HTML table...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(symbols_sorted))):
+         symbol_name = symbols_sorted[i]
          symbol_name_html = html.escapeString(symbol_name)
          symbol = new_binary.symbols[symbol_name]
          table_html += "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
@@ -153,7 +168,10 @@ class PairReport(Report):
       table_html = ""
       
       index = 0
-      for symbol_pair in self.binary_pair.similar_symbols:
+      print("Rendering similar symbols HTML table...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
+         symbol_pair = self.binary_pair.similar_symbols[i]
          
          index = index + 1
          
@@ -186,8 +204,11 @@ class PairReport(Report):
       new_binary = self.binary_pair.new_binary
       
       html_lines = []
-      
-      for symbol_name in self.binary_pair.persisting_symbol_names:
+            
+      print("Rendering persisting symbols details HTML...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.binary_pair.persisting_symbol_names))):
+         symbol_name = self.binary_pair.persisting_symbol_names[i]
          
          old_symbol = old_binary.symbols[symbol_name]
          new_symbol = new_binary.symbols[symbol_name]
@@ -217,7 +238,10 @@ class PairReport(Report):
       
       if len(self.binary_pair.disappeared_symbol_names) > 0:
          html_lines.append("<pre>")
-         for symbol_name in self.binary_pair.disappeared_symbol_names:
+         print("Rendering disappeared symbols details HTML...")
+         sys.stdout.flush()
+         for i in progressbar.progressbar(range(len(self.binary_pair.disappeared_symbol_names))):
+            symbol_name = self.binary_pair.disappeared_symbol_names[i]
             symbol = self.binary_pair.old_binary.symbols[symbol_name]
             symbol_name_html = html.escapeString(symbol_name)
             html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
@@ -236,7 +260,10 @@ class PairReport(Report):
       
       if len(self.binary_pair.new_symbol_names) > 0:
          html_lines.append("<pre>")
-         for symbol_name in self.binary_pair.new_symbol_names:
+         print("Rendering new symbols details HTML...")
+         sys.stdout.flush()
+         for i in progressbar.progressbar(range(len(self.binary_pair.new_symbol_names))):
+            symbol_name = self.binary_pair.new_symbol_names[i]
             symbol = self.binary_pair.new_binary.symbols[symbol_name]
             symbol_name_html = html.escapeString(symbol_name)
             html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
@@ -254,7 +281,10 @@ class PairReport(Report):
       html_lines = []
       
       index = 0;
-      for symbol_pair in self.binary_pair.similar_symbols:
+      print("Rendering similar symbols details HTML...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
+         symbol_pair = self.binary_pair.similar_symbols[i]
          
          index = index + 1
          

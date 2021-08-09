@@ -23,6 +23,7 @@ from elf_diff.symbol import Symbol
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.error_handling import warning
 from elf_diff.html import preHighlightSourceCode
+from elf_diff.symbol import getSymbolType
 
 class Binary(object):
    
@@ -32,6 +33,7 @@ class Binary(object):
       
       self.settings = settings
       self.filename = filename
+      self.symbol_type = getSymbolType(settings.language)
       
       if not self.filename:
          unrecoverableError("No binary filename defined")
@@ -129,9 +131,8 @@ class Binary(object):
          if header_match:
             if cur_symbol:
                self.addSymbol(cur_symbol)
-            cur_symbol = Symbol(header_match.group(2))
+            cur_symbol = self.symbol_type(header_match.group(2))
             n_symbols += 1
-            #print("Found symbol %s" % (header_match.group(2)))
          else:
             instruction_line_match = re.match(instruction_line_re, line)
             if instruction_line_match:
@@ -155,10 +156,9 @@ class Binary(object):
             symbol_size_str = nm_match.group(1)
             symbol_type = nm_match.group(2)
             symbol_name = nm_match.group(3)
-            #print("Symbol %s: %d bytes" % (symbol_name, int(symbol_size_str)))
             
             if not symbol_name in self.symbols.keys():
-               data_symbol = Symbol(symbol_name)
+               data_symbol = self.symbol_type(symbol_name)
                data_symbol.size = int(symbol_size_str)
                data_symbol.type = symbol_type
                self.addSymbol(data_symbol)

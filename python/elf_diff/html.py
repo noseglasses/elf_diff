@@ -20,6 +20,7 @@
 #
 
 from elf_diff.error_handling import unrecoverableError
+import sys
 
 def escapeString(string):
    return string.replace("<", "&lt;").replace(">", "&gt;")
@@ -95,7 +96,10 @@ def configureTemplate(settings, template_filename, keywords):
       unrecoverableError("Failed creating jinja creator\n" + str(e))
       
    try:
+      print("Rendering html...")
+      sys.stdout.flush()
       replacedContent = creator.render(keywords)
+      print("done")
    except (jinja2.exceptions.TemplateError) as e:
       unrecoverableError("Failed rendering jinja template \'" + \
          template_filename + "\'\n" + str(e))

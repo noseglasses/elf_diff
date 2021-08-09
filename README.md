@@ -16,7 +16,7 @@
 
 ## Example Output
 
-Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated.
+Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated, featuring sortable tables.
 
 ## Purpose
 

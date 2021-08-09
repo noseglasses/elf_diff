@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
   
 # -*- coding: utf-8 -*-
 
@@ -28,11 +28,6 @@ import inspect
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
 sys.path.append(bin_path + "/../python")
-
-
-if __name__ == "__main__":
-   
-   print("bin_path = " + bin_path)
 
 from elf_diff.settings import Settings
 from elf_diff.mass_report import generateMassReport

@@ -21,6 +21,7 @@
 
 import sys
 import os
+import shutil
 
 from elf_diff.binary_pair import BinaryPairSettings
 from elf_diff.error_handling import unrecoverableError
@@ -92,7 +93,9 @@ class Settings(object):
          \
          Parameter("symbols_html_header", "The type of html tag to use for symbol headers.", default = "H4", no_cmd_line = True), \
          Parameter("html_template_dir", "A directory that contains template html files. Defaults to elf_diff's own html directory.", no_cmd_line = True), \
-         Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True) \
+         Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True), \
+         Parameter("language", "A hint about the language that the elf was compiled from.", default = "cpp"),
+         Parameter("similarity_threshold", "A threshold value between 0 and 1 above which two compared symbols are considered being similar", default = 0.3)\
       ]
       
    def presetDefaults(self):
@@ -233,19 +236,33 @@ class Settings(object):
          
       if self.new_binary_filename and not os.path.isfile(self.new_binary_filename):
          unrecoverableError("New binary \'%s\' is not a file or cannot be found" % (self.new_binary_filename))
-
-      self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
-      self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
-      self.size_command = self.bin_dir + "/" + self.bin_prefix + "size"
+         
+      exe_extension = ""
+      if os.name == 'nt':
+        exe_extension = ".exe"
+        
+      objdump_basename = self.bin_prefix + "objdump" + exe_extension
+      nm_basename = self.bin_prefix + "nm" + exe_extension
+      size_basename = self.bin_prefix + "size" + exe_extension
+        
+      self.objdump_command = shutil.which(objdump_basename)
+      self.nm_command = shutil.which(nm_basename)
+      self.size_command = shutil.which(size_basename)
       
       if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
-         unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
+         self.objdump_command = self.bin_dir + "/" + objdump_basename
+         if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
+            unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
          
       if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
-         unrecoverableError("nm command \'%s\' is either not a file or not executable" % (self.nm_command))
+         self.nm_command = self.bin_dir + "/" + nm_basename
+         if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
+            unrecoverableError("nm command \'%s\' is either not a file or not executable" % (self.nm_command))
                
       if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
-         unrecoverableError("size command \'%s\' is either not a file or not executable" % (self.size_command))
+         self.size_command = self.bin_dir + "/" + size_basename
+         if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
+            unrecoverableError("size command \'%s\' is either not a file or not executable" % (self.size_command))
          
       if self.old_info_file:
          if os.path.isfile(self.old_info_file):
@@ -270,6 +287,10 @@ class Settings(object):
       
       if not self.new_alias:
          self.new_alias = self.new_binary_filename
+         
+      print(f"objdump: {self.objdump_command}")
+      print(f"nm:      {self.nm_command}")
+      print(f"size:    {self.size_command}")
 
    def writeParameterTemplateFile(self, filename, output_actual_values = False):
       
