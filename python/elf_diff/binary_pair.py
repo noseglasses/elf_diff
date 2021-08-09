@@ -71,6 +71,7 @@ class BinaryPair(object):
       symbol_pairs = []
       
       n_old_symbol_names = len(self.disappeared_symbol_names)
+      similarity_threshold = float(self.settings.similarity_threshold)
       
       print("Detecting symbol similarities...")
       sys.stdout.flush()
@@ -79,9 +80,7 @@ class BinaryPair(object):
          old_symbol = self.old_binary.symbols[old_symbol_name]
          for new_symbol_name in self.new_symbol_names:
             new_symbol = self.new_binary.symbols[new_symbol_name]
-            similarity = old_symbol.getSimilarity(new_symbol)
-            if similarity is not None:
-               similarity.report()
+            if old_symbol.getSimilarityRatio(new_symbol) >= similarity_threshold:
                symbol_pairs.append([old_symbol, new_symbol])
                                 
       # First sort symbol pairs by size difference
