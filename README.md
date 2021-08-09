@@ -1,12 +1,4 @@
 [![Python application](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml/badge.svg)](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml)
-[![Latest version][version:image]][version:target]
-
-[version:image]: https://img.shields.io/github/release/CapeLeidokos/elf_diff.svg?style=for-the-badge
-[version:target]: https://github.com/CapeLeidokos/elf_diff/releases
-
-[st:stable]: https://img.shields.io/badge/stable-✔-black.svg?style=for-the-badge&colorA=44cc11&colorB=494e52
-[st:broken]: https://img.shields.io/badge/broken-X-black.svg?style=for-the-badge&colorA=e05d44&colorB=494e52
-[st:experimental]: https://img.shields.io/badge/experimental----black.svg?style=for-the-badge&colorA=dfb317&colorB=494e52
 
 # elf_diff - A Tool to Compare Elf Binaries
 
