@@ -21,6 +21,7 @@
 
 import sys
 import os
+import shutil
 
 from elf_diff.binary_pair import BinaryPairSettings
 from elf_diff.error_handling import unrecoverableError
@@ -237,19 +238,29 @@ class Settings(object):
       exe_extension = ""
       if os.name == 'nt':
         exe_extension = ".exe"
-
-      self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump" + exe_extension
-      self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm" + exe_extension
-      self.size_command = self.bin_dir + "/" + self.bin_prefix + "size" + exe_extension
+        
+      objdump_basename = self.bin_prefix + "objdump" + exe_extension
+      nm_basename = self.bin_prefix + "nm" + exe_extension
+      size_basename = self.bin_prefix + "size" + exe_extension
+        
+      self.objdump_command = shutil.which(objdump_basename)
+      self.nm_command = shutil.which(nm_basename)
+      self.size_command = shutil.which(size_basename)
       
       if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
-         unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
+         self.objdump_command = self.bin_dir + "/" + objdump_basename
+         if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
+            unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
          
       if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
-         unrecoverableError("nm command \'%s\' is either not a file or not executable" % (self.nm_command))
+         self.nm_command = self.bin_dir + "/" + nm_basename
+         if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
+            unrecoverableError("nm command \'%s\' is either not a file or not executable" % (self.nm_command))
                
       if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
-         unrecoverableError("size command \'%s\' is either not a file or not executable" % (self.size_command))
+         self.size_command = self.bin_dir + "/" + size_basename
+         if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
+            unrecoverableError("size command \'%s\' is either not a file or not executable" % (self.size_command))
          
       if self.old_info_file:
          if os.path.isfile(self.old_info_file):
@@ -274,6 +285,10 @@ class Settings(object):
       
       if not self.new_alias:
          self.new_alias = self.new_binary_filename
+         
+      print(f"objdump: {self.objdump_command}")
+      print(f"nm:      {self.nm_command}")
+      print(f"size:    {self.size_command}")
 
    def writeParameterTemplateFile(self, filename, output_actual_values = False):
       

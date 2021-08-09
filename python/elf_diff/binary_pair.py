@@ -20,6 +20,8 @@
 #
 
 from elf_diff.binary import Binary
+import progressbar
+import sys
 
 class BinaryPairSettings(object):
    
@@ -68,14 +70,19 @@ class BinaryPair(object):
       
       symbol_pairs = []
       
-      for old_symbol_name in self.disappeared_symbol_names:
+      n_old_symbol_names = len(self.disappeared_symbol_names)
+      
+      print("Detecting symbol similarities...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(n_old_symbol_names)):
+         old_symbol_name = self.disappeared_symbol_names[i]
          old_symbol = self.old_binary.symbols[old_symbol_name]
          for new_symbol_name in self.new_symbol_names:
             new_symbol = self.new_binary.symbols[new_symbol_name]
-      
-            if old_symbol.isSimilar(new_symbol):
+            similarity = old_symbol.getSimilarity(new_symbol)
+            if similarity is not None:
+               similarity.report()
                symbol_pairs.append([old_symbol, new_symbol])
-                                
                                 
       # First sort symbol pairs by size difference
       #
@@ -102,7 +109,10 @@ class BinaryPair(object):
    def computeNumSymbolsPersisting(self):
       
       self.num_symbol_size_changes = 0
-      for symbol_name in self.persisting_symbol_names:
+      print("Detecting persisting symbols...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.persisting_symbol_names))):
+         symbol_name = self.persisting_symbol_names[i]
          old_symbol = self.old_binary.symbols[symbol_name]
          new_symbol = self.new_binary.symbols[symbol_name]
          if old_symbol.size != new_symbol.size:
@@ -111,20 +121,29 @@ class BinaryPair(object):
    def computeNumSymbolsDisappeared(self):
       self.num_bytes_disappeared = 0
       self.num_symbols_disappeared = len(self.disappeared_symbol_names)
-      for symbol_name in self.disappeared_symbol_names:
+      print("Detecting disappeared symbols...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.disappeared_symbol_names))):
+         symbol_name = self.disappeared_symbol_names[i]
          symbol = self.old_binary.symbols[symbol_name]
          self.num_bytes_disappeared += symbol.size
          
    def computeNumSymbolsNew(self):
       self.num_bytes_new = 0
       self.num_symbols_new = len(self.new_symbol_names)
-      for symbol_name in self.new_symbol_names:
+      print("Detecting new symbols...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.new_symbol_names))):
+         symbol_name = self.new_symbol_names[i]
          symbol = self.new_binary.symbols[symbol_name]
          self.num_bytes_new += symbol.size
    
    def computeNumAssembliesDiffer(self):
       self.num_assemblies_differ = 0
-      for symbol_name in self.persisting_symbol_names:
+      print("Detecting assembly differences...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.persisting_symbol_names))):
+         symbol_name = self.persisting_symbol_names[i]
          old_symbol = self.old_binary.symbols[symbol_name]
          new_symbol = self.new_binary.symbols[symbol_name]
          
