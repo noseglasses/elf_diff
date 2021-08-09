@@ -233,10 +233,14 @@ class Settings(object):
          
       if self.new_binary_filename and not os.path.isfile(self.new_binary_filename):
          unrecoverableError("New binary \'%s\' is not a file or cannot be found" % (self.new_binary_filename))
+         
+      exe_extension = ""
+      if os.name == 'nt':
+        exe_extension = ".exe"
 
-      self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump"
-      self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm"
-      self.size_command = self.bin_dir + "/" + self.bin_prefix + "size"
+      self.objdump_command = self.bin_dir + "/" + self.bin_prefix + "objdump" + exe_extension
+      self.nm_command = self.bin_dir + "/" + self.bin_prefix + "nm" + exe_extension
+      self.size_command = self.bin_dir + "/" + self.bin_prefix + "size" + exe_extension
       
       if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
          unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
