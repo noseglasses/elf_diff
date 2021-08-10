@@ -308,10 +308,10 @@ class CppSymbol(Symbol):
       if (len(self.instructions) != 0) and (len(other.instructions) != 0):
          instructions_similarity = similarity_cache.getSimilarityMeasure(self.instructions_hash, other.instructions_hash, self.instructions, other.instructions)
       
-      print(f"{self.name} <-> {other.name}: partial: {similarity_measure}, full: {full_measure}")
-      for key, value in indiv_measures.items():
-         print(f"   {key}: {value}")
-      print(f"   code: {instructions_similarity}")
+      #print(f"{self.name} <-> {other.name}: sym. sim.: {symbol_similarity}, instr. sim.: {instructions_similarity}")
+      #for key, value in indiv_measures.items():
+      #   print(f"   {key}: {value}")
+      #print(f"   code: {instructions_similarity}")
       
       return symbol_similarity, instructions_similarity
       
