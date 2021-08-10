@@ -25,9 +25,11 @@ from elf_diff.error_handling import warning
 from elf_diff.html import preHighlightSourceCode
 from elf_diff.symbol import getSymbolType
 
+import re
+
 class Binary(object):
    
-   def __init__(self, settings, filename):
+   def __init__(self, settings, filename, symbol_selection_regex = None, symbol_exclusion_regex = None):
       
       import os.path
       
@@ -41,6 +43,14 @@ class Binary(object):
       self.overall_size = 0
       self.progmem_size = 0
       self.static_ram_size = 0
+      
+      self.symbol_selection_regex_compiled = None
+      if symbol_selection_regex is not None:
+         self.symbol_selection_regex_compiled = re.compile(symbol_selection_regex)
+         
+      self.symbol_exclusion_regex_compiled = None
+      if symbol_exclusion_regex is not None:
+         self.symbol_exclusion_regex_compiled = re.compile(symbol_exclusion_regex)
       
       if not self.filename:
          unrecoverableError("No binary filename defined")
@@ -98,6 +108,19 @@ class Binary(object):
       symbol.init()
       
       self.symbols[symbol.name] = symbol
+      
+   def isSymbolSelected(self, symbol_name):
+      if self.symbol_exclusion_regex_compiled is not None:
+         if re.match(self.symbol_exclusion_regex_compiled, symbol_name):
+            return False
+            
+      if self.symbol_selection_regex_compiled is None:
+         return True 
+         
+      if re.match(self.symbol_selection_regex_compiled, symbol_name):
+         return True
+         
+      return False
    
    def parseSymbols(self):
       
@@ -144,14 +167,23 @@ class Binary(object):
          if header_match:
             if cur_symbol:
                self.addSymbol(cur_symbol)
-            cur_symbol = self.symbol_type(header_match.group(2))
-            n_symbols += 1
+               n_symbols += 1
+               
+            symbol_name = header_match.group(2)
+            
+            if self.isSymbolSelected(symbol_name):
+               #print("Considering symbol " + symbol_name)
+               cur_symbol = self.symbol_type(symbol_name)
+            else:
+               #print("Ignoring symbol " + symbol_name)
+               cur_symbol = None
          else:
             instruction_line_match = re.match(instruction_line_re, line)
             if instruction_line_match:
                #print("Found instruction line \'%s\'" % (instruction_line_match.group(1)))
-               cur_symbol.addInstructions(instruction_line_match.group(1) + instruction_line_match.group(2))
-               n_instruction_lines = n_instruction_lines + 1
+               if cur_symbol:
+                  cur_symbol.addInstructions(instruction_line_match.group(1) + instruction_line_match.group(2))
+                  n_instruction_lines = n_instruction_lines + 1
             else:
                if cur_symbol:
                   cur_symbol.addInstructions(preHighlightSourceCode(line))
@@ -161,6 +193,7 @@ class Binary(object):
       
       nm_output = self.readNMOutput()
       
+      self.num_symbols_dropped = 0
       nm_regex = re.compile("^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
       for line in nm_output.splitlines():
          nm_match = re.match(nm_regex, line)
@@ -171,10 +204,13 @@ class Binary(object):
             symbol_name = nm_match.group(3)
             
             if not symbol_name in self.symbols.keys():
-               data_symbol = self.symbol_type(symbol_name)
-               data_symbol.size = int(symbol_size_str)
-               data_symbol.type = symbol_type
-               self.addSymbol(data_symbol)
+               if self.isSymbolSelected(symbol_name):
+                  data_symbol = self.symbol_type(symbol_name)
+                  data_symbol.size = int(symbol_size_str)
+                  data_symbol.type = symbol_type
+                  self.addSymbol(data_symbol)
+               else:
+                  self.num_symbols_dropped += 1
             else:
                self.symbols[symbol_name].size = int(symbol_size_str)
                self.symbols[symbol_name].type = symbol_type

@@ -20,6 +20,7 @@
 #
 
 from elf_diff.binary import Binary
+from elf_diff.symbol import SimilarityCache
 import progressbar
 import sys
 
@@ -32,10 +33,11 @@ class BinaryPairSettings(object):
       self.new_binary_filename = new_binary_filename
       
 class SimilarityPair(object):
-   def __init__(self, old_symbol, new_symbol, similarity_measure):
+   def __init__(self, old_symbol, new_symbol, symbol_similarity, instructions_similarity):
       self.old_symbol = old_symbol
       self.new_symbol = new_symbol
-      self.similarity_measure = similarity_measure
+      self.symbol_similarity = symbol_similarity
+      self.instructions_similarity = instructions_similarity
       
 class BinaryPair(object):
             
@@ -46,12 +48,52 @@ class BinaryPair(object):
       self.old_binary_filename = old_binary_filename
       self.new_binary_filename = new_binary_filename
       
-      self.old_binary = Binary(self.settings, self.old_binary_filename)
-      self.new_binary = Binary(self.settings, self.new_binary_filename)
-      
-      self.prepareMeasures()
+      symbol_selection_regex_old = self.settings.symbol_selection_regex
+      if self.settings.symbol_selection_regex_old is not None:
+         symbol_selection_regex_old = self.settings.symbol_selection_regex_old
          
-   def prepareMeasures(self):
+      symbol_selection_regex_new = self.settings.symbol_selection_regex
+      if self.settings.symbol_selection_regex_new is not None:
+         symbol_selection_regex_new = self.settings.symbol_selection_regex_new
+      
+      symbol_exclusion_regex_old = self.settings.symbol_exclusion_regex
+      if self.settings.symbol_exclusion_regex_old is not None:
+         symbol_exclusion_regex_old = self.settings.symbol_exclusion_regex_old
+         
+      symbol_exclusion_regex_new = self.settings.symbol_exclusion_regex
+      if self.settings.symbol_exclusion_regex_new is not None:
+         symbol_exclusion_regex_new = self.settings.symbol_exclusion_regex_new
+         
+      print("Symbol selection regex:")
+      print(f"   old elf: \'{symbol_selection_regex_old}\'")
+      print(f"   new elf: \'{symbol_selection_regex_new}\'")
+      print("Symbol exclusion regex:")
+      print(f"   old elf: \'{symbol_exclusion_regex_old}\'")
+      print(f"   new elf: \'{symbol_exclusion_regex_new}\'")
+      
+      self.old_binary = Binary(self.settings, self.old_binary_filename, symbol_selection_regex_old, symbol_exclusion_regex_old)
+      self.new_binary = Binary(self.settings, self.new_binary_filename, symbol_selection_regex_new, symbol_exclusion_regex_new)
+      
+      self.prepareSymbols()
+      self.summarizeSymbols()
+      
+      self.computeSizeChanges()
+      self.computeSimilarities()
+      
+   def summarizeSymbols(self):
+      print("Symbol Statistics:")
+      print(f"   old elf ({self.old_binary_filename}):")
+      print(f"      {len(self.old_symbol_names) + self.old_binary.num_symbols_dropped} total symbol(s)")
+      print(f"      {len(self.old_symbol_names)} symbol(s) selected")
+      print(f"   new elf ({self.new_binary_filename}):")
+      print(f"      {len(self.new_symbol_names) + self.new_binary.num_symbols_dropped} total symbol(s)")
+      print(f"      {len(self.new_symbol_names)} symbol(s) selected")
+      print("")
+      print(f"   {len(self.persisting_symbol_names)} persisting symbol(s)")
+      print(f"   {len(self.disappeared_symbol_names)} disappeared symbol(s)")
+      print(f"   {len(self.new_symbol_names)} new symbol(s)")
+         
+   def prepareSymbols(self):
       
       from elf_diff.auxiliary import listIntersection
       
@@ -62,50 +104,68 @@ class BinaryPair(object):
       self.disappeared_symbol_names = sorted(self.old_symbol_names - self.new_symbol_names)
       self.new_symbol_names = sorted(self.new_symbol_names - self.old_symbol_names)
       
-      self.similar_symbols = self.determineSimilarSymbols()
-      
-      self.computeNumSymbolsPersisting()
+   def computeSizeChanges(self):
+      self.analyseSymbolSizeChanges()
       self.computeNumSymbolsDisappeared()
       self.computeNumSymbolsNew()
-      
       self.computeNumAssembliesDiffer()
       
+   def computeSimilarities(self):
+      self.similar_symbols = self.determineSimilarSymbols()
+      
    def determineSimilarSymbols(self):
+      
+      n_old_symbol_names = len(self.disappeared_symbol_names)
+      
+      if (n_old_symbol_names == 0) or (len(self.new_symbol_names) == 0):
+         return []
       
       import operator
       
       symbol_pairs = []
       
-      n_old_symbol_names = len(self.disappeared_symbol_names)
       similarity_threshold = float(self.settings.similarity_threshold)
+      
+      similarity_cache = SimilarityCache()
       
       print("Detecting symbol similarities...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(n_old_symbol_names)):
          old_symbol_name = self.disappeared_symbol_names[i]
+         sys.stdout.flush()
          old_symbol = self.old_binary.symbols[old_symbol_name]
          for new_symbol_name in self.new_symbol_names:
             new_symbol = self.new_binary.symbols[new_symbol_name]
-            similarity_measure = old_symbol.getSimilarityMeasure(new_symbol)
-            if similarity_measure >= similarity_threshold:
+            # TODO: Make the choice of similarity detection method configurable
+            #symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold(new_symbol, similarity_threshold, similarity_cache)
+            symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold2(new_symbol, similarity_threshold, similarity_cache)
+            #symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold3(new_symbol, similarity_threshold, similarity_cache)
+            if (symbol_similarity >= similarity_threshold) and ((instructions_similarity is None) or (instructions_similarity >= similarity_threshold)):
                symbol_pairs.append(
                   SimilarityPair(
                      old_symbol = old_symbol, 
                      new_symbol = new_symbol, 
-                     similarity_measure = similarity_measure
+                     symbol_similarity = symbol_similarity,
+                     instructions_similarity = instructions_similarity
                   )
                )
-      # First sort symbol pairs by their similarity measures then by size 
+               
+      # First sort symbol pairs by symbol similarity, then by instruction similarity and finally by size 
       # difference
       #               
-      sorted_symbol_pairs = sorted(symbol_pairs, key = lambda e: (e.similarity_measure, e.new_symbol.size - e.old_symbol.size), reverse = True)
+      sorted_symbol_pairs = sorted(symbol_pairs, 
+         key = lambda e: (e.symbol_similarity, e.instructions_similarity, e.new_symbol.size - e.old_symbol.size), reverse = True)
                                 
       return sorted_symbol_pairs
    
-   def computeNumSymbolsPersisting(self):
+   def analyseSymbolSizeChanges(self):
       
       self.num_symbol_size_changes = 0
-      print("Detecting persisting symbols...")
+      
+      if len(self.persisting_symbol_names) == 0:
+         return
+         
+      print("Analyzing symbol size changes...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(len(self.persisting_symbol_names))):
          symbol_name = self.persisting_symbol_names[i]
@@ -117,7 +177,11 @@ class BinaryPair(object):
    def computeNumSymbolsDisappeared(self):
       self.num_bytes_disappeared = 0
       self.num_symbols_disappeared = len(self.disappeared_symbol_names)
-      print("Detecting disappeared symbols...")
+      
+      if self.num_symbols_disappeared == 0:
+         return
+         
+      print("Analyzing disappeared symbols...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(len(self.disappeared_symbol_names))):
          symbol_name = self.disappeared_symbol_names[i]
@@ -127,7 +191,11 @@ class BinaryPair(object):
    def computeNumSymbolsNew(self):
       self.num_bytes_new = 0
       self.num_symbols_new = len(self.new_symbol_names)
-      print("Detecting new symbols...")
+      
+      if self.num_symbols_new == 0:
+         return
+         
+      print("Analyzing new symbols...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(len(self.new_symbol_names))):
          symbol_name = self.new_symbol_names[i]
@@ -136,7 +204,11 @@ class BinaryPair(object):
    
    def computeNumAssembliesDiffer(self):
       self.num_assemblies_differ = 0
-      print("Detecting assembly differences...")
+      
+      if len(self.persisting_symbol_names) == 0:
+         return
+         
+      print("Analyzing assembly differences...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(len(self.persisting_symbol_names))):
          symbol_name = self.persisting_symbol_names[i]

@@ -22,6 +22,7 @@
 from elf_diff.html import postHighlightSourceCodeRemoveTags
 from elf_diff.html import postHighlightSourceCode
 from difflib import SequenceMatcher
+import Levenshtein
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -38,10 +39,10 @@ class Symbol(object):
       self.type = "?"
       
    def init(self):
-      #self.instructions_hash = hash(tuple(self.instruction_lines))
       self.instructions = ""
       for instruction_line in self.instruction_lines:
          self.instructions += "".join(instruction_line.split())
+      self.instructions_hash = hash(self.instructions)
    
    def addInstructions(self, instruction_line):
       self.instruction_lines.append(instruction_line)
@@ -95,20 +96,72 @@ class Symbol(object):
    def livesInProgramMemory(self):
       return (self.type != 'B') and (self.type != 'b') and \
              (self.type != 'S') and (self.type != 's')
+             
+def similarityMeasure(str1, str2):
+   return Levenshtein.ratio(str1, str2)
+   # return similar(str1, str2)
+             
+class PropCache(object):
+   
+   def __init__(self):
+      self.similarity_measures_by_prop_data = {}
+   
+   def getSimilarityMeasure(self, data_old, data_new):
+      prop_data_pair = (data_old, data_new)
+      
+      if prop_data_pair in self.similarity_measures_by_prop_data.keys():
+         return self.similarity_measures_by_prop_data[prop_data_pair]
+     
+      measure = similarityMeasure(data_old, data_new)
+      self.similarity_measures_by_prop_data[prop_data_pair] = measure
+      
+      return measure
+             
+class SimilarityCache(object):
+
+   def __init__(self):
+      self.prop_cache_by_hash_pair = {}
+      
+   def getSimilarityMeasure(self, hash_old, hash_new, data_old, data_new):
+   
+      if hash_old == hash_new:
+         return 1.0
+      
+      combined_hash = hash_old ^ hash_new
+      if not combined_hash in self.prop_cache_by_hash_pair.keys():
+         self.prop_cache_by_hash_pair[combined_hash] = PropCache()
+         
+      return self.prop_cache_by_hash_pair[combined_hash].getSimilarityMeasure(data_old, data_new)
           
 class CppSymbol(Symbol):
+
+   # Keep the order in this list sorted from most common property to 
+   # least common.
    props = [
-      "namespace",
       "full_name",
-      "template_parameters",
       "arguments",
+      "namespace",
+      "template_parameters"
    ]
+   
+   symbol_prefix = {
+      "non-virtual thunk to" : 1,
+      "vtable for" : 2
+   }
    
    def __init__(self, name):
       super(CppSymbol, self).__init__(name)
       
       self.initProps()
       self.name = name
+      self.name_hash = hash(name)
+      self.prefix_id = None
+      
+   @classmethod
+   def getCacheList(cls):
+      cache_list = cls.props
+      cache_list.append("instructions")
+      return cache_list
       
    def initProps(self):
       for prop in self.props:
@@ -142,8 +195,16 @@ class CppSymbol(Symbol):
       return None, None
       
    def __parseSignature(self):
+   
+      rest = self.name
       
-      rest, self.arguments = self.__getArgumentsPortion(self.name, "(", ")")
+      # Consider special prefix
+      for prefix, prefix_id in self.symbol_prefix.items():
+         if rest.startswith(prefix):
+            rest = rest[len(prefix) + 1:] # Ignore the space after the prefix
+            self.prefix_id = prefix_id
+      
+      rest, self.arguments = self.__getArgumentsPortion(rest, "(", ")")
       if rest is not None:
          self.symbol_type = Symbol.type_function
       else:
@@ -163,17 +224,37 @@ class CppSymbol(Symbol):
       else: 
          self.full_name = rest
          
+      for prop in self.props:
+         prop_value = getattr(self, prop)
+         if prop_value is not None:
+            setattr(self, prop + "_hash", hash(prop_value))
+         
    def init(self):
       self.__parseSignature()
       super(CppSymbol, self).init()
+      
+   def canThresoldStillBeExceeded(self, threshold, num_measures_applying, num_measures_yet_considered, sum_common_measures):
+   
+      # To save the overhead for comparing the instructions, we check 
+      # if in the optimal case the similarity measure threshold can 
+      # be exceeded at all, by assuming at all measures yet to be applied
+      # have the maximum possible value.
+      
+      num_yet_to_apply = num_measures_applying - num_measures_yet_considered
+       
+      if sum_common_measures + num_yet_to_apply >= threshold*num_measures_applying:
+         return True
          
-   def getSimilarityMeasure(self, other):
+      return False
+         
+   def getSimilarityMeasureAboveThreshold(self, other, threshold, similarity_cache):
          
       if self.symbol_type != other.symbol_type:
          return 0.0
       
       num_measures_applying = 0
-      sum_common_measures = 0
+      num_measures_yet_considered = 0
+      sum_common_measures = 0.0
       
       indiv_measures = {}
       
@@ -186,26 +267,71 @@ class CppSymbol(Symbol):
          # Count a match if one of the two symbols has the value
          if (self_value is not None) or (other_value is not None):
             num_measures_applying += 1
-         if self_value is not None:
-            if other_value is not None:
-               indiv_measures[prop] = similar(self_value, other_value)
-               sum_common_measures += indiv_measures[prop]
-               
+            
       if (len(self.instructions) != 0) or (len(other.instructions) != 0):
          num_measures_applying += 1
-         indiv_measures["instructions"] = similar(self.instructions, other.instructions)
-         sum_common_measures += indiv_measures["instructions"]
-            
+         
+      if (self.prefix_id is not None) or (other.prefix_id is not None):
+         num_measures_applying += 1
+         
       if num_measures_applying == 0:
-         similarity_measure = 0.0
-      else:
-         similarity_measure = float(sum_common_measures)/float(num_measures_applying)
+         return 0.0
       
-      #print(f"{self.name} <-> {other.name}: {similarity_measure}")
-      #for key, value in indiv_measures.items():
-      #   print(f"   {key}: {value}")
+      for prop in self.props:
+         self_value = getattr(self, prop)
+         if self_value is not None:
+            other_value = getattr(other, prop)
+            if other_value is not None:
+            
+               self_hash = getattr(self, prop + "_hash")
+               other_hash = getattr(other, prop + "_hash")
+               
+               indiv_measures[prop] = similarity_cache.getSimilarityMeasure(self_hash, other_hash, self_value, other_value)
+               sum_common_measures += indiv_measures[prop]
+               num_measures_yet_considered += 1
+               
+               if not self.canThresoldStillBeExceeded(
+                  threshold = threshold, 
+                  num_measures_applying = num_measures_applying,
+                  num_measures_yet_considered = num_measures_yet_considered,
+                  sum_common_measures = sum_common_measures):
+                  return 0.0
+         
+      if (self.prefix_id is not None) and (other.prefix_id is not None):
+         if self.prefix_id == other.prefix_id:
+            sum_common_measures += 1
+            num_measures_yet_considered += 1
+            
+      symbol_similarity = float(sum_common_measures)/float(num_measures_applying)
       
-      return similarity_measure
+      instructions_similarity = None
+      if (len(self.instructions) != 0) and (len(other.instructions) != 0):
+         instructions_similarity = similarity_cache.getSimilarityMeasure(self.instructions_hash, other.instructions_hash, self.instructions, other.instructions)
+      
+      print(f"{self.name} <-> {other.name}: partial: {similarity_measure}, full: {full_measure}")
+      for key, value in indiv_measures.items():
+         print(f"   {key}: {value}")
+      print(f"   code: {instructions_similarity}")
+      
+      return symbol_similarity, instructions_similarity
+      
+   def getSimilarityMeasureAboveThreshold2(self, other, threshold, similarity_cache):
+      symbol_similarity = similarity_cache.getSimilarityMeasure(self.name_hash, other.name_hash, self.name, other.name)
+      
+      instructions_similarity = None
+      if (len(self.instructions) != 0) and (len(other.instructions) != 0):
+         instructions_similarity = similarity_cache.getSimilarityMeasure(self.instructions_hash, other.instructions_hash, self.instructions, other.instructions)
+         
+      return symbol_similarity, instructions_similarity
+      
+   def getSimilarityMeasureAboveThreshold3(self, other, threshold, similarity_cache):
+      symbol_similarity = similarityMeasure(self.name, other.name)
+      
+      instructions_similarity = None
+      if (len(self.instructions) != 0) and (len(other.instructions) != 0):
+         instructions_similarity = similarityMeasure(self.instructions, other.instructions)
+         
+      return symbol_similarity, instructions_similarity
       
    def propertiesEqual(self, other):
       for prop in self.props:
