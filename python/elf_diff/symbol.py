@@ -39,7 +39,9 @@ class Symbol(object):
       
    def init(self):
       #self.instructions_hash = hash(tuple(self.instruction_lines))
-      pass
+      self.instructions = ""
+      for instruction_line in self.instruction_lines:
+         self.instructions += "".join(instruction_line.split())
    
    def addInstructions(self, instruction_line):
       self.instruction_lines.append(instruction_line)
@@ -164,119 +166,46 @@ class CppSymbol(Symbol):
    def init(self):
       self.__parseSignature()
       super(CppSymbol, self).init()
-          
-   class __CppFunctionSimilarity(object):
-      def __init__(self, symbol1, symbol2):
-         self.symbol1 = symbol1
-         self.symbol2 = symbol2
-         self.renamed = False
-         self.moved = False
-         self.signatureChanged = False
          
-      def __wasFunctionRenamed(self):
-         # Class methods must live in the same namespace or class names must match
-         if (self.symbol1.namespace is not None) and (self.symbol2.namespace is not None):
-            return (self.symbol1.namespace == self.symbol2.namespace) \
-               and self.symbol1.arguments == self.symbol2.arguments
-
-         return self.symbol1.namespace == self.symbol2.namespace \
-            and self.symbol1.arguments == self.symbol2.arguments
-
-      def __hasFunctionSignatureChanged(self):
-         return self.symbol1.namespace == self.symbol2.namespace \
-            and self.symbol1.full_name == self.symbol2.full_name
-
-      def __wasFunctionMoved(self):
-         return self.symbol1.full_name == self.symbol2.full_name \
-            and self.symbol1.arguments == self.symbol2.arguments
-      
-      def check(self):
-         self.renamed = self.__wasFunctionRenamed()
-         self.moved = self.__wasFunctionMoved()
-         self.signatureChanged = self.__hasFunctionSignatureChanged()
-         return self.renamed or self.signatureChanged or self.moved
-      
-      def report(self):
-         print(f"Function symbol similarity of {self.symbol1.name} and {self.symbol2.name}")
-         if self.renamed:
-            print("   renamed")
-         if self.moved:
-            print("   moved")
-         if self.signatureChanged:
-            print("   signature changed")
-
-   class __CppDataSimilarity(object):
-      def __init__(self, symbol1, symbol2):
-         self.symbol1 = symbol1
-         self.symbol2 = symbol2
-         self.renamed = False
-         self.moved = False
-         self.resized = False
-
-      def __wasDataMoved(self):
-         return self.symbol1.full_name == self.symbol2.full_name \
-            and self.symbol1.size == self.symbol2.size
-         
-      def __wasDataResized(self):
-         return self.symbol1.full_name == self.symbol2.full_name \
-            and self.symbol1.namespace == self.symbol2.namespace
-         
-      def __wasDataRenamed(self):
-         return self.symbol1.namespace == self.symbol2.namespace \
-            and self.symbol1.size == self.symbol2.size
-            
-      def check(self):
-         self.renamed = self.__wasDataRenamed()
-         self.moved = self.__wasDataMoved()
-         self.resized = self.__wasDataResized()
-         return self.moved or self.resized or self.renamed
-      
-      def report(self):
-         print(f"Data symbol similarity of {self.symbol1.name} and {self.symbol2.name}")
-         if self.renamed:
-            print("   renamed")
-         if self.moved:
-            print("   moved")
-         if self.resized:
-            print("   resized")
-         
-   def getSimilarityRatio(self, other):
+   def getSimilarityMeasure(self, other):
          
       if self.symbol_type != other.symbol_type:
          return 0.0
       
-      sum_values = 0
-      sum_values_matching = 0
+      num_measures_applying = 0
+      sum_common_measures = 0
       
-      indiv_sims = {}
+      indiv_measures = {}
+      
+      # To compute the similarity measure take the arithmetic mean of
+      # all those values that are defined for at least one of the symbols.
       
       for prop in self.props:
          self_value = getattr(self, prop)
+         other_value = getattr(other, prop)
+         # Count a match if one of the two symbols has the value
+         if (self_value is not None) or (other_value is not None):
+            num_measures_applying += 1
          if self_value is not None:
-            other_value = getattr(other, prop)
-            sum_values += 1
             if other_value is not None:
-               indiv_sims[prop] = similar(self_value, other_value)
-               sum_values_matching += indiv_sims[prop]
+               indiv_measures[prop] = similar(self_value, other_value)
+               sum_common_measures += indiv_measures[prop]
                
-      if len(self.instruction_lines) != 0:
-         sum_values += 1
-         #if self.instructions_hash == other.instructions_hash:
-         #   sum_values_matching += 1
-         #else:
-         indiv_sims["instructions"] = similar(self.instruction_lines, other.instruction_lines)
-         sum_values_matching += indiv_sims["instructions"]
+      if (len(self.instructions) != 0) or (len(other.instructions) != 0):
+         num_measures_applying += 1
+         indiv_measures["instructions"] = similar(self.instructions, other.instructions)
+         sum_common_measures += indiv_measures["instructions"]
             
-      if sum_values == 0:
-         similarity_ratio = 0.0
+      if num_measures_applying == 0:
+         similarity_measure = 0.0
       else:
-         similarity_ratio = float(sum_values_matching)/float(sum_values)
+         similarity_measure = float(sum_common_measures)/float(num_measures_applying)
       
-      #print(f"{self.name} <-> {other.name}: {similarity_ratio}")
-      #for key, value in indiv_sims.items():
+      #print(f"{self.name} <-> {other.name}: {similarity_measure}")
+      #for key, value in indiv_measures.items():
       #   print(f"   {key}: {value}")
       
-      return similarity_ratio
+      return similarity_measure
       
    def propertiesEqual(self, other):
       for prop in self.props:
@@ -294,7 +223,7 @@ class CppSymbol(Symbol):
       return self_props
    
 def getSymbolType(language):
-   if language == "cpp":
+   if language == "c++":
       return CppSymbol
    
    return None

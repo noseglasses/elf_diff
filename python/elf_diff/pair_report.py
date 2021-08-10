@@ -175,21 +175,19 @@ class PairReport(Report):
          
          index = index + 1
          
-         old_symbol = symbol_pair[0]
-         new_symbol = symbol_pair[1]
+         old_symbol_name_html = html.escapeString(symbol_pair.old_symbol.name)
+         new_symbol_name_html = html.escapeString(symbol_pair.new_symbol.name)
          
-         old_symbol_name_html = html.escapeString(old_symbol.name)
-         new_symbol_name_html = html.escapeString(new_symbol.name)
-         
-         table_html += "<tr><td>%s</td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td></tr>\n" % ( \
+         table_html += "<tr><td>%s</td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td><td>%s</td></tr>\n" % ( \
                               html.generateSimilarSymbolTableEntry(str(index)), \
                               html.generateSymbolTableEntryLight(old_symbol_name_html), \
                               html.generateSymbolTableEntryLight(new_symbol_name_html), \
-                              old_symbol.type, \
-                              new_symbol.type, \
-                              html.formatNumber(old_symbol.size), \
-                              html.formatNumber(new_symbol.size), \
-                              html.formatNumberDelta(old_symbol.size, new_symbol.size))
+                              symbol_pair.old_symbol.type, \
+                              symbol_pair.new_symbol.type, \
+                              html.formatNumber(symbol_pair.old_symbol.size), \
+                              html.formatNumber(symbol_pair.new_symbol.size), \
+                              html.formatNumberDelta(symbol_pair.old_symbol.size, symbol_pair.new_symbol.size), \
+                              "{:.1f}".format(symbol_pair.similarity_measure*100.0))
       
       if len(self.binary_pair.similar_symbols) == 0:
          table_visible = "invisible"
@@ -288,23 +286,21 @@ class PairReport(Report):
          
          index = index + 1
          
-         old_symbol = symbol_pair[0]
-         new_symbol = symbol_pair[1]
-         
-         old_symbol_name_html = html.escapeString(old_symbol.name)
-         new_symbol_name_html = html.escapeString(new_symbol.name)
+         old_symbol_name_html = html.escapeString(symbol_pair.old_symbol.name)
+         new_symbol_name_html = html.escapeString(symbol_pair.new_symbol.name)
             
-         symbol_differences = old_symbol.getDifferencesAsHTML(new_symbol, "   ")
+         symbol_differences = symbol_pair.old_symbol.getDifferencesAsHTML(symbol_pair.new_symbol, "   ")
          
-         if old_symbol.size == new_symbol.size:
+         if symbol_pair.old_symbol.size == symbol_pair.new_symbol.size:
             size_info = "size unchanged"
          else:
-            size_info = formatMemChange("", old_symbol.size, new_symbol.size)
+            size_info = formatMemChange("", symbol_pair.old_symbol.size, symbol_pair.new_symbol.size)
             
-         html_lines.append("<%s>Similar pair %s (%s)</%s>\n" % ( \
+         html_lines.append("<%s>Similar pair %s (%s) (similarity: %s %%)</%s>\n" % ( \
                                           self.settings.symbols_html_header, \
                                           html.generateSimilarSymbolDetailsTitle(str(index)), \
                                           size_info, \
+                                          "{:.1f}".format(symbol_pair.similarity_measure*100.0), \
                                           self.settings.symbols_html_header))
          html_lines.append("<p>Old: %s</p>\n" % (html.generateSymbolDetailsTitle(old_symbol_name_html)))
          html_lines.append("<p>New: %s</p>\n" % (html.generateSymbolDetailsTitle(new_symbol_name_html)))
