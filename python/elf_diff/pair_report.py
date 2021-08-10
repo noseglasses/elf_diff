@@ -449,6 +449,7 @@ class PairReport(Report):
          ,"build_info": html.escapeString(self.settings.build_info)
          
          ,"date" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+         ,"home" : "<a href=\"#home\">&#x21A9;</a>"
       }
    
    def getHTMLTemplate(self):
