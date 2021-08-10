@@ -35,6 +35,13 @@ class Binary(object):
       self.filename = filename
       self.symbol_type = getSymbolType(settings.language)
       
+      self.text_size = 0
+      self.data_size = 0
+      self.bss_size = 0
+      self.overall_size = 0
+      self.progmem_size = 0
+      self.static_ram_size = 0
+      
       if not self.filename:
          unrecoverableError("No binary filename defined")
          
@@ -99,6 +106,7 @@ class Binary(object):
       size_output = self.readSizeOutput()
       
       size_re = re.compile("^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
+      sizes_sucessfully_determined = False
       for line in size_output.splitlines():
          size_match = re.match(size_re, line)
          if size_match:
@@ -110,7 +118,12 @@ class Binary(object):
             self.progmem_size = self.text_size + self.data_size
             self.static_ram_size = self.data_size + self.bss_size
             
+            sizes_sucessfully_determined = True
+            
             break
+         
+      if not sizes_sucessfully_determined:
+         warning("Unable to determine resource consumptions. Is the proper size utility used?")
          
       objdump_output = self.readObjdumpOutput()
       
