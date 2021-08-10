@@ -20,9 +20,13 @@
 #
 
 from elf_diff.binary import Binary
-from elf_diff.symbol import SimilarityCache
 import progressbar
 import sys
+from difflib import get_close_matches
+from difflib import SequenceMatcher
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 class BinaryPairSettings(object):
    
@@ -65,13 +69,15 @@ class BinaryPair(object):
          symbol_exclusion_regex_new = self.settings.symbol_exclusion_regex_new
          
       print("Symbol selection regex:")
-      print(f"   old elf: \'{symbol_selection_regex_old}\'")
-      print(f"   new elf: \'{symbol_selection_regex_new}\'")
+      print(f"   old binary: \'{symbol_selection_regex_old}\'")
+      print(f"   new binary: \'{symbol_selection_regex_new}\'")
       print("Symbol exclusion regex:")
-      print(f"   old elf: \'{symbol_exclusion_regex_old}\'")
-      print(f"   new elf: \'{symbol_exclusion_regex_new}\'")
+      print(f"   old binary: \'{symbol_exclusion_regex_old}\'")
+      print(f"   new binary: \'{symbol_exclusion_regex_new}\'")
       
+      print(f"Parsing symbols of old binary ({self.old_binary_filename})")
       self.old_binary = Binary(self.settings, self.old_binary_filename, symbol_selection_regex_old, symbol_exclusion_regex_old)
+      print(f"Parsing symbols of new binary ({self.new_binary_filename})")
       self.new_binary = Binary(self.settings, self.new_binary_filename, symbol_selection_regex_new, symbol_exclusion_regex_new)
       
       self.prepareSymbols()
@@ -82,10 +88,10 @@ class BinaryPair(object):
       
    def summarizeSymbols(self):
       print("Symbol Statistics:")
-      print(f"   old elf ({self.old_binary_filename}):")
+      print(f"   old binary ({self.old_binary_filename}):")
       print(f"      {len(self.old_symbol_names) + self.old_binary.num_symbols_dropped} total symbol(s)")
       print(f"      {len(self.old_symbol_names)} symbol(s) selected")
-      print(f"   new elf ({self.new_binary_filename}):")
+      print(f"   new binary ({self.new_binary_filename}):")
       print(f"      {len(self.new_symbol_names) + self.new_binary.num_symbols_dropped} total symbol(s)")
       print(f"      {len(self.new_symbol_names)} symbol(s) selected")
       print("")
@@ -126,29 +132,33 @@ class BinaryPair(object):
       
       similarity_threshold = float(self.settings.similarity_threshold)
       
-      similarity_cache = SimilarityCache()
-      
       print("Detecting symbol similarities...")
       sys.stdout.flush()
       for i in progressbar.progressbar(range(n_old_symbol_names)):
          old_symbol_name = self.disappeared_symbol_names[i]
          sys.stdout.flush()
+         
          old_symbol = self.old_binary.symbols[old_symbol_name]
-         for new_symbol_name in self.new_symbol_names:
+         
+         matching_symbols = get_close_matches(old_symbol_name, self.new_symbol_names, n = 5, cutoff = similarity_threshold)
+         
+         for new_symbol_name in matching_symbols:
             new_symbol = self.new_binary.symbols[new_symbol_name]
-            # TODO: Make the choice of similarity detection method configurable
-            #symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold(new_symbol, similarity_threshold, similarity_cache)
-            symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold2(new_symbol, similarity_threshold, similarity_cache)
-            #symbol_similarity, instructions_similarity = old_symbol.getSimilarityMeasureAboveThreshold3(new_symbol, similarity_threshold, similarity_cache)
-            if (symbol_similarity >= similarity_threshold) and ((instructions_similarity is None) or (instructions_similarity >= similarity_threshold)):
-               symbol_pairs.append(
-                  SimilarityPair(
-                     old_symbol = old_symbol, 
-                     new_symbol = new_symbol, 
-                     symbol_similarity = symbol_similarity,
-                     instructions_similarity = instructions_similarity
-                  )
+            
+            symbol_similarity = similar(old_symbol_name, new_symbol_name)
+            
+            instructions_similarity = None
+            if (old_symbol.instructions is not None) and (new_symbol.instructions is not None):
+               instructions_similarity = similar(old_symbol.instructions, new_symbol.instructions)
+               
+            symbol_pairs.append(
+               SimilarityPair(
+                  old_symbol = old_symbol, 
+                  new_symbol = new_symbol, 
+                  symbol_similarity = symbol_similarity,
+                  instructions_similarity = instructions_similarity
                )
+            )
                
       # First sort symbol pairs by symbol similarity, then by instruction similarity and finally by size 
       # difference
