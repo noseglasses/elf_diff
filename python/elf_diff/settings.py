@@ -94,8 +94,8 @@ class Settings(object):
          Parameter("symbols_html_header", "The type of html tag to use for symbol headers.", default = "H4", no_cmd_line = True), \
          Parameter("html_template_dir", "A directory that contains template html files. Defaults to elf_diff's own html directory.", no_cmd_line = True), \
          Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True), \
-         Parameter("language", "A hint about the language that the elf was compiled from.", default = "cpp"),
-         Parameter("similarity_threshold", "A threshold value between 0 and 1 above which two compared symbols are considered being similar", default = 0.3)\
+         Parameter("language", "A hint about the language that the elf was compiled from (choices: c++).", default = "c++"),
+         Parameter("similarity_threshold", "A threshold value between 0 and 1 above which two compared symbols are considered being similar", default = 0.5)\
       ]
       
    def presetDefaults(self):

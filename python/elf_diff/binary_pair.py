@@ -31,6 +31,12 @@ class BinaryPairSettings(object):
       self.old_binary_filename = old_binary_filename
       self.new_binary_filename = new_binary_filename
       
+class SimilarityPair(object):
+   def __init__(self, old_symbol, new_symbol, similarity_measure):
+      self.old_symbol = old_symbol
+      self.new_symbol = new_symbol
+      self.similarity_measure = similarity_measure
+      
 class BinaryPair(object):
             
    def __init__(self, settings, old_binary_filename, new_binary_filename):
@@ -80,28 +86,19 @@ class BinaryPair(object):
          old_symbol = self.old_binary.symbols[old_symbol_name]
          for new_symbol_name in self.new_symbol_names:
             new_symbol = self.new_binary.symbols[new_symbol_name]
-            if old_symbol.getSimilarityRatio(new_symbol) >= similarity_threshold:
-               symbol_pairs.append([old_symbol, new_symbol])
-                                
-      # First sort symbol pairs by size difference
-      #
-      diff_by_symbol_pair = {}
-      for i in range(0, len(symbol_pairs)):
-         symbol_pair = symbol_pairs[i]
-         
-         old_symbol = symbol_pair[0]
-         new_symbol = symbol_pair[1]
-               
-         difference = new_symbol.size - old_symbol.size
-         
-         diff_by_symbol_pair[i] = difference
-         
-      sorted_by_diff = sorted(diff_by_symbol_pair.items(), key=operator.itemgetter(1), reverse=True)  
-      
-      sorted_symbol_pairs = []
-      for symbol_tuple in sorted_by_diff:
-         index = symbol_tuple[0]
-         sorted_symbol_pairs.append(symbol_pairs[index])
+            similarity_measure = old_symbol.getSimilarityMeasure(new_symbol)
+            if similarity_measure >= similarity_threshold:
+               symbol_pairs.append(
+                  SimilarityPair(
+                     old_symbol = old_symbol, 
+                     new_symbol = new_symbol, 
+                     similarity_measure = similarity_measure
+                  )
+               )
+      # First sort symbol pairs by their similarity measures then by size 
+      # difference
+      #               
+      sorted_symbol_pairs = sorted(symbol_pairs, key = lambda e: (e.similarity_measure, e.new_symbol.size - e.old_symbol.size), reverse = True)
                                 
       return sorted_symbol_pairs
    
