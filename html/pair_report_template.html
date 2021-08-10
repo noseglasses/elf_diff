@@ -67,11 +67,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
     table.similar_symbols th:nth-child(3) { text-align: right; }
     table.similar_symbols th:nth-child(4) { text-align: right; }
     table.similar_symbols th:nth-child(5) { text-align: right; }
+    table.similar_symbols th:nth-child(6) { text-align: right; }
+    table.similar_symbols th:nth-child(7) { text-align: right; }
     table.similar_symbols td:nth-child(1) { text-align: left; font-family: monospace;}
     table.similar_symbols td:nth-child(2) { text-align: left; font-family: monospace;}
     table.similar_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
     table.similar_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
     table.similar_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
+    table.similar_symbols td:nth-child(6) { text-align: right; font-family: monospace;}
+    table.similar_symbols td:nth-child(7) { text-align: right; font-family: monospace;}
     
     table.bin_col th:nth-child(1) { text-align: left; }
     table.bin_col th:nth-child(2) { text-align: right; }
@@ -183,7 +187,7 @@ generated: {{date}}
 Please note that the listed pairs are not necessarily related. The table tries to aid finding actually related symbol pairs by listing those pairs that exhibit similarities in terms of namespaces, class names, function/method names or parameter signatures.</p>
 
    <table class="sortable similar_symbols">
-      <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th><th>Similarity/%</th></thead>
+      <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Sizes/bytes</th><th>Delta/bytes</th><th>Sym. Sim./%</th><th>Instr. Sim./%</th></thead>
       <tbody>
       {{similar_symbols_table}}
       </tbody>

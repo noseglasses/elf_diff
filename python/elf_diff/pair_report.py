@@ -50,10 +50,15 @@ class PairReport(Report):
          
    def generatePersistingSymbolsTableHTML(self):
       
+      table_html = ""
+      table_visible = False
+      size_delta = 0
+      
+      if len(self.binary_pair.persisting_symbol_names) == 0:
+         return [table_html, table_visible, html.highlightNumber(size_delta)]
+      
       old_binary = self.binary_pair.old_binary
       new_binary = self.binary_pair.new_binary
-      
-      table_html = ""
       
       import operator
       
@@ -66,9 +71,7 @@ class PairReport(Report):
          
          diff_by_symbol[symbol_name] = difference
          
-      sorted_by_diff = sorted(diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True)   
-      
-      size_delta = 0
+      sorted_by_diff = sorted(diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True)
           
       print("Rendering persisting symbols HTML table...")
       sys.stdout.flush()
@@ -92,19 +95,21 @@ class PairReport(Report):
                               html.formatNumber(new_symbol.size), \
                               html.formatNumberDelta(old_symbol.size, new_symbol.size))
             
-      if size_delta == 0:
-         table_visible = False
-      else:
+      if size_delta != 0:
          table_visible = True
             
       return [table_html, table_visible, html.highlightNumber(size_delta)]
       
    def generateDisappearedSymbolsTableHTML(self):
       
-      old_binary = self.binary_pair.old_binary
-      
       table_html = ""
       overal_symbol_size = 0
+      table_visible = "invisible"
+      
+      if len(self.binary_pair.disappeared_symbol_names) == 0:
+         return [table_html, table_visible, html.highlightNumber(-overal_symbol_size)]  
+      
+      old_binary = self.binary_pair.old_binary
       
       symbols_sorted = sorted(self.binary_pair.disappeared_symbol_names, \
                                 key=lambda symbol_name: old_binary.symbols[symbol_name].size, \
@@ -124,20 +129,22 @@ class PairReport(Report):
          if symbol.livesInProgramMemory():
             overal_symbol_size += symbol.size
             
-      if len(self.binary_pair.disappeared_symbol_names) == 0:
-         table_visible = "invisible"
-      else:
+      if len(self.binary_pair.disappeared_symbol_names) != 0:
          table_visible = True
             
       return [table_html, table_visible, html.highlightNumber(-overal_symbol_size)]  
    
    def generateNewSymbolsTableHTML(self):
       
+      table_html = ""
+      table_visible = "invisible"
+      overal_symbol_size = 0
+      
+      if len(self.binary_pair.new_symbol_names) == 0:
+         return [table_html, table_visible, html.highlightNumber(overal_symbol_size)]
+           
       new_binary = self.binary_pair.new_binary
       
-      table_html = ""
-      overal_symbol_size = 0
-           
       symbols_sorted = sorted(self.binary_pair.new_symbol_names, \
                                 key=lambda symbol_name: new_binary.symbols[symbol_name].size, \
                                 reverse = True)
@@ -156,9 +163,7 @@ class PairReport(Report):
          if symbol.livesInProgramMemory():
             overal_symbol_size += symbol.size
             
-      if len(self.binary_pair.new_symbol_names) == 0:
-         table_visible = "invisible"
-      else:
+      if len(self.binary_pair.new_symbol_names) != 0:
          table_visible = True
             
       return [table_html, table_visible, html.highlightNumber(overal_symbol_size)]
@@ -166,7 +171,11 @@ class PairReport(Report):
    def generateSimilarSymbolsTableHTML(self):
            
       table_html = ""
+      table_visible = "invisible"
       
+      if len(self.binary_pair.similar_symbols) == 0:
+         return [table_html, table_visible, len(self.binary_pair.similar_symbols)]
+         
       index = 0
       print("Rendering similar symbols HTML table...")
       sys.stdout.flush()
@@ -178,7 +187,11 @@ class PairReport(Report):
          old_symbol_name_html = html.escapeString(symbol_pair.old_symbol.name)
          new_symbol_name_html = html.escapeString(symbol_pair.new_symbol.name)
          
-         table_html += "<tr><td>%s</td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td><td>%s</td></tr>\n" % ( \
+         instructions_similarity_str = "N/A"
+         if symbol_pair.instructions_similarity is not None:
+            instructions_similarity_str = "{:.1f}".format(symbol_pair.instructions_similarity*100.0)
+         
+         table_html += "<tr><td>%s</td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td><p>%s</p><p>%s</p></td><td>%s</td><td>%s</td><td>%s</td></tr>\n" % ( \
                               html.generateSimilarSymbolTableEntry(str(index)), \
                               html.generateSymbolTableEntryLight(old_symbol_name_html), \
                               html.generateSymbolTableEntryLight(new_symbol_name_html), \
@@ -187,17 +200,19 @@ class PairReport(Report):
                               html.formatNumber(symbol_pair.old_symbol.size), \
                               html.formatNumber(symbol_pair.new_symbol.size), \
                               html.formatNumberDelta(symbol_pair.old_symbol.size, symbol_pair.new_symbol.size), \
-                              "{:.1f}".format(symbol_pair.similarity_measure*100.0))
+                              "{:.1f}".format(symbol_pair.symbol_similarity*100.0), \
+                              instructions_similarity_str)
       
-      if len(self.binary_pair.similar_symbols) == 0:
-         table_visible = "invisible"
-      else:
+      if len(self.binary_pair.similar_symbols) != 0:
          table_visible = True
       
       return [table_html, table_visible, len(self.binary_pair.similar_symbols)]
    
    def generatePersistentSymbolDetailsHTML(self):
       
+      if len(self.binary_pair.persisting_symbol_names) == 0:
+         return ""
+         
       old_binary = self.binary_pair.old_binary
       new_binary = self.binary_pair.new_binary
       
@@ -220,7 +235,7 @@ class PairReport(Report):
             if old_symbol.size == new_symbol.size:
                size_info = "size unchanged"
             else:
-               size_info = formatMemChange("", old_symbol.size, new_symbol.size)
+               size_info = formatMemChange("size", old_symbol.size, new_symbol.size)
                
             html_lines.append("<{header}>{title} ({size_info})</{header}>\n".format( \
                               header = self.settings.symbols_html_header, \
@@ -231,50 +246,57 @@ class PairReport(Report):
       return "\n".join(html_lines)
    
    def generateDisappearedSymbolDetailsHTML(self):
+   
+      if len(self.binary_pair.disappeared_symbol_names) == 0:
+         return ""
       
       html_lines = []
       
-      if len(self.binary_pair.disappeared_symbol_names) > 0:
-         html_lines.append("<pre>")
-         print("Rendering disappeared symbols details HTML...")
-         sys.stdout.flush()
-         for i in progressbar.progressbar(range(len(self.binary_pair.disappeared_symbol_names))):
-            symbol_name = self.binary_pair.disappeared_symbol_names[i]
-            symbol = self.binary_pair.old_binary.symbols[symbol_name]
-            symbol_name_html = html.escapeString(symbol_name)
-            html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
-                                                 self.settings.symbols_html_header, \
-                                                 html.generateSymbolDetailsTitle(symbol_name_html), \
-                                                 symbol.size, \
-                                                 self.settings.symbols_html_header))
-            html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
-         html_lines.append("</pre>")
+      html_lines.append("<pre>")
+      print("Rendering disappeared symbols details HTML...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.binary_pair.disappeared_symbol_names))):
+         symbol_name = self.binary_pair.disappeared_symbol_names[i]
+         symbol = self.binary_pair.old_binary.symbols[symbol_name]
+         symbol_name_html = html.escapeString(symbol_name)
+         html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
+                                              self.settings.symbols_html_header, \
+                                              html.generateSymbolDetailsTitle(symbol_name_html), \
+                                              symbol.size, \
+                                              self.settings.symbols_html_header))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
+      html_lines.append("</pre>")
             
       return "\n".join(html_lines)
       
    def generateNewSymbolDetailsHTML(self):
+   
+      if len(self.binary_pair.new_symbol_names) == 0:
+         return ""
       
       html_lines = []
       
-      if len(self.binary_pair.new_symbol_names) > 0:
-         html_lines.append("<pre>")
-         print("Rendering new symbols details HTML...")
-         sys.stdout.flush()
-         for i in progressbar.progressbar(range(len(self.binary_pair.new_symbol_names))):
-            symbol_name = self.binary_pair.new_symbol_names[i]
-            symbol = self.binary_pair.new_binary.symbols[symbol_name]
-            symbol_name_html = html.escapeString(symbol_name)
-            html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
-                                                 self.settings.symbols_html_header, \
-                                                 html.generateSymbolDetailsTitle(symbol_name_html), \
-                                                 symbol.size, \
-                                                 self.settings.symbols_html_header))
-            html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
-         html_lines.append("</pre>")
+      html_lines.append("<pre>")
+      print("Rendering new symbols details HTML...")
+      sys.stdout.flush()
+      for i in progressbar.progressbar(range(len(self.binary_pair.new_symbol_names))):
+         symbol_name = self.binary_pair.new_symbol_names[i]
+         symbol = self.binary_pair.new_binary.symbols[symbol_name]
+         symbol_name_html = html.escapeString(symbol_name)
+         html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
+                                              self.settings.symbols_html_header, \
+                                              html.generateSymbolDetailsTitle(symbol_name_html), \
+                                              symbol.size, \
+                                              self.settings.symbols_html_header))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
+      html_lines.append("</pre>")
             
       return "\n".join(html_lines)
    
    def generateSimilarSymbolDetailsHTML(self):
+   
+      if len(self.binary_pair.similar_symbols) == 0:
+         return ""
       
       html_lines = []
       
@@ -294,13 +316,18 @@ class PairReport(Report):
          if symbol_pair.old_symbol.size == symbol_pair.new_symbol.size:
             size_info = "size unchanged"
          else:
-            size_info = formatMemChange("", symbol_pair.old_symbol.size, symbol_pair.new_symbol.size)
+            size_info = formatMemChange("size", symbol_pair.old_symbol.size, symbol_pair.new_symbol.size)
             
-         html_lines.append("<%s>Similar pair %s (%s) (similarity: %s %%)</%s>\n" % ( \
+         instruction_similarity_string = ""
+         if symbol_pair.instructions_similarity is not None:
+            instruction_similarity_string = ", instr. sim.: {:.1f} %".format(symbol_pair.instructions_similarity*100.0)
+            
+         html_lines.append("<%s>Similar pair %s (%s) (sym. sim.: %s %%%s)</%s>\n" % ( \
                                           self.settings.symbols_html_header, \
                                           html.generateSimilarSymbolDetailsTitle(str(index)), \
                                           size_info, \
-                                          "{:.1f}".format(symbol_pair.similarity_measure*100.0), \
+                                          "{:.1f}".format(symbol_pair.symbol_similarity*100.0), \
+                                          instruction_similarity_string, \
                                           self.settings.symbols_html_header))
          html_lines.append("<p>Old: %s</p>\n" % (html.generateSymbolDetailsTitle(old_symbol_name_html)))
          html_lines.append("<p>New: %s</p>\n" % (html.generateSymbolDetailsTitle(new_symbol_name_html)))

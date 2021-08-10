@@ -67,39 +67,45 @@ class Settings(object):
          
    def setupParameters(self):
       
-      self.parameters = [ \
-         Parameter("old_binary_filename", "The old version of the elf binary.", deprecated_alias = "old"), \
-         Parameter("new_binary_filename", "The new version of the elf binary.", deprecated_alias = "new"), \
-          \
-         Parameter("old_alias", "An alias string that is supposed to be used to reference the old binary version.", deprecated_alias = "old-alias"), \
-         Parameter("new_alias", "An alias string that is supposed to be used to reference the new binary version.", deprecated_alias = "new-alias"), \
-          \
-         Parameter("old_info_file", "A text file that contains information about the old binary version.", deprecated_alias = "old-info-file"), \
-         Parameter("new_info_file", "A text file that contains information about the new binary version.", deprecated_alias = "new-info-file"), \
-          \
-         Parameter("build_info", "A string that contains build information that is to be added to the report.", deprecated_alias = "build-info", default = ""), \
-          \
-         Parameter("bin_dir", "A place where the binutils live.", deprecated_alias = "bin-dir", default = None), \
-          \
-         Parameter("bin_prefix", "A prefix that is added to binutils executables.", deprecated_alias = "bin-prefix", default = ""), \
-         Parameter("objdump_command", "Full path to the objdump untility.", default = None), \
-         Parameter("nm_command", "Full path to the nm untility.", default = None), \
-         Parameter("size_command", "Full path to the size untility.", default = None), \
-          \
-         #Parameter("text_file", "A text file to write output to", deprecated_alias = "text-file"), \
-         Parameter("html_file", "The filename of the generated HTML report.", deprecated_alias = "html-file"), \
-         Parameter("pdf_file", "The filename of the generated pdf report. (details are skipped in pdf files).", deprecated_alias = "pdf-file"), \
-          \
-         Parameter("project_title", "A project title to use for all reports.", deprecated_alias = "project-title"), \
-          \
-         Parameter("driver_file", "A yaml file that contains settings and driver information.", deprecated_alias = "driver-file"), \
-         Parameter("driver_template_file", "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read."), \
-         \
-         Parameter("symbols_html_header", "The type of html tag to use for symbol headers.", default = "H4", no_cmd_line = True), \
-         Parameter("html_template_dir", "A directory that contains template html files. Defaults to elf_diff's own html directory.", no_cmd_line = True), \
-         Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True), \
+      self.parameters = [
+         Parameter("old_binary_filename", "The old version of the elf binary.", deprecated_alias = "old"),
+         Parameter("new_binary_filename", "The new version of the elf binary.", deprecated_alias = "new"),
+         
+         Parameter("old_alias", "An alias string that is supposed to be used to reference the old binary version.", deprecated_alias = "old-alias"),
+         Parameter("new_alias", "An alias string that is supposed to be used to reference the new binary version.", deprecated_alias = "new-alias"),
+         
+         Parameter("old_info_file", "A text file that contains information about the old binary version.", deprecated_alias = "old-info-file"),
+         Parameter("new_info_file", "A text file that contains information about the new binary version.", deprecated_alias = "new-info-file"),
+         
+         Parameter("build_info", "A string that contains build information that is to be added to the report.", deprecated_alias = "build-info", default = ""),
+         
+         Parameter("bin_dir", "A place where the binutils live.", deprecated_alias = "bin-dir", default = None),
+         
+         Parameter("bin_prefix", "A prefix that is added to binutils executables.", deprecated_alias = "bin-prefix", default = ""),
+         Parameter("objdump_command", "Full path to the objdump untility.", default = None),
+         Parameter("nm_command", "Full path to the nm untility.", default = None),
+         Parameter("size_command", "Full path to the size untility.", default = None),
+         
+         Parameter("html_file", "The filename of the generated HTML report.", deprecated_alias = "html-file"),
+         Parameter("pdf_file", "The filename of the generated pdf report. (details are skipped in pdf files).", deprecated_alias = "pdf-file"),
+         
+         Parameter("project_title", "A project title to use for all reports.", deprecated_alias = "project-title"),
+         
+         Parameter("driver_file", "A yaml file that contains settings and driver information.", deprecated_alias = "driver-file"),
+         Parameter("driver_template_file", "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read."),
+         
+         Parameter("symbols_html_header", "The type of html tag to use for symbol headers.", default = "H4", no_cmd_line = True),
+         Parameter("html_template_dir", "A directory that contains template html files. Defaults to elf_diff's own html directory.", no_cmd_line = True),
+         Parameter("mass_report", "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.", default = False, is_flag = True),
          Parameter("language", "A hint about the language that the elf was compiled from (choices: c++).", default = "c++"),
-         Parameter("similarity_threshold", "A threshold value between 0 and 1 above which two compared symbols are considered being similar", default = 0.5)\
+         Parameter("similarity_threshold", "A threshold value between 0 and 1 above which two compared symbols are considered being similar", default = 0.5),
+         
+         Parameter("symbol_selection_regex", "A regex that is applied to select symbols to be considered for both, the old and the new elf file", default = None),
+         Parameter("symbol_selection_regex_old", "A regex that is applied to select symbols to be considered for the old elf file", default = None),
+         Parameter("symbol_selection_regex_new", "A regex that is applied to select symbols to be considered for the new elf file", default = None),
+         Parameter("symbol_exclusion_regex", "A regex that is applied to select symbols to be excluded for both, the old and the new elf file", default = None),
+         Parameter("symbol_exclusion_regex_old", "A regex that is applied to select symbols to be excluded for the old elf file", default = None),
+         Parameter("symbol_exclusion_regex_new", "A regex that is applied to select symbols to be excluded for the new elf file", default = None),
       ]
       
    def presetDefaults(self):
@@ -296,9 +302,10 @@ class Settings(object):
       if not self.new_alias:
          self.new_alias = self.new_binary_filename
          
-      print(f"objdump: {self.objdump_command}")
-      print(f"nm:      {self.nm_command}")
-      print(f"size:    {self.size_command}")
+      print("Tools:")
+      print(f"   objdump: {self.objdump_command}")
+      print(f"   nm:      {self.nm_command}")
+      print(f"   size:    {self.size_command}")
 
    def writeParameterTemplateFile(self, filename, output_actual_values = False):
       

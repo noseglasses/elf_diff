@@ -34,9 +34,9 @@ class Report(object):
       else:
          html_file = "elf_diff_" + self.getReportBasename() + ".html"
          
-      print("Writing html file " + html_file)
       with codecs.open(html_file, "w", "utf-8") as f:
          self.writeHTML(f)
+         print("html file \'" + html_file + "\' written")
          
       if self.settings.pdf_file:
          
