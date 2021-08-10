@@ -25,6 +25,7 @@ import shutil
 
 from elf_diff.binary_pair import BinaryPairSettings
 from elf_diff.error_handling import unrecoverableError
+from elf_diff.error_handling import warning
 
 class Parameter(object):
    
@@ -78,9 +79,12 @@ class Settings(object):
           \
          Parameter("build_info", "A string that contains build information that is to be added to the report.", deprecated_alias = "build-info", default = ""), \
           \
-         Parameter("bin_dir", "A place where the binutils live.", deprecated_alias = "bin-dir", default = "/usr/bin"), \
+         Parameter("bin_dir", "A place where the binutils live.", deprecated_alias = "bin-dir", default = None), \
           \
          Parameter("bin_prefix", "A prefix that is added to binutils executables.", deprecated_alias = "bin-prefix", default = ""), \
+         Parameter("objdump_command", "Full path to the objdump untility.", default = None), \
+         Parameter("nm_command", "Full path to the nm untility.", default = None), \
+         Parameter("size_command", "Full path to the size untility.", default = None), \
           \
          #Parameter("text_file", "A text file to write output to", deprecated_alias = "text-file"), \
          Parameter("html_file", "The filename of the generated HTML report.", deprecated_alias = "html-file"), \
@@ -228,6 +232,33 @@ class Settings(object):
             self.new_binary_filename = cmd_line_args.binaries[1]
       else:
          unrecoverableError("Please specify either none or two binaries")
+         
+   def findUntility(self, name):
+      command_name = name + "_command"
+      command = getattr(self, command_name)
+      if command is not None:
+         if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+            return
+         warning(f"Unable to find predefined {command_name} = {command}")
+
+      exe_extension = ""
+      if os.name == 'nt':
+        exe_extension = ".exe"
+         
+      basename = self.bin_prefix + name + exe_extension
+      
+      if self.bin_dir is not None:
+         command = self.bin_dir + "/" + basename
+         if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+            setattr(self, command_name, command)
+            return
+      
+      command = shutil.which(basename)
+      if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+         setattr(self, command_name, command)
+         return
+            
+      unrecoverableError(f"Unnable to find {name} command")
       
    def validateAndInitSettings(self):
             
@@ -236,33 +267,10 @@ class Settings(object):
          
       if self.new_binary_filename and not os.path.isfile(self.new_binary_filename):
          unrecoverableError("New binary \'%s\' is not a file or cannot be found" % (self.new_binary_filename))
-         
-      exe_extension = ""
-      if os.name == 'nt':
-        exe_extension = ".exe"
         
-      objdump_basename = self.bin_prefix + "objdump" + exe_extension
-      nm_basename = self.bin_prefix + "nm" + exe_extension
-      size_basename = self.bin_prefix + "size" + exe_extension
-        
-      self.objdump_command = shutil.which(objdump_basename)
-      self.nm_command = shutil.which(nm_basename)
-      self.size_command = shutil.which(size_basename)
-      
-      if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
-         self.objdump_command = self.bin_dir + "/" + objdump_basename
-         if (not os.path.isfile(self.objdump_command)) or (not os.access(self.objdump_command, os.X_OK)):
-            unrecoverableError("objdump command \'%s\' is either not a file or not executable" % (self.objdump_command))
-         
-      if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
-         self.nm_command = self.bin_dir + "/" + nm_basename
-         if (not os.path.isfile(self.nm_command)) or (not os.access(self.nm_command, os.X_OK)):
-            unrecoverableError("nm command \'%s\' is either not a file or not executable" % (self.nm_command))
-               
-      if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
-         self.size_command = self.bin_dir + "/" + size_basename
-         if (not os.path.isfile(self.size_command)) or (not os.access(self.size_command, os.X_OK)):
-            unrecoverableError("size command \'%s\' is either not a file or not executable" % (self.size_command))
+      self.findUntility("objdump")
+      self.findUntility("nm")
+      self.findUntility("size")
          
       if self.old_info_file:
          if os.path.isfile(self.old_info_file):

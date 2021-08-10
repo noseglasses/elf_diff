@@ -164,7 +164,8 @@ _elf_diff_ uses some of these tools to inspect binaries, namely `nm`, `objdump` 
 
 In a cross-build environment, Binutils executable are usually bundled in a specific directory. They also often have a platform-specific prefix, to make them distinguishabel from their host-platform siblings. For the [avr](https://en.wikipedia.org/wiki/AVR_microcontrollers)-version of Binutils e.g., that is shipped with the [Arduino](https://en.wikipedia.org/wiki/Arduino) development suite, the prefix `avr-` is used. The respective commands are, thus, named `avr-nm`, `avr-objdump` and `avr-size`.
 
-To make those dedicated binaries known to _elf_diff_, please use the parameters `bin_dir` and `bin_prefix`.
+To make those dedicated binaries known to _elf_diff_, please add the binutils directory to the PATH environment variable, use the parameters `bin_dir` and `bin_prefix` or explicitly define the 
+commands e.g. `objdump_command` (see command help).
 
 A pair-report generation command for the avr-plattform would e.g. read
 
