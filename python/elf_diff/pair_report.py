@@ -23,6 +23,7 @@ from elf_diff.binary_pair import BinaryPair
 import elf_diff.html as html
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.auxiliary import formatMemChange
+from elf_diff.git import gitRepoInfo
 import progressbar
 import sys
       
@@ -237,11 +238,11 @@ class PairReport(Report):
             else:
                size_info = formatMemChange("size", old_symbol.size, new_symbol.size)
                
-            html_lines.append("<{header}>{title} ({size_info})</{header}>\n".format( \
+            html_lines.append("<{header}>{title} ({size_info})</{header}>".format( \
                               header = self.settings.symbols_html_header, \
                               title = html.generateSymbolDetailsTitle(symbol_name_html), \
                               size_info = size_info))
-            html_lines.append("%s\n" % (symbol_differences))
+            html_lines.append("%s" % (symbol_differences))
             
       return "\n".join(html_lines)
    
@@ -259,12 +260,12 @@ class PairReport(Report):
          symbol_name = self.binary_pair.disappeared_symbol_names[i]
          symbol = self.binary_pair.old_binary.symbols[symbol_name]
          symbol_name_html = html.escapeString(symbol_name)
-         html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
+         html_lines.append("<%s>%s: %d bytes</%s>" % ( \
                                               self.settings.symbols_html_header, \
                                               html.generateSymbolDetailsTitle(symbol_name_html), \
                                               symbol.size, \
                                               self.settings.symbols_html_header))
-         html_lines.append(html.escapeString(symbol.getInstructionsBlock("") + "\n"))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("")))
       html_lines.append("</pre>")
             
       return "\n".join(html_lines)
@@ -283,12 +284,12 @@ class PairReport(Report):
          symbol_name = self.binary_pair.new_symbol_names[i]
          symbol = self.binary_pair.new_binary.symbols[symbol_name]
          symbol_name_html = html.escapeString(symbol_name)
-         html_lines.append("<%s>%s: %d bytes</%s>\n" % ( \
+         html_lines.append("<%s>%s: %d bytes</%s>" % ( \
                                               self.settings.symbols_html_header, \
                                               html.generateSymbolDetailsTitle(symbol_name_html), \
                                               symbol.size, \
                                               self.settings.symbols_html_header))
-         html_lines.append(html.escapeString(symbol.getInstructionsBlock("") + "\n"))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("")))
       html_lines.append("</pre>")
             
       return "\n".join(html_lines)
@@ -322,16 +323,16 @@ class PairReport(Report):
          if symbol_pair.instructions_similarity is not None:
             instruction_similarity_string = ", instr. sim.: {:.1f} %".format(symbol_pair.instructions_similarity*100.0)
             
-         html_lines.append("<%s>Similar pair %s (%s) (sym. sim.: %s %%%s)</%s>\n" % ( \
+         html_lines.append("<%s>Similar pair %s (%s) (sym. sim.: %s %%%s)</%s>" % ( \
                                           self.settings.symbols_html_header, \
                                           html.generateSimilarSymbolDetailsTitle(str(index)), \
                                           size_info, \
                                           "{:.1f}".format(symbol_pair.symbol_similarity*100.0), \
                                           instruction_similarity_string, \
                                           self.settings.symbols_html_header))
-         html_lines.append("<p>Old: %s</p>\n" % (html.generateSymbolDetailsTitle(old_symbol_name_html)))
-         html_lines.append("<p>New: %s</p>\n" % (html.generateSymbolDetailsTitle(new_symbol_name_html)))
-         html_lines.append("%s\n" % (symbol_differences))
+         html_lines.append("<p>Old: %s</p>" % (html.generateSymbolDetailsTitle(old_symbol_name_html)))
+         html_lines.append("<p>New: %s</p>" % (html.generateSymbolDetailsTitle(new_symbol_name_html)))
+         html_lines.append("%s" % (symbol_differences))
             
       return "\n".join(html_lines)
    
@@ -449,6 +450,7 @@ class PairReport(Report):
          ,"build_info": html.escapeString(self.settings.build_info)
          
          ,"date" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+         ,"elfdiff_git_version": gitRepoInfo(self.settings)
          ,"home" : "<a href=\"#home\">&#x21A9;</a>"
       }
    

@@ -65,7 +65,6 @@ class Symbol(object):
    def getDifferencesAsString(self, other, indent):
       
       import difflib
-      #from difflib_data import *
 
       diff = difflib.ndiff(self.instruction_lines, other.instruction_lines)
       #print list(diff)
@@ -86,6 +85,8 @@ class Symbol(object):
       return postHighlightSourceCode(diff_table)
    
    def getInstructionsBlock(self, indent):
+      if self.symbol_type == Symbol.type_data:
+         return "<data symbol -> no assembly displayed>"
       return indent + ("\n" + indent).join(self.instruction_lines)
    
    def livesInProgramMemory(self):

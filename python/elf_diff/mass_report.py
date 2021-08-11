@@ -23,6 +23,7 @@ from elf_diff.report import Report
 from elf_diff.binary_pair import BinaryPair
 from elf_diff.error_handling import unrecoverableError
 import elf_diff.html as html
+from elf_diff.git import gitRepoInfo
 
 class MassReport(Report):
    
@@ -112,6 +113,7 @@ class MassReport(Report):
          ,"resource_consumption_table" : resource_consumtption_table \
          ,"symbols_table" : symbols_table \
          ,"date" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+         ,"elfdiff_git_version": gitRepoInfo(self.settings)
       }
    
    def getHTMLTemplate(self):
