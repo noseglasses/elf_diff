@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+# -*- mode: python -*-
 #
 # elf_diff
 #
@@ -15,8 +18,22 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-jinja2 >= 2.10
-pdfkit >= 0.5.0
-pyyaml >= 3.12
-progressbar2 >= 3.53.1
-GitPython >= 3.1.18
+
+from git import Repo
+import os
+   
+unknown_version = "<unknown version>"
+   
+def gitRepoInfo(settings):
+   if not os.path.isdir(settings.repo_path):
+      return unknown_version
+   
+   repo = Repo(settings.repo_path)
+   
+   if not repo:
+      return unknown_version
+   
+   try:
+      return str(repo.head.reference.commit)
+   except:
+      return unknown_version
