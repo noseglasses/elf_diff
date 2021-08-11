@@ -264,7 +264,7 @@ class PairReport(Report):
                                               html.generateSymbolDetailsTitle(symbol_name_html), \
                                               symbol.size, \
                                               self.settings.symbols_html_header))
-         html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("") + "\n"))
       html_lines.append("</pre>")
             
       return "\n".join(html_lines)
@@ -288,7 +288,7 @@ class PairReport(Report):
                                               html.generateSymbolDetailsTitle(symbol_name_html), \
                                               symbol.size, \
                                               self.settings.symbols_html_header))
-         html_lines.append(html.escapeString(symbol.getInstructionsBlock("   ") + "\n"))
+         html_lines.append(html.escapeString(symbol.getInstructionsBlock("") + "\n"))
       html_lines.append("</pre>")
             
       return "\n".join(html_lines)

@@ -154,7 +154,8 @@ class Binary(object):
       #print("%s" % (objdump_output))
       
       header_line_re = re.compile("^(0x)?[0-9A-Fa-f]+ <(.+)>:")
-      instruction_line_re = re.compile("^(\s*)[0-9A-Fa-f]+:\s+(.*)")
+      #instruction_line_re = re.compile("^\s*[0-9A-Fa-f]+:\s+(.*)")
+      instruction_line_re = re.compile("^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*")
       #empty_line_re = re.compile("^\s*$")
                                   
       cur_symbol = None
@@ -180,9 +181,9 @@ class Binary(object):
          else:
             instruction_line_match = re.match(instruction_line_re, line)
             if instruction_line_match:
-               #print("Found instruction line \'%s\'" % (instruction_line_match.group(1)))
+               #print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
                if cur_symbol:
-                  cur_symbol.addInstructions(instruction_line_match.group(1) + instruction_line_match.group(2))
+                  cur_symbol.addInstructions(instruction_line_match.group(2))
                   n_instruction_lines = n_instruction_lines + 1
             else:
                if cur_symbol:
