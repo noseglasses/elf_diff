@@ -137,12 +137,12 @@ generated: {{date}}
    {% endif %}
 </ul>
 
-<H2><a id="binaries">Binaries</a> {{home}}</H2>
+<H2><a id="binaries"></a>Binaries {{home}}</H2>
 <p>old: {{old_binary_file}}</p>
 <p>new: {{new_binary_file}}</p>
 
-<H2><a id="rc">Resource Consumption</a> {{home}}</H2>
-<H3><a id="rc_program_storage">Program Storage</a> {{home}}</H3>
+<H2><a id="rc"></a>Resource Consumption {{home}}</H2>
+<H3><a id="rc_program_storage"></a>Program Storage {{home}}</H3>
 <table class = "fixed_table size_overview">
     <col align="left">
     <col align="right">
@@ -155,7 +155,7 @@ generated: {{date}}
       <tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
     </tbody>
   </table>
-<H3><a id="rc_static_ram">Static RAM</a> {{home}}</H3>
+<H3><a id="rc_static_ram"></a>Static RAM {{home}}</H3>
 <table class = "fixed_table size_overview">
     <col align="left">
     <col align="right">
@@ -168,7 +168,7 @@ generated: {{date}}
       <tr><td>bss</td><td>{{bss_size_old_overall}}</td><td>{{bss_size_new_overall}}</td><td>{{bss_size_change_overall}}</td></tr>
     </tbody>
   </table>
-<H3><a id="rc_legend">Legend</a> {{home}}</H3>
+<H3><a id="rc_legend"></a>Legend {{home}}</H3>
 <table>
     <col align="left">
     <col align="left">
@@ -179,11 +179,11 @@ generated: {{date}}
     </tbody>
   </table>
   
-<H2><a id="symbols">Symbols</a> {{home}}</H2>
+<H2><a id="symbols"></a>Symbols {{home}}</H2>
 <p>{{total_symbols_old}} symbols found in {{old_binary_file}}</p>
 <p>{{total_symbols_new}} symbols found in {{new_binary_file}}</p>
 
-<H3><a id="symbols_persisting_symbols">Persisting Symbols</a> {{home}}</H3>
+<H3><a id="symbols_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
 
 <p>{{num_persisting_symbols}} symbols persisted but potentially changed size ({{persisting_symbols_delta}} bytes of program memory)</p>
    {% if persisting_symbols_table_visible == True %}
@@ -194,7 +194,7 @@ generated: {{date}}
     </tbody>
   </table>
    {% endif %}
-<H3><a id="symbols_symbols_disappeared">Symbols Disappeared</a> {{home}}</H3>
+<H3><a id="symbols_symbols_disappeared"></a>Symbols Disappeared {{home}}</H3>
 
 <p>{{num_disappeared_symbols}} symbols disappeared ({{disappeared_symbols_size}} bytes of program memory)</p>
 
@@ -206,7 +206,7 @@ generated: {{date}}
          </tbody>
    </table>
    {% endif %}
-<H3><a id="symbols_new_symbols">New Symbols</a> {{home}}</H3>
+<H3><a id="symbols_new_symbols"></a>New Symbols {{home}}</H3>
 
 <p>{{num_new_symbols}} symbols were newly introduced ({{new_symbols_size}} bytes of program memory)</p>
 
@@ -219,7 +219,7 @@ generated: {{date}}
    </table>
    {% endif %}
   
-<H3><a id="symbols_similar_symbols">Similar Symbols</a> {{home}}</H3>
+<H3><a id="symbols_similar_symbols"></a>Similar Symbols {{home}}</H3>
 
 <p>{{num_similar_symbols}} pairs of similar symbols have been found.</p>
 
@@ -237,18 +237,18 @@ Please note that the listed pairs are not necessarily related. The table tries t
    {% endif %}
   
 {% if binary_details_visible == True %}
-<H2><a id="binary_details">Binary Details</a> {{home}}</H2>
+<H2><a id="binary_details"></a>Binary Details {{home}}</H2>
 {% endif %}
 
 {% if old_binary_info_visible == True %}
-<H3><a id="binary_details_old_binary_info">{{old_binary_file}}</a> {{home}}</H3>
+<H3><a id="binary_details_old_binary_info"></a>{{old_binary_file}} {{home}}</H3>
 <pre>
 {{old_binary_info}}
 </pre>
 {% endif %}
 
 {% if new_binary_info_visible == True %}
-<H3><a id="binary_details_new_binary_info">{{new_binary_file}}</a> {{home}}</H3>
+<H3><a id="binary_details_new_binary_info"></a>{{new_binary_file}} {{home}}</H3>
 <pre>
 {{new_binary_info}}
 </pre>
@@ -262,18 +262,18 @@ Please note that the listed pairs are not necessarily related. The table tries t
 {% endif %}
 
 {% if details_visibility == True %}
-<H2><a id="symbol_details">Symbol Details</a> {{home}}</H2>
+<H2><a id="symbol_details"></a>Symbol Details {{home}}</H2>
 
-<H3><a id="symbol_details_persisting_symbols">Persisting Symbols</a> {{home}}</H3>
+<H3><a id="symbol_details_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
 {{persisting_symbol_details_html}}
 
-<H3><a id="symbol_details_symbols_disappeared">Symbols Disappeared</a> {{home}}</H3>
+<H3><a id="symbol_details_symbols_disappeared"></a>Symbols Disappeared {{home}}</H3>
 {{disappeared_symbol_details_html}}
 
-<H3><a id="symbol_details_new_symbols">New Symbols</a> {{home}}</H3>
+<H3><a id="symbol_details_new_symbols"></a>New Symbols {{home}}</H3>
 {{new_symbol_details_html}}
 
-<H3><a id="symbol_details_similar_symbols">Similar Symbols</a> {{home}}</H3>
+<H3><a id="symbol_details_similar_symbols"></a>Similar Symbols {{home}}</H3>
 {{similar_symbol_details_html}}
 {% endif %}
 <footer>
