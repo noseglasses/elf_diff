@@ -190,6 +190,16 @@ Template files contain the default values of all available parameters, or - if t
 
 Early versions of this tool supported text output instead of HTML or pdf files. Text output has been removed as it is simple to generate text representations of HTML tables using external tools. Most GNU/Linux distributions e.g. ship with a tool called `html2text` that is well suited to do the job.
 
+### Assembly Code
+
+For most developers who are used to program in high level languages, assembly code is a mystery.
+Still, there is some information that an assembly-novice can gather from observing assembly code. Starting with the number of assembly code statements. Normally less means good. The more assembly statements there are representing a high level language statement, the more time the processor needs to process them. On the contrary, sometimes there may be a suspiciously low number of assembly statements which might indicate that the compiler has optimized away something that it shouldn't have.
+
+All this, of course, relies on the knowledge about what assembly code is associated with which line of source.
+This information is not included in compiled binaries by default. The compiler must explicitly be told to export additional debugging information. For the gcc-compiler the flag `-g`, e.g., will cause this information to be emitted. But careful, some build systems when building debug versions replace optimization flags like `-O3` with the debug flag `-g`. This is not what you want when looking at the performance of your code. Instead you want to add the `-g` flag and keep the optimization flag(s) in place. CMake, e.g. has a configuration variable `CMAKE_BUILD_TYPE` that can be set to the value `RelWithDebInfo` to enable a release build (with optimization enabled) that also comes with debug symbols.
+
+For binaries with debug symbols included, elf_diff will annotate the assembly code by adding the high level language statements that it was generated from.
+
 ## Examples
 
 ### Simple Example
@@ -209,3 +219,12 @@ In the example we select only those symbols related to class `std::string`.
    /usr/lib/gcc/x86_64-linux-gnu/4.8/libstdc++.a # path to old binary \
    /usr/lib/gcc/x86_64-linux-gnu/5/libstdc++.a   # path to new binary
 ```
+
+## TODO
+
+The following is a list of features that would be nice to have and will or will not be added
+in the future:
+
+* split up html reports into several files to make large reports more responsive
+* fix line wrapping in symbol comparison tables in order for them to be correctly rendered in pdf documents
+* read debug symbols from separate debug libraries and annotate assembly code
