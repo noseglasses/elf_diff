@@ -26,7 +26,7 @@ As _elf_diff_ operates on elf-files, it is fairly language and platform agnostic
 
 This tool compares pairs of ELF binary files and provides information about differences in the contained symbols with respect to the space that they occupy in program memory (functions and global data) and in RAM (global data). Binary pairs that are passed to _elf_diff_ are typically two versions of the same program/library/firmware. _elf_diff_ can help you to find out about the impact of your changes on your code's resource consumption.
 
-The differences between the binaries are summarized in tables that contain information about persistent, disappeared and new symbols. _elf_diff_ also attempts to find pairs of matching symbols that might have been subject to renaming or signature changes (modified function arguments). Please be warned that the means to determine such symbol relations are very limited when working with binaries. False positives will result.
+The differences between the binaries are summarized in tables that contain information about persisting, disappeared and new symbols. _elf_diff_ also attempts to find pairs of matching symbols that might have been subject to renaming or signature changes (modified function arguments). Please be warned that the means to determine such symbol relations are very limited when working with binaries. False positives will result.
 
 For all those symbols that have been subject to changes and also for the new and disappeared symbols, the tool provides diff-like comparisons of the disassembly.
 

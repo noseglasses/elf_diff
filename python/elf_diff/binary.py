@@ -187,7 +187,8 @@ class Binary(object):
                   n_instruction_lines = n_instruction_lines + 1
             else:
                if cur_symbol:
-                  cur_symbol.addInstructions(preHighlightSourceCode(line))
+                  if (len(line) > 0) and (not line.isspace()):
+                     cur_symbol.addInstructions(preHighlightSourceCode(line))
 
       if cur_symbol:
          self.addSymbol(cur_symbol)

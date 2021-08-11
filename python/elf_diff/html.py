@@ -21,6 +21,7 @@
 
 from elf_diff.error_handling import unrecoverableError
 import sys
+import difflib
 
 def escapeString(string):
    return string.replace("<", "&lt;").replace(">", "&gt;")
@@ -29,13 +30,17 @@ def generateSymbolTableEntry(symbol_name):
    return "<a name=\"table_%s\"><a href=\"#details_%s\">%s</a></a>" % \
           (symbol_name, symbol_name, symbol_name)
 
-def generateSymbolTableEntryLight(symbol_name):
+def generateSymbolTableEntryLight(symbol_name, symbol_representation):
    return "<a href=\"#details_%s\">%s</a>" % \
-          (symbol_name, symbol_name)
+          (symbol_name, symbol_representation)
 
 def generateSymbolDetailsTitle(symbol_name):
    return "<a name=\"details_%s\"><a href=\"#table_%s\">%s</a></a>" % \
           (symbol_name, symbol_name, tagSymbolName(symbol_name))
+
+def generateSymbolDetailsTitleWithRepresentation(symbol_name, symbol_representation):
+   return "<a name=\"details_%s\"><a href=\"#table_%s\">%s</a></a>" % \
+          (symbol_name, symbol_name, tagSymbolName(symbol_representation))
 
 def generateSimilarSymbolTableEntry(similar_pair_id):
    return "<a name=\"similar_table_%s\"><a href=\"#similar_details_%s\">%s</a></a>" % \
@@ -50,9 +55,11 @@ def tagSymbolName(symbol_name):
 
 def formatNumber(number):
    return "<span class=\"number\">%s</span>" % (number)
+   
+def formatMonospace(number):
+   return "<span class=\"monospace\">%s</span>" % (number)
 
 def highlightNumber(number):
-   
    if number > 0:
       css_class = "deterioration"
    elif number < 0:
@@ -76,6 +83,44 @@ def postHighlightSourceCodeRemoveTags(src):
 def formatNumberDelta(old_size, new_size):
    difference = new_size - old_size
    return highlightNumber(new_size - old_size)
+        
+def replaceHighlights(src):
+    return src.replace("__HIGHLIGHT_START__", "<span class=\"diff_highlight\">") \
+              .replace("__HIGHLIGHT_END__", "</span>")
+   
+def diffStringsSource(str1, str2):
+    seqm = difflib.SequenceMatcher(None, str1, str2)
+    output= []
+    for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
+        if opcode == 'equal':
+            output.append(seqm.a[a0:a1])
+        elif opcode == 'insert':
+            pass
+        elif opcode == 'delete':
+            output.append("__HIGHLIGHT_START__" + seqm.a[a0:a1] + "__HIGHLIGHT_END__")
+        elif opcode == 'replace':
+            output.append("__HIGHLIGHT_START__" + seqm.a[a0:a1] + "__HIGHLIGHT_END__")
+        else:
+            raise RuntimeError("unexpected opcode")
+            
+    return replaceHighlights(escapeString(''.join(output)))
+    
+def diffStringsTarget(str1, str2):
+    seqm = difflib.SequenceMatcher(None, str1, str2)
+    output= []
+    for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
+        if opcode == 'equal':
+            output.append(seqm.a[a0:a1])
+        elif opcode == 'insert':
+            output.append("__HIGHLIGHT_START__" + seqm.b[b0:b1] + "__HIGHLIGHT_END__")
+        elif opcode == 'delete':
+            pass
+        elif opcode == 'replace':
+            output.append("__HIGHLIGHT_START__" + seqm.b[b0:b1] + "__HIGHLIGHT_END__")
+        else:
+            raise RuntimeError("unexpected opcode")
+            
+    return replaceHighlights(escapeString(''.join(output)))
 
 def configureTemplate(settings, template_filename, keywords):
    

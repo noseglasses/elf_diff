@@ -21,6 +21,9 @@
 
 from elf_diff.html import postHighlightSourceCodeRemoveTags
 from elf_diff.html import postHighlightSourceCode
+from elf_diff.html import escapeString
+      
+import difflib
  
 class Symbol(object):
    
@@ -42,14 +45,7 @@ class Symbol(object):
    def addInstructions(self, instruction_line):
       self.instruction_lines.append(instruction_line)
       
-   def __eq__(self, other):
-      if not self.name == other.name:
-         #print("Symbol name differs")
-         return False
-      
-      if not self.size == other.size:
-         return False
-      
+   def instructionsEqual(self, other):
       if not len(self.instruction_lines) == len(other.instruction_lines):
          #print("Instructions differ")
          return False
@@ -58,21 +54,29 @@ class Symbol(object):
       if len(symbol_diff) > 0:
          #print("Symbols differ")
          return False
+         
+      return True
+      
+   def __eq__(self, other):
+      if not self.name == other.name:
+         #print("Symbol name differs")
+         return False
+      
+      if not self.size == other.size:
+         return False
+         
+      if not self.instructionsEqual(other):
+         return False
       
       #print("Symbols equal")
       return True
    
    def getDifferencesAsString(self, other, indent):
-      
-      import difflib
-
       diff = difflib.ndiff(self.instruction_lines, other.instruction_lines)
       #print list(diff)
       return postHighlightSourceCodeRemoveTags(indent + ("\n" + indent).join(list(diff)))
    
    def getDifferencesAsHTML(self, other, indent):
-   
-      import difflib
       diff_class = difflib.HtmlDiff(tabsize=3, wrapcolumn=200)
       
       diff_table = diff_class.make_table(self.instruction_lines, \
@@ -84,10 +88,10 @@ class Symbol(object):
    
       return postHighlightSourceCode(diff_table)
    
-   def getInstructionsBlock(self, indent):
+   def getInstructionsBlockEscaped(self, indent):
       if self.symbol_type == Symbol.type_data:
          return "<data symbol -> no assembly displayed>"
-      return indent + ("\n" + indent).join(self.instruction_lines)
+      return postHighlightSourceCode(escapeString(indent + ("\n" + indent).join(self.instruction_lines)))
    
    def livesInProgramMemory(self):
       return (self.type != 'B') and (self.type != 'b') and \
