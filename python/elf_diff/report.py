@@ -35,7 +35,7 @@ class Report(object):
          html_file = "elf_diff_" + self.getReportBasename() + ".html"
          
       with codecs.open(html_file, "w", "utf-8") as f:
-         self.writeHTML(f)
+         self.writeHTML(f, skip_details = self.settings.skip_details)
          print("html file \'" + html_file + "\' written")
          
       if self.settings.pdf_file:
@@ -46,7 +46,7 @@ class Report(object):
             "/" + next(tempfile._get_candidate_names()) + ".html"
                 
          with codecs.open(tmp_html_file, "w", "utf-8") as f:
-            self.writeHTML(f, skip_details = True)
+            self.writeHTML(f, skip_details = self.settings.skip_details)
          
          import pdfkit
          pdfkit.from_url(tmp_html_file, self.settings.pdf_file)

@@ -106,6 +106,7 @@ class Settings(object):
          Parameter("symbol_exclusion_regex", "A regex that is applied to select symbols to be excluded for both, the old and the new elf file", default = None),
          Parameter("symbol_exclusion_regex_old", "A regex that is applied to select symbols to be excluded for the old elf file", default = None),
          Parameter("symbol_exclusion_regex_new", "A regex that is applied to select symbols to be excluded for the new elf file", default = None),
+         Parameter("skip_details", "If enabled, the details section of the report is ommitted", default = False, is_flag = True)
       ]
       
    def presetDefaults(self):
