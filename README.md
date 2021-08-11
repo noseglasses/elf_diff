@@ -6,6 +6,8 @@
 
 Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated, featuring sortable tables.
 
+Please see the examples section at the end of this document for more usage examples.
+
 ## Purpose
 
 * resource/performance optimization
@@ -187,3 +189,23 @@ Template files contain the default values of all available parameters, or - if t
 ### Text Output
 
 Early versions of this tool supported text output instead of HTML or pdf files. Text output has been removed as it is simple to generate text representations of HTML tables using external tools. Most GNU/Linux distributions e.g. ship with a tool called `html2text` that is well suited to do the job.
+
+## Examples
+
+### Simple Example
+
+An [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
+
+### libstdc++
+
+[Comparison of two versions of libstdc++](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
+In the example we select only those symbols related to class `std::string`.
+
+```
+# Generated on Ubuntu 20.04 LTS 
+./bin/elf_diff \
+   --symbol_selection_regex "^std::string::.*"   # select any symbol name starting with std::string:: \
+   --pdf_file libstdc++_std_string_diff.pdf      # generate a pdf file \
+   /usr/lib/gcc/x86_64-linux-gnu/4.8/libstdc++.a # path to old binary \
+   /usr/lib/gcc/x86_64-linux-gnu/5/libstdc++.a   # path to new binary
+```
