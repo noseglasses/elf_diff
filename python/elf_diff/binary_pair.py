@@ -42,6 +42,7 @@ class SimilarityPair(object):
       self.new_symbol = new_symbol
       self.symbol_similarity = symbol_similarity
       self.instructions_similarity = instructions_similarity
+      self.instructions_equal = self.old_symbol.instructionsEqual(self.new_symbol)
       
 class BinaryPair(object):
             
