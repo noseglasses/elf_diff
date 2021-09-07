@@ -95,10 +95,15 @@ class Settings(object):
                 "A string that contains build information that is to be added to the report.",
                 default="",
             ),
-            Parameter("bin_dir", "A place where the binutils live.", default=None),
+            Parameter(
+                "bin_dir",
+                "A place where the binutils live.",
+                default=None,
+            ),
             Parameter(
                 "bin_prefix",
                 "A prefix that is added to binutils executables.",
+                deprecated_alias="bin-prefix",
                 default="",
             ),
             Parameter(
@@ -106,7 +111,12 @@ class Settings(object):
             ),
             Parameter("nm_command", "Full path to the nm untility.", default=None),
             Parameter("size_command", "Full path to the size untility.", default=None),
-            Parameter("html_file", "The filename of the generated HTML report."),
+            Parameter(
+                "html_file", "The filename of the generated single page HTML report."
+            ),
+            Parameter(
+                "html_dir", "The directory of the generated multi page HTML report."
+            ),
             Parameter(
                 "pdf_file",
                 "The filename of the generated pdf report. (details are skipped in pdf files).",

@@ -1,0 +1,139 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% extends "page.html" %}
+{% block title %}Persisting Symbols{% endblock %}
+{% block content %}
+{% block preamble %}
+<H1><a id="home"></a>{{doc_title}}</H1>
+{% endblock %}
+
+{% block toc %}
+<H2>Overview</H2>
+<ul>
+   <li><a href="#binaries">Binaries</a></li>
+   <li><a href="#rc">Resource Consumption</a>
+      <ul>
+         <li><a href="#rc_program_storage">Program Storage</a></li>
+         <li><a href="#rc_static_ram">Static RAM</a></li>
+         <li><a href="#rc_legend">Legend</a></li>
+      </ul>
+   </li>
+   <li><a href="#symbols">Symbols</a>
+      <ul>
+         <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
+         <li><a href="#symbols_symbols_disappeared">Symbols Disappeared</a></li>
+         <li><a href="#symbols_new_symbols">New Symbols</a></li>
+         <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+      </ul>
+   </li>
+   {% if binary_details_visible == True %}
+   <li><a href="#binary_details">Binary Details</a>
+      <ul>
+         {% if old_binary_info_visible == True %}
+         <li><a href="#binary_details_old_binary_info">{{old_binary_file}}</a></li>
+         {% endif %}
+         {% if new_binary_info_visible == True %}
+         <li><a href="#binary_details_new_binary_info">{{new_binary_file}}</a></li>
+         {% endif %}
+      </ul>
+   </li>
+   {% endif %}
+   {% if toc_details_visible == True %}
+   <li><a href="#symbol_details">Details</a>
+      <ul>
+         <li><a href="#symbol_details_persisting_symbols">Persisting Symbols</a></li>
+         <li><a href="#symbol_details_symbols_disappeared">Symbols Disappeared</a></li>
+         <li><a href="#symbol_details_new_symbols">New Symbols</a></li>
+         <li><a href="#symbol_details_similar_symbols">Similar Symbols</a></li>
+      </ul>
+   </li>
+   {% endif %}
+</ul>
+{% endblock %}
+
+{% block binaries %}
+<H2><a id="binaries"></a>Binaries {{home}}</H2>
+<p>old: {{old_binary_file}}</p>
+<p>new: {{new_binary_file}}</p>
+{% endblock %}
+
+{% block resource_consumption %}
+<H2><a id="rc"></a>Resource Consumption {{home}}</H2>
+<H3><a id="rc_program_storage"></a>Program Storage {{home}}</H3>
+<table class = "fixed_table size_overview">
+    <col align="left">
+    <col align="right">
+    <col align="right">
+    <col align="right">
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+    <tbody>
+      <tr><td>overall</td><td>{{code_size_old_overall}}</td><td>{{code_size_new_overall}}</td><td>{{code_size_change_overall}}</td></tr>
+      <tr><td>text</td><td>{{text_size_old_overall}}</td><td>{{text_size_new_overall}}</td><td>{{text_size_change_overall}}</td></tr>
+      <tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
+    </tbody>
+  </table>
+<H3><a id="rc_static_ram"></a>Static RAM {{home}}</H3>
+<table class = "fixed_table size_overview">
+    <col align="left">
+    <col align="right">
+    <col align="right">
+    <col align="right">
+    <thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+    <tbody>
+      <tr><td>overall</td><td>{{static_ram_old_overall}}</td><td>{{static_ram_new_overall}}</td><td>{{static_ram_change_overall}}</td></tr>
+      <tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
+      <tr><td>bss</td><td>{{bss_size_old_overall}}</td><td>{{bss_size_new_overall}}</td><td>{{bss_size_change_overall}}</td></tr>
+    </tbody>
+  </table>
+<H3><a id="rc_legend"></a>Legend {{home}}</H3>
+<table>
+    <col align="left">
+    <col align="left">
+    <tbody>
+      <tr><td>text</td><td>instructions</td></tr>
+      <tr><td>data</td><td>initialized global or static variables</td></tr>
+      <tr><td>bss</td><td>uninitialized global or static variables</td></tr>
+    </tbody>
+  </table>
+{% endblock %}
+  
+{% block symbol_overview %}
+<H2><a id="symbols"></a>Symbols {{home}}</H2>
+<p>{{total_symbols_old}} symbols found in {{old_binary_file}}</p>
+<p>{{total_symbols_new}} symbols found in {{new_binary_file}}</p>
+
+<H3><a id="symbols_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
+{{ persisting_symbols_overview }}
+
+<H3><a id="symbols_symbols_disappeared"></a>Symbols Disappeared {{home}}</H3>
+{{ disappeared_symbols_overview }}
+
+<H3><a id="symbols_new_symbols"></a>New Symbols {{home}}</H3>
+{{ new_symbols_overview }}
+  
+<H3><a id="symbols_similar_symbols"></a>Similar Symbols {{home}}</H3>
+{{ similar_symbols_overview }}
+{% endblock %}
+
+{% block symbol_details %}{% endblock %}
+{% endblock %}

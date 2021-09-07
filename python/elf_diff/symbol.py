@@ -30,12 +30,19 @@ class Symbol(object):
 
     type_function = 1
     type_data = 2
+    consecutive_id = 0
 
     def __init__(self, name):
         self.name = name
         self.instruction_lines = []
         self.size = 0
         self.type = "?"
+        self.id = Symbol.getConsecutiveId()
+
+    def getConsecutiveId():
+        tmp = Symbol.consecutive_id
+        Symbol.consecutive_id += 1
+        return tmp
 
     def init(self):
         self.instructions = ""

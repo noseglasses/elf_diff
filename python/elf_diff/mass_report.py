@@ -71,13 +71,13 @@ class MassReport(Report):
                     short_name=binary_pair.short_name,
                     code_size_old_overall=binary_pair.old_binary.progmem_size,
                     code_size_new_overall=binary_pair.new_binary.progmem_size,
-                    code_size_delta_overall=html.formatNumberDelta(
+                    code_size_delta_overall=html.highlightNumberDelta(
                         binary_pair.old_binary.progmem_size,
                         binary_pair.new_binary.progmem_size,
                     ),
                     static_ram_old_overall=binary_pair.old_binary.static_ram_size,
                     static_ram_new_overall=binary_pair.new_binary.static_ram_size,
-                    static_ram_change_overall=html.formatNumberDelta(
+                    static_ram_change_overall=html.highlightNumberDelta(
                         binary_pair.old_binary.static_ram_size,
                         binary_pair.new_binary.static_ram_size,
                     ),
