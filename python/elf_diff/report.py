@@ -30,13 +30,18 @@ class Report(object):
         import codecs
 
         if self.settings.html_file:
-            html_file = self.settings.html_file
-        else:
-            html_file = "elf_diff_" + self.getReportBasename() + ".html"
+            self.single_page = True
+            self.writeSinglePageHTMLReport()
+            print("Single page html report '" + self.settings.html_file + "' written")
 
-        with codecs.open(html_file, "w", "utf-8") as f:
-            self.writeHTML(f, skip_details=self.settings.skip_details)
-            print("html file '" + html_file + "' written")
+        if self.settings.html_dir:
+            self.single_page = False
+            self.writeMultiPageHTMLReport()
+            print(
+                "Multi page html report written to directory '"
+                + self.settings.html_dir
+                + "'"
+            )
 
         if self.settings.pdf_file:
 
@@ -49,8 +54,7 @@ class Report(object):
                 + ".html"
             )
 
-            with codecs.open(tmp_html_file, "w", "utf-8") as f:
-                self.writeHTML(f, skip_details=self.settings.skip_details)
+            self.writeHTMLSingleFile(tmp_html_file, skip_details=True)
 
             import pdfkit
 
@@ -59,11 +63,3 @@ class Report(object):
             import os
 
             os.remove(tmp_html_file)
-
-    def writeHTML(self, out_file, skip_details=False):
-
-        keywords = self.configureJinjaKeywords(skip_details)
-
-        html.configureTemplateWrite(
-            self.settings, self.getHTMLTemplate(), out_file, keywords
-        )

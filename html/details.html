@@ -1,0 +1,34 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% extends "page.html" %}
+{% block content %}
+<header>
+<p style="text-align:left;">
+    <span class="monospace">Elf_diff comparing {{ old_binary_file }} and {{ new_binary_file }}</span>
+    <span style="float:right;"><a href="{{index_file}}#home">&#x1F3E0;</a></span>
+    <hr>
+</p>
+</header>
+<H1>{{ page_title }}</H1>
+{{ details }}
+{% endblock %}

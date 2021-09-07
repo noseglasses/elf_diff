@@ -1,0 +1,54 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head %}
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>{{ page_title }}</title>
+  <script src="file:///{{elf_diff_repo_base}}/js/sorttable.js"></script>
+  <link rel="stylesheet" href="file:///{{elf_diff_repo_base}}/css/elf_diff_general.css">
+  {% endblock %}
+</head>
+<body>
+  <div id="content">{% block content %}{% endblock %}</div>
+  <div id="footer">
+  {% block footer %}
+  <footer>
+    <span class="monospace">
+      <hr>
+      <p>
+Generated {{date}} by elf_diff {{elfdiff_git_version}} (https://github.com/CapeLeidokos/elf_diff)<br>
+© 2021 by noseglasses (shinynoseglasses@gmail.com)
+      </p>
+      <p>
+Using sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
+      </p>
+     </span>
+   </footer>
+   {% endblock %}
+   </div>
+</body>
+</html>

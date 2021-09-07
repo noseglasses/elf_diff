@@ -22,77 +22,38 @@
 from elf_diff.error_handling import unrecoverableError
 import sys
 import difflib
+import codecs
 
 
 def escapeString(string):
     return string.replace("<", "&lt;").replace(">", "&gt;")
 
 
-def generateSymbolTableEntry(symbol_name):
-    return '<a name="table_%s"><a href="#details_%s">%s</a></a>' % (
-        symbol_name,
-        symbol_name,
-        symbol_name,
-    )
-
-
-def generateSymbolTableEntryLight(symbol_name, symbol_representation):
-    return '<a href="#details_%s">%s</a>' % (symbol_name, symbol_representation)
-
-
-def generateSymbolDetailsTitle(symbol_name):
-    return '<a name="details_%s"><a href="#table_%s">%s</a></a>' % (
-        symbol_name,
-        symbol_name,
-        tagSymbolName(symbol_name),
-    )
-
-
-def generateSymbolDetailsTitleWithRepresentation(symbol_name, symbol_representation):
-    return '<a name="details_%s"><a href="#table_%s">%s</a></a>' % (
-        symbol_name,
-        symbol_name,
-        tagSymbolName(symbol_representation),
-    )
-
-
-def generateSimilarSymbolTableEntry(similar_pair_id):
-    return '<a name="similar_table_%s"><a href="#similar_details_%s">%s</a></a>' % (
-        similar_pair_id,
-        similar_pair_id,
-        similar_pair_id,
-    )
-
-
-def generateSimilarSymbolDetailsTitle(similar_pair_id):
-    return '<a name="similar_details_%s"><a href="#similar_table_%s">%s</a></a>' % (
-        similar_pair_id,
-        similar_pair_id,
-        similar_pair_id,
-    )
-
-
-def tagSymbolName(symbol_name):
-    return '<span class="symbol_name">%s</span>' % (symbol_name)
-
-
 def formatNumber(number):
     return '<span class="number">%s</span>' % (number)
 
 
-def formatMonospace(number):
-    return '<span class="monospace">%s</span>' % (number)
+def highlightNumberClass(number):
+    if number > 0:
+        return "deterioration"
+    elif number < 0:
+        return "improvement"
+
+    return "unchanged"
 
 
 def highlightNumber(number):
-    if number > 0:
-        css_class = "deterioration"
-    elif number < 0:
-        css_class = "improvement"
-    else:
-        css_class = "unchanged"
+    css_class = highlightNumberClass(number)
 
-    return '<span  class="%s number">%+d</span>' % (css_class, number)
+    if number == 0:
+        return '<span class="%s number">%d</span>' % (css_class, number)
+
+    return '<span class="%s number">%+d</span>' % (css_class, number)
+
+
+def highlightNumberDelta(old_size, new_size):
+    difference = new_size - old_size
+    return highlightNumber(new_size - old_size)
 
 
 def preHighlightSourceCode(src):
@@ -107,11 +68,6 @@ def postHighlightSourceCode(src):
 
 def postHighlightSourceCodeRemoveTags(src):
     return src.replace("__ED_SOURCE_START__", "").replace("__ED_SOURCE_END__", "")
-
-
-def formatNumberDelta(old_size, new_size):
-    difference = new_size - old_size
-    return highlightNumber(new_size - old_size)
 
 
 def replaceHighlights(src):
@@ -165,8 +121,6 @@ def configureTemplate(settings, template_filename, keywords):
 
     env = Environment(loader=FileSystemLoader(template_path), undefined=StrictUndefined)
 
-    # addGlobalJinjaFunction(GetComponentLink)
-
     try:
         creator = env.get_template(template_filename)
 
@@ -181,11 +135,11 @@ def configureTemplate(settings, template_filename, keywords):
             "Failed rendering jinja template '" + template_filename + "'\n" + str(e)
         )
 
-    return replacedContent  # .encode('utf8')
+    return replacedContent
 
 
-def configureTemplateWrite(settings, template_filename, out_file, keywords):
+def configureTemplateWrite(settings, template_filename, html_output_filename, keywords):
 
-    html_code = configureTemplate(settings, template_filename, keywords)
-
-    out_file.write(html_code)
+    with codecs.open(html_output_filename, "w", "utf-8") as html_output_file:
+        html_code = configureTemplate(settings, template_filename, keywords)
+        html_output_file.write(html_code)
