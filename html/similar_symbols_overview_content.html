@@ -20,14 +20,23 @@ You should have received a copy of the GNU General Public License along with alo
 this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
-
+{% if symbols|length == 0 %}
+No symbols considered.<br>
+{% else %}
 <table class="sortable similar_symbols">
-  <thead><tr><th>ID</th><th>Symbols</th><th>Types</th><th>Size/bytes</th><th>Delta/bytes</th><th>Sig. Sim./%</th><th>Instr. Sim./%</th></thead>
+  <thead><tr><th>Id</th><th>Symbols</th><th>Types</th><th>Size/bytes</th><th>Delta/bytes</th><th>Sig. Sim./%</th><th>Instr. Sim./%</th></thead>
   <tbody>
 		{% for symbol in symbols -%}
 		<tr>
 		<td>
-		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}">{{ symbol["table_id"] }}</a>
+      {% if symbol["have_details_link"] == True %}
+		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}"  {{ link_target_frame }}>
+      {% endif %}
+		  {{ symbol["table_id"] }}
+      {% if symbol["have_details_link"] == True %}
+		  &#9432;
+		  </a>
+      {% endif %}
 		</td>
 		<td>
 		  {{ symbol["old_representation"] }}
@@ -57,3 +66,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 		{% endfor %}
   </tbody>
 </table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
+  <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
+	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Size</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Delta</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
+	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
+</table>
+{% endif %}

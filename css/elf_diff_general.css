@@ -1,7 +1,7 @@
 /*
 -*- coding: utf-8 -*-
 
--*- mode: python -*-
+-*- mode: css -*-
 
 elf_diff
 
@@ -166,3 +166,7 @@ table.bin_col td:nth-child(2) { text-align: right; font-family: monospace;}
 table.bin_col td:nth-child(3) { text-align: right; font-family: monospace;}
 
 table.diff td {font-family: monospace;}
+
+table.stats, tr, td {
+    border: none;
+}

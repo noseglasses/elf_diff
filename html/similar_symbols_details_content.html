@@ -20,8 +20,16 @@ You should have received a copy of the GNU General Public License along with alo
 this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
-
-<{{ header_tag }}><span class="monospace"><a name="{{ details_anchor }}"></a><a href="{{ overview_file }}#{{ overview_anchor }}">Similar pair {{ table_id }}</a>: old size: {{ old_size }} bytes, new size: {{ new_size }} bytes, delta: <span class="{{ size_diff_class }} number">{{ size_diff }}</span> bytes, sig. sim.: {{ signature_similarity}} %, instr. sim.: {{ instruction_similarity }} %</span></{{ header_tag }}>
+<{{ header_tag }}><span class="monospace">
+<a name="{{ details_anchor }}"></a>
+{% if have_return_links == True %} 
+<a href="{{ overview_file }}#{{ overview_anchor }}">
+{% endif %}
+Similar pair {{ table_id }}
+{% if have_return_links == True %} 
+</a>
+{% endif %}
+: old size: {{ old_size }} bytes, new size: {{ new_size }} bytes, delta: <span class="{{ size_diff_class }} number">{{ size_diff }}</span> bytes, sig. sim.: {{ signature_similarity}} %, instr. sim.: {{ instruction_similarity }} %</span></{{ header_tag }}>
 <p>
 <span class="monospace">Old: {{ old_representation }}</span>
 <br>

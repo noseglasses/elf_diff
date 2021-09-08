@@ -20,15 +20,22 @@ You should have received a copy of the GNU General Public License along with alo
 this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
-{% extends "page.html" %}
-{% block content %}
-<header>
-<p style="text-align:left;">
-    <span class="monospace">Elf_diff comparing {{ old_binary_file }} and {{ new_binary_file }}</span>
-    <span style="float:right;"><a href="{{index_file}}#home">&#x1F3E0;</a></span>
-    <hr>
-</p>
-</header>
-<H1>{{ page_title }}</H1>
-{{ details }}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head %}
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>{{ page_title }}</title>
+  {{ elf_diff_general_css_content }}
+  {{ sortable_js_content }}
+  {% endblock %}
+</head>
+<body>
+{% if have_title == True %}
+<H3>{{ page_title }}</H3>
+{% endif %}
+{{ content }}
+</body>
+</html>

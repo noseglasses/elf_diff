@@ -30,10 +30,10 @@ bin_dir = testing_dir + "/../bin"
 
 elf_diff_executable = bin_dir + "/elf_diff"
 
-old_binary = testing_dir + "/libelf_diff_test_static_1_old.a"
-new_binary = testing_dir + "/libelf_diff_test_static_1_new.a"
-old_binary2 = testing_dir + "/libelf_diff_test_static_2_old.a"
-new_binary2 = testing_dir + "/libelf_diff_test_static_2_new.a"
+old_binary = testing_dir + "/libelf_diff_test_release_old.a"
+new_binary = testing_dir + "/libelf_diff_test_release_new.a"
+old_binary2 = testing_dir + "/libelf_diff_test_debug_old.a"
+new_binary2 = testing_dir + "/libelf_diff_test_debug_new.a"
 
 verbose_output = True
 

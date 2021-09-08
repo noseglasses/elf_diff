@@ -117,10 +117,7 @@ class Settings(object):
             Parameter(
                 "html_dir", "The directory of the generated multi page HTML report."
             ),
-            Parameter(
-                "pdf_file",
-                "The filename of the generated pdf report. (details are skipped in pdf files).",
-            ),
+            Parameter("pdf_file", "The filename of the generated pdf report."),
             Parameter("project_title", "A project title to use for all reports."),
             Parameter(
                 "driver_file",
@@ -129,12 +126,6 @@ class Settings(object):
             Parameter(
                 "driver_template_file",
                 "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read.",
-            ),
-            Parameter(
-                "symbols_html_header",
-                "The type of html tag to use for symbol headers.",
-                default="H4",
-                no_cmd_line=True,
             ),
             Parameter(
                 "html_template_dir",
@@ -156,6 +147,18 @@ class Settings(object):
                 "similarity_threshold",
                 "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
                 default=0.5,
+            ),
+            Parameter(
+                "consider_equal_sized_identical",
+                "If this flag is defined, symbols of equal size are considered as identical (and thus ignored in most cases).",
+                default=False,
+                is_flag=True,
+            ),
+            Parameter(
+                "skip_details",
+                "If this flag is defined, report details are displayed",
+                default=False,
+                is_flag=True,
             ),
             Parameter(
                 "symbol_selection_regex",
@@ -186,12 +189,6 @@ class Settings(object):
                 "symbol_exclusion_regex_new",
                 "A regex that is applied to select symbols to be excluded for the new elf file",
                 default=None,
-            ),
-            Parameter(
-                "skip_details",
-                "If enabled, the details section of the report is ommitted",
-                default=False,
-                is_flag=True,
             ),
         ]
 

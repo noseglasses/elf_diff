@@ -21,5 +21,13 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
 
-<{{ header_tag }}><span class="monospace"><a name="{{ details_anchor }}"></a><a href="{{ overview_file }}#{{ overview_anchor }}">{{ name }}</a>: old size: {{ old_size }} bytes, new size: {{ new_size }} bytes, delta: <span class="{{ size_diff_class }} number">{{ size_diff }}</span> bytes</span></{{ header_tag }}>
+<{{ header_tag }}><span class="monospace"><a name="{{ details_anchor }}"></a>Persisting symbol
+{% if have_return_links == True %} 
+<a href="{{ overview_file }}#{{ overview_anchor }}">
+{% endif %}
+{{ name }}
+{% if have_return_links == True %} 
+</a>
+{% endif %}
+: old size: {{ old_size }} bytes, new size: {{ new_size }} bytes, delta: <span class="{{ size_diff_class }} number">{{ size_diff }}</span> bytes</span></{{ header_tag }}>
 {{ instruction_differences }}
