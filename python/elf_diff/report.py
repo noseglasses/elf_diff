@@ -23,6 +23,10 @@ from elf_diff.error_handling import unrecoverableError
 
 import elf_diff.html as html
 
+import tempfile
+import pdfkit
+import os
+
 
 class Report(object):
     def generate(self):
@@ -45,8 +49,6 @@ class Report(object):
 
         if self.settings.pdf_file:
 
-            import tempfile
-
             tmp_html_file = (
                 tempfile._get_default_tempdir()
                 + "/"
@@ -54,12 +56,12 @@ class Report(object):
                 + ".html"
             )
 
-            self.writeHTMLSingleFile(tmp_html_file, skip_details=True)
+            self.writeSinglePageHTMLReport(output_file=tmp_html_file)
 
-            import pdfkit
-
-            pdfkit.from_url(tmp_html_file, self.settings.pdf_file)
-
-            import os
+            pdfkit.from_url(
+                tmp_html_file,
+                self.settings.pdf_file,
+                options={"enable-local-file-access": "True"},
+            )
 
             os.remove(tmp_html_file)

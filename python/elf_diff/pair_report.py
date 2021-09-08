@@ -32,493 +32,424 @@ import codecs
 import operator
 import os
 import datetime
+from distutils import dir_util
 
 
-class PairReport(Report):
-    def __init__(self, settings):
+def getRelpath(html_output_file, target_dir):
+    html_dirname = os.path.dirname(html_output_file)
+    return os.path.relpath(target_dir, html_dirname)
 
-        self.settings = settings
+
+class HTMLContent(object):
+    def __init__(self):
+        self.visible = True
+        self.have_title = False
+        self.keywords = None
+        self.content = None
+        self.settings = None
         self.single_page = False
 
-        self.validateSettings()
+    def prepareKeywords(self):
+        pass
 
-        self.binary_pair = BinaryPair(
-            settings, settings.old_binary_filename, settings.new_binary_filename
+    def generateContent(self):
+        pass
+
+    def getFilename(self):
+        pass
+
+    def getRelPathToOverviewFile(self):
+        pass
+
+    def getContent(self):
+        self.prepareKeywords()
+        self.generateContent()
+        return self.content
+
+    def getHeaderKeywords(self, html_output_file):
+        base_dir = getRelpath(html_output_file, self.settings.html_dir)
+
+        sortable_js_content = f'<script src="{base_dir}/js/sorttable.js"></script>'
+        elf_diff_general_css_content = (
+            f'<link rel="stylesheet" href="{base_dir}/css/elf_diff_general.css">'
         )
 
-    def getReportBasename(self):
-        return "pair_report"
+        return {
+            "elf_diff_general_css_content": elf_diff_general_css_content,
+            "sortable_js_content": sortable_js_content,
+        }
 
-    def validateSettings(self):
-        if not self.settings.old_binary_filename:
-            unrecoverableError("No old binary filename defined")
+    def exportFiles(self, base_keywords):
+        self.prepareKeywords()
+        self.generateContent()
 
-        if not self.settings.new_binary_filename:
-            unrecoverableError("No new binary filename defined")
+        html_template_filename = "frame_content.html"
 
-    def persistingSymbolsDetailFilename(self, id):
-        return f"details/persisting_symbols/{id}.html"
+        html_output_file = f"{self.settings.html_dir}/" + self.getFilename()
+        title = self.getPageTitle()
 
-    def isolatedSymbolsDetailFilename(self, id, description):
-        return f"details/{description}_symbols/{id}.html"
+        keywords = self.keywords or {}
 
-    def similarSymbolsDetailFilename(self, id):
-        return f"details/similar_symbols/{id}.html"
+        keywords.update(base_keywords)
 
-    def generatePersistingSymbolKeywords(self, old_symbol, new_symbol, header_tag=None):
+        keywords.update(
+            {
+                "page_title": self.getPageTitle(),
+                "have_title": self.have_title,
+                "content": self.content,
+                "index_file": self.getRelPathToOverviewFile(),
+            }
+        )
 
-        size_diff = new_symbol.size - old_symbol.size
+        keywords.update(self.getHeaderKeywords(html_output_file))
 
-        if old_symbol.__eq__(new_symbol):
+        html.configureTemplateWrite(
+            self.settings, html_template_filename, html_output_file, keywords
+        )
+
+
+class PersistingSymbol(HTMLContent):
+    def __init__(self, old_symbol, new_symbol):
+        super().__init__()
+        self.old_symbol = old_symbol
+        self.new_symbol = new_symbol
+        self.header_tag = "H4"
+
+    def prepareKeywords(self):
+
+        if self.keywords is not None:
+            return
+
+        size_diff = self.new_symbol.size - self.old_symbol.size
+
+        if self.old_symbol.symbol_type == Symbol.type_data:
+            instruction_differences = "Data symbol -> no assembly"
+        elif self.old_symbol.__eq__(self.new_symbol):
             instruction_differences = "Instructions unchanged"
         else:
-            instruction_differences = old_symbol.getDifferencesAsHTML(new_symbol, "   ")
+            instruction_differences = self.old_symbol.getDifferencesAsHTML(
+                self.new_symbol, "   "
+            )
 
-        if header_tag is None:
-            header_tag = self.settings.symbols_html_header
-
-        overview_file = ""
-        overview_anchor = f"persisting_symbol_overview_{old_symbol.id}"
+        overview_anchor = f"persisting_symbol_overview_{self.old_symbol.id}"
         details_file = ""
-        details_anchor = f"persisting_symbol_details_{old_symbol.id}"
+        details_anchor = f"persisting_symbol_details_{self.old_symbol.id}"
 
         if self.single_page == False:
-            overview_file = "../../index.html"
-            details_file = self.persistingSymbolsDetailFilename(old_symbol.id)
+            details_file = self.getFilename()
+            have_return_links = False
+        else:
+            have_return_links = True
 
-        return {
-            "old_id": str(old_symbol.id),
-            "new_id": str(new_symbol.id),
-            "name": old_symbol.name,
-            "type": new_symbol.type,
-            "old_size": str(old_symbol.size),
-            "new_size": str(new_symbol.size),
+        if self.old_symbol.symbol_type == Symbol.type_data:
+            have_details_link = False
+        else:
+            have_details_link = True
+
+        self.keywords = {
+            "old_id": str(self.old_symbol.id),
+            "new_id": str(self.new_symbol.id),
+            "name": self.old_symbol.name,
+            "type": self.new_symbol.type,
+            "old_size": str(self.old_symbol.size),
+            "new_size": str(self.new_symbol.size),
             "size_diff": str(size_diff),
             "size_diff_class": html.highlightNumberClass(size_diff),
             "instruction_differences": instruction_differences,
-            "header_tag": header_tag,
-            "overview_file": overview_file,
+            "header_tag": self.header_tag,
+            "overview_file": self.getRelPathToOverviewFile() + "/index.html",
             "overview_anchor": overview_anchor,
             "details_file": details_file,
             "details_anchor": details_anchor,
+            "have_return_links": have_return_links,
+            "have_details_link": have_details_link,
         }
 
-    def generateAllPersistingSymbolsKeywords(self):
+    def generateContent(self):
 
-        symbols_keywords = []
-
-        old_binary = self.binary_pair.old_binary
-        new_binary = self.binary_pair.new_binary
-
-        diff_by_symbol = {}
-        for symbol_name in self.binary_pair.persisting_symbol_names:
-            old_symbol = old_binary.symbols[symbol_name]
-            new_symbol = new_binary.symbols[symbol_name]
-
-            size_difference = new_symbol.size - old_symbol.size
-
-            diff_by_symbol[symbol_name] = size_difference
-
-        sorted_by_diff = sorted(
-            diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True
-        )
-
-        for i in progressbar.progressbar(range(len(sorted_by_diff))):
-
-            symbol_tuple = sorted_by_diff[i]
-
-            symbol_name = symbol_tuple[0]
-
-            old_symbol = old_binary.symbols[symbol_name]
-            new_symbol = new_binary.symbols[symbol_name]
-
-            symbols_keywords.append(
-                self.generatePersistingSymbolKeywords(old_symbol, new_symbol)
-            )
-
-        return symbols_keywords
-
-    def generatePersistingSymbolsOverviewContent(self):
-
-        html_template_filename = "persisting_symbols_overview_content.html"
-
-        overall_size_difference = 0
-        content = ""
-
-        for symbol_name in self.binary_pair.persisting_symbol_names:
-            new_symbol = self.binary_pair.new_binary.symbols[symbol_name]
-            if new_symbol.livesInProgramMemory():
-                old_symbol = self.binary_pair.old_binary.symbols[symbol_name]
-                overall_size_difference += new_symbol.size - old_symbol.size
-
-        if overall_size_difference == 0:
-            return content, overall_size_difference
-
-        print("Rendering persisting symbols HTML table...")
-        sys.stdout.flush()
-
-        content = html.configureTemplate(
-            self.settings,
-            html_template_filename,
-            {"symbols": self.generateAllPersistingSymbolsKeywords()},
-        )
-
-        return content, overall_size_difference
-
-    def generatePersistingSymbolsOverview(self):
-
-        content = ""
-        visible = False
-        overall_size_difference = 0
-
-        if len(self.binary_pair.persisting_symbol_names) == 0:
-            return table_html, visible, html.highlightNumber(overall_size_difference)
-
-        (
-            content,
-            overall_size_difference,
-        ) = self.generatePersistingSymbolsOverviewContent()
-
-        visible = True
-
-        return content, visible, html.highlightNumber(overall_size_difference)
-
-    def generatePersistingSymbolDetailContent(self, symbol_keywords):
+        if self.content is not None:
+            return
 
         html_template_filename = "persisting_symbol_details_content.html"
 
-        return html.configureTemplate(
-            self.settings, html_template_filename, symbol_keywords
+        self.content = html.configureTemplate(
+            self.settings, html_template_filename, self.keywords
         )
 
-    def generatePersistingSymbolDetailsHTML(self):
+    def getFilename(self):
+        return f"details/persisting/{self.old_symbol.id}.html"
 
-        if len(self.binary_pair.persisting_symbol_names) == 0:
-            return ""
+    def getPageTitle(self):
+        return "Persisting Symbol " + self.keywords["name"]
 
-        symbols_keywords = self.generateAllPersistingSymbolsKeywords()
+    def getRelPathToOverviewFile(self):
+        if self.single_page == False:
+            return "../.."
+        return "."
+
+
+class PersistingSymbolsOverview(HTMLContent):
+    def __init__(self, persisting_symbols):
+        super().__init__()
+        self.persisting_symbols = persisting_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
+
+        if len(self.persisting_symbols) == 0:
+            self.content = "No persisting symbols"
+            return
+
+        html_template_filename = "persisting_symbols_overview_content.html"
+
+        self.overall_size_difference = 0
+        self.content = ""
+
+        for persisting_symbol in self.persisting_symbols:
+            new_symbol = persisting_symbol.new_symbol
+            if new_symbol.livesInProgramMemory():
+                old_symbol = persisting_symbol.old_symbol
+                self.overall_size_difference += new_symbol.size - old_symbol.size
+
+        if self.single_page == False:
+            link_target_frame = 'target="details"'
+        else:
+            link_target_frame = ""
+
+        symbols_keywords = []
+
+        for persisting_symbol in self.persisting_symbols:
+            persisting_symbol.prepareKeywords()
+            symbols_keywords.append(persisting_symbol.keywords)
+
+        self.content = html.configureTemplate(
+            self.settings,
+            html_template_filename,
+            {"symbols": symbols_keywords, "link_target_frame": link_target_frame},
+        )
+
+        if self.settings.consider_equal_sized_identical:
+            self.content += "Equal sized symbols forcefully ignored."
+
+    def getFilename(self):
+        return "persisting_symbols_overview.html"
+
+    def getPageTitle(self):
+        return "Persisting Symbols Overview"
+
+    def getRelPathToOverviewFile(self):
+        return "."
+
+
+class PersistingSymbolsDetails(HTMLContent):
+    def __init__(self, persisting_symbols):
+        super().__init__()
+        self.persisting_symbols = persisting_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
 
         symbols_listed = False
         html_lines = []
 
-        print("Rendering persisting symbols details HTML...")
-        sys.stdout.flush()
-        for symbol_keywords in progressbar.progressbar(symbols_keywords):
+        for persisting_symbol in self.persisting_symbols:
+
+            persisting_symbol.prepareKeywords()
 
             symbols_listed = True
 
-            html_lines.append(
-                self.generatePersistingSymbolDetailContent(symbol_keywords)
-            )
+            if persisting_symbol.keywords["have_details_link"] == False:
+                continue
+
+            html_lines.append(persisting_symbol.getContent())
 
         if not symbols_listed:
-            return "No persisting functions or no symbol changes"
-
-        return "\n".join(html_lines)
-
-    def generatePersistingSymbolDetailsIndividualHTML(self):
-
-        if len(self.binary_pair.persisting_symbol_names) == 0:
+            self.content = "No persisting functions or no symbol changes"
             return
 
-        symbols_keywords = self.generateAllPersistingSymbolsKeywords()
+        self.content = "\n".join(html_lines)
 
-        html_template_filename = "details.html"
+    def exportFiles(self, base_keywords):
+        if self.single_page == True:
+            return
 
-        print("Rendering persisting symbols details individual HTML files...")
-        sys.stdout.flush()
-        for symbol_keywords in progressbar.progressbar(symbols_keywords):
+        for persisting_symbol in self.persisting_symbols:
+            persisting_symbol.exportFiles(base_keywords)
 
-            self.generatePersistingSymbolDetailContent(symbol_keywords)
 
-            old_id = symbol_keywords["old_id"]
+class IsolatedSymbol(HTMLContent):
+    def __init__(self, description, symbol):
+        super().__init__()
+        self.description = description
+        self.symbol = symbol
+        self.header_tag = "H4"
 
-            html_output_file = (
-                f"{self.settings.html_dir}/"
-                + self.persistingSymbolsDetailFilename(old_id)
-            )
+    def prepareKeywords(self):
 
-            details = self.generatePersistingSymbolDetailContent(symbol_keywords)
-
-            template_keywords = self.getBasePageKeywords()
-            template_keywords.update(
-                {
-                    "page_title": "Persisting Symbol " + symbol_keywords["name"],
-                    "details": details,
-                    "index_file": symbol_keywords["overview_file"],
-                }
-            )
-
-            html.configureTemplateWrite(
-                self.settings,
-                html_template_filename,
-                html_output_file,
-                template_keywords,
-            )
-
-    def generateIsolatedSymbolKeywords(self, symbol, description, header_tag=None):
-
-        if header_tag is None:
-            header_tag = self.settings.symbols_html_header
+        if self.keywords is not None:
+            return
 
         overview_file = ""
-        overview_anchor = f"{description}_symbol_overview_{symbol.id}"
+        overview_anchor = f"{self.description}_symbol_overview_{self.symbol.id}"
         details_file = ""
-        details_anchor = f"{description}_symbol_details_{symbol.id}"
+        details_anchor = f"{self.description}_symbol_details_{self.symbol.id}"
 
         if self.single_page == False:
             overview_file = "../../index.html"
-            details_file = self.isolatedSymbolsDetailFilename(symbol.id, description)
+            details_file = self.getFilename()
+            have_return_links = False
+        else:
+            have_return_links = True
 
-        return {
-            "id": str(symbol.id),
-            "name": symbol.name,
-            "type": symbol.type,
-            "size": str(symbol.size),
-            "instructions": symbol.getInstructionsBlockEscaped(""),
-            "header_tag": header_tag,
+        if self.symbol.symbol_type == Symbol.type_data:
+            have_details_link = False
+        else:
+            have_details_link = True
+
+        self.keywords = {
+            "description": self.description,
+            "id": str(self.symbol.id),
+            "name": self.symbol.name,
+            "type": self.symbol.type,
+            "size": str(self.symbol.size),
+            "instructions": self.symbol.getInstructionsBlockEscaped(""),
+            "header_tag": self.header_tag,
             "overview_file": overview_file,
             "overview_anchor": overview_anchor,
             "details_file": details_file,
             "details_anchor": details_anchor,
+            "have_return_links": have_return_links,
+            "have_details_link": have_details_link,
         }
 
-    def generateIsolatedSymbolsOverviewContent(
-        self, symbol_names, symbols_by_name, description
-    ):
+    def generateContent(self):
 
-        html_template_filename = "isolated_symbols_overview_content.html"
-
-        template_symbols = []
-        overal_symbol_size = 0
-
-        print(f"Rendering {description} symbols HTML table...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(symbol_names))):
-
-            symbol_name = symbol_names[i]
-            symbol = symbols_by_name[symbol_name]
-
-            template_symbols.append(
-                self.generateIsolatedSymbolKeywords(symbol, description)
-            )
-
-            overal_symbol_size += symbol.size
-
-        content = html.configureTemplate(
-            self.settings, html_template_filename, {"symbols": template_symbols}
-        )
-
-        return content, overal_symbol_size
-
-    def generateIsolatedSymbolsOverview(
-        self, symbol_names, symbols_by_name, description
-    ):
-
-        content = ""
-        overal_symbol_size = 0
-        visible = False
-
-        if len(symbol_names) == 0:
-            return content, visible, overal_symbol_size
-
-        content, overal_symbol_size = self.generateIsolatedSymbolsOverviewContent(
-            symbol_names, symbols_by_name, description
-        )
-
-        if overal_symbol_size != 0:
-            visible = True
-
-        return content, visible, html.highlightNumber(overal_symbol_size)
-
-    def generateIsolatedSymbolDetailContent(self, symbol_keywords):
+        if self.content is not None:
+            return
 
         html_template_filename = "isolated_symbol_details_content.html"
 
-        return html.configureTemplate(
-            self.settings, html_template_filename, symbol_keywords
+        self.content = html.configureTemplate(
+            self.settings, html_template_filename, self.keywords
         )
 
-    def generateIsolatedSymbolDetailsHTML(self, symbol_names, symbols, description):
+    def getFilename(self):
+        return f"details/{self.description}/{self.symbol.id}.html"
 
-        if len(symbol_names) == 0:
-            return ""
+    def getPageTitle(self):
+        return self.description.capitalize() + " Symbol " + self.keywords["name"]
+
+    def getRelPathToOverviewFile(self):
+        if self.single_page == False:
+            return "../.."
+        return "."
+
+
+class IsolatedSymbolsOverview(HTMLContent):
+    def __init__(self, description, isolated_symbols):
+        super().__init__()
+        self.description = description
+        self.isolated_symbols = isolated_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
+
+        if len(self.isolated_symbols) == 0:
+            self.content = f"No {self.description} symbols"
+            return
+
+        html_template_filename = "isolated_symbols_overview_content.html"
+
+        self.overall_symbol_size = 0
+        symbols_keywords = []
+        for isolated_symbol in self.isolated_symbols:
+            isolated_symbol.prepareKeywords()
+            symbols_keywords.append(isolated_symbol.keywords)
+            self.overall_symbol_size += isolated_symbol.symbol.size
+
+        if self.single_page == False:
+            link_target_frame = 'target="details"'
+        else:
+            link_target_frame = ""
+
+        self.content = html.configureTemplate(
+            self.settings,
+            html_template_filename,
+            {"symbols": symbols_keywords, "link_target_frame": link_target_frame},
+        )
+
+    def getFilename(self):
+        return f"{self.description}_symbols_overview.html"
+
+    def getPageTitle(self):
+        return self.description.capitalize() + " Symbols Overview"
+
+    def getRelPathToOverviewFile(self):
+        return "."
+
+
+class IsolatedSymbolsDetails(HTMLContent):
+    def __init__(self, description, isolated_symbols):
+        super().__init__()
+        self.isolated_symbols = isolated_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
 
         symbols_listed = False
-
         html_lines = []
 
-        print(f"Rendering {description} symbols details HTML...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(symbol_names))):
-            symbol_name = symbol_names[i]
-            symbol = symbols[symbol_name]
+        for isolated_symbol in self.isolated_symbols:
 
-            if symbol.symbol_type == Symbol.type_data:
+            isolated_symbol.prepareKeywords()
+
+            if isolated_symbol.keywords["have_details_link"] == False:
                 continue
-
-            symbol_keywords = self.generateIsolatedSymbolKeywords(symbol, description)
-
-            content = self.generateIsolatedSymbolDetailContent(symbol_keywords)
-
-            html_lines.append(content)
 
             symbols_listed = True
 
+            html_lines.append(isolated_symbol.getContent())
+
         if not symbols_listed:
-            return f"No functions {description}"
-
-        return "\n".join(html_lines)
-
-    def generateIsolatedSymbolDetailsIndividualHTML(
-        self, symbol_names, symbols, description
-    ):
-
-        if len(symbol_names) == 0:
+            self.content = f"No functions {self.description}"
             return
 
-        html_template_filename = "details.html"
+        self.content = "\n".join(html_lines)
 
-        print(f"Rendering {description} symbols details individual HTML files...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(symbol_names))):
-            symbol_name = symbol_names[i]
-            symbol = symbols[symbol_name]
+    def exportFiles(self, base_keywords):
+        if self.single_page == True:
+            return
 
-            if symbol.symbol_type == Symbol.type_data:
-                continue
+        for isolated_symbol in self.isolated_symbols:
+            isolated_symbol.exportFiles(base_keywords)
 
-            symbol_keywords = self.generateIsolatedSymbolKeywords(symbol, description)
 
-            details = self.generateIsolatedSymbolDetailContent(symbol_keywords)
+class SimilarSymbolPair(HTMLContent):
+    def __init__(self, symbol_pair, id):
+        super().__init__()
+        self.symbol_pair = symbol_pair
+        self.header_tag = "H4"
+        self.id = id
 
-            id = symbol_keywords["id"]
+    def prepareKeywords(self):
 
-            html_output_file = (
-                f"{self.settings.html_dir}/"
-                + self.isolatedSymbolsDetailFilename(id, description)
-            )
+        if self.keywords is not None:
+            return
 
-            template_keywords = self.getBasePageKeywords()
-            template_keywords.update(
-                {
-                    "page_title": description.capitalize()
-                    + " Symbol "
-                    + symbol_keywords["name"],
-                    "details": details,
-                    "index_file": symbol_keywords["overview_file"],
-                }
-            )
-            html.configureTemplateWrite(
-                self.settings,
-                html_template_filename,
-                html_output_file,
-                template_keywords,
-            )
-
-    def generateDisappearedSymbolsInfo(self):
-
-        old_binary = self.binary_pair.old_binary
-
-        symbol_names_sorted = sorted(
-            self.binary_pair.disappeared_symbol_names,
-            key=lambda symbol_name: old_binary.symbols[symbol_name].size,
-            reverse=True,
-        )
-
-        return symbol_names_sorted, old_binary.symbols, "disappeared"
-
-    def generateDisappearedSymbolsOverviewContent(self):
-        (
-            symbol_names,
-            symbols_by_name,
-            description,
-        ) = self.generateDisappearedSymbolsInfo()
-        return self.generateIsolatedSymbolsOverviewContent(
-            symbol_names=symbol_names,
-            symbols_by_name=symbols_by_name,
-            description=description,
-        )
-
-    def generateDisappearedSymbolsOverview(self):
-        (
-            symbol_names,
-            symbols_by_name,
-            description,
-        ) = self.generateDisappearedSymbolsInfo()
-        return self.generateIsolatedSymbolsOverview(
-            symbol_names=symbol_names,
-            symbols_by_name=symbols_by_name,
-            description=description,
-        )
-
-    def generateDisappearedSymbolDetailsHTML(self):
-
-        return self.generateIsolatedSymbolDetailsHTML(
-            symbol_names=self.binary_pair.disappeared_symbol_names,
-            symbols=self.binary_pair.old_binary.symbols,
-            description="disappeared",
-        )
-
-    def generateDisappearedSymbolDetailsIndividualHTML(self):
-
-        return self.generateIsolatedSymbolDetailsIndividualHTML(
-            symbol_names=self.binary_pair.disappeared_symbol_names,
-            symbols=self.binary_pair.old_binary.symbols,
-            description="disappeared",
-        )
-
-    def generateNewSymbolsInfo(self):
-
-        new_binary = self.binary_pair.new_binary
-
-        symbol_names_sorted = sorted(
-            self.binary_pair.new_symbol_names,
-            key=lambda symbol_name: new_binary.symbols[symbol_name].size,
-            reverse=True,
-        )
-
-        return symbol_names_sorted, new_binary.symbols, "new"
-
-    def generateNewSymbolsOverviewContent(self):
-        symbol_names, symbols_by_name, description = self.generateNewSymbolsInfo()
-        return self.generateIsolatedSymbolsOverviewContent(
-            symbol_names=symbol_names,
-            symbols_by_name=symbols_by_name,
-            description=description,
-        )
-
-    def generateNewSymbolsOverview(self):
-        symbol_names, symbols_by_name, description = self.generateNewSymbolsInfo()
-        return self.generateIsolatedSymbolsOverview(
-            symbol_names=symbol_names,
-            symbols_by_name=symbols_by_name,
-            description=description,
-        )
-
-    def generateNewSymbolDetailsHTML(self):
-
-        return self.generateIsolatedSymbolDetailsHTML(
-            symbol_names=self.binary_pair.new_symbol_names,
-            symbols=self.binary_pair.new_binary.symbols,
-            description="new",
-        )
-
-    def generateNewSymbolDetailsIndividualHTML(self):
-
-        return self.generateIsolatedSymbolDetailsIndividualHTML(
-            symbol_names=self.binary_pair.new_symbol_names,
-            symbols=self.binary_pair.new_binary.symbols,
-            description="new",
-        )
-
-    def generateSimilarSymbolsKeywords(self, index, symbol_pair, header_tag=None):
-
-        if header_tag is None:
-            header_tag = self.settings.symbols_html_header
-
-        old_symbol = symbol_pair.old_symbol
-        new_symbol = symbol_pair.new_symbol
+        old_symbol = self.symbol_pair.old_symbol
+        new_symbol = self.symbol_pair.new_symbol
 
         old_symbol_name = html.escapeString(old_symbol.name)
         new_symbol_name = html.escapeString(new_symbol.name)
@@ -527,221 +458,176 @@ class PairReport(Report):
         new_representation = html.diffStringsTarget(old_symbol.name, new_symbol.name)
 
         instructions_similarity_str = "N/A"
-        if symbol_pair.instructions_similarity is not None:
+        if self.symbol_pair.instructions_similarity is not None:
             instructions_similarity_str = "{:.1f}".format(
-                symbol_pair.instructions_similarity * 100.0
+                self.symbol_pair.instructions_similarity * 100.0
             )
 
         size_diff = new_symbol.size - old_symbol.size
 
-        overview_file = ""
-        overview_anchor = f"similar_symbols_overview_{index}"
+        overview_anchor = f"similar_symbols_overview_{self.id}"
         details_file = ""
-        details_anchor = f"similar_symbols_details_{index}"
+        details_anchor = f"similar_symbols_details_{self.id}"
 
         if self.single_page == False:
-            overview_file = "../../index.html"
-            details_file = self.similarSymbolsDetailFilename(index)
+            details_file = self.getFilename()
+            have_return_links = False
+        else:
+            have_return_links = True
 
-        return {
-            "table_id": str(index),
+        if old_symbol.symbol_type == Symbol.type_data:
+            have_details_link = False
+        else:
+            have_details_link = True
+
+        self.keywords = {
+            "table_id": str(self.id),
             "old_representation": old_representation,
             "new_representation": new_representation,
             "old_type": old_symbol.type,
             "new_type": new_symbol.type,
             "old_size": str(old_symbol.size),
             "new_size": str(new_symbol.size),
-            "size_diff": str(size_diff),
+            "size_diff": "%+d" % size_diff,
             "size_diff_class": html.highlightNumberClass(size_diff),
             "signature_similarity": "{:.1f}".format(
-                symbol_pair.symbol_similarity * 100.0
+                self.symbol_pair.symbol_similarity * 100.0
             ),
             "instruction_similarity": instructions_similarity_str,
             "instruction_differences": old_symbol.getDifferencesAsHTML(
                 new_symbol, "   "
             ),
-            "header_tag": header_tag,
-            "overview_file": overview_file,
+            "header_tag": self.header_tag,
             "overview_anchor": overview_anchor,
             "details_file": details_file,
             "details_anchor": details_anchor,
+            "have_return_links": have_return_links,
+            "have_details_link": have_details_link,
+            "overview_file": self.getRelPathToOverviewFile(),
         }
 
-    def generateSimilarSymbolsOverviewContent(self):
+    def generateContent(self):
 
-        html_template_filename = "similar_symbols_overview_content.html"
-        template_symbols = []
-
-        print("Rendering similar symbols HTML table...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
-
-            symbol_pair = self.binary_pair.similar_symbols[i]
-
-            template_symbols.append(self.generateSimilarSymbolsKeywords(i, symbol_pair))
-
-        content = html.configureTemplate(
-            self.settings, html_template_filename, {"symbols": template_symbols}
-        )
-
-        return content
-
-    def generateSimilarSymbolsOverview(self):
-
-        content = ""
-        visible = False
-
-        if len(self.binary_pair.similar_symbols) == 0:
-            return content, visible, len(self.binary_pair.similar_symbols)
-
-        content = self.generateSimilarSymbolsOverviewContent()
-
-        visible = True
-
-        return content, visible, len(self.binary_pair.similar_symbols)
-
-    def generateSimilarSymbolsDetailsContent(self, symbol_keywords):
+        if self.content is not None:
+            return
 
         html_template_filename = "similar_symbols_details_content.html"
 
-        return html.configureTemplate(
-            self.settings, html_template_filename, symbol_keywords
+        self.content = html.configureTemplate(
+            self.settings, html_template_filename, self.keywords
         )
 
-    def generateSimilarSymbolDetailsHTML(self):
+    def getFilename(self):
+        return f"details/similar/{self.id}.html"
 
-        if len(self.binary_pair.similar_symbols) == 0:
-            return ""
+    def getPageTitle(self):
+        return f"Similar Symbol Pair {self.id}"
+
+    def getRelPathToOverviewFile(self):
+        if self.single_page == False:
+            return "../.."
+        return "."
+
+
+class SimilarSymbolsOverview(HTMLContent):
+    def __init__(self, similar_symbols):
+        super().__init__()
+        self.similar_symbols = similar_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
+
+        if len(self.similar_symbols) == 0:
+            self.content = "No similar symbols"
+            return
+
+        html_template_filename = "similar_symbols_overview_content.html"
+
+        symbols_keywords = []
+        for similar_symbol in self.similar_symbols:
+            similar_symbol.prepareKeywords()
+            symbols_keywords.append(similar_symbol.keywords)
+
+        if self.single_page == False:
+            link_target_frame = 'target="details"'
+        else:
+            link_target_frame = ""
+
+        self.content = html.configureTemplate(
+            self.settings,
+            html_template_filename,
+            {"symbols": symbols_keywords, "link_target_frame": link_target_frame},
+        )
+
+    def getFilename(self):
+        return "similar_symbols_overview.html"
+
+    def getPageTitle(self):
+        return "Similar Symbols Overview"
+
+    def getRelPathToOverviewFile(self):
+        return "."
+
+
+class SimilarSymbolsDetails(HTMLContent):
+    def __init__(self, similar_symbols):
+        super().__init__()
+        self.similar_symbols = similar_symbols
+        self.have_title = True
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
 
         symbols_listed = False
-
         html_lines = []
 
-        print("Rendering similar symbols details HTML...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
-            symbol_pair = self.binary_pair.similar_symbols[i]
+        for similar_symbol in self.similar_symbols:
 
-            template_keywords = self.generateSimilarSymbolsKeywords(i, symbol_pair)
+            similar_symbol.prepareKeywords()
 
-            html_lines.append(
-                self.generateSimilarSymbolsDetailsContent(template_keywords)
-            )
+            if similar_symbol.keywords["have_details_link"] == False:
+                continue
 
             symbols_listed = True
 
+            html_lines.append(similar_symbol.getContent())
+
         if not symbols_listed:
-            return "No similar functions or no implementation changes"
+            self.content = "No similar symbol pairss"
+            return
 
-        return "\n".join(html_lines)
+        self.content = "\n".join(html_lines)
 
-    def generateSimilarSymbolDetailsIndividualHTML(self):
+    def exportFiles(self, base_keywords):
+        if self.single_page == True:
+            return
 
-        if len(self.binary_pair.similar_symbols) == 0:
-            return ""
+        for similar_symbol in self.similar_symbols:
+            similar_symbol.exportFiles(base_keywords)
 
-        html_template_filename = "details.html"
 
-        print("Rendering similar symbols details individual HTML files...")
-        sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
-            symbol_pair = self.binary_pair.similar_symbols[i]
+class StatisticsOverview(HTMLContent):
+    def __init__(self, binary_pair):
+        super().__init__()
+        self.binary_pair = binary_pair
+        self.have_title = True
 
-            symbol_keywords = self.generateSimilarSymbolsKeywords(i, symbol_pair)
+    def prepareKeywords(self):
 
-            details = self.generateSimilarSymbolsDetailsContent(symbol_keywords)
-
-            id = symbol_keywords["table_id"]
-
-            html_output_file = (
-                f"{self.settings.html_dir}/" + self.similarSymbolsDetailFilename(id)
-            )
-
-            template_keywords = self.getBasePageKeywords()
-            template_keywords.update(
-                {
-                    "page_title": "Similar Symbols " + str(id),
-                    "details": details,
-                    "index_file": symbol_keywords["overview_file"],
-                }
-            )
-            html.configureTemplateWrite(
-                self.settings,
-                html_template_filename,
-                html_output_file,
-                template_keywords,
-            )
-
-    def getBasePageKeywords(self):
-
-        if self.settings.project_title:
-            doc_title = html.escapeString(self.settings.project_title)
-        else:
-            doc_title = "ELF Binary Comparison"
-
-        return {
-            "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses",
-            "doc_title": doc_title,
-            "elf_diff_repo_base": self.settings.repo_path,
-            "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "elfdiff_git_version": gitRepoInfo(self.settings),
-            "home": '<a href="#home">&#x21A9;</a>',
-            "old_binary_file": html.escapeString(self.settings.old_alias),
-            "new_binary_file": html.escapeString(self.settings.new_alias),
-        }
-
-    def getBaseTitlePageTemplateKeywords(self, skip_details=False):
+        if self.keywords is not None:
+            return
 
         old_binary = self.binary_pair.old_binary
         new_binary = self.binary_pair.new_binary
 
-        if skip_details:
-            details_visibile = False
-        else:
-            details_visibile = True
-
-        toc_details_visibile = True
-
-        (
-            persisting_symbols_overview,
-            persisting_symbols_overview_visible,
-            persisting_symbols_delta,
-        ) = self.generatePersistingSymbolsOverview()
-        (
-            disappeared_symbols_overview,
-            disappeared_symbols_overview_visible,
-            disappeared_symbols_size,
-        ) = self.generateDisappearedSymbolsOverview()
-        (
-            new_symbols_overview,
-            new_symbols_overview_visible,
-            new_symbols_size,
-        ) = self.generateNewSymbolsOverview()
-        (
-            similar_symbols_overview,
-            similar_symbols_overview_visible,
-            num_similar_symbols,
-        ) = self.generateSimilarSymbolsOverview()
-
-        if self.settings.build_info == "":
-            build_info_visible = False
-        else:
-            build_info_visible = True
-
-        binary_details_visible = False
-        if self.settings.old_binary_info == "":
-            old_binary_info_visible = False
-        else:
-            old_binary_info_visible = True
-            binary_details_visible = True
-
-        if self.settings.new_binary_info == "":
-            new_binary_info_visible = False
-        else:
-            new_binary_info_visible = True
-            binary_details_visible = True
-
-        template_keywords = {
+        self.keywords = {
+            "old_binary_file": html.escapeString(self.settings.old_alias),
+            "new_binary_file": html.escapeString(self.settings.new_alias),
             "code_size_old_overall": str(old_binary.progmem_size),
             "code_size_new_overall": str(new_binary.progmem_size),
             "code_size_change_overall": html.highlightNumberDelta(
@@ -769,114 +655,470 @@ class PairReport(Report):
             ),
             "total_symbols_old": str(len(old_binary.symbols.keys())),
             "total_symbols_new": str(len(new_binary.symbols.keys())),
+        }
+
+    def generateContent(self):
+
+        if self.content is not None:
+            return
+
+        html_template_filename = "stats.html"
+
+        self.content = html.configureTemplate(
+            self.settings, html_template_filename, self.keywords
+        )
+
+    def getFilename(self):
+        return "stats.html"
+
+    def getPageTitle(self):
+        return "Statistics"
+
+    def getRelPathToOverviewFile(self):
+        return "."
+
+
+class PairReport(Report):
+    def __init__(self, settings):
+
+        self.settings = settings
+        self.single_page = False
+
+        self.validateSettings()
+
+        self.binary_pair = BinaryPair(
+            settings, settings.old_binary_filename, settings.new_binary_filename
+        )
+
+        self.is_prepared = False
+
+        self.persisting_symbols_overview = None
+        self.persisting_symbols_details = None
+
+        self.disappeared_symbols_overview = None
+        self.disappeared_symbols_details = None
+
+        self.new_symbols_overview = None
+        self.new_symbols_details = None
+
+        self.statistics_overview = None
+
+        self.base_page_keywords = None
+
+        self.html_contents = []
+
+    def getReportBasename(self):
+        return "pair_report"
+
+    def validateSettings(self):
+        if not self.settings.old_binary_filename:
+            unrecoverableError("No old binary filename defined")
+
+        if not self.settings.new_binary_filename:
+            unrecoverableError("No new binary filename defined")
+
+    def prepareHTMLContent(self, html_content):
+        html_content.settings = self.settings
+        html_content.single_page = self.single_page
+
+    def registerHTMLContent(self, html_content):
+        self.prepareHTMLContent(html_content)
+        self.html_contents.append(html_content)
+
+    def preparePersistingSymbols(self):
+
+        print("Preparing persisting symbols ...")
+        sys.stdout.flush()
+
+        old_binary = self.binary_pair.old_binary
+        new_binary = self.binary_pair.new_binary
+
+        diff_by_symbol = {}
+        for symbol_name in self.binary_pair.persisting_symbol_names:
+            old_symbol = old_binary.symbols[symbol_name]
+            new_symbol = new_binary.symbols[symbol_name]
+
+            size_difference = new_symbol.size - old_symbol.size
+
+            if (size_difference == 0) and self.settings.consider_equal_sized_identical:
+                continue
+
+            diff_by_symbol[symbol_name] = size_difference
+
+        sorted_by_diff = sorted(
+            diff_by_symbol.items(), key=operator.itemgetter(1), reverse=True
+        )
+
+        persisting_symbols = []
+        for i in progressbar.progressbar(range(len(sorted_by_diff))):
+
+            symbol_tuple = sorted_by_diff[i]
+
+            symbol_name = symbol_tuple[0]
+
+            old_symbol = old_binary.symbols[symbol_name]
+            new_symbol = new_binary.symbols[symbol_name]
+
+            persisting_symbol = PersistingSymbol(
+                old_symbol=old_symbol, new_symbol=new_symbol
+            )
+
+            self.prepareHTMLContent(persisting_symbol)
+
+            persisting_symbols.append(persisting_symbol)
+
+        self.persisting_symbols_overview = PersistingSymbolsOverview(
+            persisting_symbols=persisting_symbols
+        )
+        self.registerHTMLContent(self.persisting_symbols_overview)
+
+        self.persisting_symbols_details = PersistingSymbolsDetails(
+            persisting_symbols=persisting_symbols
+        )
+        self.registerHTMLContent(self.persisting_symbols_details)
+
+    def prepareIsolatedSymbols(self, description, binary, symbol_names, symbols):
+
+        print(f"Preparing {description} symbols ...")
+        sys.stdout.flush()
+
+        symbol_names_sorted = sorted(
+            symbol_names,
+            key=lambda symbol_name: symbols[symbol_name].size,
+            reverse=True,
+        )
+
+        isolated_symbols = []
+        for symbol_name in progressbar.progressbar(symbol_names_sorted):
+            symbol = binary.symbols[symbol_name]
+
+            isolated_symbol = IsolatedSymbol(description, symbol)
+            self.prepareHTMLContent(isolated_symbol)
+
+            isolated_symbols.append(isolated_symbol)
+
+        overview = IsolatedSymbolsOverview(
+            description, isolated_symbols=isolated_symbols
+        )
+        self.registerHTMLContent(overview)
+
+        details = IsolatedSymbolsDetails(description, isolated_symbols=isolated_symbols)
+        self.registerHTMLContent(details)
+
+        return overview, details
+
+    def prepareDisappearedSymbols(self):
+
+        (
+            self.disappeared_symbols_overview,
+            self.disappeared_symbols_details,
+        ) = self.prepareIsolatedSymbols(
+            description="disappeared",
+            binary=self.binary_pair.old_binary,
+            symbol_names=self.binary_pair.disappeared_symbol_names,
+            symbols=self.binary_pair.old_binary.symbols,
+        )
+
+    def prepareNewSymbols(self):
+
+        (
+            self.new_symbols_overview,
+            self.new_symbols_details,
+        ) = self.prepareIsolatedSymbols(
+            description="new",
+            binary=self.binary_pair.new_binary,
+            symbol_names=self.binary_pair.new_symbol_names,
+            symbols=self.binary_pair.new_binary.symbols,
+        )
+
+    def prepareSimilarSymbols(self):
+
+        print("Preparing similar symbols ...")
+        sys.stdout.flush()
+
+        similar_symbols = []
+        id = 0
+        for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
+
+            symbol_pair = self.binary_pair.similar_symbols[i]
+
+            if (
+                symbol_pair.old_symbol.size == symbol_pair.new_symbol.size
+            ) and self.settings.consider_equal_sized_identical:
+                continue
+
+            similar_symbol_pair = SimilarSymbolPair(symbol_pair, id)
+            self.prepareHTMLContent(similar_symbol_pair)
+
+            similar_symbols.append(similar_symbol_pair)
+
+            id += 1
+
+        self.similar_symbols_overview = SimilarSymbolsOverview(
+            similar_symbols=similar_symbols
+        )
+        self.registerHTMLContent(self.similar_symbols_overview)
+
+        self.similar_symbols_details = SimilarSymbolsDetails(
+            similar_symbols=similar_symbols
+        )
+        self.registerHTMLContent(self.similar_symbols_details)
+
+    def prepareStatistics(self):
+        self.statistics_overview = StatisticsOverview(self.binary_pair)
+        self.registerHTMLContent(self.statistics_overview)
+
+    def prepareBasePageKeywords(self):
+
+        if self.settings.project_title:
+            doc_title = html.escapeString(self.settings.project_title)
+        else:
+            doc_title = "ELF Binary Comparison"
+
+        if self.single_page == True:
+            home = '<a href="#home">&#x21A9;</a>'
+        else:
+            home = ""
+
+        self.base_page_keywords = {
+            "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses",
+            "doc_title": doc_title,
+            "elf_diff_repo_base": self.settings.repo_path,
+            "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "elfdiff_git_version": gitRepoInfo(self.settings),
+            "home": home,
+            "old_binary_file": html.escapeString(self.settings.old_alias),
+            "new_binary_file": html.escapeString(self.settings.new_alias),
+        }
+
+    def getScriptElements(self, html_output_file=None):
+
+        if html_output_file is None:
+            base_dir = self.settings.repo_path
+        else:
+            base_dir = getRelpath(html_output_file, self.settings.html_dir)
+
+        if self.single_page == True:
+            sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
+            sortable_js_content = None
+            with open(sortable_js_file, "r") as file:
+                sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
+                    file.read()
+                )
+
+            elf_diff_general_css_file = (
+                self.settings.repo_path + "/css/elf_diff_general.css"
+            )
+            elf_diff_general_css_content = None
+            with open(elf_diff_general_css_file, "r") as file:
+                elf_diff_general_css_content = (
+                    "<style>\n%s\n</style>\n" % html.escapeString(file.read())
+                )
+        else:
+            sortable_js_content = f'<script src="{base_dir}/js/sorttable.js"></script>'
+            elf_diff_general_css_content = (
+                f'<link rel="stylesheet" href="{base_dir}/css/elf_diff_general.css">'
+            )
+
+        return elf_diff_general_css_content, sortable_js_content
+
+    def getMainPageHeaderKeywords(self, html_output_file):
+
+        elf_diff_general_css_content, sortable_js_content = self.getScriptElements(
+            html_output_file
+        )
+
+        return {
+            "elf_diff_general_css_content": elf_diff_general_css_content,
+            "sortable_js_content": sortable_js_content,
+        }
+
+    def prepare(self):
+        if self.is_prepared:
+            return
+
+        self.preparePersistingSymbols()
+        self.prepareDisappearedSymbols()
+        self.prepareNewSymbols()
+        self.prepareSimilarSymbols()
+        self.prepareStatistics()
+
+        self.prepareBasePageKeywords()
+
+        self.is_prepared = True
+
+    def getBaseTitlePageTemplateKeywords(self, html_output_file=None):
+
+        old_binary = self.binary_pair.old_binary
+        new_binary = self.binary_pair.new_binary
+
+        show_toc_details = False
+
+        if self.settings.build_info == "":
+            show_build_info = False
+        else:
+            show_build_info = True
+
+        show_binary_details = False
+        if self.settings.old_binary_info == "":
+            show_old_binary_info = False
+        else:
+            show_old_binary_info = True
+            show_binary_details = True
+
+        if self.settings.new_binary_info == "":
+            show_new_binary_info = False
+        else:
+            new_binary_info_visible = True
+            show_new_binary_info = True
+
+        template_keywords = {
             "num_persisting_symbols": str(
                 len(self.binary_pair.persisting_symbol_names)
             ),
             "num_disappeared_symbols": str(self.binary_pair.num_symbols_disappeared),
             "num_new_symbols": str(self.binary_pair.num_symbols_new),
-            "num_similar_symbols": str(num_similar_symbols),
-            "persisting_symbols_overview_visible": persisting_symbols_overview_visible,
-            "disappeared_symbols_overview_visible": disappeared_symbols_overview_visible,
-            "new_symbols_overview_visible": new_symbols_overview_visible,
-            "similar_symbols_overview_visible": similar_symbols_overview_visible,
-            "persisting_symbols_overview": persisting_symbols_overview,
-            "disappeared_symbols_overview": disappeared_symbols_overview,
-            "new_symbols_overview": new_symbols_overview,
-            "similar_symbols_overview": similar_symbols_overview,
-            "persisting_symbols_delta": persisting_symbols_delta,
-            "disappeared_symbols_size": disappeared_symbols_size,
-            "new_symbols_size": new_symbols_size,
-            "old_binary_info_visible": old_binary_info_visible,
-            "new_binary_info_visible": new_binary_info_visible,
-            "details_visibile": details_visibile,
-            "toc_details_visibile": toc_details_visibile,
-            "binary_details_visible": binary_details_visible,
+            "show_old_binary_info": show_old_binary_info,
+            "show_new_binary_info": show_new_binary_info,
+            "skip_details": self.settings.skip_details,
+            "show_toc_details": show_toc_details,
+            "show_binary_details": show_binary_details,
             "old_binary_info": html.escapeString(self.settings.old_binary_info),
             "new_binary_info": html.escapeString(self.settings.new_binary_info),
-            "build_info_visible": build_info_visible,
+            "show_build_info": show_build_info,
             "build_info": html.escapeString(self.settings.build_info),
         }
 
-        template_keywords.update(self.getBasePageKeywords())
+        template_keywords.update(self.base_page_keywords)
 
         return template_keywords
 
-    def writeSinglePageHTMLReport(self):
+    def getSinglePageTemplateKeywords(self):
+
+        sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
+        sortable_js_content = None
+        with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
+            sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
+                file.read()
+            )
+
+        elf_diff_general_css_file = (
+            self.settings.repo_path + "/css/elf_diff_general.css"
+        )
+        elf_diff_general_css_content = None
+        with open(elf_diff_general_css_file, "r") as file:
+            elf_diff_general_css_content = (
+                "<style>\n%s\n</style>\n" % html.escapeString(file.read())
+            )
+
+        return {
+            "persisting_symbols_overview_visible": True,
+            "disappeared_symbols_overview_visible": True,
+            "new_symbols_overview_visible": True,
+            "similar_symbols_overview_visible": True,
+            "num_similar_symbols": str(
+                len(self.similar_symbols_overview.similar_symbols)
+            ),
+            "persisting_symbols_overview": self.persisting_symbols_overview.getContent(),
+            "disappeared_symbols_overview": self.disappeared_symbols_overview.getContent(),
+            "new_symbols_overview": self.new_symbols_overview.getContent(),
+            "similar_symbols_overview": self.similar_symbols_overview.getContent(),
+            "persisting_symbols_delta": self.persisting_symbols_overview.overall_size_difference,
+            "disappeared_symbols_size": self.disappeared_symbols_overview.overall_symbol_size,
+            "new_symbols_size": self.new_symbols_overview.overall_symbol_size,
+            "elf_diff_general_css_content": elf_diff_general_css_content,
+            "sortable_js_content": sortable_js_content,
+        }
+
+    def writeSinglePageHTMLReport(self, output_file=None):
+
+        self.prepare()
 
         html_template_file = "pair_report_single_page.html"
 
-        template_keywords = self.getBaseTitlePageTemplateKeywords(skip_details)
-
-        old_binary = self.binary_pair.old_binary
-        new_binary = self.binary_pair.new_binary
-
-        # If we generate a pdf files, we skip the details
-        #
-        if skip_details:
+        if self.settings.skip_details:
             persisting_symbol_details_content = ""
             disappeared_symbol_details_content = ""
             new_symbol_details_content = ""
             similar_symbol_details_content = ""
         else:
             persisting_symbol_details_content = (
-                self.generatePersistingSymbolDetailsHTML()
+                self.persisting_symbols_details.getContent()
             )
             disappeared_symbol_details_content = (
-                self.generateDisappearedSymbolDetailsHTML()
+                self.disappeared_symbols_details.getContent()
             )
-            new_symbol_details_content = self.generateNewSymbolDetailsHTML()
-            similar_symbol_details_content = self.generateSimilarSymbolDetailsHTML()
+            new_symbol_details_content = self.new_symbols_details.getContent()
+            similar_symbol_details_content = self.similar_symbols_details.getContent()
 
         single_page_keywords = {
+            "stats_content": self.statistics_overview.getContent(),
             "persisting_symbols_details_content": persisting_symbol_details_content,
             "disappeared_symbols_details_content": disappeared_symbol_details_content,
             "new_symbols_details_content": new_symbol_details_content,
             "similar_symbols_details_content": similar_symbol_details_content,
         }
 
+        template_keywords = self.getBaseTitlePageTemplateKeywords()
+        template_keywords.update(self.getSinglePageTemplateKeywords())
+
         template_keywords.update(single_page_keywords)
 
+        if output_file is None:
+            output_file = self.settings.html_file
+
         html.configureTemplateWrite(
-            self.settings,
-            html_template_file,
-            self.settings.html_file,
-            template_keywords,
+            self.settings, html_template_file, output_file, template_keywords
         )
 
+    def copyStyleFilesAndScripts(self, source_dir, target_dir):
+        dir_util.copy_tree(source_dir, target_dir)
+
     def writeMultiPageHTMLReport(self):
+
+        self.prepare()
 
         dirs = [
             self.settings.html_dir,
             self.settings.html_dir + "/details",
-            self.settings.html_dir + "/details/persisting_symbols",
-            self.settings.html_dir + "/details/disappeared_symbols",
-            self.settings.html_dir + "/details/new_symbols",
-            self.settings.html_dir + "/details/similar_symbols",
+            self.settings.html_dir + "/details/persisting",
+            self.settings.html_dir + "/details/disappeared",
+            self.settings.html_dir + "/details/new",
+            self.settings.html_dir + "/details/similar",
         ]
 
         for dir in dirs:
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
-        html_template_file = "pair_report_base_index_page.html"
-
-        template_keywords = self.getBaseTitlePageTemplateKeywords()
-
-        # Don't display the details section in the TOC
-        template_keywords["toc_details_visible"] = False
+        html_template_file = "pair_report_index_page.html"
 
         html_index_filename = f"{self.settings.html_dir}/index.html"
+
+        template_keywords = self.getBaseTitlePageTemplateKeywords(html_index_filename)
+
+        template_keywords[
+            "sortable_js_content"
+        ] = f'<script src="./js/sorttable.js"></script>'
+        template_keywords[
+            "elf_diff_general_css_content"
+        ] = f'<link rel="stylesheet" href="./css/elf_diff_general.css">'
+
+        # Don't display the details section in the TOC
+        template_keywords["show_toc_details"] = False
 
         html.configureTemplateWrite(
             self.settings, html_template_file, html_index_filename, template_keywords
         )
 
         # Generate details pages
-        self.generatePersistingSymbolDetailsIndividualHTML()
-        self.generateDisappearedSymbolDetailsIndividualHTML()
-        self.generateNewSymbolDetailsIndividualHTML()
-        self.generateSimilarSymbolDetailsIndividualHTML()
 
+        for html_content in self.html_contents:
+            html_content.exportFiles(self.base_page_keywords)
 
-def generatePairReport(settings):
-    PairReport(settings).generate()
+        self.copyStyleFilesAndScripts(
+            self.settings.repo_path + "/css", self.settings.html_dir + "/css"
+        )
+        self.copyStyleFilesAndScripts(
+            self.settings.repo_path + "/js", self.settings.html_dir + "/js"
+        )

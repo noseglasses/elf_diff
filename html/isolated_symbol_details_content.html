@@ -21,7 +21,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
 
-<{{ header_tag }}><span class="monospace"><a name="{{ details_anchor }}"></a><a href="{{ overview_file }}#{{ overview_anchor }}">{{ name }}</a>: size: {{ size }} bytes</span></{{ header_tag }}>
+<{{ header_tag }}><span class="monospace"><a name="{{ details_anchor }}"></a>{{ description|capitalize }} symbol
+{% if have_return_links == True %} 
+<a href="{{ overview_file }}#{{ overview_anchor }}">
+{% endif %}
+{{ name }}
+{% if have_return_links == True %} 
+</a>
+{% endif %}
+: size: {{ size }} bytes</span></{{ header_tag }}>
 <pre>
 {{ instructions }}
 </pre>

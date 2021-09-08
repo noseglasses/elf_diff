@@ -20,8 +20,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(elf_diff_test)
 
-add_library(elf_diff_test_static_1_old STATIC src/old/test.cpp)
-add_library(elf_diff_test_static_1_new STATIC src/new/test.cpp)
+add_library(elf_diff_test_release_old STATIC src/old/test.cpp)
+add_library(elf_diff_test_release_new STATIC src/new/test.cpp)
 
-add_library(elf_diff_test_static_2_old STATIC src/old/test.cpp)
-add_library(elf_diff_test_static_2_new STATIC src/new/test.cpp)
+add_library(elf_diff_test_debug_old STATIC src/old/test.cpp)
+add_library(elf_diff_test_debug_new STATIC src/new/test.cpp)
+
+target_compile_options(elf_diff_test_debug_old PRIVATE "-g")
+target_compile_options(elf_diff_test_debug_new PRIVATE "-g")
+

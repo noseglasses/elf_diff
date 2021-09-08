@@ -1,0 +1,74 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+<table cellspacing="5" cellpadding="0" class = "stats">
+  <tbody>
+	  <tr>
+		  <td>
+				<H3><a id="rc_program_storage"></a>Program Storage</H3>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>{{code_size_old_overall}}</td><td>{{code_size_new_overall}}</td><td>{{code_size_change_overall}}</td></tr>
+						<tr><td>text</td><td>{{text_size_old_overall}}</td><td>{{text_size_new_overall}}</td><td>{{text_size_change_overall}}</td></tr>
+						<tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H3><a id="rc_static_ram"></a>Static RAM</H3>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>{{static_ram_old_overall}}</td><td>{{static_ram_new_overall}}</td><td>{{static_ram_change_overall}}</td></tr>
+						<tr><td>data</td><td>{{data_size_old_overall}}</td><td>{{data_size_new_overall}}</td><td>{{data_size_change_overall}}</td></tr>
+						<tr><td>bss</td><td>{{bss_size_old_overall}}</td><td>{{bss_size_new_overall}}</td><td>{{bss_size_change_overall}}</td></tr>
+					</tbody>
+				</table>
+			</td>
+			<td>
+			  <H3><a id="rc_legend"></a>Legend</H3>
+        <table>
+					<col align="left">
+					<col align="left">
+					<tbody>
+						<tr><td>text</td><td>instructions</td></tr>
+						<tr><td>data</td><td>initialized global or static variables</td></tr>
+						<tr><td>bss</td><td>uninitialized global or static variables</td></tr>
+					</tbody>
+				</table>
+			</td>
+	  </tr>
+	</tbody>
+</table>
+
+<H2><a id="symbols"></a>Symbols</H2>
+<p>{{total_symbols_old}} symbols found in {{old_binary_file}}</p>
+<p>{{total_symbols_new}} symbols found in {{new_binary_file}}</p>

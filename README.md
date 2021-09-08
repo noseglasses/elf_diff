@@ -120,6 +120,14 @@ or from within a driver file, e.g.
 ```
 html_file: "my_pair_report.html"
 ```
+this will create a single file HTML report (with the exact same content as generated pdf files).
+
+### Specifying an Alternative HTML Directory
+
+To generate a multi-page HTML report use the command line flag `--html_dir` to generate the HTML files e.g. in directory `my_target_dir`.
+```
+elf_diff --html_dir my_target_dir my_pair_report.hmtl my_old_binary.elf my_new_binary.elf
+```
 
 ### Using Driver Files
 

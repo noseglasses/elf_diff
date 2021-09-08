@@ -24,6 +24,8 @@
 import sys
 import os
 import inspect
+import tempfile
+import pdfkit
 
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
@@ -31,7 +33,46 @@ sys.path.append(bin_path + "/../python")
 
 from elf_diff.settings import Settings
 from elf_diff.mass_report import generateMassReport
-from elf_diff.pair_report import generatePairReport
+from elf_diff.pair_report import PairReport
+
+
+def writePairReport(settings):
+    if settings.html_dir:
+        multi_page_pair_report = PairReport(settings)
+        multi_page_pair_report.single_page = False
+        multi_page_pair_report.writeMultiPageHTMLReport()
+        print("Multi page html report written to directory '" + settings.html_dir + "'")
+
+    single_page_pair_report = None
+    if settings.html_file:
+        single_page_pair_report = PairReport(settings)
+        single_page_pair_report.single_page = True
+
+        single_page_pair_report.writeSinglePageHTMLReport()
+        print("Single page html report '" + settings.html_file + "' written")
+
+    if settings.pdf_file:
+
+        if single_page_pair_report is None:
+            single_page_pair_report = PairReport(settings)
+            single_page_pair_report.single_page = True
+
+        tmp_html_file = (
+            tempfile._get_default_tempdir()
+            + "/"
+            + next(tempfile._get_candidate_names())
+            + ".html"
+        )
+
+        single_page_pair_report.writeSinglePageHTMLReport(output_file=tmp_html_file)
+
+        pdfkit.from_url(
+            tmp_html_file,
+            settings.pdf_file,
+            options={"enable-local-file-access": "True"},
+        )
+
+        os.remove(tmp_html_file)
 
 if __name__ == "__main__":
 
@@ -44,7 +85,7 @@ if __name__ == "__main__":
         generateMassReport(settings)
         report_generated = True
     elif settings.isFirmwareBinaryDefined():
-        generatePairReport(settings)
+        writePairReport(settings)
         report_generated = True
 
     if settings.driver_template_file:
