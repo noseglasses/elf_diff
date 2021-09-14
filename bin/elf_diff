@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-  
+
 # -*- coding: utf-8 -*-
 
 # -*- mode: python -*-
@@ -32,20 +32,22 @@ sys.path.append(bin_path + "/../python")
 from elf_diff.settings import Settings
 from elf_diff.mass_report import generateMassReport
 from elf_diff.pair_report import generatePairReport
-  
+
 if __name__ == "__main__":
-   
-   print("bin_path = " + bin_path)
-   settings = Settings(bin_path + "/..")
-   
-   report_generated = False
-      
-   if settings.mass_report or len(settings.mass_report_members) > 0:
-      generateMassReport(settings)
-      report_generated = True
-   elif settings.isFirmwareBinaryDefined():
-      generatePairReport(settings)
-      report_generated = True
-   
-   if settings.driver_template_file:
-      settings.writeParameterTemplateFile(settings.driver_template_file, output_actual_values = report_generated)
+
+    print("bin_path = " + bin_path)
+    settings = Settings(bin_path + "/..")
+
+    report_generated = False
+
+    if settings.mass_report or len(settings.mass_report_members) > 0:
+        generateMassReport(settings)
+        report_generated = True
+    elif settings.isFirmwareBinaryDefined():
+        generatePairReport(settings)
+        report_generated = True
+
+    if settings.driver_template_file:
+        settings.writeParameterTemplateFile(
+            settings.driver_template_file, output_actual_values=report_generated
+        )
