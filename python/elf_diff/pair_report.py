@@ -899,21 +899,10 @@ class PairReport(Report):
             base_dir = getRelpath(html_output_file, self.settings.html_dir)
 
         if self.single_page == True:
-            sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
-            sortable_js_content = None
-            with open(sortable_js_file, "r") as file:
-                sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
-                    file.read()
-                )
-
-            elf_diff_general_css_file = (
-                self.settings.repo_path + "/css/elf_diff_general.css"
-            )
-            elf_diff_general_css_content = None
-            with open(elf_diff_general_css_file, "r") as file:
-                elf_diff_general_css_content = (
-                    "<style>\n%s\n</style>\n" % html.escapeString(file.read())
-                )
+            (
+                sortable_js_content,
+                elf_diff_general_css_content,
+            ) = self.getSinglePageScriptContent()
         else:
             sortable_js_content = f'<script src="{base_dir}/js/sorttable.js"></script>'
             elf_diff_general_css_content = (
@@ -969,8 +958,8 @@ class PairReport(Report):
         if self.settings.new_binary_info == "":
             show_new_binary_info = False
         else:
-            new_binary_info_visible = True
             show_new_binary_info = True
+            show_binary_details = True
 
         template_keywords = {
             "num_persisting_symbols": str(

@@ -25,14 +25,14 @@ import sys
 import os
 import inspect
 import tempfile
-import pdfkit
+from weasyprint import HTML
 
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
 sys.path.append(bin_path + "/../python")
 
 from elf_diff.settings import Settings
-from elf_diff.mass_report import generateMassReport
+from elf_diff.mass_report import MassReport
 from elf_diff.pair_report import PairReport
 
 
@@ -41,7 +41,7 @@ def writePairReport(settings):
         multi_page_pair_report = PairReport(settings)
         multi_page_pair_report.single_page = False
         multi_page_pair_report.writeMultiPageHTMLReport()
-        print("Multi page html report written to directory '" + settings.html_dir + "'")
+        print("Multi page html pair report written to directory '" + settings.html_dir + "'")
 
     single_page_pair_report = None
     if settings.html_file:
@@ -49,7 +49,7 @@ def writePairReport(settings):
         single_page_pair_report.single_page = True
 
         single_page_pair_report.writeSinglePageHTMLReport()
-        print("Single page html report '" + settings.html_file + "' written")
+        print("Single page html pair report '" + settings.html_file + "' written")
 
     if settings.pdf_file:
 
@@ -65,14 +65,40 @@ def writePairReport(settings):
         )
 
         single_page_pair_report.writeSinglePageHTMLReport(output_file=tmp_html_file)
-
-        pdfkit.from_url(
-            tmp_html_file,
-            settings.pdf_file,
-            options={"enable-local-file-access": "True"},
-        )
+        
+        HTML(tmp_html_file).write_pdf(settings.pdf_file)
 
         os.remove(tmp_html_file)
+        
+        print("Single page pdf pair report '" + settings.pdf_file + "' written")
+        
+def writeMassReport(settings):
+
+    mass_report = MassReport(settings)
+    mass_report.single_page = True
+    
+    if settings.html_file:
+        mass_report.generate(settings.html_file)
+        print("Single page html mass report '" + settings.html_file + "' written")
+
+    if settings.pdf_file:
+
+        tmp_html_file = (
+            tempfile._get_default_tempdir()
+            + "/"
+            + next(tempfile._get_candidate_names())
+            + ".html"
+        )
+
+        mass_report.generate(tmp_html_file)
+        
+        print("Temp report: " + tmp_html_file)
+        
+        HTML(tmp_html_file).write_pdf(settings.pdf_file)
+
+        os.remove(tmp_html_file)
+        
+        print("Single page pdf mass report '" + settings.pdf_file + "' written")
 
 if __name__ == "__main__":
 
@@ -82,7 +108,7 @@ if __name__ == "__main__":
     report_generated = False
 
     if settings.mass_report or len(settings.mass_report_members) > 0:
-        generateMassReport(settings)
+        writeMassReport(settings)
         report_generated = True
     elif settings.isFirmwareBinaryDefined():
         writePairReport(settings)

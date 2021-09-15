@@ -162,8 +162,8 @@ class TestCommandLineArgs(unittest.TestCase):
 
         driver_yaml_file = "mass_report.driver.yml"
 
-        pdf_file = "driven_pair_report_output.pdf"
-        html_file = "driven_pair_report_output.html"
+        pdf_file = "driven_mass_report_output.pdf"
+        html_file = "driven_mass_report_output.html"
         template_file = "driven_mass_report_output.tmpl.yml"
 
         with open(driver_yaml_file, "w") as f:

@@ -121,6 +121,11 @@ class MassReport(Report):
         else:
             doc_title = "ELF Binary Comparison - Mass Report"
 
+        (
+            sortable_js_content,
+            elf_diff_general_css_content,
+        ) = self.getSinglePageScriptContent()
+
         return {
             "elf_diff_repo_base": self.settings.repo_path,
             "doc_title": doc_title,
@@ -129,11 +134,19 @@ class MassReport(Report):
             "symbols_table": symbols_table,
             "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "elfdiff_git_version": gitRepoInfo(self.settings),
+            "sortable_js_content": sortable_js_content,
+            "elf_diff_general_css_content": elf_diff_general_css_content,
         }
 
     def getHTMLTemplate(self):
         return MassReport.html_template_file
 
+    def generate(self, html_output_file):
+        template_keywords = self.configureJinjaKeywords(self.settings.skip_details)
 
-def generateMassReport(settings):
-    MassReport(settings).generate()
+        html.configureTemplateWrite(
+            self.settings,
+            MassReport.html_template_file,
+            html_output_file,
+            template_keywords,
+        )

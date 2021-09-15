@@ -49,10 +49,10 @@ this program. If not, see <http://www.gnu.org/licenses/>.
     {% if show_binary_details == True %}
     <li><a href="#binary_details">Binary Details</a>
         <ul>
-          {% if old_binary_info_visible == True %}
+          {% if show_old_binary_info == True %}
           <li><a href="#binary_details_old_binary_info">{{old_binary_file}}</a></li>
           {% endif %}
-          {% if new_binary_info_visible == True %}
+          {% if show_new_binary_info == True %}
           <li><a href="#binary_details_new_binary_info">{{new_binary_file}}</a></li>
           {% endif %}
         </ul>
@@ -106,14 +106,14 @@ this program. If not, see <http://www.gnu.org/licenses/>.
   {% if show_old_binary_info == True %}
   <H3><a id="binary_details_old_binary_info"></a>{{old_binary_file}} {{home}}</H3>
   <pre>
-  {{old_binary_info_content}}
+  {{old_binary_info}}
   </pre>
   {% endif %}
 
   {% if show_new_binary_info == True %}
   <H3><a id="binary_details_new_binary_info"></a>{{new_binary_file}} {{home}}</H3>
   <pre>
-  {{new_binary_info_content}}
+  {{new_binary_info}}
   </pre>
   {% endif %}
 
