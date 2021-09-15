@@ -22,13 +22,10 @@ from elf_diff.report import Report
 from elf_diff.binary_pair import BinaryPair
 import elf_diff.html as html
 from elf_diff.error_handling import unrecoverableError
-from elf_diff.auxiliary import formatMemChange
 from elf_diff.git import gitRepoInfo
 from elf_diff.symbol import Symbol
 import progressbar
 import sys
-import difflib
-import codecs
 import operator
 import os
 import datetime
@@ -86,7 +83,6 @@ class HTMLContent(object):
         html_template_filename = "frame_content.html"
 
         html_output_file = f"{self.settings.html_dir}/" + self.getFilename()
-        title = self.getPageTitle()
 
         keywords = self.keywords or {}
 
@@ -135,7 +131,7 @@ class PersistingSymbol(HTMLContent):
         details_file = ""
         details_anchor = f"persisting_symbol_details_{self.old_symbol.id}"
 
-        if self.single_page == False:
+        if self.single_page is False:
             details_file = self.getFilename()
             have_return_links = False
         else:
@@ -183,7 +179,7 @@ class PersistingSymbol(HTMLContent):
         return "Persisting Symbol " + self.keywords["name"]
 
     def getRelPathToOverviewFile(self):
-        if self.single_page == False:
+        if self.single_page is False:
             return "../.."
         return "."
 
@@ -214,7 +210,7 @@ class PersistingSymbolsOverview(HTMLContent):
                 old_symbol = persisting_symbol.old_symbol
                 self.overall_size_difference += new_symbol.size - old_symbol.size
 
-        if self.single_page == False:
+        if self.single_page is False:
             link_target_frame = 'target="details"'
         else:
             link_target_frame = ""
@@ -264,7 +260,7 @@ class PersistingSymbolsDetails(HTMLContent):
 
             symbols_listed = True
 
-            if persisting_symbol.keywords["have_details_link"] == False:
+            if persisting_symbol.keywords["have_details_link"] is False:
                 continue
 
             html_lines.append(persisting_symbol.getContent())
@@ -276,7 +272,7 @@ class PersistingSymbolsDetails(HTMLContent):
         self.content = "\n".join(html_lines)
 
     def exportFiles(self, base_keywords):
-        if self.single_page == True:
+        if self.single_page is True:
             return
 
         for persisting_symbol in self.persisting_symbols:
@@ -300,7 +296,7 @@ class IsolatedSymbol(HTMLContent):
         details_file = ""
         details_anchor = f"{self.description}_symbol_details_{self.symbol.id}"
 
-        if self.single_page == False:
+        if self.single_page is False:
             overview_file = "../../index.html"
             details_file = self.getFilename()
             have_return_links = False
@@ -346,7 +342,7 @@ class IsolatedSymbol(HTMLContent):
         return self.description.capitalize() + " Symbol " + self.keywords["name"]
 
     def getRelPathToOverviewFile(self):
-        if self.single_page == False:
+        if self.single_page is False:
             return "../.."
         return "."
 
@@ -376,7 +372,7 @@ class IsolatedSymbolsOverview(HTMLContent):
             symbols_keywords.append(isolated_symbol.keywords)
             self.overall_symbol_size += isolated_symbol.symbol.size
 
-        if self.single_page == False:
+        if self.single_page is False:
             link_target_frame = 'target="details"'
         else:
             link_target_frame = ""
@@ -415,7 +411,7 @@ class IsolatedSymbolsDetails(HTMLContent):
 
             isolated_symbol.prepareKeywords()
 
-            if isolated_symbol.keywords["have_details_link"] == False:
+            if isolated_symbol.keywords["have_details_link"] is False:
                 continue
 
             symbols_listed = True
@@ -429,7 +425,7 @@ class IsolatedSymbolsDetails(HTMLContent):
         self.content = "\n".join(html_lines)
 
     def exportFiles(self, base_keywords):
-        if self.single_page == True:
+        if self.single_page is True:
             return
 
         for isolated_symbol in self.isolated_symbols:
@@ -451,9 +447,6 @@ class SimilarSymbolPair(HTMLContent):
         old_symbol = self.symbol_pair.old_symbol
         new_symbol = self.symbol_pair.new_symbol
 
-        old_symbol_name = html.escapeString(old_symbol.name)
-        new_symbol_name = html.escapeString(new_symbol.name)
-
         old_representation = html.diffStringsSource(old_symbol.name, new_symbol.name)
         new_representation = html.diffStringsTarget(old_symbol.name, new_symbol.name)
 
@@ -469,7 +462,7 @@ class SimilarSymbolPair(HTMLContent):
         details_file = ""
         details_anchor = f"similar_symbols_details_{self.id}"
 
-        if self.single_page == False:
+        if self.single_page is False:
             details_file = self.getFilename()
             have_return_links = False
         else:
@@ -524,7 +517,7 @@ class SimilarSymbolPair(HTMLContent):
         return f"Similar Symbol Pair {self.id}"
 
     def getRelPathToOverviewFile(self):
-        if self.single_page == False:
+        if self.single_page is False:
             return "../.."
         return "."
 
@@ -551,7 +544,7 @@ class SimilarSymbolsOverview(HTMLContent):
             similar_symbol.prepareKeywords()
             symbols_keywords.append(similar_symbol.keywords)
 
-        if self.single_page == False:
+        if self.single_page is False:
             link_target_frame = 'target="details"'
         else:
             link_target_frame = ""
@@ -590,7 +583,7 @@ class SimilarSymbolsDetails(HTMLContent):
 
             similar_symbol.prepareKeywords()
 
-            if similar_symbol.keywords["have_details_link"] == False:
+            if similar_symbol.keywords["have_details_link"] is False:
                 continue
 
             symbols_listed = True
@@ -604,7 +597,7 @@ class SimilarSymbolsDetails(HTMLContent):
         self.content = "\n".join(html_lines)
 
     def exportFiles(self, base_keywords):
-        if self.single_page == True:
+        if self.single_page is True:
             return
 
         for similar_symbol in self.similar_symbols:
@@ -875,7 +868,7 @@ class PairReport(Report):
         else:
             doc_title = "ELF Binary Comparison"
 
-        if self.single_page == True:
+        if self.single_page is True:
             home = '<a href="#home">&#x21A9;</a>'
         else:
             home = ""
@@ -898,22 +891,11 @@ class PairReport(Report):
         else:
             base_dir = getRelpath(html_output_file, self.settings.html_dir)
 
-        if self.single_page == True:
-            sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
-            sortable_js_content = None
-            with open(sortable_js_file, "r") as file:
-                sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
-                    file.read()
-                )
-
-            elf_diff_general_css_file = (
-                self.settings.repo_path + "/css/elf_diff_general.css"
-            )
-            elf_diff_general_css_content = None
-            with open(elf_diff_general_css_file, "r") as file:
-                elf_diff_general_css_content = (
-                    "<style>\n%s\n</style>\n" % html.escapeString(file.read())
-                )
+        if self.single_page is True:
+            (
+                sortable_js_content,
+                elf_diff_general_css_content,
+            ) = self.getSinglePageScriptContent()
         else:
             sortable_js_content = f'<script src="{base_dir}/js/sorttable.js"></script>'
             elf_diff_general_css_content = (
@@ -949,9 +931,6 @@ class PairReport(Report):
 
     def getBaseTitlePageTemplateKeywords(self, html_output_file=None):
 
-        old_binary = self.binary_pair.old_binary
-        new_binary = self.binary_pair.new_binary
-
         show_toc_details = False
 
         if self.settings.build_info == "":
@@ -969,8 +948,8 @@ class PairReport(Report):
         if self.settings.new_binary_info == "":
             show_new_binary_info = False
         else:
-            new_binary_info_visible = True
             show_new_binary_info = True
+            show_binary_details = True
 
         template_keywords = {
             "num_persisting_symbols": str(
@@ -1099,10 +1078,10 @@ class PairReport(Report):
 
         template_keywords[
             "sortable_js_content"
-        ] = f'<script src="./js/sorttable.js"></script>'
+        ] = '<script src="./js/sorttable.js"></script>'
         template_keywords[
             "elf_diff_general_css_content"
-        ] = f'<link rel="stylesheet" href="./css/elf_diff_general.css">'
+        ] = '<link rel="stylesheet" href="./css/elf_diff_general.css">'
 
         # Don't display the details section in the TOC
         template_keywords["show_toc_details"] = False

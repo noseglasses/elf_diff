@@ -67,7 +67,16 @@ class MassReport(Report):
         for binary_pair in self.binary_pairs:
 
             table_lines_html.append(
-                "<tr><td>{short_name}</td><td>{code_size_old_overall}</td><td>{code_size_new_overall}</td><td>{code_size_delta_overall}</td><td>{static_ram_old_overall}</td><td>{static_ram_new_overall}</td><td>{static_ram_change_overall}</td></tr>\n".format(
+                """<tr>
+                     <td>{short_name}</td>
+                     <td>{code_size_old_overall}</td>
+                     <td>{code_size_new_overall}</td>
+                     <td>{code_size_delta_overall}</td>
+                     <td>{static_ram_old_overall}</td>
+                     <td>{static_ram_new_overall}</td>
+                     <td>{static_ram_change_overall}</td>
+                   </tr>
+                """.format(
                     short_name=binary_pair.short_name,
                     code_size_old_overall=binary_pair.old_binary.progmem_size,
                     code_size_new_overall=binary_pair.new_binary.progmem_size,
@@ -92,12 +101,14 @@ class MassReport(Report):
 
         for binary_pair in self.binary_pairs:
 
-            num_persisting_symbols = str(len(binary_pair.persisting_symbol_names))
-            num_disappeared_symbols = str(binary_pair.num_symbols_disappeared)
-            num_new_symbols = str(binary_pair.num_symbols_new)
-
             table_lines_html.append(
-                "<tr><td>{short_name}</td><td>{num_persisting_symbols}</td><td>{num_disappeared_symbols}</td><td>{num_new_symbols}</td></tr>\n".format(
+                """<tr>
+                     <td>{short_name}</td>
+                     <td>{num_persisting_symbols}</td>
+                     <td>{num_disappeared_symbols}</td>
+                     <td>{num_new_symbols}</td>
+                   </tr>
+                """.format(
                     short_name=binary_pair.short_name,
                     num_persisting_symbols=str(
                         len(binary_pair.persisting_symbol_names)
@@ -121,6 +132,11 @@ class MassReport(Report):
         else:
             doc_title = "ELF Binary Comparison - Mass Report"
 
+        (
+            sortable_js_content,
+            elf_diff_general_css_content,
+        ) = self.getSinglePageScriptContent()
+
         return {
             "elf_diff_repo_base": self.settings.repo_path,
             "doc_title": doc_title,
@@ -129,11 +145,19 @@ class MassReport(Report):
             "symbols_table": symbols_table,
             "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "elfdiff_git_version": gitRepoInfo(self.settings),
+            "sortable_js_content": sortable_js_content,
+            "elf_diff_general_css_content": elf_diff_general_css_content,
         }
 
     def getHTMLTemplate(self):
         return MassReport.html_template_file
 
+    def generate(self, html_output_file):
+        template_keywords = self.configureJinjaKeywords(self.settings.skip_details)
 
-def generateMassReport(settings):
-    MassReport(settings).generate()
+        html.configureTemplateWrite(
+            self.settings,
+            MassReport.html_template_file,
+            html_output_file,
+            template_keywords,
+        )

@@ -36,5 +36,5 @@ def gitRepoInfo(settings):
 
     try:
         return str(repo.head.reference.commit)
-    except:
+    except Exception:
         return unknown_version

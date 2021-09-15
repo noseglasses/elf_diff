@@ -23,6 +23,8 @@ from elf_diff.error_handling import unrecoverableError
 import sys
 import difflib
 import codecs
+import jinja2
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 
 def escapeString(string):
@@ -52,7 +54,6 @@ def highlightNumber(number):
 
 
 def highlightNumberDelta(old_size, new_size):
-    difference = new_size - old_size
     return highlightNumber(new_size - old_size)
 
 
@@ -113,9 +114,6 @@ def diffStringsTarget(str1, str2):
 
 
 def configureTemplate(settings, template_filename, keywords):
-
-    import jinja2, os, inspect
-    from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
     template_path = settings.repo_path + "/html"
 

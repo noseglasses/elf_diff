@@ -19,7 +19,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.symbol import Symbol
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.error_handling import warning
 from elf_diff.html import preHighlightSourceCode
@@ -137,13 +136,11 @@ class Binary(object):
 
         return False
 
-    def parseSymbols(self):
-
-        import re
+    def determineSymbolSizes(self):
 
         size_output = self.readSizeOutput()
 
-        size_re = re.compile("^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
+        size_re = re.compile(r"^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
         sizes_sucessfully_determined = False
         for line in size_output.splitlines():
             size_match = re.match(size_re, line)
@@ -165,17 +162,23 @@ class Binary(object):
                 "Unable to determine resource consumptions. Is the proper size utility used?"
             )
 
+    def getNextSymbol(self, symbol_name):
+        if self.isSymbolSelected(symbol_name):
+            # print("Considering symbol " + symbol_name)
+            return self.symbol_type(symbol_name)
+        # print("Ignoring symbol " + symbol_name)
+        return None
+
+    def gatherSymbolInstructions(self):
         objdump_output = self.readObjdumpOutput()
 
         # print("Output:")
         # print("%s" % (objdump_output))
 
         header_line_re = re.compile("^(0x)?[0-9A-Fa-f]+ <(.+)>:")
-        # instruction_line_re = re.compile("^\s*[0-9A-Fa-f]+:\s+(.*)")
         instruction_line_re = re.compile(
-            "^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*"
+            r"^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*"
         )
-        # empty_line_re = re.compile("^\s*$")
 
         cur_symbol = None
         n_symbols = 0
@@ -190,32 +193,35 @@ class Binary(object):
                     n_symbols += 1
 
                 symbol_name = header_match.group(2)
-
-                if self.isSymbolSelected(symbol_name):
-                    # print("Considering symbol " + symbol_name)
-                    cur_symbol = self.symbol_type(symbol_name)
-                else:
-                    # print("Ignoring symbol " + symbol_name)
-                    cur_symbol = None
+                cur_symbol = self.getNextSymbol(symbol_name)
             else:
                 instruction_line_match = re.match(instruction_line_re, line)
-                if instruction_line_match:
-                    # print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
-                    if cur_symbol:
+                if cur_symbol:
+                    if instruction_line_match:
+                        # print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
                         cur_symbol.addInstructions(instruction_line_match.group(2))
                         n_instruction_lines = n_instruction_lines + 1
-                else:
-                    if cur_symbol:
+                    else:
                         if (len(line) > 0) and (not line.isspace()):
                             cur_symbol.addInstructions(preHighlightSourceCode(line))
 
         if cur_symbol:
             self.addSymbol(cur_symbol)
 
+        if n_instruction_lines == 0:
+            warning(
+                "Unable to read assembly from binary {filename}.".format(
+                    filename=self.filename
+                )
+            )
+            warning("Do you use the correct binutils version?")
+            warning("Please check the --bin_dir and --bin_prefix settings.")
+
+    def gatherSymbolProperties(self):
         nm_output = self.readNMOutput()
 
         self.num_symbols_dropped = 0
-        nm_regex = re.compile("^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
+        nm_regex = re.compile(r"^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
         for line in nm_output.splitlines():
             nm_match = re.match(nm_regex, line)
 
@@ -224,7 +230,7 @@ class Binary(object):
                 symbol_type = nm_match.group(2)
                 symbol_name = nm_match.group(3)
 
-                if not symbol_name in self.symbols.keys():
+                if symbol_name not in self.symbols.keys():
                     if self.isSymbolSelected(symbol_name):
                         data_symbol = self.symbol_type(symbol_name)
                         data_symbol.size = int(symbol_size_str)
@@ -236,14 +242,11 @@ class Binary(object):
                     self.symbols[symbol_name].size = int(symbol_size_str)
                     self.symbols[symbol_name].type = symbol_type
 
-        if n_instruction_lines == 0:
-            warning(
-                "Unable to read assembly from binary {filename}.".format(
-                    filename=self.filename
-                )
-            )
-            warning("Do you use the correct binutils version?")
-            warning("Please check the --bin_dir and --bin_prefix settings.")
+    def parseSymbols(self):
+
+        self.determineSymbolSizes()
+        self.gatherSymbolInstructions()
+        self.gatherSymbolProperties()
 
     def __eq__(self, other):
 

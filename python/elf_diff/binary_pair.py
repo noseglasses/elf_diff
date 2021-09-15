@@ -149,8 +149,6 @@ class BinaryPair(object):
         if (n_old_symbol_names == 0) or (len(self.new_symbol_names) == 0):
             return []
 
-        import operator
-
         symbol_pairs = []
 
         similarity_threshold = float(self.settings.similarity_threshold)

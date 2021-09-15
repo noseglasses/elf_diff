@@ -19,49 +19,25 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.error_handling import unrecoverableError
-
 import elf_diff.html as html
-
-import tempfile
-import pdfkit
-import os
 
 
 class Report(object):
-    def generate(self):
-
-        import codecs
-
-        if self.settings.html_file:
-            self.single_page = True
-            self.writeSinglePageHTMLReport()
-            print("Single page html report '" + self.settings.html_file + "' written")
-
-        if self.settings.html_dir:
-            self.single_page = False
-            self.writeMultiPageHTMLReport()
-            print(
-                "Multi page html report written to directory '"
-                + self.settings.html_dir
-                + "'"
+    def getSinglePageScriptContent(self):
+        sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
+        sortable_js_content = None
+        with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
+            sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
+                file.read()
             )
 
-        if self.settings.pdf_file:
-
-            tmp_html_file = (
-                tempfile._get_default_tempdir()
-                + "/"
-                + next(tempfile._get_candidate_names())
-                + ".html"
+        elf_diff_general_css_file = (
+            self.settings.repo_path + "/css/elf_diff_general.css"
+        )
+        elf_diff_general_css_content = None
+        with open(elf_diff_general_css_file, "r") as file:
+            elf_diff_general_css_content = (
+                "<style>\n%s\n</style>\n" % html.escapeString(file.read())
             )
 
-            self.writeSinglePageHTMLReport(output_file=tmp_html_file)
-
-            pdfkit.from_url(
-                tmp_html_file,
-                self.settings.pdf_file,
-                options={"enable-local-file-access": "True"},
-            )
-
-            os.remove(tmp_html_file)
+        return sortable_js_content, elf_diff_general_css_content
