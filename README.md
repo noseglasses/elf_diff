@@ -6,6 +6,12 @@
 
 Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated, featuring sortable tables.
 
+HTML reports look as follows:
+
+Multi Page                 |  Single Page
+:-------------------------:|:-------------------------:
+![](examples/multi_page_pair_report.png)  |  ![](examples/single_page_pair_report.png)
+
 Please see the examples section at the end of this document for more usage examples.
 
 ## Purpose
@@ -63,7 +69,7 @@ elf_diff -h
 
 To generate a pair report, two binary files need to be passed to _elf_diff_ via the command line. Let's assume those files are named `my_old_binary.elf` and `my_new_binary.elf`. 
 
-The following command will generate a html report file named `elf_diff_pair_report.html` in your current working directory.
+The following command will generate a multipage html report in a subdirectory of your current working directory.
 ```
 elf_diff my_old_binary.elf my_new_binary.elf
 ```
@@ -194,9 +200,11 @@ elf_diff --driver_template_file my_template.yaml
 
 Template files contain the default values of all available parameters, or - if the temple file is generated in the same session where a report was created - the template file will contain the actual settings used for the report generation.
 
-### Text Output
+### Selecting and Excluding Symbols
 
-Early versions of this tool supported text output instead of HTML or pdf files. Text output has been removed as it is simple to generate text representations of HTML tables using external tools. Most GNU/Linux distributions e.g. ship with a tool called `html2text` that is well suited to do the job.
+By means of the command line arguments `symbol_selection_regex` and `symbol_exclusion_regex`, symbols can be explicitly selected and excluded.
+The specified regular expressions are applied to both the old and the old binary. For more fine grained selection, please used the `*_old` and `*_new` versions of the 
+respective command line arguments.
 
 ### Assembly Code
 
