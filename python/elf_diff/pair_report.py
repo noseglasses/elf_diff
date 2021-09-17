@@ -134,8 +134,10 @@ class PersistingSymbol(HTMLContent):
         if self.single_page is False:
             details_file = self.getFilename()
             have_return_links = False
+            overview_file = self.getRelPathToOverviewFile() + "/index.html"
         else:
             have_return_links = True
+            overview_file = ""
 
         if self.old_symbol.symbol_type == Symbol.type_data:
             have_details_link = False
@@ -153,7 +155,7 @@ class PersistingSymbol(HTMLContent):
             "size_diff_class": html.highlightNumberClass(size_diff),
             "instruction_differences": instruction_differences,
             "header_tag": self.header_tag,
-            "overview_file": self.getRelPathToOverviewFile() + "/index.html",
+            "overview_file": overview_file,
             "overview_anchor": overview_anchor,
             "details_file": details_file,
             "details_anchor": details_anchor,
