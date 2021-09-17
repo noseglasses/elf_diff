@@ -30,6 +30,7 @@ import operator
 import os
 import datetime
 from distutils import dir_util
+from shutil import copyfile
 
 
 def getRelpath(html_output_file, target_dir):
@@ -1066,6 +1067,7 @@ class PairReport(Report):
             self.settings.html_dir + "/details/disappeared",
             self.settings.html_dir + "/details/new",
             self.settings.html_dir + "/details/similar",
+            self.settings.html_dir + "/images",
         ]
 
         for dir in dirs:
@@ -1103,3 +1105,4 @@ class PairReport(Report):
         self.copyStyleFilesAndScripts(
             self.settings.repo_path + "/js", self.settings.html_dir + "/js"
         )
+        copyfile(self.settings.repo_path + "/images/favicon.png", self.settings.html_dir + "/images/favicon.png")
