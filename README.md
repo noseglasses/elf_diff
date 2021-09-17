@@ -1,6 +1,6 @@
 [![Python application](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml/badge.svg)](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml)
 
-# elf_diff - A Tool to Compare Elf Binaries
+<h1><img style="vertical-align:middle" src="./images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
 ## Example Output
 
