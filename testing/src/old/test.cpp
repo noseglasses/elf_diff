@@ -38,3 +38,6 @@ int Test::f(int a, int b) { return 42; }
 int Test::g(float a, float b) { return 1; }
 
 int Test::m_ = 13;
+
+int persisting1(int a) { return 43; }
+int persisting2(int a) { return 43; }

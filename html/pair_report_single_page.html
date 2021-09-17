@@ -1,0 +1,143 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% extends "single_page_report_base.html" %}
+{% block title %}Pair Report{% endblock %}
+{% block content %}
+	{% block preamble %}
+  <H1><a id="home"></a>{{doc_title}}</H1>
+  {% endblock %}
+
+	{% block toc %}
+  <H2>Overview</H2>
+  <ul>
+    <li><a href="#binaries">Binaries</a></li>
+    <li><a href="#rc">Resource Consumption</a>
+        <ul>
+          <li><a href="#rc_program_storage">Program Storage</a></li>
+          <li><a href="#rc_static_ram">Static RAM</a></li>
+          <li><a href="#rc_legend">Legend</a></li>
+        </ul>
+    </li>
+    <li><a href="#symbols">Symbols</a>
+        <ul>
+          <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
+          <li><a href="#symbols_symbols_disappeared">Symbols Disappeared</a></li>
+          <li><a href="#symbols_new_symbols">New Symbols</a></li>
+          <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+        </ul>
+    </li>
+    {% if show_binary_details == True %}
+    <li><a href="#binary_details">Binary Details</a>
+        <ul>
+          {% if show_old_binary_info == True %}
+          <li><a href="#binary_details_old_binary_info">{{old_binary_file}}</a></li>
+          {% endif %}
+          {% if show_new_binary_info == True %}
+          <li><a href="#binary_details_new_binary_info">{{new_binary_file}}</a></li>
+          {% endif %}
+        </ul>
+    </li>
+    {% endif %}
+    {% if show_toc_details == True %}
+    <li><a href="#symbol_details">Details</a>
+        <ul>
+          <li><a href="#symbol_details_persisting_symbols">Persisting Symbols</a></li>
+          <li><a href="#symbol_details_symbols_disappeared">Symbols Disappeared</a></li>
+          <li><a href="#symbol_details_new_symbols">New Symbols</a></li>
+          <li><a href="#symbol_details_similar_symbols">Similar Symbols</a></li>
+        </ul>
+    </li>
+    {% endif %}
+  </ul>
+  {% endblock %}
+
+  {% block binaries %}
+  <H2><a id="binaries"></a>Binaries {{home}}</H2>
+  <p>old: {{old_binary_file}}</p>
+  <p>new: {{new_binary_file}}</p>
+  {% endblock %}
+
+	{% block resource_consumption %}
+  <H2><a id="rc"></a>Statistics {{home}}</H2>
+  {{ stats_content }}
+  {% endblock %}
+
+	{% block symbol_overview %}
+  <H2><a id="symbols"></a>Symbols {{home}}</H2>
+
+  <H3><a id="symbols_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
+  {{ persisting_symbols_overview }}
+
+  <H3><a id="symbols_symbols_disappeared"></a>Disappeared Symbols {{home}}</H3>
+  {{ disappeared_symbols_overview }}
+
+  <H3><a id="symbols_new_symbols"></a>New Symbols {{home}}</H3>
+  {{ new_symbols_overview }}
+
+  <H3><a id="symbols_similar_symbols"></a>Similar Symbols {{home}}</H3>
+  {{ similar_symbols_overview }}
+  {% endblock %}
+
+  {% block symbol_details %}
+  {% if show_binary_details == True %}
+  <H2><a id="binary_details"></a>Binary Details {{home}}</H2>
+  {% endif %}
+
+  {% if show_old_binary_info == True %}
+  <H3><a id="binary_details_old_binary_info"></a>{{old_binary_file}} {{home}}</H3>
+  <pre>
+  {{old_binary_info}}
+  </pre>
+  {% endif %}
+
+  {% if show_new_binary_info == True %}
+  <H3><a id="binary_details_new_binary_info"></a>{{new_binary_file}} {{home}}</H3>
+  <pre>
+  {{new_binary_info}}
+  </pre>
+  {% endif %}
+
+  {% if show_build_info == True %}
+  <H2>Build Info</H2>
+  <pre>
+  {{build_info}}
+  </pre>
+  {% endif %}
+
+  {% if skip_details == False %}
+  <H2><a id="symbol_details"></a>Symbol Details {{home}}</H2>
+
+  <H3><a id="symbol_details_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
+  {{ persisting_symbols_details_content }}
+
+  <H3><a id="symbol_details_symbols_disappeared"></a>Disappeared Symbols {{home}}</H3>
+  {{ disappeared_symbols_details_content }}
+
+  <H3><a id="symbol_details_new_symbols"></a>New Symbols {{home}}</H3>
+  {{ new_symbols_details_content }}
+
+  <H3><a id="symbol_details_similar_symbols"></a>Similar Symbols {{home}}</H3>
+  {{ similar_symbols_details_content }}
+  {% endif %}
+  {% endblock %}
+{% endblock %}

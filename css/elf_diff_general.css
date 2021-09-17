@@ -1,7 +1,7 @@
 /*
 -*- coding: utf-8 -*-
 
--*- mode: python -*-
+-*- mode: css -*-
 
 elf_diff
 
@@ -23,7 +23,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 /* Appearance */
 body, table { font-family: sans-serif; }
-table { border-collapse: collapse; }
+table { border-collapse: collapse;}
 td, th { padding: 6px; }
 th { background: #333; color: white; }
 
@@ -80,13 +80,11 @@ a:active {
    text-decoration: none;
    color: blue;
 }
-
-.symbol_name {
-   font-family: monospace;
-} 
+ 
 .number {
    font-family: monospace;
 }
+
 .monospace {
    font-family: monospace;
 }
@@ -94,4 +92,81 @@ a:active {
 .source {
    color: royalblue;
    font-weight: bold;
+}
+
+table.size_overview th:nth-child(1) { text-align: left; }
+table.size_overview th:nth-child(2) { text-align: right; }
+table.size_overview th:nth-child(3) { text-align: right; }
+table.size_overview th:nth-child(4) { text-align: right; }
+table.size_overview td:nth-child(1) { text-align: left; }
+table.size_overview td:nth-child(2) { text-align: right; font-family: monospace;}
+table.size_overview td:nth-child(3) { text-align: right; font-family: monospace;}
+table.size_overview td:nth-child(4) { text-align: right; font-family: monospace;}
+
+table.persisting_symbols {table-layout: auto; width: 100%;}
+table.persisting_symbols th:nth-child(1) { text-align: left; }
+table.persisting_symbols th:nth-child(2) { text-align: right; }
+table.persisting_symbols th:nth-child(3) { text-align: right; }
+table.persisting_symbols th:nth-child(4) { text-align: right; }
+table.persisting_symbols th:nth-child(5) { text-align: right; }
+table.persisting_symbols td:nth-child(1) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
+table.persisting_symbols td:nth-child(2) { text-align: right; font-family: monospace;}
+table.persisting_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
+table.persisting_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
+table.persisting_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
+
+table.isolated_symbols {table-layout: auto; width: 100%;}
+table.isolated_symbols th:nth-child(1) { text-align: left; }
+table.isolated_symbols th:nth-child(2) { text-align: left; }
+table.isolated_symbols th:nth-child(3) { text-align: right; }
+table.isolated_symbols th:nth-child(4) { text-align: right; }
+table.isolated_symbols th:nth-child(5) { text-align: right; }
+table.isolated_symbols th:nth-child(6) { text-align: right; }
+table.isolated_symbols th:nth-child(7) { text-align: right; }
+table.isolated_symbols td:nth-child(1) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
+table.isolated_symbols td:nth-child(2) { text-align: left; font-family: monospace;}
+table.isolated_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
+table.isolated_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
+table.isolated_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
+table.isolated_symbols td:nth-child(6) { text-align: right; font-family: monospace;}
+table.isolated_symbols td:nth-child(7) { text-align: right; font-family: monospace;}
+    
+table.similar_symbols {table-layout: auto; width: 100%;}
+table.similar_symbols th:nth-child(1) { text-align: left; }
+table.similar_symbols th:nth-child(2) { text-align: left; }
+table.similar_symbols th:nth-child(3) { text-align: right; }
+table.similar_symbols th:nth-child(4) { text-align: right; }
+table.similar_symbols th:nth-child(5) { text-align: right; }
+table.similar_symbols th:nth-child(6) { text-align: right; }
+table.similar_symbols th:nth-child(7) { text-align: right; }
+table.similar_symbols td:nth-child(1) { text-align: left; font-family: monospace;}
+table.similar_symbols td:nth-child(2) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
+table.similar_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
+table.similar_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
+table.similar_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
+table.similar_symbols td:nth-child(6) { text-align: right; font-family: monospace;}
+table.similar_symbols td:nth-child(7) { text-align: right; font-family: monospace;}
+
+table.quad_col th:nth-child(1) { text-align: left; }
+table.quad_col th:nth-child(2) { text-align: right; }
+table.quad_col th:nth-child(3) { text-align: right; }
+table.quad_col th:nth-child(4) { text-align: right; }
+table.quad_col th:nth-child(5) { text-align: right; }
+table.quad_col td:nth-child(1) { text-align: left; font-family: monospace;}
+table.quad_col td:nth-child(2) { text-align: right; font-family: monospace;}
+table.quad_col td:nth-child(3) { text-align: right; font-family: monospace;}
+table.quad_col td:nth-child(4) { text-align: right; font-family: monospace;}
+table.quad_col td:nth-child(5) { text-align: right; font-family: monospace;}
+
+table.bin_col th:nth-child(1) { text-align: left; }
+table.bin_col th:nth-child(2) { text-align: right; }
+table.bin_col th:nth-child(3) { text-align: right; }
+table.bin_col td:nth-child(1) { text-align: left; font-family: monospace;}
+table.bin_col td:nth-child(2) { text-align: right; font-family: monospace;}
+table.bin_col td:nth-child(3) { text-align: right; font-family: monospace;}
+
+table.diff td {font-family: monospace;}
+
+table.stats, tr, td {
+    border: none;
 }

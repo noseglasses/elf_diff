@@ -1,0 +1,80 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% if symbols|length == 0 %}
+No symbols considered.<br>
+{% else %}
+<table class="sortable similar_symbols">
+  <thead><tr><th>Id</th><th>Symbols</th><th>Types</th><th>Size/bytes</th><th>Delta/bytes</th><th>Sig. Sim./%</th><th>Instr. Sim./%</th></thead>
+  <tbody>
+		{% for symbol in symbols -%}
+		<tr>
+		<td>
+      {% if symbol["have_details_link"] == True %}
+		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}"  {{ link_target_frame }}>
+      {% endif %}
+		  {{ symbol["table_id"] }}
+      {% if symbol["have_details_link"] == True %}
+		  &#9432;
+		  </a>
+      {% endif %}
+		</td>
+		<td>
+		  {{ symbol["old_representation"] }}
+		  <br>
+		  {{ symbol["new_representation"] }}
+		</td>
+		<td>
+		  {{ symbol["old_type"] }}
+		  <br>
+		  {{ symbol["new_type"] }}
+		</td>
+		<td>
+		  <span class="number">{{ symbol["old_size"] }}</span>
+		  <br>
+		  <span class="number">{{ symbol["new_size"] }}</span>
+		</td>
+		<td>
+			<span class="{{ symbol["size_diff_class"] }} number">{{ symbol["size_diff"] }}</span>
+		</td>
+		<td>
+		  <span class="number">{{ symbol["signature_similarity"] }}</span>
+		</td>
+		<td>
+		  <span class="number">{{ symbol["instruction_similarity"] }}</span>
+		</td>
+		</tr>
+		{% endfor %}
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
+  <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
+	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Size</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Delta</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
+	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
+</table>
+{% endif %}

@@ -1,0 +1,55 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+<table class="sortable isolated_symbols">
+  <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
+  <tbody>
+		{% for symbol in symbols -%}
+		<tr>
+		<td>
+      {% if symbol["have_details_link"] == True %}
+		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}" {{ link_target_frame }}>
+		  {% endif %}
+		  {{ symbol["name"]|e }}
+      {% if symbol["have_details_link"] == True %} {# Escape the string to avoid conflicts with < or > #}
+		  &#9432;
+		  </a>
+		  {% endif %}
+		</td>
+		<td>
+			{{ symbol["type"] }}
+		</td>
+		<td>
+			<span class="number">{{ symbol["size"] }}</span>
+		</td>
+		</tr>
+		{% endfor %}
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
+</table>

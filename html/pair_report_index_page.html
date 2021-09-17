@@ -1,0 +1,87 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>{{ page_title }}</title>
+  <script src="./js/sorttable.js"></script>
+  <link rel="stylesheet" href="./css/elf_diff_general.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <script src="./js/dragbars.js"></script>
+</head>
+<body>
+<div id="container">
+  <div id="header">
+		<H3>
+	elf_diff binary comparison
+	</H3> 
+	<span class="monospace">
+	Old binary: {{ old_binary_file }}<br>
+  New binary:	{{ new_binary_file }}
+	</span>
+	</div>
+  <div id="side">
+	  <ul>
+      <li><a href="./stats.html" target="overview">Statistics</a></li>
+      <li>Symbols
+        <ul>
+          <li><a href="./persisting_symbols_overview.html" target="overview">Persisting</a></li>
+          <li><a href="./disappeared_symbols_overview.html" target="overview">Disappeared</a></li>
+          <li><a href="./new_symbols_overview.html" target="overview">New</a></li>
+          <li><a href="./similar_symbols_overview.html" target="overview">Similar</a></li>
+        </ul>
+      </li>
+    </ul>
+	</div>
+	<div id="leftdragbar"></div>
+	<iframe id="overview" name="overview" frameBorder="0" src="./stats.html">
+	</iframe>
+	<div id="vertdragbar"></div>
+	<iframe id="details" name="details" frameBorder="0"></iframe>
+	<div id="footer">
+		<footer>
+			<span class="monospace">
+				<p>
+	Generated {{date}} by elf_diff {{elfdiff_git_version}} (https://github.com/CapeLeidokos/elf_diff)<br>
+	© 2021 by noseglasses (shinynoseglasses@gmail.com)
+				</p>
+				<p>
+	Powered by sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
+				</p>
+			 </span>
+		 </footer>
+	</div>
+</div>
+
+<script>
+//document.getElementById("container").addEventListener("mouseup", EndDrag);
+document.addEventListener("mouseup", EndDrag);
+document.getElementById("container").addEventListener("mousemove", OnDrag);
+document.getElementById("leftdragbar").addEventListener("mousedown", StartHorizDrag);
+document.getElementById("vertdragbar").addEventListener("mousedown", StartVertDrag);
+</script>
+</body>
+</html>

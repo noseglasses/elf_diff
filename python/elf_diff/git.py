@@ -21,19 +21,20 @@
 
 from git import Repo
 import os
-   
+
 unknown_version = "<unknown version>"
-   
+
+
 def gitRepoInfo(settings):
-   if not os.path.isdir(settings.repo_path):
-      return unknown_version
-   
-   repo = Repo(settings.repo_path)
-   
-   if not repo:
-      return unknown_version
-   
-   try:
-      return str(repo.head.reference.commit)
-   except:
-      return unknown_version
+    if not os.path.isdir(settings.repo_path):
+        return unknown_version
+
+    repo = Repo(settings.repo_path)
+
+    if not repo:
+        return unknown_version
+
+    try:
+        return str(repo.head.reference.commit)
+    except Exception:
+        return unknown_version
