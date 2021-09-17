@@ -1105,4 +1105,7 @@ class PairReport(Report):
         self.copyStyleFilesAndScripts(
             self.settings.repo_path + "/js", self.settings.html_dir + "/js"
         )
-        copyfile(self.settings.repo_path + "/images/favicon.png", self.settings.html_dir + "/images/favicon.png")
+        copyfile(
+            self.settings.repo_path + "/images/favicon.png",
+            self.settings.html_dir + "/images/favicon.png",
+        )
