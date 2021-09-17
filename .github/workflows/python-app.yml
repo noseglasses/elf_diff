@@ -67,8 +67,11 @@ jobs:
         tree
     - name: Link Checker
       uses: lycheeverse/lychee-action@v1.0.8
+      id: lychee
       with:
         args: --verbose --no-progress "/github/workspace/test_output/**/*.html"
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Fail on Link Checker Errors
+      run: exit ${{ steps.lychee.outputs.exit_code }}
 
