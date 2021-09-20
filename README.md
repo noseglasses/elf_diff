@@ -44,7 +44,7 @@ _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the 
 
 ## Requirements
 
-_elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `python/requirements.txt`) for more information.
+_elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `requirements.txt`) for more information.
 
 elf_diff works and is automatically tested with Python 2 and 3.
 
@@ -52,10 +52,10 @@ elf_diff works and is automatically tested with Python 2 and 3.
 
 The following procedure is required to setup _elf_diff_.
 
-1. Install Python version >= 2.7
+1. Install Python version >= 3.0
 2. Clone the [_elf_diff_](https://github.com/CapeLeidokos/_elf_diff_) repo from github.
 3. Run `make` from within the _elf_diff_ repo or directly install required packages
-via pip as `pip install -r python/requirements.txt`
+via pip as `pip install -r requirements.txt`
 4. Add the `bin` directory of the _elf_diff_ repo to your platform search path
 
 ## Usage

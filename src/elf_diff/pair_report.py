@@ -977,7 +977,7 @@ class PairReport(Report):
 
     def getSinglePageTemplateKeywords(self):
 
-        sortable_js_file = self.settings.repo_path + "/js/sorttable.js"
+        sortable_js_file = self.settings.repo_path + "/html/js/sorttable.js"
         sortable_js_content = None
         with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
             sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
@@ -985,7 +985,7 @@ class PairReport(Report):
             )
 
         elf_diff_general_css_file = (
-            self.settings.repo_path + "/css/elf_diff_general.css"
+            self.settings.repo_path + "/html/css/elf_diff_general.css"
         )
         elf_diff_general_css_content = None
         with open(elf_diff_general_css_file, "r") as file:
@@ -1100,10 +1100,10 @@ class PairReport(Report):
             html_content.exportFiles(self.base_page_keywords)
 
         self.copyStyleFilesAndScripts(
-            self.settings.repo_path + "/css", self.settings.html_dir + "/css"
+            self.settings.repo_path + "/html/css", self.settings.html_dir + "/css"
         )
         self.copyStyleFilesAndScripts(
-            self.settings.repo_path + "/js", self.settings.html_dir + "/js"
+            self.settings.repo_path + "/html/js", self.settings.html_dir + "/js"
         )
         copyfile(
             self.settings.repo_path + "/images/favicon.png",
