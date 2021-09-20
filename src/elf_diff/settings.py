@@ -346,22 +346,26 @@ class Settings(object):
                 return
             warning(f"Unable to find predefined {command_name} = {command}")
 
-        exe_extension = ""
         if os.name == "nt":
-            exe_extension = ".exe"
+            exe_extensions = [".exe", ""]
+        else:
+            exe_extensions = ["", ".exe"]
 
-        basename = self.bin_prefix + name + exe_extension
+        for exe_extension in exe_extensions:
+            basename = self.bin_prefix + name + exe_extension
 
-        if self.bin_dir is not None:
-            command = self.bin_dir + "/" + basename
+            if self.bin_dir is not None:
+                command = self.bin_dir + "/" + basename
+                if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+                    setattr(self, command_name, command)
+                    return
+
+        for exe_extension in exe_extensions:
+            basename = self.bin_prefix + name + exe_extension
+            command = shutil.which(basename)
             if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
                 setattr(self, command_name, command)
                 return
-
-        command = shutil.which(basename)
-        if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
-            setattr(self, command_name, command)
-            return
 
         unrecoverableError(f"Unnable to find {name} command")
 

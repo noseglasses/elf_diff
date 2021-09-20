@@ -25,7 +25,7 @@ import inspect
 import sys
 
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
-sys.path.append(bin_path + "/../python")
+sys.path.append(bin_path + "/../src")
 
 from elf_diff.symbol import Symbol
 from elf_diff.symbol import CppSymbol

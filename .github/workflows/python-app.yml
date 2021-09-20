@@ -43,7 +43,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest weasyprint
-        if [ -f python/requirements.txt ]; then pip install -r python/requirements.txt; fi
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -56,8 +56,8 @@ jobs:
       run: |
         mkdir test_output
         cd test_output
-        python3 ../testing/test.py
-        python3 ../testing/test_cpp_symbols.py
+        python3 ../tests/test.py
+        python3 ../tests/test_cpp_symbols.py
     - name: HTML check
       run: |
         pwd
@@ -74,4 +74,8 @@ jobs:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Fail on Link Checker Errors
       run: exit ${{ steps.lychee.outputs.exit_code }}
+    - name: Python Packaging
+      run: |
+        python3 -m pip install build
+        python -m build
 

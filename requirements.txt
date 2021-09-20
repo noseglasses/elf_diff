@@ -24,3 +24,4 @@ pyyaml >= 3.12
 progressbar2 >= 3.53.1
 GitPython >= 3.1.18
 weasyprint >= 53.3
+black
