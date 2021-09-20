@@ -241,6 +241,4 @@ In the example we select only those symbols related to class `std::string`.
 The following is a list of features that would be nice to have and will or will not be added
 in the future:
 
-* split up html reports into several files to make large reports more responsive
-* fix line wrapping in symbol comparison tables in order for them to be correctly rendered in pdf documents
 * read debug symbols from separate debug libraries and annotate assembly code
