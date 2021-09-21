@@ -4,20 +4,19 @@
 
 ## An Initial Example
 
-Before going into detail about what elf_diff does, let's start with an [example](https://capeleidokos.github.io/elf_diff/) of
+Before going into detail about what elf_diff does, let's start with an example of
 a multi page html report that was generated as part of one of the regression tests of this project.
 
 The test compiles, links and compares the elf files of two similar versions of a simple C++ program. The self contained HTML report that is generated 
 in a subdirectory allows to explore the prominent similarities and differences between the symbols defined in the two elf files.
 
-As an alternative to multi page html reports, self contained single-file reports 
-and [pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated.
+HTML reports look as follows. Please click on the table headers to proceed to the generated HTML pages.
 
-HTML reports look as follows:
-
-Multi Page                 |  Single Page
+[Multi Page](https://capeleidokos.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://capeleidokos.github.io/elf_diff/pair_report_output.html)
 :-------------------------:|:-------------------------:
 ![](examples/multi_page_pair_report.png)  |  ![](examples/single_page_pair_report.png)
+
+[Pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
 
 Please see the examples section at the end of this document for more usage examples.
 
@@ -60,7 +59,7 @@ elf_diff works and is automatically tested with Python 2 and 3.
 The following procedure is required to setup _elf_diff_.
 
 1. Install Python version >= 3.0
-2. Clone the [_elf_diff_](https://github.com/CapeLeidokos/_elf_diff_) repo from github.
+2. Clone the [_elf_diff_](https://github.com/CapeLeidokos/elf_diff) repo from github.
 3. Run `make` from within the _elf_diff_ repo or directly install required packages
 via pip as `pip install -r requirements.txt`
 4. Add the `bin` directory of the _elf_diff_ repo to your platform search path
