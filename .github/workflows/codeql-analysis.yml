@@ -40,7 +40,7 @@ jobs:
     steps:
     - name: Install Ubuntu packages
       run: |
-         sudo apt install -y cmake ninja
+         sudo apt install -y cmake ninja-build
     - name: Checkout repository
       uses: actions/checkout@v2
 
