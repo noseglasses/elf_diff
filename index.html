@@ -1,68 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset=utf-8>
-
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg=="/>
   <meta name="robots" content="noindex">
-  <title>ELF Binary Comparison - (c) 2021 by noseglasses</title>
-  <script src="./js/sorttable.js"></script>
-  <link rel="stylesheet" href="./css/elf_diff_general.css">
-  <link rel="stylesheet" href="./css/layout.css">
-  <link rel="icon" type="image/png" href="./images/favicon.png"/>
-  <script src="./js/dragbars.js"></script>
+  <title>elf_diff Examples</title>
+	<script>
 </head>
 <body>
-<div id="container">
-  <div id="header">
-		<H3>
-		<img style="vertical-align:text-top" src="./images/favicon.png" alt="elf_diff Logo">
-	elf_diff binary comparison
-	</H3> 
-	<span class="monospace">
-	Old binary: an_old_alias<br>
-  New binary:	a_new_alias
-	</span>
-	</div>
-  <div id="side">
-	  <ul>
-      <li><a href="./stats.html" target="overview">Statistics</a></li>
-      <li>Symbols
-        <ul>
-          <li><a href="./persisting_symbols_overview.html" target="overview">Persisting</a></li>
-          <li><a href="./disappeared_symbols_overview.html" target="overview">Disappeared</a></li>
-          <li><a href="./new_symbols_overview.html" target="overview">New</a></li>
-          <li><a href="./similar_symbols_overview.html" target="overview">Similar</a></li>
-        </ul>
-      </li>
-    </ul>
-	</div>
-	<div id="leftdragbar"></div>
-	<iframe id="overview" name="overview" frameBorder="0" src="./stats.html">
-	</iframe>
-	<div id="vertdragbar"></div>
-	<iframe id="details" name="details" frameBorder="0"></iframe>
-	<div id="footer">
-		<footer>
-			<span class="monospace">
-				<p>
-	Generated 2021-09-21 12:42:02 by elf_diff 87583a5232e4d30099edcefea175da21999acfa0 (https://github.com/CapeLeidokos/elf_diff)<br>
-	© 2021 by noseglasses (shinynoseglasses@gmail.com)
-				</p>
-				<p>
-	Powered by sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
-				</p>
-			 </span>
-		 </footer>
-	</div>
-</div>
-
-<script>
-//document.getElementById("container").addEventListener("mouseup", EndDrag);
-document.addEventListener("mouseup", EndDrag);
-document.getElementById("container").addEventListener("mousemove", OnDrag);
-document.getElementById("leftdragbar").addEventListener("mousedown", StartHorizDrag);
-document.getElementById("vertdragbar").addEventListener("mousedown", StartVertDrag);
-</script>
+  <H1>elf_diff Examples</H1>
+  <ul>
+	  <li><a href="pair_report_output.html">Single Page HTML Report</a></li>
+		<li><a href="pair_report_multi_page/index.html">Multi Page HTML Report</a></li>
+	</ul>
 </body>
 </html>
