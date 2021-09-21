@@ -2,9 +2,16 @@
 
 <h1><img style="vertical-align:middle" src="./images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
-## Example Output
+## An Initial Example
 
-Before going into detail about what elf_diff does, let's start with an [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf), a pdf report file that was generated as part of one of the regression tests of this project. Two similar versions of a simple C++ program are compiled and linked. The two elf-files resulting from this procedure are then compared and their prominent similarities and differences are reported. As an alternative to pdf files, html pages may be generated, featuring sortable tables.
+Before going into detail about what elf_diff does, let's start with an [example](https://capeleidokos.github.io/elf_diff/) of
+a multi page html report that was generated as part of one of the regression tests of this project.
+
+The test compiles, links and compares the elf files of two similar versions of a simple C++ program. The self contained HTML report that is generated 
+in a subdirectory allows to explore the prominent similarities and differences between the symbols defined in the two elf files.
+
+As an alternative to multi page html reports, self contained single-file reports 
+and [pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated.
 
 HTML reports look as follows:
 
