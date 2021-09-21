@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>Statistics</title>
+  <link rel="stylesheet" href="./css/elf_diff_general.css">
+  <script src="./js/sorttable.js"></script>
+  
+</head>
+<body>
+
+<H3>Statistics</H3>
+
+
+<table cellspacing="5" cellpadding="0" class = "stats">
+  <tbody>
+	  <tr>
+		  <td>
+				<H3><a id="rc_program_storage"></a>Program Storage</H3>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>329</td><td>331</td><td><span class="deterioration number">+2</span></td></tr>
+						<tr><td>text</td><td>321</td><td>323</td><td><span class="deterioration number">+2</span></td></tr>
+						<tr><td>data</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H3><a id="rc_static_ram"></a>Static RAM</H3>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>data</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>bss</td><td>0</td><td>0</td><td><span class="unchanged number">0</span></td></tr>
+					</tbody>
+				</table>
+			</td>
+			<td>
+			  <H3><a id="rc_legend"></a>Legend</H3>
+        <table>
+					<col align="left">
+					<col align="left">
+					<tbody>
+						<tr><td>text</td><td>instructions</td></tr>
+						<tr><td>data</td><td>initialized global or static variables</td></tr>
+						<tr><td>bss</td><td>uninitialized global or static variables</td></tr>
+					</tbody>
+				</table>
+			</td>
+	  </tr>
+	</tbody>
+</table>
+
+<H2><a id="symbols"></a>Symbols</H2>
+<p>7 symbols found in an_old_alias</p>
+<p>7 symbols found in a_new_alias</p>
+</body>
+</html>
