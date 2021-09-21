@@ -65,23 +65,38 @@ jobs:
         tree
         cd /home/runner/work/elf_diff/elf_diff/test_output
         tree
-    - name: Link Checker
+    - name: HTML Link Check
       uses: lycheeverse/lychee-action@v1.0.8
-      id: lychee
+      id: lychee_html
       with:
         args: --verbose --no-progress "/github/workspace/test_output/**/*.html"
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - name: Fail on Link Checker Errors
-      run: exit ${{ steps.lychee.outputs.exit_code }}
+    - name: Fail on HTML Link Check Errors
+      run: exit ${{ steps.lychee_html.outputs.exit_code }}
     - name: Python Packaging
       run: |
         python3 -m pip install build
         python -m build
+    - name: Prepare Example Deploy
+      run: |
+        mkdir example_deploy
+        cd example_deploy
+        cp -a ../test_output/pair_report_multi_page .
+        cp ../test_output/pair_report_output.html .
+        cp ../html/example_page.html ./index.html
     - name: Deploy To Github Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
       if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder: /home/runner/work/elf_diff/elf_diff/test_output/pair_report_multi_page # The folder the action should deploy.
-
+        folder: /home/runner/work/elf_diff/elf_diff/example_deploy # The folder the action should deploy.
+    - name: README.md Link Check
+      uses: lycheeverse/lychee-action@v1.0.8
+      id: lychee_readme_md
+      with:
+        args: --verbose --no-progress "/github/workspace/README.md"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Fail on README.md Link Check Errors
+      run: exit ${{ steps.lychee_readme_md.outputs.exit_code }}
