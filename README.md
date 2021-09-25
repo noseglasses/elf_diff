@@ -1,6 +1,6 @@
 [![Python application](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml/badge.svg)](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml)
 
-<h1><img style="vertical-align:middle" src="./src/elf_diff/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
+<h1><img style="vertical-align:middle" src="https://github.com/CapeLeidokos/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
 ## An Initial Example
 
@@ -14,7 +14,7 @@ HTML reports look as follows. Please click on the table headers to proceed to th
 
 [Multi Page](https://capeleidokos.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://capeleidokos.github.io/elf_diff/pair_report_output.html)
 :-------------------------:|:-------------------------:
-![](examples/multi_page_pair_report.png)  |  ![](examples/single_page_pair_report.png)
+![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
 
 [Pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
 
