@@ -4,7 +4,5 @@ include README.md
 include setup.py
 
 graft examples
-graft html
-graft images
 graft src
 graft tests

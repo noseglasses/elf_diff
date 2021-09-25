@@ -115,7 +115,7 @@ def diffStringsTarget(str1, str2):
 
 def configureTemplate(settings, template_filename, keywords):
 
-    template_path = settings.repo_path + "/html"
+    template_path = settings.module_path + "/html"
 
     env = Environment(loader=FileSystemLoader(template_path), undefined=StrictUndefined)
 

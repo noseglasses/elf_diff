@@ -138,7 +138,7 @@ class MassReport(Report):
         ) = self.getSinglePageScriptContent()
 
         return {
-            "elf_diff_repo_base": self.settings.repo_path,
+            "elf_diff_repo_base": self.settings.module_path,
             "doc_title": doc_title,
             "page_title": u"ELF Binary Comparison - (c) 2019 by noseglasses",
             "resource_consumption_table": resource_consumtption_table,

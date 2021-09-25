@@ -879,7 +879,7 @@ class PairReport(Report):
         self.base_page_keywords = {
             "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses",
             "doc_title": doc_title,
-            "elf_diff_repo_base": self.settings.repo_path,
+            "elf_diff_repo_base": self.settings.module_path,
             "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "elfdiff_git_version": gitRepoInfo(self.settings),
             "home": home,
@@ -890,7 +890,7 @@ class PairReport(Report):
     def getScriptElements(self, html_output_file=None):
 
         if html_output_file is None:
-            base_dir = self.settings.repo_path
+            base_dir = self.settings.module_path
         else:
             base_dir = getRelpath(html_output_file, self.settings.html_dir)
 
@@ -977,7 +977,7 @@ class PairReport(Report):
 
     def getSinglePageTemplateKeywords(self):
 
-        sortable_js_file = self.settings.repo_path + "/html/js/sorttable.js"
+        sortable_js_file = self.settings.module_path + "/html/js/sorttable.js"
         sortable_js_content = None
         with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
             sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
@@ -985,7 +985,7 @@ class PairReport(Report):
             )
 
         elf_diff_general_css_file = (
-            self.settings.repo_path + "/html/css/elf_diff_general.css"
+            self.settings.module_path + "/html/css/elf_diff_general.css"
         )
         elf_diff_general_css_content = None
         with open(elf_diff_general_css_file, "r") as file:
@@ -1100,12 +1100,12 @@ class PairReport(Report):
             html_content.exportFiles(self.base_page_keywords)
 
         self.copyStyleFilesAndScripts(
-            self.settings.repo_path + "/html/css", self.settings.html_dir + "/css"
+            self.settings.module_path + "/html/css", self.settings.html_dir + "/css"
         )
         self.copyStyleFilesAndScripts(
-            self.settings.repo_path + "/html/js", self.settings.html_dir + "/js"
+            self.settings.module_path + "/html/js", self.settings.html_dir + "/js"
         )
         copyfile(
-            self.settings.repo_path + "/images/favicon.png",
+            self.settings.module_path + "/images/favicon.png",
             self.settings.html_dir + "/images/favicon.png",
         )
