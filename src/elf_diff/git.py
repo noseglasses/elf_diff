@@ -22,19 +22,24 @@
 from git import Repo
 import os
 
-unknown_version = "<unknown version>"
+from elf_diff.__init__ import __version__
 
 
 def gitRepoInfo(settings):
-    if not os.path.isdir(settings.repo_path):
-        return unknown_version
+    # If used from the git repo source tree
+    repo_path = settings.module_path + "/../.."
+    if not os.path.isdir(repo_path):
+        return __version__
 
-    repo = Repo(settings.repo_path)
+    try:
+        repo = Repo(repo_path)
+    except Exception:
+        return __version__
 
     if not repo:
-        return unknown_version
+        return __version__
 
     try:
         return str(repo.head.reference.commit)
     except Exception:
-        return unknown_version
+        return __version__

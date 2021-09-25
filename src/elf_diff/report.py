@@ -24,7 +24,7 @@ import elf_diff.html as html
 
 class Report(object):
     def getSinglePageScriptContent(self):
-        sortable_js_file = self.settings.repo_path + "/html/js/sorttable.js"
+        sortable_js_file = self.settings.module_path + "/html/js/sorttable.js"
         sortable_js_content = None
         with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
             sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
@@ -32,7 +32,7 @@ class Report(object):
             )
 
         elf_diff_general_css_file = (
-            self.settings.repo_path + "/html/css/elf_diff_general.css"
+            self.settings.module_path + "/html/css/elf_diff_general.css"
         )
         elf_diff_general_css_content = None
         with open(elf_diff_general_css_file, "r") as file:

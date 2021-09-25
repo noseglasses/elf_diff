@@ -1,0 +1,24 @@
+name: Lint README
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint_readme:
+    name: Lint README
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: README.md Link Check
+      uses: lycheeverse/lychee-action@v1.0.8
+      id: lychee_readme_md
+      with:
+        args: --verbose --no-progress "/github/workspace/README.md"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Fail on README.md Link Check Errors
+      run: exit ${{ steps.lychee_readme_md.outputs.exit_code }}

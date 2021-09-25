@@ -49,9 +49,9 @@ class Parameter(object):
 
 
 class Settings(object):
-    def __init__(self, repo_path):
+    def __init__(self, module_path):
 
-        self.repo_path = repo_path
+        self.module_path = module_path
 
         self.setupParameters()
 

@@ -24,11 +24,29 @@ import os
 import inspect
 import subprocess
 import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "-p",
+    "--test_installed_package",
+    action="store_true",
+    help="Add this flag to enable testing using an installed elf_diff package",
+)
+parser.add_argument("unittest_args", nargs="*")
+
+args = parser.parse_args()
+
+# Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
+sys.argv[1:] = args.unittest_args
 
 testing_dir = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
-bin_dir = testing_dir + "/../bin"
 
-elf_diff_executable = bin_dir + "/elf_diff"
+if args.test_installed_package is True:
+    elf_diff_start = [sys.executable, "-m", "elf_diff"]
+else:
+    bin_dir = testing_dir + "/../bin"
+    elf_diff_start = [sys.executable, bin_dir + "/elf_diff"]
 
 old_binary = testing_dir + "/libelf_diff_test_release_old.a"
 new_binary = testing_dir + "/libelf_diff_test_release_new.a"
@@ -86,9 +104,8 @@ class TestCommandLineArgs(unittest.TestCase):
         template_file = "output.tmpl.yml"
 
         [output, error] = runSubprocess(
-            [
-                sys.executable,
-                elf_diff_executable,
+            elf_diff_start
+            + [
                 "--old_binary_filename",
                 old_binary,
                 "--new_binary_filename",
@@ -149,7 +166,7 @@ class TestCommandLineArgs(unittest.TestCase):
             f.write("driver_template_file: " + template_file + "\n")
 
         [output, error] = runSubprocess(
-            [sys.executable, elf_diff_executable, "--driver_file", driver_yaml_file]
+            elf_diff_start + ["--driver_file", driver_yaml_file]
         )
 
         # Check if all output files exist
@@ -185,7 +202,7 @@ class TestCommandLineArgs(unittest.TestCase):
             f.write('      short_name: "Second binary name"\n')
 
         [output, error] = runSubprocess(
-            [sys.executable, elf_diff_executable, "--driver_file", driver_yaml_file]
+            elf_diff_start + ["--driver_file", driver_yaml_file]
         )
 
         # Check if all output files exist

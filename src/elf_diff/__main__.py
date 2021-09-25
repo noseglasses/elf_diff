@@ -121,11 +121,11 @@ def writeMassReport(settings):
 
 def main():
 
-    bin_path = os.path.dirname(
+    module_path = os.path.dirname(
         os.path.realpath(inspect.getfile(inspect.currentframe()))
     )
-    print("bin_path = " + bin_path)
-    settings = Settings(bin_path + "/../..")
+    print("module_path = " + module_path)
+    settings = Settings(module_path)
 
     report_generated = False
 

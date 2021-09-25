@@ -1,0 +1,29 @@
+name: Local Package Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  local_package_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install Ubuntu packages
+      run: |
+         sudo apt install -y python3-pip
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install build
+    - name: Local Python Packaging
+      run: |
+        python3 -m build
+

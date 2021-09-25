@@ -1,0 +1,24 @@
+name: Lint generated HTML
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: Lint generated HTML
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: HTML Link Check
+      uses: lycheeverse/lychee-action@v1.0.8
+      id: lychee_html
+      with:
+        args: --verbose --no-progress "/github/workspace/test_output/**/*.html"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Fail on HTML Link Check Errors
+      run: exit ${{ steps.lychee_html.outputs.exit_code }}
