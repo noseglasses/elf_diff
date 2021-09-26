@@ -26,7 +26,13 @@ jobs:
     - name: Local Python Packaging
       run: |
         python3 -m build
-    - name: Check version tag
+    - name: Check version tag push
+      if: github.event_name == 'push'
+      run: |
+        source scripts/validate_package_version.sh
+        validate_package_version_wo_sha "${GITHUB_REF}"
+    - name: Check version tag PR
+      if: github.event_name == 'pull_request'
       run: |
         source scripts/validate_package_version.sh
         validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
@@ -46,7 +52,14 @@ jobs:
     - name: Local Python Packaging
       run: |
         py -m build
-    - name: Check version tag
+    - name: Check version tag push
+      if: github.event_name == 'push'
+      shell: bash
+      run: |
+        source scripts/validate_package_version.sh
+        validate_package_version_wo_sha "${GITHUB_REF}"
+    - name: Check version tag PR
+      if: github.event_name == 'pull_request'
       shell: bash
       run: |
         source scripts/validate_package_version.sh
