@@ -1,4 +1,6 @@
-[![Python application](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml/badge.svg)](https://github.com/CapeLeidokos/elf_diff/actions/workflows/python-app.yml)
+[![PyPi version](https://badgen.net/pypi/v/elf_diff/)](https://pypi.org/project/elf_diff)
+[![PyPi license](https://badgen.net/pypi/license/elf_diff/)](https://pypi.org/project/elf_diff/)
+![Code style black](https://img.shields.io/badge/code%20style-black-black)
 
 <h1><img style="vertical-align:middle" src="https://github.com/CapeLeidokos/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
