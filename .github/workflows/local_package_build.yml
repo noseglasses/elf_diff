@@ -35,7 +35,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: |
         source scripts/validate_package_version.sh
-        validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
+        validate_package_version_wo_sha "origin/${GITHUB_HEAD_REF}"
   windows:
     runs-on: windows-latest
 
@@ -63,4 +63,4 @@ jobs:
       shell: bash
       run: |
         source scripts/validate_package_version.sh
-        validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
+        validate_package_version_wo_sha "origin/${GITHUB_HEAD_REF}"
