@@ -12,7 +12,7 @@ function validate_package_version() {
 
   git_ref=$1
   echo "Git ref: ${git_ref}"
-  input_branch="origin/${git_ref}"
+  input_branch="${git_ref}"
   echo "Input branch: ${input_branch}"
   branch_head_commit_id=$(git rev-parse ${input_branch})
   echo "Head commit: ${branch_head_commit_id}"
