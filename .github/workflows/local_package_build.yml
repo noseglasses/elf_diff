@@ -26,4 +26,7 @@ jobs:
     - name: Local Python Packaging
       run: |
         python3 -m build
-
+    - name: Check version tag
+      run: |
+        source scripts/validate_package_version.sh
+        validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
