@@ -83,7 +83,7 @@ class HTMLContent(object):
 
         html_template_filename = "frame_content.html"
 
-        html_output_file = f"{self.settings.html_dir}/" + self.getFilename()
+        html_output_file = os.path.join(self.settings.html_dir, self.getFilename())
 
         keywords = self.keywords or {}
 
@@ -135,7 +135,7 @@ class PersistingSymbol(HTMLContent):
         if self.single_page is False:
             details_file = self.getFilename()
             have_return_links = False
-            overview_file = self.getRelPathToOverviewFile() + "/index.html"
+            overview_file = os.path.join(self.getRelPathToOverviewFile(), "index.html")
         else:
             have_return_links = True
             overview_file = ""
@@ -176,14 +176,14 @@ class PersistingSymbol(HTMLContent):
         )
 
     def getFilename(self):
-        return f"details/persisting/{self.old_symbol.id}.html"
+        return os.path.join("details", "persisting", f"{self.old_symbol.id}.html")
 
     def getPageTitle(self):
         return "Persisting Symbol " + self.keywords["name"]
 
     def getRelPathToOverviewFile(self):
         if self.single_page is False:
-            return "../.."
+            return os.path.join("..", "..")
         return "."
 
 
@@ -300,7 +300,7 @@ class IsolatedSymbol(HTMLContent):
         details_anchor = f"{self.description}_symbol_details_{self.symbol.id}"
 
         if self.single_page is False:
-            overview_file = "../../index.html"
+            overview_file = os.path.join("..", "..", "index.html")
             details_file = self.getFilename()
             have_return_links = False
         else:
@@ -339,14 +339,14 @@ class IsolatedSymbol(HTMLContent):
         )
 
     def getFilename(self):
-        return f"details/{self.description}/{self.symbol.id}.html"
+        return os.path.join("details", self.description, f"{self.symbol.id}.html")
 
     def getPageTitle(self):
         return self.description.capitalize() + " Symbol " + self.keywords["name"]
 
     def getRelPathToOverviewFile(self):
         if self.single_page is False:
-            return "../.."
+            return os.path.join("..", "..")
         return "."
 
 
@@ -514,14 +514,14 @@ class SimilarSymbolPair(HTMLContent):
         )
 
     def getFilename(self):
-        return f"details/similar/{self.id}.html"
+        return os.path.join("details", "similar", f"{self.id}.html")
 
     def getPageTitle(self):
         return f"Similar Symbol Pair {self.id}"
 
     def getRelPathToOverviewFile(self):
         if self.single_page is False:
-            return "../.."
+            return os.path.join("..", "..")
         return "."
 
 
@@ -977,16 +977,25 @@ class PairReport(Report):
 
     def getSinglePageTemplateKeywords(self):
 
-        sortable_js_file = self.settings.module_path + "/html/js/sorttable.js"
+        sortable_js_file = os.path.join(
+            self.settings.module_path,
+            "html",
+            "js",
+            "sorttable.js",
+        )
         sortable_js_content = None
         with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
             sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
                 file.read()
             )
 
-        elf_diff_general_css_file = (
-            self.settings.module_path + "/html/css/elf_diff_general.css"
+        elf_diff_general_css_file = os.path.join(
+            self.settings.module_path,
+            "html",
+            "css",
+            "elf_diff_general.css",
         )
+
         elf_diff_general_css_content = None
         with open(elf_diff_general_css_file, "r") as file:
             elf_diff_general_css_content = (
@@ -1062,12 +1071,12 @@ class PairReport(Report):
 
         dirs = [
             self.settings.html_dir,
-            self.settings.html_dir + "/details",
-            self.settings.html_dir + "/details/persisting",
-            self.settings.html_dir + "/details/disappeared",
-            self.settings.html_dir + "/details/new",
-            self.settings.html_dir + "/details/similar",
-            self.settings.html_dir + "/images",
+            os.path.join(self.settings.html_dir, "details"),
+            os.path.join(self.settings.html_dir, "details", "persisting"),
+            os.path.join(self.settings.html_dir, "details", "disappeared"),
+            os.path.join(self.settings.html_dir, "details", "new"),
+            os.path.join(self.settings.html_dir, "details", "similar"),
+            os.path.join(self.settings.html_dir, "images"),
         ]
 
         for dir in dirs:
@@ -1076,7 +1085,7 @@ class PairReport(Report):
 
         html_template_file = "pair_report_index_page.html"
 
-        html_index_filename = f"{self.settings.html_dir}/index.html"
+        html_index_filename = os.path.join(self.settings.html_dir, "index.html")
 
         template_keywords = self.getBaseTitlePageTemplateKeywords(html_index_filename)
 
@@ -1100,12 +1109,14 @@ class PairReport(Report):
             html_content.exportFiles(self.base_page_keywords)
 
         self.copyStyleFilesAndScripts(
-            self.settings.module_path + "/html/css", self.settings.html_dir + "/css"
+            os.path.join(self.settings.module_path, "html", "css"),
+            os.path.join(self.settings.html_dir, "css"),
         )
         self.copyStyleFilesAndScripts(
-            self.settings.module_path + "/html/js", self.settings.html_dir + "/js"
+            os.path.join(self.settings.module_path, "html", "js"),
+            os.path.join(self.settings.html_dir, "js"),
         )
         copyfile(
-            self.settings.module_path + "/images/favicon.png",
-            self.settings.html_dir + "/images/favicon.png",
+            os.path.join(self.settings.module_path, "images", "favicon.png"),
+            os.path.join(self.settings.html_dir, "images", "favicon.png"),
         )

@@ -19,21 +19,31 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import elf_diff.html as html
 
 
 class Report(object):
     def getSinglePageScriptContent(self):
-        sortable_js_file = self.settings.module_path + "/html/js/sorttable.js"
+        sortable_js_file = os.path.join(
+            self.settings.module_path,
+            "html",
+            "js",
+            "sorttable.js",
+        )
         sortable_js_content = None
         with open(sortable_js_file, "r", encoding="ISO-8859-1") as file:
             sortable_js_content = "<script>\n%s\n</script>\n" % html.escapeString(
                 file.read()
             )
 
-        elf_diff_general_css_file = (
-            self.settings.module_path + "/html/css/elf_diff_general.css"
+        elf_diff_general_css_file = os.path.join(
+            self.settings.module_path,
+            "html",
+            "css",
+            "elf_diff_general.css",
         )
+
         elf_diff_general_css_content = None
         with open(elf_diff_general_css_file, "r") as file:
             elf_diff_general_css_content = (

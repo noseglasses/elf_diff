@@ -54,31 +54,31 @@ _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the 
 
 _elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `requirements.txt`) for more information.
 
-elf_diff works and is automatically tested with Python 2 and 3.
+elf_diff works and is automatically tested with Python 3.
+
+The following setup guide assumes Python 3 to be installed on your computer. Python setup tutorials can easily be found by googling "install python 3".
 
 ## Setup
 
-The following procedure is required to install the _elf_diff_ Python package.
-
-1. Install Python version >= 3.0
-3. Install the elf_diff package via one of the following commands
+Install the elf_diff Python package via one of the following commands
    * `python3 -m pip install elf_diff` (Linux)
    * `py -m pip install elf_diff` (Windows)
 
 Alternatively when developing _elf_diff_, the following steps are required:
 
-1. Install Python version >= 3.0
-2. Clone the [_elf_diff_](https://github.com/CapeLeidokos/elf_diff) repo from github.
-3. Install required packages via one of the following commands
+1. Clone the [_elf_diff_](https://github.com/CapeLeidokos/elf_diff) repo from github.
+2. Install any required packages via one of the following commands
    * `python3 -m pip install -r requirements.txt` (Linux)
    * `py -m pip install -r requirements.txt` (Windows)
-4. Add the `bin` directory of the _elf_diff_ repo to your platform search path
+3. Add the `bin` subdirectory of the _elf_diff_ repo to your platform search path (environment variable, e.g. `PATH`)
 
-To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff`, e.g. as `bin/elf_diff -h` to display the help string.
+To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.
 
 ## Usage
 
-There is a small difference between running Python on Linux and Windows. To display _elf_diff_'s help page in a console window, type the following in a linux console
+There is a small difference between running Python on Linux and Windows. While the command to run Python 3 from a console window under Linux is `python3`, on Windows there is a so called _Python runner_ (command `py`) that invokes the most suitable Python interpreter installed.
+
+To display _elf_diff_'s help page in a console window, type the following in a Linux console
 ```
 python3 -m elf_diff -h
 ```
@@ -88,7 +88,7 @@ py -m elf_diff -h
 ```
 in a Windows console.
 
-In the examples provided below, we go with the Linux syntax. Please replace the keyword `python3` with `py` when executing the respective examples in a Windows environment.
+In the examples provided below, we prefer the Linux syntax. Please replace the keyword `python3` with `py` when running the respective examples in a Windows environment.
 
 ### Generating Pair-Reports
 

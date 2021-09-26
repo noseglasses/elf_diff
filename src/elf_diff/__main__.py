@@ -74,11 +74,9 @@ def writePairReport(settings):
             single_page_pair_report = PairReport(settings)
             single_page_pair_report.single_page = True
 
-        tmp_html_file = (
-            tempfile._get_default_tempdir()
-            + "/"
-            + next(tempfile._get_candidate_names())
-            + ".html"
+        tmp_html_file = os.path.join(
+            tempfile._get_default_tempdir(),
+            next(tempfile._get_candidate_names()) + ".html",
         )
 
         single_page_pair_report.writeSinglePageHTMLReport(output_file=tmp_html_file)
@@ -101,11 +99,9 @@ def writeMassReport(settings):
 
     if settings.pdf_file:
 
-        tmp_html_file = (
-            tempfile._get_default_tempdir()
-            + "/"
-            + next(tempfile._get_candidate_names())
-            + ".html"
+        tmp_html_file = os.path.join(
+            tempfile._get_default_tempdir(),
+            next(tempfile._get_candidate_names()) + ".html",
         )
 
         mass_report.generate(tmp_html_file)
@@ -124,7 +120,6 @@ def main():
     module_path = os.path.dirname(
         os.path.realpath(inspect.getfile(inspect.currentframe()))
     )
-    print("module_path = " + module_path)
     settings = Settings(module_path)
 
     report_generated = False

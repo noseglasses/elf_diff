@@ -21,6 +21,7 @@
 
 from elf_diff.error_handling import unrecoverableError
 import sys
+import os
 import difflib
 import codecs
 import jinja2
@@ -115,7 +116,7 @@ def diffStringsTarget(str1, str2):
 
 def configureTemplate(settings, template_filename, keywords):
 
-    template_path = settings.module_path + "/html"
+    template_path = os.path.join(settings.module_path, "html")
 
     env = Environment(loader=FileSystemLoader(template_path), undefined=StrictUndefined)
 

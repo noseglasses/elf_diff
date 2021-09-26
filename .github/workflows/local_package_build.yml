@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  local_package_build:
+  ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,27 @@ jobs:
       run: |
         python3 -m build
     - name: Check version tag
+      run: |
+        source scripts/validate_package_version.sh
+        validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
+  windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        py -m pip install --upgrade pip
+        py -m pip install build
+    - name: Local Python Packaging
+      run: |
+        py -m build
+    - name: Check version tag
+      shell: bash
       run: |
         source scripts/validate_package_version.sh
         validate_package_version_wo_sha "${GITHUB_HEAD_REF}"
