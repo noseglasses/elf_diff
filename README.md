@@ -2,7 +2,7 @@
 [![PyPi license](https://badgen.net/pypi/license/elf_diff/)](https://pypi.org/project/elf_diff/)
 ![Code style black](https://img.shields.io/badge/code%20style-black-black)
 
-<h1><img style="vertical-align:middle" src="https://github.com/CapeLeidokos/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
+<h1><img style="vertical-align:middle" src="https://github.com/noseglasses/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
 ## An Initial Example
 
@@ -14,11 +14,11 @@ in a subdirectory allows to explore the prominent similarities and differences b
 
 HTML reports look as follows. Please click on the table headers to proceed to the generated HTML pages.
 
-[Multi Page](https://capeleidokos.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://capeleidokos.github.io/elf_diff/pair_report_output.html)
+[Multi Page](https://noseglasses.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://noseglasses.github.io/elf_diff/pair_report_output.html)
 :-------------------------:|:-------------------------:
-![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
+![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
 
-[Pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
+[Pdf reports](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
 
 Please see the examples section at the end of this document for more usage examples.
 
@@ -66,7 +66,7 @@ Install the elf_diff Python package via one of the following commands
 
 Alternatively when developing _elf_diff_, the following steps are required:
 
-1. Clone the [_elf_diff_](https://github.com/CapeLeidokos/elf_diff) repo from github.
+1. Clone the [_elf_diff_](https://github.com/noseglasses/elf_diff) repo from github.
 2. Install any required packages via one of the following commands
    * `python3 -m pip install -r requirements.txt` (Linux)
    * `py -m pip install -r requirements.txt` (Windows)
@@ -245,11 +245,11 @@ For binaries with debug symbols included, elf_diff will annotate the assembly co
 
 ### Simple Example
 
-An [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
+An [example](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
 
 ### libstdc++
 
-[Comparison of two versions of libstdc++](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
+[Comparison of two versions of libstdc++](https://github.com/noseglasses/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
 In the example we select only those symbols related to class `std::string`.
 
 ```
