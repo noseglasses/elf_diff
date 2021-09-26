@@ -27,7 +27,7 @@ from elf_diff.__init__ import __version__
 
 def gitRepoInfo(settings):
     # If used from the git repo source tree
-    repo_path = settings.module_path + "/../.."
+    repo_path = os.path.join(settings.module_path, "..", "..")
     if not os.path.isdir(repo_path):
         return __version__
 

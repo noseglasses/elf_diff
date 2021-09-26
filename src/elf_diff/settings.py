@@ -355,7 +355,7 @@ class Settings(object):
             basename = self.bin_prefix + name + exe_extension
 
             if self.bin_dir is not None:
-                command = self.bin_dir + "/" + basename
+                command = os.path.join(self.bin_dir, basename)
                 if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
                     setattr(self, command_name, command)
                     return

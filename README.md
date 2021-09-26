@@ -2,7 +2,7 @@
 [![PyPi license](https://badgen.net/pypi/license/elf_diff/)](https://pypi.org/project/elf_diff/)
 ![Code style black](https://img.shields.io/badge/code%20style-black-black)
 
-<h1><img style="vertical-align:middle" src="https://github.com/CapeLeidokos/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
+<h1><img style="vertical-align:middle" src="https://github.com/noseglasses/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
 ## An Initial Example
 
@@ -14,11 +14,11 @@ in a subdirectory allows to explore the prominent similarities and differences b
 
 HTML reports look as follows. Please click on the table headers to proceed to the generated HTML pages.
 
-[Multi Page](https://capeleidokos.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://capeleidokos.github.io/elf_diff/pair_report_output.html)
+[Multi Page](https://noseglasses.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://noseglasses.github.io/elf_diff/pair_report_output.html)
 :-------------------------:|:-------------------------:
-![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/CapeLeidokos/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
+![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
 
-[Pdf reports](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
+[Pdf reports](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
 
 Please see the examples section at the end of this document for more usage examples.
 
@@ -54,31 +54,31 @@ _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the 
 
 _elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `requirements.txt`) for more information.
 
-elf_diff works and is automatically tested with Python 2 and 3.
+elf_diff works and is automatically tested with Python 3.
+
+The following setup guide assumes Python 3 to be installed on your computer. Python setup tutorials can easily be found by googling "install python 3".
 
 ## Setup
 
-The following procedure is required to install the _elf_diff_ Python package.
-
-1. Install Python version >= 3.0
-3. Install the elf_diff package via one of the following commands
+Install the elf_diff Python package via one of the following commands
    * `python3 -m pip install elf_diff` (Linux)
    * `py -m pip install elf_diff` (Windows)
 
 Alternatively when developing _elf_diff_, the following steps are required:
 
-1. Install Python version >= 3.0
-2. Clone the [_elf_diff_](https://github.com/CapeLeidokos/elf_diff) repo from github.
-3. Install required packages via one of the following commands
+1. Clone the [_elf_diff_](https://github.com/noseglasses/elf_diff) repo from github.
+2. Install any required packages via one of the following commands
    * `python3 -m pip install -r requirements.txt` (Linux)
    * `py -m pip install -r requirements.txt` (Windows)
-4. Add the `bin` directory of the _elf_diff_ repo to your platform search path
+3. Add the `bin` subdirectory of the _elf_diff_ repo to your platform search path (environment variable, e.g. `PATH`)
 
-To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff`, e.g. as `bin/elf_diff -h` to display the help string.
+To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.
 
 ## Usage
 
-There is a small difference between running Python on Linux and Windows. To display _elf_diff_'s help page in a console window, type the following in a linux console
+There is a small difference between running Python on Linux and Windows. While the command to run Python 3 from a console window under Linux is `python3`, on Windows there is a so called _Python runner_ (command `py`) that invokes the most suitable Python interpreter installed.
+
+To display _elf_diff_'s help page in a console window, type the following in a Linux console
 ```
 python3 -m elf_diff -h
 ```
@@ -88,7 +88,7 @@ py -m elf_diff -h
 ```
 in a Windows console.
 
-In the examples provided below, we go with the Linux syntax. Please replace the keyword `python3` with `py` when executing the respective examples in a Windows environment.
+In the examples provided below, we prefer the Linux syntax. Please replace the keyword `python3` with `py` when running the respective examples in a Windows environment.
 
 ### Generating Pair-Reports
 
@@ -245,11 +245,11 @@ For binaries with debug symbols included, elf_diff will annotate the assembly co
 
 ### Simple Example
 
-An [example](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
+An [example](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
 
 ### libstdc++
 
-[Comparison of two versions of libstdc++](https://github.com/CapeLeidokos/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
+[Comparison of two versions of libstdc++](https://github.com/noseglasses/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
 In the example we select only those symbols related to class `std::string`.
 
 ```

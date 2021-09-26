@@ -45,13 +45,13 @@ testing_dir = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentfr
 if args.test_installed_package is True:
     elf_diff_start = [sys.executable, "-m", "elf_diff"]
 else:
-    bin_dir = testing_dir + "/../bin"
-    elf_diff_start = [sys.executable, bin_dir + "/elf_diff"]
+    bin_dir = os.path.join(testing_dir, "..", "bin")
+    elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
-old_binary = testing_dir + "/libelf_diff_test_release_old.a"
-new_binary = testing_dir + "/libelf_diff_test_release_new.a"
-old_binary2 = testing_dir + "/libelf_diff_test_debug_old.a"
-new_binary2 = testing_dir + "/libelf_diff_test_debug_new.a"
+old_binary = os.path.join(testing_dir, "libelf_diff_test_release_old.a")
+new_binary = os.path.join(testing_dir, "libelf_diff_test_release_new.a")
+old_binary2 = os.path.join(testing_dir, "libelf_diff_test_debug_old.a")
+new_binary2 = os.path.join(testing_dir, "libelf_diff_test_debug_new.a")
 
 verbose_output = True
 
@@ -115,7 +115,7 @@ class TestCommandLineArgs(unittest.TestCase):
                 "--new_alias",
                 "a_new_alias",
                 "--old_info_file",
-                testing_dir + "/old_binary_info.txt",
+                os.path.join(testing_dir, "old_binary_info.txt"),
                 "--new_info_file",
                 testing_dir + "/new_binary_info.txt",
                 "--build_info",
@@ -150,20 +150,28 @@ class TestCommandLineArgs(unittest.TestCase):
 
         with open(driver_yaml_file, "w") as f:
 
-            f.write("old_binary_filename: " + old_binary + "\n")
-            f.write("new_binary_filename: " + new_binary + "\n")
+            f.write("old_binary_filename: '" + old_binary + "'\n")
+            f.write("new_binary_filename: '" + new_binary + "'\n")
             f.write("old_alias: " + "an_old_alias\n")
             f.write("new_alias: " + "a_new_alias\n")
-            f.write("old_info_file: " + testing_dir + "/old_binary_info.txt\n")
-            f.write("new_info_file: " + testing_dir + "/new_binary_info.txt\n")
+            f.write(
+                "old_info_file: '"
+                + os.path.join(testing_dir, "old_binary_info.txt")
+                + "'\n"
+            )
+            f.write(
+                "new_info_file: '"
+                + os.path.join(testing_dir, "new_binary_info.txt")
+                + "'\n"
+            )
             f.write("build_info: >\n")
             f.write("  Build info.\n")
             f.write("  More build info.\n")
-            f.write("html_file: " + html_file + "\n")
-            f.write("html_dir: " + html_dir + "\n")
-            f.write("pdf_file: " + pdf_file + "\n")
-            f.write("project_title: " + "Project title\n")
-            f.write("driver_template_file: " + template_file + "\n")
+            f.write("html_file: '" + html_file + "'\n")
+            f.write("html_dir: '" + html_dir + "'\n")
+            f.write("pdf_file: '" + pdf_file + "'\n")
+            f.write("project_title: '" + "Project title'\n")
+            f.write("driver_template_file: '" + template_file + "'\n")
 
         [output, error] = runSubprocess(
             elf_diff_start + ["--driver_file", driver_yaml_file]
@@ -188,18 +196,18 @@ class TestCommandLineArgs(unittest.TestCase):
             f.write("build_info: >\n")
             f.write("  Build info.\n")
             f.write("  More build info.\n")
-            f.write("html_file: " + html_file + "\n")
-            f.write("pdf_file: " + pdf_file + "\n")
-            f.write("project_title: " + "Project title\n")
-            f.write("driver_template_file: " + template_file + "\n")
+            f.write("html_file: '" + html_file + "'\n")
+            f.write("pdf_file: '" + pdf_file + "'\n")
+            f.write("project_title: 'Project title'\n")
+            f.write("driver_template_file: '" + template_file + "'\n")
 
             f.write("binary_pairs:\n")
-            f.write('    - old_binary: "' + old_binary + '"\n')
-            f.write('      new_binary: "' + new_binary + '"\n')
-            f.write('      short_name: "First binary name"\n')
-            f.write('    - old_binary: "' + old_binary2 + '"\n')
-            f.write('      new_binary: "' + new_binary2 + '"\n')
-            f.write('      short_name: "Second binary name"\n')
+            f.write("    - old_binary: '" + old_binary + "'\n")
+            f.write("      new_binary: '" + new_binary + "'\n")
+            f.write("      short_name: 'First binary name'\n")
+            f.write("    - old_binary: '" + old_binary2 + "'\n")
+            f.write("      new_binary: '" + new_binary2 + "'\n")
+            f.write("      short_name: 'Second binary name'\n")
 
         [output, error] = runSubprocess(
             elf_diff_start + ["--driver_file", driver_yaml_file]
