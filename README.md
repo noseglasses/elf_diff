@@ -73,6 +73,8 @@ The following setup guide assumes Python 3 to be installed on your computer. Pyt
 Install the elf_diff Python package via one of the following commands
    * `python3 -m pip install elf_diff` (Linux)
    * `py -m pip install elf_diff` (Windows)
+	 
+Please note: [PyPI](https://pypi.org/) the Python package index traditionally uses hyphens instead of underscores in package names. _pip_, however, happily supports both versions _elf_diff_ and _elf-diff_. 
 
 Alternatively when developing _elf_diff_, the following steps are required:
 
