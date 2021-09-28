@@ -106,6 +106,12 @@ int persisting2(int a) { return 42; }
 </tr>
 </table>
 
+Compiled and linked version of the two above code snippets can be found in the `tests` subdirectory of _elf_diff_ git repository. To generate a multi page pair report from these files, please install the _elf_diff_ Python packages as described in the installation section of this document. Then enter the following in a console on a Linux system. Please replace the placeholder `<elf_diff sandbox>` with the absolute path of your local _elf_diff_ sandbox.
+
+```
+python3 -m elf_diff --html_dir report <elf_diff sandbox>/tests/libelf_diff_test_debug_old.a <elf_diff sandbox>/tests/libelf_diff_test_debug_new.a
+```
+
 By means of its self contained HTML reports _elf_diff_ allows for conveniently analyzing the similarities and differences between the symbols contained
 in [elf](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) files.
 
