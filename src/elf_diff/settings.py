@@ -112,6 +112,16 @@ class Settings(object):
             Parameter("nm_command", "Full path to the nm untility.", default=None),
             Parameter("size_command", "Full path to the size untility.", default=None),
             Parameter(
+                "old_mangling_file",
+                "Full path to a mangling file for old elf.",
+                default=None,
+            ),
+            Parameter(
+                "new_mangling_file",
+                "Full path to a mangling file for new elf.",
+                default=None,
+            ),
+            Parameter(
                 "html_file", "The filename of the generated single page HTML report."
             ),
             Parameter(
@@ -147,6 +157,12 @@ class Settings(object):
                 "similarity_threshold",
                 "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
                 default=0.5,
+            ),
+            Parameter(
+                "skip_symbol_similarities",
+                "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
+                default=False,
+                is_flag=True,
             ),
             Parameter(
                 "consider_equal_sized_identical",

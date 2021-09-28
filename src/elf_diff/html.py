@@ -124,7 +124,9 @@ def configureTemplate(settings, template_filename, keywords):
         creator = env.get_template(template_filename)
 
     except jinja2.exceptions.TemplateError as e:
-        unrecoverableError("Failed creating jinja creator\n" + str(e))
+        unrecoverableError(
+            f"Failed creating jinja creator for file '{template_filename}'\n" + str(e)
+        )
 
     try:
         sys.stdout.flush()

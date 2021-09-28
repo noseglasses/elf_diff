@@ -25,6 +25,49 @@ from elf_diff.html import preHighlightSourceCode
 from elf_diff.symbol import getSymbolType
 
 import re
+import os
+
+
+class Mangling(object):
+    def __init__(self, mangling_file):
+        self.mangling_file = mangling_file
+        self.mangling = None
+
+        self.setupMangling()
+
+    def setupMangling(self):
+        if self.mangling_file is None:
+            return
+        if not os.path.isfile(self.mangling_file):
+            return
+        with open(self.mangling_file, "r") as f:
+            lines = f.read().splitlines()
+            self.mangling = {}
+            line_id = 0
+            # Read line pairs, first line is mangled, second line is demangled symbol
+            for line in lines:
+                if line_id == 0:
+                    mangled_symbol = line
+                else:
+                    demangled_symbol = line
+                    self.mangling[mangled_symbol] = demangled_symbol
+                line_id = (line_id + 1) % 2
+
+            print(
+                "Mangling info of "
+                + str(len(self.mangling))
+                + " symbols read from file '"
+                + self.mangling_file
+                + "'"
+            )
+
+    def demangle(self, symbol_name):
+        if self.mangling is None:
+            return symbol_name
+        if symbol_name in self.mangling.keys():
+            return self.mangling[symbol_name]
+
+        return symbol_name
 
 
 class Binary(object):
@@ -34,6 +77,7 @@ class Binary(object):
         filename,
         symbol_selection_regex=None,
         symbol_exclusion_regex=None,
+        mangling=None,
     ):
 
         import os.path
@@ -41,6 +85,8 @@ class Binary(object):
         self.settings = settings
         self.filename = filename
         self.symbol_type = getSymbolType(settings.language)
+
+        self.mangling = mangling
 
         self.text_size = 0
         self.data_size = 0
@@ -170,6 +216,7 @@ class Binary(object):
         return None
 
     def gatherSymbolInstructions(self):
+
         objdump_output = self.readObjdumpOutput()
 
         # print("Output:")
@@ -183,6 +230,7 @@ class Binary(object):
         cur_symbol = None
         n_symbols = 0
         n_instruction_lines = 0
+        self.instructions_available = False
 
         for line in objdump_output.splitlines():
 
@@ -192,7 +240,8 @@ class Binary(object):
                     self.addSymbol(cur_symbol)
                     n_symbols += 1
 
-                symbol_name = header_match.group(2)
+                symbol_name_possibly_mangled = header_match.group(2)
+                symbol_name = self.mangling.demangle(symbol_name_possibly_mangled)
                 cur_symbol = self.getNextSymbol(symbol_name)
             else:
                 instruction_line_match = re.match(instruction_line_re, line)
@@ -216,6 +265,8 @@ class Binary(object):
             )
             warning("Do you use the correct binutils version?")
             warning("Please check the --bin_dir and --bin_prefix settings.")
+        else:
+            self.instructions_available = True
 
     def gatherSymbolProperties(self):
         nm_output = self.readNMOutput()
@@ -228,7 +279,9 @@ class Binary(object):
             if nm_match:
                 symbol_size_str = nm_match.group(1)
                 symbol_type = nm_match.group(2)
-                symbol_name = nm_match.group(3)
+
+                symbol_name_possibly_mangled = nm_match.group(3)
+                symbol_name = self.mangling.demangle(symbol_name_possibly_mangled)
 
                 if symbol_name not in self.symbols.keys():
                     if self.isSymbolSelected(symbol_name):

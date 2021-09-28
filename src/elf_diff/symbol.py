@@ -50,6 +50,9 @@ class Symbol(object):
             self.instructions += "".join(instruction_line.split())
         self.instructions_hash = hash(self.instructions)
 
+    def hasInstructions(self):
+        return len(self.instruction_lines) > 0
+
     def addInstructions(self, instruction_line):
         self.instruction_lines.append(instruction_line)
 
@@ -104,7 +107,7 @@ class Symbol(object):
 
     def getInstructionsBlockEscaped(self, indent):
         if self.symbol_type == Symbol.type_data:
-            return "<data symbol -> no assembly displayed>"
+            return "no assembly displayed"
         return postHighlightSourceCode(
             escapeString(indent + ("\n" + indent).join(self.instruction_lines))
         )
