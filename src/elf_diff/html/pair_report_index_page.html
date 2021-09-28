@@ -44,6 +44,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 	Old binary: {{ old_binary_file }}<br>
   New binary:	{{ new_binary_file }}
 	</span>
+	{% if instructions_available == False %}
+	<p><b><div style="color: red;">&#9888; Unable to read instructions from elf files &#9888;</div></b></p>
+	{% endif %}
 	</div>
   <div id="side">
 	  <ul>
@@ -53,7 +56,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
           <li><a href="./persisting_symbols_overview.html" target="overview">Persisting</a></li>
           <li><a href="./disappeared_symbols_overview.html" target="overview">Disappeared</a></li>
           <li><a href="./new_symbols_overview.html" target="overview">New</a></li>
+					{% if skip_symbol_similarities == False %}
           <li><a href="./similar_symbols_overview.html" target="overview">Similar</a></li>
+					{% endif %}
         </ul>
       </li>
     </ul>

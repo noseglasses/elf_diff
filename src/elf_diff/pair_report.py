@@ -140,10 +140,14 @@ class PersistingSymbol(HTMLContent):
             have_return_links = True
             overview_file = ""
 
-        if self.old_symbol.symbol_type == Symbol.type_data:
-            have_details_link = False
+        if (
+            (self.old_symbol.symbol_type == Symbol.type_data)
+            or (not self.old_symbol.hasInstructions())
+            or (not self.new_symbol.hasInstructions())
+        ):
+            have_details = False
         else:
-            have_details_link = True
+            have_details = True
 
         self.keywords = {
             "old_id": str(self.old_symbol.id),
@@ -161,7 +165,7 @@ class PersistingSymbol(HTMLContent):
             "details_file": details_file,
             "details_anchor": details_anchor,
             "have_return_links": have_return_links,
-            "have_details_link": have_details_link,
+            "have_details": have_details,
         }
 
     def generateContent(self):
@@ -263,7 +267,7 @@ class PersistingSymbolsDetails(HTMLContent):
 
             symbols_listed = True
 
-            if persisting_symbol.keywords["have_details_link"] is False:
+            if persisting_symbol.keywords["have_details"] is False:
                 continue
 
             html_lines.append(persisting_symbol.getContent())
@@ -279,6 +283,8 @@ class PersistingSymbolsDetails(HTMLContent):
             return
 
         for persisting_symbol in self.persisting_symbols:
+            if persisting_symbol.keywords["have_details"] is False:
+                continue
             persisting_symbol.exportFiles(base_keywords)
 
 
@@ -306,10 +312,12 @@ class IsolatedSymbol(HTMLContent):
         else:
             have_return_links = True
 
-        if self.symbol.symbol_type == Symbol.type_data:
-            have_details_link = False
+        if (self.symbol.symbol_type == Symbol.type_data) or (
+            not self.symbol.hasInstructions()
+        ):
+            have_details = False
         else:
-            have_details_link = True
+            have_details = True
 
         self.keywords = {
             "description": self.description,
@@ -324,7 +332,7 @@ class IsolatedSymbol(HTMLContent):
             "details_file": details_file,
             "details_anchor": details_anchor,
             "have_return_links": have_return_links,
-            "have_details_link": have_details_link,
+            "have_details": have_details,
         }
 
     def generateContent(self):
@@ -414,7 +422,7 @@ class IsolatedSymbolsDetails(HTMLContent):
 
             isolated_symbol.prepareKeywords()
 
-            if isolated_symbol.keywords["have_details_link"] is False:
+            if isolated_symbol.keywords["have_details"] is False:
                 continue
 
             symbols_listed = True
@@ -432,6 +440,8 @@ class IsolatedSymbolsDetails(HTMLContent):
             return
 
         for isolated_symbol in self.isolated_symbols:
+            if isolated_symbol.keywords["have_details"] is False:
+                continue
             isolated_symbol.exportFiles(base_keywords)
 
 
@@ -471,10 +481,14 @@ class SimilarSymbolPair(HTMLContent):
         else:
             have_return_links = True
 
-        if old_symbol.symbol_type == Symbol.type_data:
-            have_details_link = False
+        if (
+            (old_symbol.symbol_type == Symbol.type_data)
+            or (not old_symbol.hasInstructions())
+            or (not new_symbol.hasInstructions())
+        ):
+            have_details = False
         else:
-            have_details_link = True
+            have_details = True
 
         self.keywords = {
             "table_id": str(self.id),
@@ -498,7 +512,7 @@ class SimilarSymbolPair(HTMLContent):
             "details_file": details_file,
             "details_anchor": details_anchor,
             "have_return_links": have_return_links,
-            "have_details_link": have_details_link,
+            "have_details": have_details,
             "overview_file": self.getRelPathToOverviewFile(),
         }
 
@@ -586,7 +600,7 @@ class SimilarSymbolsDetails(HTMLContent):
 
             similar_symbol.prepareKeywords()
 
-            if similar_symbol.keywords["have_details_link"] is False:
+            if similar_symbol.keywords["have_details"] is False:
                 continue
 
             symbols_listed = True
@@ -594,7 +608,7 @@ class SimilarSymbolsDetails(HTMLContent):
             html_lines.append(similar_symbol.getContent())
 
         if not symbols_listed:
-            self.content = "No similar symbol pairss"
+            self.content = "No similar symbol pairs"
             return
 
         self.content = "\n".join(html_lines)
@@ -604,6 +618,8 @@ class SimilarSymbolsDetails(HTMLContent):
             return
 
         for similar_symbol in self.similar_symbols:
+            if similar_symbol.keywords["have_details"] is False:
+                continue
             similar_symbol.exportFiles(base_keywords)
 
 
@@ -925,7 +941,10 @@ class PairReport(Report):
         self.preparePersistingSymbols()
         self.prepareDisappearedSymbols()
         self.prepareNewSymbols()
-        self.prepareSimilarSymbols()
+
+        if not self.settings.skip_symbol_similarities:
+            self.prepareSimilarSymbols()
+
         self.prepareStatistics()
 
         self.prepareBasePageKeywords()
@@ -1048,6 +1067,7 @@ class PairReport(Report):
             "disappeared_symbols_details_content": disappeared_symbol_details_content,
             "new_symbols_details_content": new_symbol_details_content,
             "similar_symbols_details_content": similar_symbol_details_content,
+            "skip_symbol_similarities": self.settings.skip_symbol_similarities,
         }
 
         template_keywords = self.getBaseTitlePageTemplateKeywords()
@@ -1083,6 +1103,19 @@ class PairReport(Report):
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
+        self.copyStyleFilesAndScripts(
+            os.path.join(self.settings.module_path, "html", "css"),
+            os.path.join(self.settings.html_dir, "css"),
+        )
+        self.copyStyleFilesAndScripts(
+            os.path.join(self.settings.module_path, "html", "js"),
+            os.path.join(self.settings.html_dir, "js"),
+        )
+        copyfile(
+            os.path.join(self.settings.module_path, "images", "favicon.png"),
+            os.path.join(self.settings.html_dir, "images", "favicon.png"),
+        )
+
         html_template_file = "pair_report_index_page.html"
 
         html_index_filename = os.path.join(self.settings.html_dir, "index.html")
@@ -1098,6 +1131,13 @@ class PairReport(Report):
 
         # Don't display the details section in the TOC
         template_keywords["show_toc_details"] = False
+        template_keywords["instructions_available"] = (
+            self.binary_pair.old_binary.instructions_available
+            and self.binary_pair.new_binary.instructions_available
+        )
+        template_keywords[
+            "skip_symbol_similarities"
+        ] = self.settings.skip_symbol_similarities
 
         html.configureTemplateWrite(
             self.settings, html_template_file, html_index_filename, template_keywords
@@ -1107,16 +1147,3 @@ class PairReport(Report):
 
         for html_content in self.html_contents:
             html_content.exportFiles(self.base_page_keywords)
-
-        self.copyStyleFilesAndScripts(
-            os.path.join(self.settings.module_path, "html", "css"),
-            os.path.join(self.settings.html_dir, "css"),
-        )
-        self.copyStyleFilesAndScripts(
-            os.path.join(self.settings.module_path, "html", "js"),
-            os.path.join(self.settings.html_dir, "js"),
-        )
-        copyfile(
-            os.path.join(self.settings.module_path, "images", "favicon.png"),
-            os.path.join(self.settings.html_dir, "images", "favicon.png"),
-        )

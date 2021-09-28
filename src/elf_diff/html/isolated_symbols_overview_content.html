@@ -27,11 +27,11 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 		{% for symbol in symbols -%}
 		<tr>
 		<td>
-      {% if symbol["have_details_link"] == True %}
+      {% if symbol["have_details"] == True %}
 		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}" {{ link_target_frame }}>
 		  {% endif %}
 		  {{ symbol["name"]|e }}
-      {% if symbol["have_details_link"] == True %} {# Escape the string to avoid conflicts with < or > #}
+      {% if symbol["have_details"] == True %} {# Escape the string to avoid conflicts with < or > #}
 		  &#9432;
 		  </a>
 		  {% endif %}

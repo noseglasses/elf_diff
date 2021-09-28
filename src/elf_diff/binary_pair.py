@@ -20,6 +20,7 @@
 #
 
 from elf_diff.binary import Binary
+from elf_diff.binary import Mangling
 import progressbar
 import sys
 from difflib import get_close_matches
@@ -86,6 +87,7 @@ class BinaryPair(object):
             self.old_binary_filename,
             symbol_selection_regex_old,
             symbol_exclusion_regex_old,
+            mangling=Mangling(settings.old_mangling_file),
         )
         print(f"Parsing symbols of new binary ({self.new_binary_filename})")
         self.new_binary = Binary(
@@ -93,13 +95,16 @@ class BinaryPair(object):
             self.new_binary_filename,
             symbol_selection_regex_new,
             symbol_exclusion_regex_new,
+            mangling=Mangling(settings.new_mangling_file),
         )
 
         self.prepareSymbols()
         self.summarizeSymbols()
 
         self.computeSizeChanges()
-        self.computeSimilarities()
+
+        if not settings.skip_symbol_similarities:
+            self.computeSimilarities()
 
     def summarizeSymbols(self):
         print("Symbol Statistics:")
