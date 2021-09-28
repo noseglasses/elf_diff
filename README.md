@@ -14,23 +14,205 @@
 
 <h1><img style="vertical-align:middle" src="https://github.com/noseglasses/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
-## An Initial Example
+## Introduction
 
-Before going into detail about what elf_diff does, let's start with an example of
-a multi page html report that was generated as part of one of the regression tests of this project.
+Assume you have two compiled versions of a software and you might be interested in the most prominent differences (and possibly the similarities) between both.
 
-The test compiles, links and compares the elf files of two similar versions of a simple C++ program. The self contained HTML report that is generated 
-in a subdirectory allows to explore the prominent similarities and differences between the symbols defined in the two elf files.
+One way of comparing binaries is looking at the contained [symbols](https://en.wikipedia.org/wiki/Symbol_table). This is what _elf_diff_ does.
 
-HTML reports look as follows. Please click on the table headers to proceed to the generated HTML pages.
+Let's start with exploring how differences in source code reflect in the symbols being created. 
+
+For example, the following two C++ code snippets come with some subtle differences:
+
+<table>
+<tr>
+<th> Version 1 (old) </th>
+<th> Version 2 (new) </th>
+</tr>
+<tr>
+<td>
+
+```cpp
+int func(int a) {
+   return 42;
+}
+
+int var = 17;
+
+class Test {
+   public:
+      
+      static int f(int a, int b);
+      int g(float a, float b);
+      
+   protected:
+      
+      static int m_;
+};
+
+int Test::f(int a, int b) { return 42; }
+int Test::g(float a, float b) { return 1; }
+
+int Test::m_ = 13;
+
+int persisting1(int a) { return 43; }
+int persisting2(int a) { return 43; }
+```
+
+</td>
+<td>
+
+```cpp
+int func(double a) {
+   return 42;
+}
+
+int var = 17;
+
+class Test1 {
+   public:
+      
+      static int f(int a, int b);
+      int g(float a, float b);
+      
+   protected:
+      
+      static int m_;
+};
+
+int Test1::f(int a, int b) { return 42; }
+int Test1::g(float a, float b) { return 1; }
+
+int Test1::m_ = 13;
+
+int persisting1(int a) { return 42; }
+int persisting2(int a) { return 42; }
+```
+
+</td>
+</tr>
+</table>
+
+By means of its self contained HTML reports _elf_diff_ allows for conveniently analyzing the similarities and differences between the symbols contained
+in [elf](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) files.
+
+Please click on the table headers to proceed to the HTML pages that _elf_diff_ generated based on the above code example.
 
 [Multi Page](https://noseglasses.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://noseglasses.github.io/elf_diff/pair_report_output.html)
 :-------------------------:|:-------------------------:
 ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
 
-[Pdf reports](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) may be generated alternatively.
+To allow for convenient exchange and archiving, single page reports may also be generated in [pdf](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) format.
 
-Please see the examples section at the end of this document for more usage examples.
+__Please__ __note__: If you are familiar with _elf_ _files_, the terms _symbol_ and _name_ _mangling_, you know how compilers and linkers transform 
+high level language code into binary code and how this code is stored in elf files, you might want to skip the remaining parts of the introduction section.
+
+### Content of Reports
+
+Now, after you had a look at the different types of reports that _elf_diff_ generates, you might be interested in how the contained information is established.
+
+As already mentioned, _elf_diff_ compares binaries based on the contained symbols.
+
+#### Symbols 
+
+Symbols resulting from functions and variables like
+
+```cpp
+int Test1::f(int a, int b) { return 42; }
+
+double a = 0.3;
+``` 
+
+have the following properties:
+
+* a unique name (possibly including a namespace), e.g. `Test1::f`,
+* a signature (functions), e.g. `(int a, int b)->int`,
+* a symbol type (variable/constant/function and subtle variants of those),
+* an extension (the amount of RAM or program memory that the symbol occupies, the latter only when compiled for [harvard architectures](https://en.wikipedia.org/wiki/Harvard_architecture)) and
+* associated code/data.
+
+__Please note:__ There are several other properties but those are not important for understanding what _elf_diff_ does.
+
+#### A Brief Excursion 
+
+You might be surprised that the _data_ _type_ of variables is not part of the above list.  
+
+This is because the variable data type is actually not stored in elf files. They are simply no more required after
+the end of the compile process. At that point all variables have become named addresses of a memory areas of known extension.
+
+It is simply sufficient that the compiled code knows what to do with such addresses and memory extensions.
+
+Next, you might frown and ask why the same argument apparently does not apply to function signatures? Those are very well listed above.
+Can't the compiler treat function parameters in the same way as variables?
+
+There are several answers to that question. We will concentrate on the one that is, subjectively, most related to the current topic. The answer is: _function_ _overloading_.
+
+Many high level languages (as e.g. C++) allow functions with idential names but different call signatures 
+to be used in the same program, e.g.
+
+```cpp
+void f(double)
+```
+and 
+```cpp
+void f(int)
+```
+
+To avoid name clashes, compilers and linkers use an approach called [name mangling](https://en.wikipedia.org/wiki/Name_mangling) 
+to convert names and signatures into so called _mangled_ _symbol_ _names_. 
+
+The mangled names are what is actually stored in the elf files (unless [stripped](https://en.wikipedia.org/wiki/Strip_(Unix)).
+
+Name mangling is, however, a reversible process. Compilers typically come with utilities that allow restoring name and signature from mangled names,
+a process commonly called _demangling_ (e.g. by means of the tool [c++filt](https://sourceware.org/binutils/docs/binutils/c_002b_002bfilt.html) that is part of the GNU binutils suite).
+
+We still haven't answered the question how symbols, or rather their properties can be used to find the differences between compiled binaries. So let's get back on track.
+
+
+#### Comparing Symbols
+
+When comparing two binaries one may group symbols based on their names and signatures (or their mangled names) as
+
+* symbols present in both versions (persisting),
+* symbols that are only found in version 2 (new) and
+* those that are only present in version 1 (disappeared).
+
+The code snippets initially presented are deliberatly written in a way that eases identifying related pairs of symbols in both versions.
+
+Typically, software is subject to incremental transitions that affect only a quite limited number of symbols.
+
+Symbols might be
+
+* renamed or
+* moved to another namespace (which includes being turned from a free function to a class method and vice versa).
+
+Also, their
+
+* signature (functions),
+* implementation (functions) or
+* data type (variables/constants)
+
+might be changed.
+
+#### Symbol Similarities
+
+_elf_diff_ automatically detects and visualizes pairs of similar symbols. 
+
+Unfortunatelly, in some cases the relations between symbols are not unique.
+
+To help the user finding the most relevant symbol relations, _elf_diff_ displays the level of lexicographic similarity for every pair of similar symbols. 
+For functions the level of lexicographic similarity of the two implementations is also displayed.
+
+#### Highlighted Differences
+
+To allow for conveniently analyzing implementation changes at the assembly level, the disassembled code is displayed side-by-side with differences being highlighted.
+
+If debug information is contained in the binaries (flag `-g` of the gcc compiler),
+the original high level language code annotates the assembly.
+
+If you want to find out about other applications of _elf_diff_, please keep on reading.
+
+Don't forget to have a look at the examples section at the end of this document.
 
 ## Purpose
 
@@ -246,6 +428,12 @@ Template files contain the default values of all available parameters, or - if t
 By means of the command line arguments `symbol_selection_regex` and `symbol_exclusion_regex`, symbols can be explicitly selected and excluded.
 The specified regular expressions are applied to both the old and the old binary. For more fine grained selection, please used the `*_old` and `*_new` versions of the 
 respective command line arguments.
+
+### Skip Similar Symbols Detection
+
+Similar symbol detection can be a very useful tool but it is a quite costly operation as it requires comparing all symbol names from one binary with all symbols from the other.
+Assuming that both binaries contain `n` symbols this is a `O(n^2)` operation. Therefore it is up to the user to disabe similar symbol detection and output via the command
+line argument `--skip_symbol_similarities`.
 
 ### Assembly Code
 
