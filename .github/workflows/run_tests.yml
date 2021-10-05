@@ -22,13 +22,25 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install pytest
+        python3 -m pip install coverage
         python3 -m pip install -r ./requirements.txt
     - name: Test
       run: |
         mkdir test_output
         cd test_output
-        python3 ../tests/test.py
-        python3 ../tests/test_cpp_symbols.py
+        python3 -m coverage run --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
+        python3 -m coverage combine
+        python3 -m coverage xml -o coverage1.xml
+        python3 -m coverage run --parallel-mode ../tests/test_cpp_symbols.py
+        python3 -m coverage combine
+        python3 -m coverage xml -o coverage2.xml
+    - name: "Upload coverage to Codecov"
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+        verbose: true # optional (default = false)
+        files: ./test_output/coverage1.xml,./test_output/coverage2.xml # optional
     - name: Prepare Example Deploy
       run: |
         mkdir example_deploy
