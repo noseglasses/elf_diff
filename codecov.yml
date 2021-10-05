@@ -1,3 +1,5 @@
+codecov:
+  disable_default_path_fixes: true
 comment:                  # this is a top-level key
   behavior: default
   layout: "reach, diff, flags, files"

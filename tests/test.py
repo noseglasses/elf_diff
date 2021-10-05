@@ -33,6 +33,12 @@ parser.add_argument(
     action="store_true",
     help="Add this flag to enable testing using an installed elf_diff package",
 )
+parser.add_argument(
+    "-c",
+    "--enable_code_coverage",
+    action="store_true",
+    help="Add this flag to enable coverage generation",
+)
 parser.add_argument("unittest_args", nargs="*")
 
 args = parser.parse_args()
@@ -46,7 +52,17 @@ if args.test_installed_package is True:
     elf_diff_start = [sys.executable, "-m", "elf_diff"]
 else:
     bin_dir = os.path.join(testing_dir, "..", "bin")
-    elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
+    if args.enable_code_coverage is True:
+        elf_diff_start = [
+            sys.executable,
+            "-m",
+            "coverage",
+            "run",
+            "--parallel-mode",  # Creates individual .coverage* files for each run
+            os.path.join(bin_dir, "elf_diff"),
+        ]
+    else:
+        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
 old_binary = os.path.join(testing_dir, "libelf_diff_test_release_old.a")
 new_binary = os.path.join(testing_dir, "libelf_diff_test_release_new.a")
