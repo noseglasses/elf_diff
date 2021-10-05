@@ -6,3 +6,5 @@ comment:                  # this is a top-level key
   require_changes: false  # if true: only post the comment if coverage changes
 ignore:
   - "*/tests/*"
+fixes:
+  - "/home/runner/work/elf_diff/elf_diff/::/elf_diff/"
