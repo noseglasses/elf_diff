@@ -1,0 +1,6 @@
+comment:                  # this is a top-level key
+  behavior: default
+  layout: "reach, diff, flags, files"
+  require_changes: false  # if true: only post the comment if coverage changes
+ignore:
+  - "*/tests/*"
