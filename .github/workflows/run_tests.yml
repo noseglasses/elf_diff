@@ -41,8 +41,6 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         verbose: true # optional (default = false)
         files: ./test_output/coverage1.xml,./test_output/coverage2.xml # optional
-        comment:
-          behavior: default
     - name: Prepare Example Deploy
       run: |
         mkdir example_deploy
