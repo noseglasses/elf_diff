@@ -31,6 +31,10 @@ jobs:
         python3 -m coverage run --parallel-mode ../tests/test_cpp_symbols.py
         python3 -m coverage combine
         python3 -m coverage xml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: test_output/coverage.xml
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v2
       with:
