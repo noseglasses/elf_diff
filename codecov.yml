@@ -7,4 +7,4 @@ comment:                  # this is a top-level key
 ignore:
   - "*/tests/*"
 fixes:
-  - "home/runner/work/elf_diff/::"
+  - "/home/runner/work/elf_diff/elf_diff/::"
