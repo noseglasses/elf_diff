@@ -26,7 +26,7 @@ from elf_diff.symbol import getSymbolType
 
 import re
 import os
-import subprocess
+import subprocess  # nosec # silence bandid warning
 
 
 class Mangling(object):
@@ -118,7 +118,9 @@ class Binary(object):
     def readObjdumpOutput(self):
 
         cmd = [self.settings.objdump_command, "-drwCS", self.filename]
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(  # nosec # silence bandid warning
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 

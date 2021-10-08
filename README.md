@@ -271,8 +271,8 @@ Alternatively when developing _elf_diff_, the following steps are required:
 
 1. Clone the [_elf_diff_](https://github.com/noseglasses/elf_diff) repo from github.
 2. Install any required packages via one of the following commands
-  * `python3 -m pip install -r requirements.txt` (Linux)
-  * `py -m pip install -r requirements.txt` (Windows)
+   * `python3 -m pip install -r requirements.txt` (Linux)
+   * `py -m pip install -r requirements.txt` (Windows)
 3. Add the `bin` subdirectory of the _elf_diff_ repo to your platform search path (environment variable, e.g. `PATH`)
 
 To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.
