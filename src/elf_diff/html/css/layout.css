@@ -21,8 +21,8 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 body {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 #container {

@@ -286,7 +286,7 @@ class Settings(object):
         my_yaml = None
         with open(self.driver_file, "r") as stream:
             try:
-                my_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+                my_yaml = yaml.load(stream, Loader=yaml.SafeLoader)
             except yaml.YAMLError as exc:
                 unrecoverableError(exc)
 

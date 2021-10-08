@@ -118,7 +118,7 @@ def configureTemplate(settings, template_filename, keywords):
 
     template_path = os.path.join(settings.module_path, "html")
 
-    env = Environment(
+    env = Environment(  # nosec # silence bandid warning (we are generating static code, there's no security risk without autoescaping)
         loader=FileSystemLoader(template_path),
         undefined=StrictUndefined,
         autoescape=False,

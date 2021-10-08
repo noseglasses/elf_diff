@@ -22,7 +22,7 @@
 import unittest
 import os
 import inspect
-import subprocess
+import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
 
@@ -84,7 +84,7 @@ def runSubprocess(cmd, cwd=None, env=None):
         print("   Running command: {cmd}".format(cmd='"' + '" "'.join(cmd) + '"'))
 
     try:
-        proc = subprocess.Popen(
+        proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd, env=env
         )
 
@@ -231,7 +231,7 @@ class TestCommandLineArgs(unittest.TestCase):
             f.write("      new_binary: '" + new_binary2 + "'\n")
             f.write("      short_name: 'Second binary name'\n")
 
-        [output, error] = runSubprocess(
+        [output, error] = runSubprocess(  # pylint: disable=unused-variable
             elf_diff_start + ["--driver_file", driver_yaml_file]
         )
 
