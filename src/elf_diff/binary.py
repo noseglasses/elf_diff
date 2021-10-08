@@ -120,7 +120,7 @@ class Binary(object):
         cmd = [self.settings.objdump_command, "-drwCS", self.filename]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        o, e = proc.communicate()
+        o, e = proc.communicate()  # pylint: disable=unused-variable
 
         output = o.decode("utf8")
         # error = e.decode('utf8')

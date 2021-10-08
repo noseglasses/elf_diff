@@ -81,7 +81,7 @@ def replaceHighlights(src):
 def diffStringsSource(str1, str2):
     seqm = difflib.SequenceMatcher(None, str1, str2)
     output = []
-    for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
+    for opcode, a0, a1, b0, b1 in seqm.get_opcodes():  # pylint: disable=unused-variable
         if opcode == "equal":
             output.append(seqm.a[a0:a1])
         elif opcode == "insert":

@@ -1095,7 +1095,8 @@ class PairReport(Report):
             self.settings, html_template_file, output_file, template_keywords
         )
 
-    def copyStyleFilesAndScripts(self, source_dir, target_dir):
+    @staticmethod
+    def copyStyleFilesAndScripts(source_dir, target_dir):
         dir_util.copy_tree(source_dir, target_dir)
 
     def writeMultiPageHTMLReport(self):
@@ -1116,11 +1117,11 @@ class PairReport(Report):
             if not os.path.exists(dir_):
                 os.mkdir(dir_)
 
-        self.copyStyleFilesAndScripts(
+        PairReport.copyStyleFilesAndScripts(
             os.path.join(self.settings.module_path, "html", "css"),
             os.path.join(self.settings.html_dir, "css"),
         )
-        self.copyStyleFilesAndScripts(
+        PairReport.copyStyleFilesAndScripts(
             os.path.join(self.settings.module_path, "html", "js"),
             os.path.join(self.settings.html_dir, "js"),
         )
