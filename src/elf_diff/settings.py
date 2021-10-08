@@ -39,6 +39,7 @@ class Parameter(object):
         no_cmd_line=False,
         is_flag=False,
     ):
+        """Initialize parameter class."""
         self.name = name
         self.description = description
         self.default = default
@@ -50,7 +51,7 @@ class Parameter(object):
 
 class Settings(object):
     def __init__(self, module_path):
-
+        """Initialize settings class."""
         self.module_path = module_path
 
         self.setupParameters()
@@ -58,6 +59,12 @@ class Settings(object):
         self.presetDefaults()
 
         cmd_line_args = self.parseCommandLineArgs()
+
+        self.old_binary_filename = None
+        self.new_binary_filename = None
+
+        self.old_alias = None
+        self.new_alias = None
 
         if cmd_line_args.driver_file:
 
@@ -216,9 +223,6 @@ class Settings(object):
 
             setattr(self, parameter.name, parameter.default)
 
-    def deprecated(self, desc):
-        return "{desc} [deprecated]".format(desc=desc)
-
     def parseCommandLineArgs(self):
 
         import argparse
@@ -340,13 +344,13 @@ class Settings(object):
         if len(cmd_line_args.binaries) == 0:
             pass
         elif len(cmd_line_args.binaries) == 2:
-            if self.old_binary_filename:
+            if self.old_binary_filename is not None:
                 unrecoverableError("Old binary filename redundantly defined")
 
             else:
                 self.old_binary_filename = cmd_line_args.binaries[0]
 
-            if self.new_binary_filename:
+            if self.new_binary_filename is not None:
                 unrecoverableError("Old binary filename redundantly defined")
 
             else:
@@ -425,10 +429,10 @@ class Settings(object):
         else:
             self.new_binary_info = ""
 
-        if not self.old_alias:
+        if self.old_alias is None:
             self.old_alias = self.old_binary_filename
 
-        if not self.new_alias:
+        if self.new_alias is None:
             self.new_alias = self.new_binary_filename
 
         print("Tools:")

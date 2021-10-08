@@ -31,7 +31,7 @@ class MassReport(Report):
     html_template_file = "mass_report_template.html"
 
     def __init__(self, settings):
-
+        """Initialize mass report object."""
         self.settings = settings
 
         if len(self.settings.mass_report_members) == 0:
@@ -40,9 +40,6 @@ class MassReport(Report):
             )
 
         self.generatePairReports()
-
-    def getReportBasename(self):
-        return "mass_report"
 
     def generatePairReports(self):
 
@@ -148,9 +145,6 @@ class MassReport(Report):
             "sortable_js_content": sortable_js_content,
             "elf_diff_general_css_content": elf_diff_general_css_content,
         }
-
-    def getHTMLTemplate(self):
-        return MassReport.html_template_file
 
     def generate(self, html_output_file):
         template_keywords = self.configureJinjaKeywords(self.settings.skip_details)

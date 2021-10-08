@@ -40,6 +40,7 @@ def getRelpath(html_output_file, target_dir):
 
 class HTMLContent(object):
     def __init__(self):
+        """Initializes HTMLContent."""
         self.visible = True
         self.have_title = False
         self.keywords = None
@@ -53,7 +54,7 @@ class HTMLContent(object):
     def generateContent(self):
         pass
 
-    def getFilename(self):
+    def getFilename(self):  # pylint: disable=no-self-use
         pass
 
     def getRelPathToOverviewFile(self):
@@ -107,6 +108,12 @@ class HTMLContent(object):
 
 class PersistingSymbol(HTMLContent):
     def __init__(self, old_symbol, new_symbol):
+        """
+        Initialize persisting symbol
+
+        old_symbol: A symbol from the old binary
+        new_symbol: A symbol from the new binary
+        """
         super().__init__()
         self.old_symbol = old_symbol
         self.new_symbol = new_symbol
@@ -128,9 +135,9 @@ class PersistingSymbol(HTMLContent):
                 self.new_symbol, "   "
             )
 
-        overview_anchor = f"persisting_symbol_overview_{self.old_symbol.id}"
+        overview_anchor = f"persisting_symbol_overview_{self.old_symbol.id_}"
         details_file = ""
-        details_anchor = f"persisting_symbol_details_{self.old_symbol.id}"
+        details_anchor = f"persisting_symbol_details_{self.old_symbol.id_}"
 
         if self.single_page is False:
             details_file = self.getFilename()
@@ -150,8 +157,8 @@ class PersistingSymbol(HTMLContent):
             have_details = True
 
         self.keywords = {
-            "old_id": str(self.old_symbol.id),
-            "new_id": str(self.new_symbol.id),
+            "old_id": str(self.old_symbol.id_),
+            "new_id": str(self.new_symbol.id_),
             "name": self.old_symbol.name,
             "type": self.new_symbol.type,
             "old_size": str(self.old_symbol.size),
@@ -180,7 +187,7 @@ class PersistingSymbol(HTMLContent):
         )
 
     def getFilename(self):
-        return os.path.join("details", "persisting", f"{self.old_symbol.id}.html")
+        return os.path.join("details", "persisting", f"{self.old_symbol.id_}.html")
 
     def getPageTitle(self):
         return "Persisting Symbol " + self.keywords["name"]
@@ -193,6 +200,7 @@ class PersistingSymbol(HTMLContent):
 
 class PersistingSymbolsOverview(HTMLContent):
     def __init__(self, persisting_symbols):
+        """Initialize the persisting symbols overview class."""
         super().__init__()
         self.persisting_symbols = persisting_symbols
         self.have_title = True
@@ -237,10 +245,10 @@ class PersistingSymbolsOverview(HTMLContent):
         if self.settings.consider_equal_sized_identical:
             self.content += "Equal sized symbols forcefully ignored."
 
-    def getFilename(self):
+    def getFilename(self):  # pylint: disable=no-self-use
         return "persisting_symbols_overview.html"
 
-    def getPageTitle(self):
+    def getPageTitle(self):  # pylint: disable=no-self-use
         return "Persisting Symbols Overview"
 
     def getRelPathToOverviewFile(self):
@@ -249,6 +257,7 @@ class PersistingSymbolsOverview(HTMLContent):
 
 class PersistingSymbolsDetails(HTMLContent):
     def __init__(self, persisting_symbols):
+        """Initialize the persisting symbols details class."""
         super().__init__()
         self.persisting_symbols = persisting_symbols
         self.have_title = True
@@ -290,6 +299,7 @@ class PersistingSymbolsDetails(HTMLContent):
 
 class IsolatedSymbol(HTMLContent):
     def __init__(self, description, symbol):
+        """Initialize the isolated symbol class."""
         super().__init__()
         self.description = description
         self.symbol = symbol
@@ -301,9 +311,9 @@ class IsolatedSymbol(HTMLContent):
             return
 
         overview_file = ""
-        overview_anchor = f"{self.description}_symbol_overview_{self.symbol.id}"
+        overview_anchor = f"{self.description}_symbol_overview_{self.symbol.id_}"
         details_file = ""
-        details_anchor = f"{self.description}_symbol_details_{self.symbol.id}"
+        details_anchor = f"{self.description}_symbol_details_{self.symbol.id_}"
 
         if self.single_page is False:
             overview_file = os.path.join("..", "..", "index.html")
@@ -321,7 +331,7 @@ class IsolatedSymbol(HTMLContent):
 
         self.keywords = {
             "description": self.description,
-            "id": str(self.symbol.id),
+            "id_": str(self.symbol.id_),
             "name": self.symbol.name,
             "type": self.symbol.type,
             "size": str(self.symbol.size),
@@ -347,7 +357,7 @@ class IsolatedSymbol(HTMLContent):
         )
 
     def getFilename(self):
-        return os.path.join("details", self.description, f"{self.symbol.id}.html")
+        return os.path.join("details", self.description, f"{self.symbol.id_}.html")
 
     def getPageTitle(self):
         return self.description.capitalize() + " Symbol " + self.keywords["name"]
@@ -360,6 +370,7 @@ class IsolatedSymbol(HTMLContent):
 
 class IsolatedSymbolsOverview(HTMLContent):
     def __init__(self, description, isolated_symbols):
+        """Initialize the isolated symbols overview class."""
         super().__init__()
         self.description = description
         self.isolated_symbols = isolated_symbols
@@ -406,6 +417,7 @@ class IsolatedSymbolsOverview(HTMLContent):
 
 class IsolatedSymbolsDetails(HTMLContent):
     def __init__(self, description, isolated_symbols):
+        """Initialize the isolated symbols details class."""
         super().__init__()
         self.isolated_symbols = isolated_symbols
         self.have_title = True
@@ -446,11 +458,12 @@ class IsolatedSymbolsDetails(HTMLContent):
 
 
 class SimilarSymbolPair(HTMLContent):
-    def __init__(self, symbol_pair, id):
+    def __init__(self, symbol_pair, id_):
+        """Initialize the similar symbol pair class."""
         super().__init__()
         self.symbol_pair = symbol_pair
         self.header_tag = "H4"
-        self.id = id
+        self.id_ = id_
 
     def prepareKeywords(self):
 
@@ -471,9 +484,9 @@ class SimilarSymbolPair(HTMLContent):
 
         size_diff = new_symbol.size - old_symbol.size
 
-        overview_anchor = f"similar_symbols_overview_{self.id}"
+        overview_anchor = f"similar_symbols_overview_{self.id_}"
         details_file = ""
-        details_anchor = f"similar_symbols_details_{self.id}"
+        details_anchor = f"similar_symbols_details_{self.id_}"
 
         if self.single_page is False:
             details_file = self.getFilename()
@@ -491,7 +504,7 @@ class SimilarSymbolPair(HTMLContent):
             have_details = True
 
         self.keywords = {
-            "table_id": str(self.id),
+            "table_id": str(self.id_),
             "old_representation": old_representation,
             "new_representation": new_representation,
             "old_type": old_symbol.type,
@@ -528,10 +541,10 @@ class SimilarSymbolPair(HTMLContent):
         )
 
     def getFilename(self):
-        return os.path.join("details", "similar", f"{self.id}.html")
+        return os.path.join("details", "similar", f"{self.id_}.html")
 
     def getPageTitle(self):
-        return f"Similar Symbol Pair {self.id}"
+        return f"Similar Symbol Pair {self.id_}"
 
     def getRelPathToOverviewFile(self):
         if self.single_page is False:
@@ -541,6 +554,7 @@ class SimilarSymbolPair(HTMLContent):
 
 class SimilarSymbolsOverview(HTMLContent):
     def __init__(self, similar_symbols):
+        """Initialize the similar symbols overview class."""
         super().__init__()
         self.similar_symbols = similar_symbols
         self.have_title = True
@@ -572,10 +586,10 @@ class SimilarSymbolsOverview(HTMLContent):
             {"symbols": symbols_keywords, "link_target_frame": link_target_frame},
         )
 
-    def getFilename(self):
+    def getFilename(self):  # pylint: disable=no-self-use
         return "similar_symbols_overview.html"
 
-    def getPageTitle(self):
+    def getPageTitle(self):  # pylint: disable=no-self-use
         return "Similar Symbols Overview"
 
     def getRelPathToOverviewFile(self):
@@ -584,6 +598,7 @@ class SimilarSymbolsOverview(HTMLContent):
 
 class SimilarSymbolsDetails(HTMLContent):
     def __init__(self, similar_symbols):
+        """Initialize the similar symbols details class."""
         super().__init__()
         self.similar_symbols = similar_symbols
         self.have_title = True
@@ -625,6 +640,7 @@ class SimilarSymbolsDetails(HTMLContent):
 
 class StatisticsOverview(HTMLContent):
     def __init__(self, binary_pair):
+        """Initialize the statistics overview class."""
         super().__init__()
         self.binary_pair = binary_pair
         self.have_title = True
@@ -680,10 +696,10 @@ class StatisticsOverview(HTMLContent):
             self.settings, html_template_filename, self.keywords
         )
 
-    def getFilename(self):
+    def getFilename(self):  # pylint: disable=no-self-use
         return "stats.html"
 
-    def getPageTitle(self):
+    def getPageTitle(self):  # pylint: disable=no-self-use
         return "Statistics"
 
     def getRelPathToOverviewFile(self):
@@ -692,7 +708,7 @@ class StatisticsOverview(HTMLContent):
 
 class PairReport(Report):
     def __init__(self, settings):
-
+        """Initialize the pair report class."""
         self.settings = settings
         self.single_page = False
 
@@ -718,9 +734,6 @@ class PairReport(Report):
         self.base_page_keywords = None
 
         self.html_contents = []
-
-    def getReportBasename(self):
-        return "pair_report"
 
     def validateSettings(self):
         if not self.settings.old_binary_filename:
@@ -849,7 +862,7 @@ class PairReport(Report):
         sys.stdout.flush()
 
         similar_symbols = []
-        id = 0
+        id_ = 0
         for i in progressbar.progressbar(range(len(self.binary_pair.similar_symbols))):
 
             symbol_pair = self.binary_pair.similar_symbols[i]
@@ -859,12 +872,12 @@ class PairReport(Report):
             ) and self.settings.consider_equal_sized_identical:
                 continue
 
-            similar_symbol_pair = SimilarSymbolPair(symbol_pair, id)
+            similar_symbol_pair = SimilarSymbolPair(symbol_pair, id_)
             self.prepareHTMLContent(similar_symbol_pair)
 
             similar_symbols.append(similar_symbol_pair)
 
-            id += 1
+            id_ += 1
 
         self.similar_symbols_overview = SimilarSymbolsOverview(
             similar_symbols=similar_symbols
@@ -1099,9 +1112,9 @@ class PairReport(Report):
             os.path.join(self.settings.html_dir, "images"),
         ]
 
-        for dir in dirs:
-            if not os.path.exists(dir):
-                os.mkdir(dir)
+        for dir_ in dirs:
+            if not os.path.exists(dir_):
+                os.mkdir(dir_)
 
         self.copyStyleFilesAndScripts(
             os.path.join(self.settings.module_path, "html", "css"),

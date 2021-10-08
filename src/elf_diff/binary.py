@@ -26,10 +26,12 @@ from elf_diff.symbol import getSymbolType
 
 import re
 import os
+import subprocess
 
 
 class Mangling(object):
     def __init__(self, mangling_file):
+        """Init mangling class."""
         self.mangling_file = mangling_file
         self.mangling = None
 
@@ -79,9 +81,7 @@ class Binary(object):
         symbol_exclusion_regex=None,
         mangling=None,
     ):
-
-        import os.path
-
+        """Init binary object."""
         self.settings = settings
         self.filename = filename
         self.symbol_type = getSymbolType(settings.language)
@@ -117,8 +117,6 @@ class Binary(object):
 
     def readObjdumpOutput(self):
 
-        import subprocess
-
         cmd = [self.settings.objdump_command, "-drwCS", self.filename]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -130,8 +128,6 @@ class Binary(object):
         return output
 
     def readNMOutput(self):
-
-        import subprocess
 
         cmd = [
             self.settings.nm_command,
@@ -151,8 +147,6 @@ class Binary(object):
         return output
 
     def readSizeOutput(self):
-
-        import subprocess
 
         cmd = [self.settings.size_command, self.filename]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -337,5 +331,5 @@ class Binary(object):
         return True
 
     def __ne__(self, other):
-        """Overrides the default implementation (unnecessary in Python 3)"""
+        """Overrides the default implementation (unnecessary in Python 3)."""
         return not self.__eq__(other)

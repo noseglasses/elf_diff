@@ -118,7 +118,11 @@ def configureTemplate(settings, template_filename, keywords):
 
     template_path = os.path.join(settings.module_path, "html")
 
-    env = Environment(loader=FileSystemLoader(template_path), undefined=StrictUndefined)
+    env = Environment(
+        loader=FileSystemLoader(template_path),
+        undefined=StrictUndefined,
+        autoescape=True,
+    )
 
     try:
         creator = env.get_template(template_filename)

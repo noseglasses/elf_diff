@@ -15,7 +15,6 @@
 
 <h1><img style="vertical-align:middle" src="https://github.com/noseglasses/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
-
 ## Introduction
 
 This tool compares pairs of ELF binary files and provides information about differences in the contained symbols with respect to the space that they occupy in program memory (functions and global data) and in RAM (global data). Binary pairs that are passed to _elf_diff_ are typically two versions of the same program/library/firmware. _elf_diff_ can help you to find out about the impact of your changes on your code's resource consumption.
@@ -109,7 +108,7 @@ int persisting2(int a) { return 42; }
 
 Compiled and linked version of the two above code snippets can be found in the `tests` subdirectory of _elf_diff_ git repository. To generate a multi page pair report from these files, please install the _elf_diff_ Python packages as described in the installation section of this document. Then enter the following in a console on a Linux system. Please replace the placeholder `<elf_diff sandbox>` with the absolute path of your local _elf_diff_ sandbox.
 
-```
+```sh
 python3 -m elf_diff --html_dir report <elf_diff sandbox>/tests/libelf_diff_test_debug_old.a <elf_diff sandbox>/tests/libelf_diff_test_debug_new.a
 ```
 
@@ -188,7 +187,6 @@ a process commonly called _demangling_ (e.g. by means of the tool [c++filt](http
 
 We still haven't answered the question how symbols, or rather their properties can be used to find the differences between compiled binaries. So let's get back on track.
 
-
 #### Comparing Symbols
 
 When comparing two binaries one may group symbols based on their names and signatures (or their mangled names) as
@@ -243,6 +241,7 @@ Don't forget to have a look at the examples section at the end of this document.
 The main purpose of _elf_diff_ is to determine how specific changes to a piece of software affect resource consumption and performance. The tool may also serve to compare two independent change sets or just to have fun and learn how changes reflect in the generated assembly code.
 
 The following information is part of _elf_diff_'s report pages:
+
 * differences in the amount of program storage and static RAM usage
 * symbols that are only present in one of the two versions
 * symbols whose naming or call signature is similar in both versions, e.g. as a result of symbol renaming or subtly changing call signatures
@@ -261,17 +260,21 @@ The following setup guide assumes Python 3 to be installed on your computer. Pyt
 ## Setup
 
 Install the elf_diff Python package via one of the following commands
-   * `python3 -m pip install elf_diff` (Linux)
-   * `py -m pip install elf_diff` (Windows)
+
+* `python3 -m pip install elf_diff` (Linux)
+* `py -m pip install elf_diff` (Windows)
 	 
 Please note: [PyPI](https://pypi.org/) the Python package index traditionally uses hyphens instead of underscores in package names. _pip_, however, happily supports both versions _elf_diff_ and _elf-diff_. 
 
 Alternatively when developing _elf_diff_, the following steps are required:
 
 1. Clone the [_elf_diff_](https://github.com/noseglasses/elf_diff) repo from github.
+
 2. Install any required packages via one of the following commands
-   * `python3 -m pip install -r requirements.txt` (Linux)
-   * `py -m pip install -r requirements.txt` (Windows)
+
+  * `python3 -m pip install -r requirements.txt` (Linux)
+  * `py -m pip install -r requirements.txt` (Windows)
+
 3. Add the `bin` subdirectory of the _elf_diff_ repo to your platform search path (environment variable, e.g. `PATH`)
 
 To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.

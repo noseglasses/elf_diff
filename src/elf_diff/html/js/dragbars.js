@@ -25,96 +25,105 @@ let isVertDragging = false;
 
 /*
 function ResetColumnSizes() {
-	// when page resizes return to default col sizes
-	let page = document.getElementById("pageFrame");
-	page.style.gridTemplateColumns = "2fr 6px 6fr 6px 2fr";
+  // when page resizes return to default col sizes
+  let page = document.getElementById("pageFrame");
+  page.style.gridTemplateColumns = "2fr 6px 6fr 6px 2fr";
 }
 */
 
-function SetPointerEvents(type) {
-	document.getElementById("overview").style['pointer-events'] = type;
-  document.getElementById("details").style['pointer-events'] = type;
+function setPointerEvents(type) {
+  document.getElementById("overview").style["pointer-events"] = type;
+  document.getElementById("details").style["pointer-events"] = type;
 }
 
-function StartHorizDrag(event) {
-		
-		event.preventDefault();
-	//console.log("mouse down");
-	isHorizDragging = true;
-	
-	SetPointerEvents('none');
+function startHorizDrag(event) {
+
+  event.preventDefault();
+  //console.log("mouse down");
+  isHorizDragging = true;
+
+  setPointerEvents("none");
 }
 
-function StartVertDrag(event) {
-		
-		event.preventDefault();
-	console.log("starting vert");
-	isVertDragging = true;
-	SetPointerEvents('none');
+function startVertDrag(event) {
+
+  event.preventDefault();
+  //console.log("starting vert");
+  isVertDragging = true;
+  setPointerEvents("none");
 }
 
-function EndDrag(event) {
-		event.preventDefault();
-	console.log("mouse up");
-	isHorizDragging = false;
-	isVertDragging = false;
-	SetPointerEvents('auto');
+function endDrag(event) {
+  event.preventDefault();
+  //console.log("mouse up");
+  isHorizDragging = false;
+  isVertDragging = false;
+  setPointerEvents("auto");
 }
 
-function OnDrag(event) {
-	if(isHorizDragging || isVertDragging) {
-		event.preventDefault();
-		console.log("Dragging");
-		
-		let dragbarWidth = 2;
-		
-		let container = document.getElementById("container");
-		
-		if(isHorizDragging) {
-		
-		  let sideCol = document.getElementById("side");
-		  let rightCol = document.getElementById("overview");	
-		
-		  let sideColWidth = event.clientX;
-		  let rightColWidth = container.offsetWidth - sideColWidth - dragbarWidth;
-				
-			let cols = [
-				sideColWidth,
-				dragbarWidth,
-				rightColWidth
-			];
-			
-			let newColDefn = cols.map(c => c.toString() + "px").join(" ");
-		
-		  container.style.gridTemplateColumns = newColDefn;
-		}
-		
-		if(isVertDragging) {
-      let vMargins = 10;
-      let headerMargins = vMargins;
-      let footerMargins = vMargins;
+function onDragHorizontalDrag(event) {
+  if(isHorizDragging ) {
+    event.preventDefault();
+    //console.log("Dragging");
 
-			let headerRow = document.getElementById("header");
-			let overviewRow = document.getElementById("overview");
-			let detailsRow = document.getElementById("details");
-			let footerRow = document.getElementById("footer");
+    let dragbarWidth = 2;
 
-      let headerHeight = headerRow.offsetHeight + headerMargins;
-      let footerHeight = footerRow.offsetHeight + footerMargins;
-			
-			let overviewRowHeight = event.clientY - headerHeight;
-			let detailsRowHeight = container.offsetHeight - headerHeight - footerHeight - overviewRowHeight - dragbarWidth;
+    let container = document.getElementById("container");
 
-			let rows = [
-				headerHeight,
-				overviewRowHeight,
-				dragbarWidth,
-				detailsRowHeight,
-				footerHeight
-			];
+    let sideCol = document.getElementById("side");
+    let rightCol = document.getElementById("overview");
 
-			let newRowDefn = rows.map(c => c.toString() + "px").join(" ");
-			container.style.gridTemplateRows = newRowDefn;
-		}
-	}
+    let sideColWidth = event.clientX;
+    let rightColWidth = container.offsetWidth - sideColWidth - dragbarWidth;
+
+    let cols = [
+      sideColWidth,
+      dragbarWidth,
+      rightColWidth
+    ];
+
+    let newColDefn = cols.map((c) => c.toString() + "px").join(" ");
+
+    container.style.gridTemplateColumns = newColDefn;
+  }
+}
+
+function onVerticalDrag(event) {
+  if(isVertDragging) {
+    event.preventDefault();
+
+    let dragbarWidth = 2;
+
+    let container = document.getElementById("container");
+    let vMargins = 10;
+    let headerMargins = vMargins;
+    let footerMargins = vMargins;
+
+    let headerRow = document.getElementById("header");
+    let overviewRow = document.getElementById("overview");
+    let detailsRow = document.getElementById("details");
+    let footerRow = document.getElementById("footer");
+
+    let headerHeight = headerRow.offsetHeight + headerMargins;
+    let footerHeight = footerRow.offsetHeight + footerMargins;
+
+    let overviewRowHeight = event.clientY - headerHeight;
+    let detailsRowHeight = container.offsetHeight - headerHeight - footerHeight - overviewRowHeight - dragbarWidth;
+
+    let rows = [
+      headerHeight,
+      overviewRowHeight,
+      dragbarWidth,
+      detailsRowHeight,
+      footerHeight
+    ];
+
+    let newRowDefn = rows.map((c) => c.toString() + "px").join(" ");
+    container.style.gridTemplateRows = newRowDefn;
+  }
+}
+
+function onDrag(event) {
+  onDragHorizontalDrag(event);
+  onVerticalDrag(event);
 }

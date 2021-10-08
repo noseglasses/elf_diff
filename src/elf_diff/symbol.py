@@ -33,12 +33,14 @@ class Symbol(object):
     consecutive_id = 0
 
     def __init__(self, name):
+        """Initialize symbol object."""
         self.name = name
         self.instruction_lines = []
         self.size = 0
         self.type = "?"
-        self.id = Symbol.getConsecutiveId()
+        self.id_ = Symbol.getConsecutiveId()
 
+    @staticmethod
     def getConsecutiveId():
         tmp = Symbol.consecutive_id
         Symbol.consecutive_id += 1
@@ -71,6 +73,7 @@ class Symbol(object):
         return True
 
     def __eq__(self, other):
+        """Compare two symbols."""
         if not self.name == other.name:
             # print("Symbol name differs")
             return False
@@ -130,6 +133,7 @@ class CppSymbol(Symbol):
     symbol_prefix = {"non-virtual thunk to": 1, "vtable for": 2}
 
     def __init__(self, name):
+        """Initialize cpp symbol object."""
         super(CppSymbol, self).__init__(name)
 
         self.initProps()
@@ -141,7 +145,8 @@ class CppSymbol(Symbol):
         for prop in self.props:
             setattr(self, prop, None)
 
-    def __getArgumentsPortion(self, input_str, opening_brace, closing_brace):
+    @staticmethod
+    def getArgumentsPortion(input_str, opening_brace, closing_brace):
         closing_bracket_found = False
         n = 0
         lower_brace_pos = None
@@ -168,7 +173,7 @@ class CppSymbol(Symbol):
 
         return None, None
 
-    def __parseSignature(self):
+    def parseSignature(self):
 
         rest = self.name
 
@@ -178,7 +183,7 @@ class CppSymbol(Symbol):
                 rest = rest[len(prefix) + 1 :]  # Ignore the space after the prefix
                 self.prefix_id = prefix_id
 
-        rest, self.arguments = self.__getArgumentsPortion(rest, "(", ")")
+        rest, self.arguments = CppSymbol.getArgumentsPortion(rest, "(", ")")
         if rest is not None:
             self.symbol_type = Symbol.type_function
         else:
@@ -192,7 +197,7 @@ class CppSymbol(Symbol):
             self.full_name = rest[namespace_sep_pos + 2 :]
             full_namespace = rest[:namespace_sep_pos]
 
-            self.namespace, self.template_parameters = self.__getArgumentsPortion(
+            self.namespace, self.template_parameters = CppSymbol.getArgumentsPortion(
                 full_namespace, "<", ">"
             )
             if self.namespace is None:
@@ -206,7 +211,7 @@ class CppSymbol(Symbol):
                 setattr(self, prop + "_hash", hash(prop_value))
 
     def init(self):
-        self.__parseSignature()
+        self.parseSignature()
         super(CppSymbol, self).init()
 
     def propertiesEqual(self, other):

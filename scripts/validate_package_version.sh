@@ -1,3 +1,4 @@
+#! /usr/bin/bash
 # This script checks if the package version of a locally build
 # Python package residing in the dist/ subdirectory matches
 # the latest git version tag and aborts with an
@@ -14,9 +15,9 @@ function validate_package_version() {
   echo "Git ref: ${git_ref}"
   input_branch="${git_ref}"
   echo "Input branch: ${input_branch}"
-  branch_head_commit_id=$(git rev-parse ${input_branch})
+  branch_head_commit_id=$(git rev-parse "${input_branch}")
   echo "Head commit: ${branch_head_commit_id}"
-  latest_git_tag=$(git describe --tags ${branch_head_commit_id})
+  latest_git_tag=$(git describe --tags "${branch_head_commit_id}")
   echo "Latest tag: ${latest_git_tag}"
   version=${latest_git_tag#v} # remove the prefix "v"
   echo "Version: ${version}"
@@ -43,9 +44,9 @@ function validate_package_version_wo_sha() {
   echo "Git ref: ${git_ref}"
   input_branch="${git_ref}"
   echo "Input branch: ${input_branch}"
-  branch_head_commit_id=$(git rev-parse ${input_branch}) # Do not append the git sha to the rev-parse output
+  branch_head_commit_id=$(git rev-parse "${input_branch}") # Do not append the git sha to the rev-parse output
   echo "Head commit: ${branch_head_commit_id}"
-  latest_git_tag=$(git describe --tags --abbrev=0 ${branch_head_commit_id})
+  latest_git_tag=$(git describe --tags --abbrev=0 "${branch_head_commit_id}")
   echo "Latest tag: ${latest_git_tag}"
   version=${latest_git_tag#v} # remove the prefix "v"
   echo "Version: ${version}"

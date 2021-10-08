@@ -22,100 +22,196 @@ this program. If not, see http://www.gnu.org/licenses/
 */
 
 /* Appearance */
-body, table { font-family: sans-serif; }
-table { border-collapse: collapse;}
-td, th { padding: 6px; }
-th { background: #333; color: white; }
+body,
+table {
+  font-family: sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 6px;
+}
+
+th {
+  background: #333;
+  color: white;
+}
 
 /* Frames around table cells */
-table, th, td {
-   border: 1px solid black;
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+table.stats,
+tr,
+td {
+  border: none;
 }
 
 /* Striped tables */
-tr:nth-child(even) {background-color: #f2f2f2;}
-
-/* Sortability of tables */
-table.sortable  
-   th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
-   content: " \25B4\25BE" 
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-thead { display: table-header-group; } /* makes it sizeable */
-tbody { display: table-header-group; /* makes it sizeable */ }
+/* Sortability of tables */
+table.sortable
+   th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+  content: " \25B4\25BE";
+}
+
+thead {
+  display: table-header-group; /* makes it sizeable */
+}
+
+tbody {
+  display: table-header-group; /* makes it sizeable */
+}
 
 .fixed_table thead { 
    display: table-header-group; 
    width: 500px;
 }
+
 .fixed_table tbody { 
    display: table-header-group; 
    width: 500px;
 }
 
-.deterioration { background: #FFAAAA; }
-.improvement { background: #AAFFAA; } 
-.unchanged { }
-.diff_chg { background: #ADD8E6; }
-.diff_add { background: #AAFFAA; }
-.diff_sub { background: #FFAAAA; }
-.diff_highlight { background: #ADD8E6; }
+.deterioration {
+  background: #faa;
+}
+
+.improvement {
+  background: #afa;
+}
+
+/*
+.unchanged {
+}
+*/
+
+.diff_chg {
+  background: #add8e6;
+}
+
+.diff_add {
+  background: #afa;
+}
+
+.diff_sub {
+  background: #faa;
+}
+
+.diff_highlight {
+  background: #add8e6;
+}
 
 a:link {
-   text-decoration: none;
-   color: darkblue;
+  text-decoration: none;
+  color: darkblue;
 }
 
 a:visited {
-   text-decoration: none;
-   color: darkblue;
+  text-decoration: none;
+  color: darkblue;
 }
 
 a:hover {
-   text-decoration: none;
-   color: darkgreen;
+  text-decoration: none;
+  color: darkgreen;
 }
 
 a:active {
-   text-decoration: none;
-   color: blue;
+  text-decoration: none;
+  color: blue;
 }
  
 .number {
-   font-family: monospace;
+  font-family: monospace;
 }
 
 .monospace {
-   font-family: monospace;
+  font-family: monospace;
 }
 
 .source {
-   color: royalblue;
-   font-weight: bold;
+  color: royalblue;
+  font-weight: bold;
 }
+
+table.diff td { font-family: monospace; }
 
 table.size_overview th:nth-child(1) { text-align: left; }
 table.size_overview th:nth-child(2) { text-align: right; }
 table.size_overview th:nth-child(3) { text-align: right; }
 table.size_overview th:nth-child(4) { text-align: right; }
 table.size_overview td:nth-child(1) { text-align: left; }
-table.size_overview td:nth-child(2) { text-align: right; font-family: monospace;}
-table.size_overview td:nth-child(3) { text-align: right; font-family: monospace;}
-table.size_overview td:nth-child(4) { text-align: right; font-family: monospace;}
 
-table.persisting_symbols {table-layout: auto; width: 100%;}
+table.size_overview td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.size_overview td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.size_overview td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
 table.persisting_symbols th:nth-child(1) { text-align: left; }
 table.persisting_symbols th:nth-child(2) { text-align: right; }
 table.persisting_symbols th:nth-child(3) { text-align: right; }
 table.persisting_symbols th:nth-child(4) { text-align: right; }
 table.persisting_symbols th:nth-child(5) { text-align: right; }
-table.persisting_symbols td:nth-child(1) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
-table.persisting_symbols td:nth-child(2) { text-align: right; font-family: monospace;}
-table.persisting_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
-table.persisting_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
-table.persisting_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
 
-table.isolated_symbols {table-layout: auto; width: 100%;}
+table.persisting_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.persisting_symbols td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
 table.isolated_symbols th:nth-child(1) { text-align: left; }
 table.isolated_symbols th:nth-child(2) { text-align: left; }
 table.isolated_symbols th:nth-child(3) { text-align: right; }
@@ -123,15 +219,50 @@ table.isolated_symbols th:nth-child(4) { text-align: right; }
 table.isolated_symbols th:nth-child(5) { text-align: right; }
 table.isolated_symbols th:nth-child(6) { text-align: right; }
 table.isolated_symbols th:nth-child(7) { text-align: right; }
-table.isolated_symbols td:nth-child(1) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
-table.isolated_symbols td:nth-child(2) { text-align: left; font-family: monospace;}
-table.isolated_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
-table.isolated_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
-table.isolated_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
-table.isolated_symbols td:nth-child(6) { text-align: right; font-family: monospace;}
-table.isolated_symbols td:nth-child(7) { text-align: right; font-family: monospace;}
+
+table.isolated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.isolated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(6) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(7) {
+  text-align: right;
+  font-family: monospace;
+}
     
-table.similar_symbols {table-layout: auto; width: 100%;}
+table.similar_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
 table.similar_symbols th:nth-child(1) { text-align: left; }
 table.similar_symbols th:nth-child(2) { text-align: left; }
 table.similar_symbols th:nth-child(3) { text-align: right; }
@@ -139,34 +270,91 @@ table.similar_symbols th:nth-child(4) { text-align: right; }
 table.similar_symbols th:nth-child(5) { text-align: right; }
 table.similar_symbols th:nth-child(6) { text-align: right; }
 table.similar_symbols th:nth-child(7) { text-align: right; }
-table.similar_symbols td:nth-child(1) { text-align: left; font-family: monospace;}
-table.similar_symbols td:nth-child(2) { text-align: left; font-family: monospace; word-wrap: break-word; max-width: 1px;  width: 100%;}
-table.similar_symbols td:nth-child(3) { text-align: right; font-family: monospace;}
-table.similar_symbols td:nth-child(4) { text-align: right; font-family: monospace;}
-table.similar_symbols td:nth-child(5) { text-align: right; font-family: monospace;}
-table.similar_symbols td:nth-child(6) { text-align: right; font-family: monospace;}
-table.similar_symbols td:nth-child(7) { text-align: right; font-family: monospace;}
+
+table.similar_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.similar_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(6) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(7) {
+  text-align: right;
+  font-family: monospace;
+}
 
 table.quad_col th:nth-child(1) { text-align: left; }
 table.quad_col th:nth-child(2) { text-align: right; }
 table.quad_col th:nth-child(3) { text-align: right; }
 table.quad_col th:nth-child(4) { text-align: right; }
 table.quad_col th:nth-child(5) { text-align: right; }
-table.quad_col td:nth-child(1) { text-align: left; font-family: monospace;}
-table.quad_col td:nth-child(2) { text-align: right; font-family: monospace;}
-table.quad_col td:nth-child(3) { text-align: right; font-family: monospace;}
-table.quad_col td:nth-child(4) { text-align: right; font-family: monospace;}
-table.quad_col td:nth-child(5) { text-align: right; font-family: monospace;}
+
+table.quad_col td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
 
 table.bin_col th:nth-child(1) { text-align: left; }
 table.bin_col th:nth-child(2) { text-align: right; }
 table.bin_col th:nth-child(3) { text-align: right; }
-table.bin_col td:nth-child(1) { text-align: left; font-family: monospace;}
-table.bin_col td:nth-child(2) { text-align: right; font-family: monospace;}
-table.bin_col td:nth-child(3) { text-align: right; font-family: monospace;}
 
-table.diff td {font-family: monospace;}
+table.bin_col td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
 
-table.stats, tr, td {
-    border: none;
+table.bin_col td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.bin_col td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
 }

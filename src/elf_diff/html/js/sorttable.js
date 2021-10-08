@@ -40,7 +40,7 @@ sorttable = {
   },
 
   makeSortable: function(table) {
-    if (table.getElementsByTagName('thead').length == 0) {
+    if (table.getElementsByTagName('thead').length === 0) {
       // table doesn't have a tHead. Since it should have, create one and
       // put the first table row in it.
       the = document.createElement('thead');
@@ -50,7 +50,7 @@ sorttable = {
     // Safari doesn't support table.tHead, sigh
     if (table.tHead == null) table.tHead = table.getElementsByTagName('thead')[0];
 
-    if (table.tHead.rows.length != 1) return; // can't cope with two header rows
+    if (table.tHead.rows.length !== 1) return; // can't cope with two header rows
 
     // Sorttable v1 put rows with a class of "sortbottom" at the bottom (as
     // "total" rows, for example). This is B&R, since what you're supposed
@@ -121,7 +121,7 @@ sorttable = {
           // remove sorttable_sorted classes
           theadrow = this.parentNode;
           forEach(theadrow.childNodes, function(cell) {
-            if (cell.nodeType == 1) { // an element
+            if (cell.nodeType === 1) { // an element
               cell.className = cell.className.replace('sorttable_sorted_reverse','');
               cell.className = cell.className.replace('sorttable_sorted','');
             }
@@ -178,8 +178,8 @@ sorttable = {
         possdate = text.match(sorttable.DATE_RE)
         if (possdate) {
           // looks like a date
-          first = parseInt(possdate[1]);
-          second = parseInt(possdate[2]);
+          first = parseInt(possdate[1], 10);
+          second = parseInt(possdate[2], 10);
           if (first > 12) {
             // definitely dd/mm
             return sorttable.sort_ddmm;
@@ -273,13 +273,13 @@ sorttable = {
   sort_ddmm: function(a,b) {
     mtch = a[0].match(sorttable.DATE_RE);
     y = mtch[3]; m = mtch[2]; d = mtch[1];
-    if (m.length == 1) m = '0'+m;
-    if (d.length == 1) d = '0'+d;
+    if (m.length === 1) m = '0'+m;
+    if (d.length === 1) d = '0'+d;
     dt1 = y+m+d;
     mtch = b[0].match(sorttable.DATE_RE);
     y = mtch[3]; m = mtch[2]; d = mtch[1];
-    if (m.length == 1) m = '0'+m;
-    if (d.length == 1) d = '0'+d;
+    if (m.length === 1) m = '0'+m;
+    if (d.length === 1) d = '0'+d;
     dt2 = y+m+d;
     if (dt1==dt2) return 0;
     if (dt1<dt2) return -1;
@@ -288,13 +288,13 @@ sorttable = {
   sort_mmdd: function(a,b) {
     mtch = a[0].match(sorttable.DATE_RE);
     y = mtch[3]; d = mtch[2]; m = mtch[1];
-    if (m.length == 1) m = '0'+m;
-    if (d.length == 1) d = '0'+d;
+    if (m.length === 1) m = '0'+m;
+    if (d.length === 1) d = '0'+d;
     dt1 = y+m+d;
     mtch = b[0].match(sorttable.DATE_RE);
     y = mtch[3]; d = mtch[2]; m = mtch[1];
-    if (m.length == 1) m = '0'+m;
-    if (d.length == 1) d = '0'+d;
+    if (m.length === 1) m = '0'+m;
+    if (d.length === 1) d = '0'+d;
     dt2 = y+m+d;
     if (dt1==dt2) return 0;
     if (dt1<dt2) return -1;

@@ -33,7 +33,7 @@ def similar(a, b):
 
 class BinaryPairSettings(object):
     def __init__(self, short_name, old_binary_filename, new_binary_filename):
-
+        """Initialize binary pair settings object."""
         self.short_name = short_name
         self.old_binary_filename = old_binary_filename
         self.new_binary_filename = new_binary_filename
@@ -43,6 +43,7 @@ class SimilarityPair(object):
     def __init__(
         self, old_symbol, new_symbol, symbol_similarity, instructions_similarity
     ):
+        """Initialize similarity pair object."""
         self.old_symbol = old_symbol
         self.new_symbol = new_symbol
         self.symbol_similarity = symbol_similarity
@@ -52,7 +53,7 @@ class SimilarityPair(object):
 
 class BinaryPair(object):
     def __init__(self, settings, old_binary_filename, new_binary_filename):
-
+        """Initialize binary pair object."""
         self.settings = settings
 
         self.old_binary_filename = old_binary_filename
