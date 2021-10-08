@@ -125,7 +125,7 @@ class TestCommandLineArgs(unittest.TestCase):
         html_dir = "pair_report_multi_page"
         template_file = "output.tmpl.yml"
 
-        [output, error] = runSubprocess(
+        [output, error] = runSubprocess(  # pylint: disable=unused-variable
             elf_diff_start
             + [
                 "--old_binary_filename",

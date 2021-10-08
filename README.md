@@ -285,7 +285,7 @@ To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_dif
 There is a small difference between running Python on Linux and Windows. While the command to run Python 3 from a console window under Linux is `python3`, on Windows there is a so called _Python runner_ (command `py`) that invokes the most suitable Python interpreter installed.
 
 To display _elf_diff_'s help page in a console window, type the following in a Linux console
-```
+```sh
 python3 -m elf_diff -h
 ```
 or
