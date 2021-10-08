@@ -72,7 +72,13 @@ new_binary2 = os.path.join(testing_dir, "libelf_diff_test_debug_new.a")
 verbose_output = True
 
 
-def runSubprocess(cmd, cwd=os.getcwd(), env=os.environ.copy()):
+def runSubprocess(cmd, cwd=None, env=None):
+
+    if cwd is None:
+        cwd = os.getcwd()
+
+    if env is None:
+        env = os.environ.copy()
 
     if verbose_output:
         print("   Running command: {cmd}".format(cmd='"' + '" "'.join(cmd) + '"'))
