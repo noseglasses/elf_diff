@@ -195,7 +195,7 @@ class TestCommandLineArgs(unittest.TestCase):
             f.write("project_title: '" + "Project title'\n")
             f.write("driver_template_file: '" + template_file + "'\n")
 
-        [output, error] = runSubprocess(
+        [output, error] = runSubprocess(  # pylint: disable=unused-variable
             elf_diff_start + ["--driver_file", driver_yaml_file]
         )
 
