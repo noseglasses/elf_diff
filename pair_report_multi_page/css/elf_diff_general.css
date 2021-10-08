@@ -60,8 +60,7 @@ tr:nth-child(even) {
 }
 
 /* Sortability of tables */
-table.sortable
-   th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+table .sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort)::after {
   content: " \25B4\25BE";
 }
 
@@ -73,14 +72,14 @@ tbody {
   display: table-header-group; /* makes it sizeable */
 }
 
-.fixed_table thead { 
-   display: table-header-group; 
-   width: 500px;
+.fixed_table thead {
+  display: table-header-group;
+  width: 500px;
 }
 
-.fixed_table tbody { 
-   display: table-header-group; 
-   width: 500px;
+.fixed_table tbody {
+  display: table-header-group;
+  width: 500px;
 }
 
 .deterioration {
