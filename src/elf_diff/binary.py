@@ -139,7 +139,7 @@ class Binary(object):
         ]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        o, e = proc.communicate()
+        o, e = proc.communicate()  # pylint: disable=unused-variable
 
         output = o.decode("utf8")
         # error = e.decode('utf8')
@@ -151,7 +151,7 @@ class Binary(object):
         cmd = [self.settings.size_command, self.filename]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        o, e = proc.communicate()
+        o, e = proc.communicate()  # pylint: disable=unused-variable
 
         output = o.decode("utf8")
         # error = e.decode('utf8')

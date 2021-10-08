@@ -270,12 +270,9 @@ Please note: [PyPI](https://pypi.org/) the Python package index traditionally us
 Alternatively when developing _elf_diff_, the following steps are required:
 
 1. Clone the [_elf_diff_](https://github.com/noseglasses/elf_diff) repo from github.
-
 2. Install any required packages via one of the following commands
-
   * `python3 -m pip install -r requirements.txt` (Linux)
   * `py -m pip install -r requirements.txt` (Windows)
-
 3. Add the `bin` subdirectory of the _elf_diff_ repo to your platform search path (environment variable, e.g. `PATH`)
 
 To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.
@@ -310,7 +307,7 @@ python3 -m elf_diff my_old_binary.elf my_new_binary.elf
 Mass reports require a driver file (yaml syntax) that specifies a list of binaries to compare pair-wise. 
 
 Let's assume you have two pairs of binaries that reside in a directory `/home/my_user`.
-```
+```txt
 binary_a_old.elf <-> binary_a_new.elf
 binary_b_old.elf <-> binary_b_new.elf
 ```
