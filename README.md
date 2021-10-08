@@ -289,7 +289,7 @@ To display _elf_diff_'s help page in a console window, type the following in a L
 python3 -m elf_diff -h
 ```
 or
-```
+```sh
 py -m elf_diff -h
 ```
 in a Windows console.

@@ -121,7 +121,7 @@ def configureTemplate(settings, template_filename, keywords):
     env = Environment(
         loader=FileSystemLoader(template_path),
         undefined=StrictUndefined,
-        autoescape=True,
+        autoescape=False,
     )
 
     try:
