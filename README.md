@@ -2,6 +2,7 @@
 [![PyPi license](https://badgen.net/pypi/license/elf_diff/)](https://pypi.org/project/elf_diff/)
 ![Code style black](https://img.shields.io/badge/code%20style-black-black)
 [![codecov](https://codecov.io/gh/noseglasses/elf_diff/branch/master/graph/badge.svg?token=4A71C5ZYM9)](https://codecov.io/gh/noseglasses/elf_diff)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/08f1e1dd9e3240799be5470e86ad5a58)](https://www.codacy.com/gh/noseglasses/elf_diff/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=noseglasses/elf_diff&amp;utm_campaign=Badge_Grade)
 
 ![check code formatting](https://github.com/noseglasses/elf_diff/actions/workflows/black_code_formatting.yml/badge.svg)
 ![CodeQL analysis](https://github.com/noseglasses/elf_diff/actions/workflows/codeql-analysis.yml/badge.svg)
