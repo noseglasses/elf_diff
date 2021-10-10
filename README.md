@@ -464,7 +464,7 @@ This section explains what tests are there and how they can be run.
 
 ## Unit Tests
 
-To run unit tests do the following
+To run unit tests do the following.
 
 ```sh
 cd <repo root>
@@ -499,7 +499,7 @@ python3 -m elf_diff \
 
 # Contributing
 
-Please read CONTRIBUTING.md for details on our code of conduct, and the process
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process
 for submitting pull requests to us.
 
 # Versioning
