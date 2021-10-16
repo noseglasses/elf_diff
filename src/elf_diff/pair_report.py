@@ -375,6 +375,7 @@ class IsolatedSymbolsOverview(HTMLContent):
         self.description = description
         self.isolated_symbols = isolated_symbols
         self.have_title = True
+        self.overall_symbol_size = 0
 
     def generateContent(self):
 
@@ -387,7 +388,6 @@ class IsolatedSymbolsOverview(HTMLContent):
 
         html_template_filename = "isolated_symbols_overview_content.html"
 
-        self.overall_symbol_size = 0
         symbols_keywords = []
         for isolated_symbol in self.isolated_symbols:
             isolated_symbol.prepareKeywords()
