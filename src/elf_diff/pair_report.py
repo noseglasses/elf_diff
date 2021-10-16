@@ -399,6 +399,7 @@ class IsolatedSymbolsOverview(HTMLContent):
 class IsolatedSymbolsDetails(HTMLContent):
     def __init__(self, description, isolated_symbols):
         super().__init__()
+        self.description = description
         self.isolated_symbols = isolated_symbols
         self.have_title = True
 
