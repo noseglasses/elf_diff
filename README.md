@@ -509,7 +509,7 @@ see the tags on this repository.
 
 # Authors
 
-    noseglasses - Initial work
+* noseglasses - Initial work
 
 # License
 

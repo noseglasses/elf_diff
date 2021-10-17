@@ -139,7 +139,9 @@ class Binary(object):
             "-C",
             self.filename,
         ]
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(  # nosec # silence bandid warning
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )  # nosec # silence bandid warning
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 

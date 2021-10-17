@@ -1,4 +1,6 @@
-# Introduction
+# Contributing
+
+## Introduction
 
 First off, thank you for considering contributing to _elf_diff_. It's people like you that make _elf_diff_ a great tool.
 
@@ -6,7 +8,7 @@ Following these guidelines helps to communicate that you respect the time of the
 
 _elf_diff_ is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into _elf_diff_ itself.
 
-# Ground Rules
+## Ground Rules
 
 Responsibilities
 
@@ -16,7 +18,7 @@ Responsibilities
 * Keep feature versions as small as possible, preferably one new feature per version.
 * Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See the [Python Community Code of Conduct](https://www.python.org/psf/codeofconduct/).
 
-# Your First Contribution
+## Your First Contribution
 
 As a newcomer on a project, it’s easy to experience frustration. Here’s some advice to make your work on _elf_diff_ more useful and rewarding.
 
@@ -62,7 +64,7 @@ Working on your first Pull Request? You can learn how from this *free* series, [
 
 At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
 
-# Getting started
+## Getting started
 
 For something that is bigger than a one or two line fix:
 
@@ -86,7 +88,7 @@ If _elf_diff_'s CI Github workflows are reporting error's that you do not unders
 by yourself, don't worry there will certainly be experienced developers happy to help you.
 Don't hesitate to post related questions in the _Conversation_ section of your Github PR.
 
-# How to report a bug
+## How to report a bug
 
 If you find a security vulnerability, do NOT open an issue. Email shinynoseglasses@gmail.com instead.
 
@@ -98,15 +100,15 @@ When filing an issue on Github, make sure to answer these five questions:
 4. What did you expect to see?
 5. What did you see instead?
 
-# How to suggest a feature or enhancement
+## How to suggest a feature or enhancement
 
 If you find yourself wishing for a feature that doesn't exist in _elf_diff_, you are probably not alone. There are bound to be others out there with similar needs. Many of the features that _elf_diff_ has today have been added because our users saw the need. Open an issue on our issues list on GitHub which describes the feature you would like to see, why you need it, and how it should work.
 
-# Coding style
+## Coding style
 
 _elf_diff_ uses [Python black](https://pypi.org/project/black/) for its formatting. Any submissions must be formatted with black prior to being submitted as PR. Any code that does not meet this requirement will automatically be rejected by _elf_diff_'s Github workflows that are triggered as part of PR's CI tests. 
 
-# Commit message conventions
+## Commit message conventions
 
 Here's a great template of a good commit message originally written by [Tim pope](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html):
 
@@ -164,7 +166,7 @@ Its purpose is to inform developers about how to contribute to the
 elf_diff project to make _elf_diff_ an even better tool.
 ```
 
-# Acknowledgments
+## Acknowledgments
 
 This CONTRIBUTING file was greatly inspired by the following projects' 
 CONTRIBUTING files.
