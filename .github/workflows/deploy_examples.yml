@@ -48,7 +48,7 @@ jobs:
         mkdir -p example_deploy/examples/simple2
         cd example_deploy/examples/simple2
         cp -a ../../../example_output/simple2/pair_report_multi_page .
-        cp ../../../example_output/pair_report_output.html .
+        cp ../../../example_output/simple2/pair_report_output.html .
     - name: Prepare Index
       run: |
         mkdir -p example_deploy
