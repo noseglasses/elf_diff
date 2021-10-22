@@ -48,7 +48,7 @@ jobs:
       run: |
         mkdir -p example_deploy/examples/simple2
         cd example_deploy/examples/simple2
-        cp -a ../example_output/simple2/pair_report_multi_page .
+        cp -a ../../../example_output/simple2/pair_report_multi_page .
     - name: Deploy To Github Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
       if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
