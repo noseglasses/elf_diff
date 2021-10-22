@@ -41,19 +41,6 @@ jobs:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         verbose: true # optional (default = false)
-    - name: Prepare Example Deploy
-      run: |
-        mkdir example_deploy
-        cd example_deploy
-        cp -a ../test_output/pair_report_multi_page .
-        cp ../test_output/pair_report_output.html .
-        cp ../src/elf_diff/html/example_page.html ./index.html
-    - name: Deploy To Github Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.5
-      if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
-      with:
-        branch: gh-pages # The branch the action should deploy to.
-        folder: /home/runner/work/elf_diff/elf_diff/example_deploy # The folder the action should deploy.
   windows:
     runs-on: windows-latest
     steps:
