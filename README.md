@@ -118,7 +118,7 @@ in [elf](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) files.
 
 Please click on the table headers to proceed to the HTML pages that _elf_diff_ generated based on the above code example.
 
-[Multi Page](https://noseglasses.github.io/elf_diff/pair_report_multi_page/index.html)                 |  [Single Page](https://noseglasses.github.io/elf_diff/pair_report_output.html)
+[Multi Page](https://noseglasses.github.io/elf_diff/examples/simple2/pair_report_multi_page/index.html)                 |  [Single Page](https://noseglasses.github.io/elf_diff/examples/simple2/pair_report_output.html)
 :-------------------------:|:-------------------------:
 ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/multi_page_pair_report.png)  |  ![](https://github.com/noseglasses/elf_diff/blob/119a0b62c5d7faf2d0b7a958b46f7daf4ee8bcc7/examples/single_page_pair_report.png)
 
