@@ -43,12 +43,16 @@ jobs:
         cd example_deploy/examples/simple
         cp -a ../../../test_output/pair_report_multi_page .
         cp ../../../test_output/pair_report_output.html .
-        cp ../../../src/elf_diff/html/example_page.html ./index.html
     - name: Prepare Example Deploy 2
       run: |
         mkdir -p example_deploy/examples/simple2
         cd example_deploy/examples/simple2
         cp -a ../../../example_output/simple2/pair_report_multi_page .
+    - name: Prepare Index
+      run: |
+        mkdir -p example_deploy
+        cd example_deploy
+        cp ../src/elf_diff/html/example_page.html ./index.html
     - name: Deploy To Github Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
       if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
