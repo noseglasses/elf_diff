@@ -41,9 +41,9 @@ jobs:
       run: |
         mkdir -p example_deploy/examples/simple
         cd example_deploy/examples/simple
-        cp -a ../test_output/pair_report_multi_page .
-        cp ../test_output/pair_report_output.html .
-        cp ../src/elf_diff/html/example_page.html ./index.html
+        cp -a ../../../test_output/pair_report_multi_page .
+        cp ../../../test_output/pair_report_output.html .
+        cp ../../../src/elf_diff/html/example_page.html ./index.html
     - name: Prepare Example Deploy 2
       run: |
         mkdir -p example_deploy/examples/simple2
