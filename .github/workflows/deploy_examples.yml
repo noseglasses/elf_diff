@@ -54,6 +54,15 @@ jobs:
         mkdir -p example_deploy
         cd example_deploy
         cp ../src/elf_diff/html/example_page.html ./index.html
+    - name: HTML Link Check
+      uses: lycheeverse/lychee-action@v1.0.8
+      id: lychee_html
+      with:
+        args: --verbose --no-progress "example_deploy/**/*.html"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Fail on HTML Link Check Errors
+      run: exit ${{ steps.lychee_html.outputs.exit_code }}
     - name: Deploy To Github Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
       if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
