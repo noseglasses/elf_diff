@@ -1,0 +1,57 @@
+name: Deploy Examples
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install Ubuntu packages
+      run: |
+         sudo apt install -y python3-pip
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r ./requirements.txt
+    - name: Test
+      run: |
+        mkdir test_output
+        cd test_output
+        python3 ../tests/test.py
+    - name: Examples
+      run: |
+        mkdir -p example_output/simple2
+        cd example_output/simple2
+        python3 ../../bin/elf_diff \
+          --html_dir pair_report_multi_page \
+          --old_binary ../../tests/libelf_diff_test2_debug_old.a \
+          --new_binary ../../tests/libelf_diff_test2_debug_new.a
+        python3 ../../bin/elf_diff \
+          --html_file pair_report_output.html \
+          --old_binary ../../tests/libelf_diff_test2_debug_old.a \
+          --new_binary ../../tests/libelf_diff_test2_debug_new.a
+    - name: Prepare Example Deploy 1
+      run: |
+        mkdir -p example_deploy/examples/simple
+        cd example_deploy/examples/simple
+        cp -a ../test_output/pair_report_multi_page .
+        cp ../test_output/pair_report_output.html .
+        cp ../src/elf_diff/html/example_page.html ./index.html
+    - name: Prepare Example Deploy 2
+      run: |
+        mkdir -p example_deploy/examples/simple2
+        cd example_deploy/examples/simple2
+        cp -a ../example_output/simple2/pair_report_multi_page .
+    - name: Deploy To Github Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      if: ${{ github.event_name == 'push' }} # Only run on push to master (which only happens if a PR is merged)
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: /home/runner/work/elf_diff/elf_diff/example_deploy # The folder the action should deploy.

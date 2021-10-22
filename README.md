@@ -479,9 +479,9 @@ python3 ./tests/test.py
 
 # Examples
 
-## Simple Example
+## Examples Page
 
-An [example](https://github.com/noseglasses/elf_diff/blob/master/examples/elf_diff_test_static_1.pdf) taken from the regression test bench that compares two binaries of two very simple C++ programs.
+See the [examples page](https://noseglasses.github.io/elf_diff/).
 
 ## libstdc++
 
