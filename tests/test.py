@@ -318,10 +318,11 @@ class TestCommandLineArgs(unittest.TestCase):
     def test_mass_report(self):
         pass
 
-    def test_new_alias(self):
-        pass
+    def test_new_alias(self):  # pylint: disable=no-self-use
+        runSimpleTest({"new_alias": "New alias"})
 
     def test_new_binary_filename(self):
+        # This is already tested by all simple tests
         pass
 
     def test_new_info_file(self):
@@ -330,16 +331,17 @@ class TestCommandLineArgs(unittest.TestCase):
     def test_new_mangling_file(self):
         pass
 
-    def test_nm_command(self):
-        pass
+    def test_nm_command(self):  # pylint: disable=no-self-use
+        runSimpleTest({"nm_command": "/usr/bin/nm"})
 
-    def test_objdump_command(self):
-        pass
+    def test_objdump_command(self):  # pylint: disable=no-self-use
+        runSimpleTest({"nm_command": "/usr/bin/objdump"})
 
-    def test_old_alias(self):
-        pass
+    def test_old_alias(self):  # pylint: disable=no-self-use
+        runSimpleTest({"old_alias": "Old alias"})
 
     def test_old_binary_filename(self):
+        # This is already tested by all simple tests
         pass
 
     def test_old_info_file(self):
@@ -353,20 +355,20 @@ class TestCommandLineArgs(unittest.TestCase):
         runSimpleTest({"pdf_file": pdf_file})
         self.assertTrue(os.path.isfile(pdf_file))
 
-    def test_project_title(self):
-        pass
+    def test_project_title(self):  # pylint: disable=no-self-use
+        runSimpleTest({"project_title": "A Project"})
 
-    def test_similarity_threshold(self):
-        pass
+    def test_similarity_threshold(self):  # pylint: disable=no-self-use
+        runSimpleTest({"similarity_threshold": "0.5"})
 
-    def test_size_command(self):
-        pass
+    def test_size_command(self):  # pylint: disable=no-self-use
+        runSimpleTest({"nm_command": "/usr/bin/size"})
 
-    def test_skip_details(self):
-        pass
+    def test_skip_details(self):  # pylint: disable=no-self-use
+        runSimpleTest({"skip_details": None})
 
-    def test_skip_symbol_similarities(self):
-        pass
+    def test_skip_symbol_similarities(self):  # pylint: disable=no-self-use
+        runSimpleTest({"skip_symbol_similarities": None})
 
     def test_symbol_exclusion_regex(self):
         pass
