@@ -22,9 +22,16 @@ jobs:
         python3 -m pip install -r ./requirements.txt
     - name: Test
       run: |
-        mkdir test_output
-        cd test_output
-        python3 ../tests/test.py
+        mkdir -p example_output/simple
+        cd example_output/simple
+        python3 ../../bin/elf_diff \
+          --html_dir pair_report_multi_page \
+          --old_binary ../../tests/libelf_diff_test_debug_old.a \
+          --new_binary ../../tests/libelf_diff_test_debug_new.a
+        python3 ../../bin/elf_diff \
+          --html_file pair_report_output.html \
+          --old_binary ../../tests/libelf_diff_test_debug_old.a \
+          --new_binary ../../tests/libelf_diff_test_debug_new.a
     - name: Examples
       run: |
         mkdir -p example_output/simple2
@@ -41,8 +48,8 @@ jobs:
       run: |
         mkdir -p example_deploy/examples/simple
         cd example_deploy/examples/simple
-        cp -a ../../../test_output/pair_report_multi_page .
-        cp ../../../test_output/pair_report_output.html .
+        cp -a ../../../example_output/simple/pair_report_multi_page .
+        cp ../../../example_output/simple/pair_report_output.html .
     - name: Prepare Example Deploy 2
       run: |
         mkdir -p example_deploy/examples/simple2

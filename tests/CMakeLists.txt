@@ -20,20 +20,24 @@ cmake_minimum_required(VERSION 2.8)
 
 project(elf_diff_test)
 
-add_library(elf_diff_test_release_old STATIC src/old/test.cpp)
-add_library(elf_diff_test_release_new STATIC src/new/test.cpp)
+if(NOT "${PLATFORM}" STREQUAL "")
+  set(PLATFORM_POSTFIX "-${PLATFORM}")
+endif()
 
-add_library(elf_diff_test_debug_old STATIC src/old/test.cpp)
-add_library(elf_diff_test_debug_new STATIC src/new/test.cpp)
+add_library(elf_diff_test_release_old${PLATFORM_POSTFIX} STATIC src/old/test.cpp)
+add_library(elf_diff_test_release_new${PLATFORM_POSTFIX} STATIC src/new/test.cpp)
 
-target_compile_options(elf_diff_test_debug_old PRIVATE "-g")
-target_compile_options(elf_diff_test_debug_new PRIVATE "-g")
+add_library(elf_diff_test_debug_old${PLATFORM_POSTFIX} STATIC src/old/test.cpp)
+add_library(elf_diff_test_debug_new${PLATFORM_POSTFIX} STATIC src/new/test.cpp)
 
-add_library(elf_diff_test2_release_old STATIC src/old/test2.cpp)
-add_library(elf_diff_test2_release_new STATIC src/new/test2.cpp)
+target_compile_options(elf_diff_test_debug_old${PLATFORM_POSTFIX} PRIVATE "-g")
+target_compile_options(elf_diff_test_debug_new${PLATFORM_POSTFIX} PRIVATE "-g")
 
-add_library(elf_diff_test2_debug_old STATIC src/old/test2.cpp)
-add_library(elf_diff_test2_debug_new STATIC src/new/test2.cpp)
+add_library(elf_diff_test2_release_old${PLATFORM_POSTFIX} STATIC src/old/test2.cpp)
+add_library(elf_diff_test2_release_new${PLATFORM_POSTFIX} STATIC src/new/test2.cpp)
 
-target_compile_options(elf_diff_test2_debug_old PRIVATE "-g")
-target_compile_options(elf_diff_test2_debug_new PRIVATE "-g")
+add_library(elf_diff_test2_debug_old${PLATFORM_POSTFIX} STATIC src/old/test2.cpp)
+add_library(elf_diff_test2_debug_new${PLATFORM_POSTFIX} STATIC src/new/test2.cpp)
+
+target_compile_options(elf_diff_test2_debug_old${PLATFORM_POSTFIX} PRIVATE "-g")
+target_compile_options(elf_diff_test2_debug_new${PLATFORM_POSTFIX} PRIVATE "-g")

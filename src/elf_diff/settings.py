@@ -49,12 +49,144 @@ class Parameter(object):
         self.is_flag = is_flag
 
 
+parameters = [
+    Parameter("old_binary_filename", "The old version of the elf binary."),
+    Parameter("new_binary_filename", "The new version of the elf binary."),
+    Parameter(
+        "old_alias",
+        "An alias string that is supposed to be used to reference the old binary version.",
+    ),
+    Parameter(
+        "new_alias",
+        "An alias string that is supposed to be used to reference the new binary version.",
+    ),
+    Parameter(
+        "old_info_file",
+        "A text file that contains information about the old binary version.",
+    ),
+    Parameter(
+        "new_info_file",
+        "A text file that contains information about the new binary version.",
+    ),
+    Parameter(
+        "build_info",
+        "A string that contains build information that is to be added to the report.",
+        default="",
+    ),
+    Parameter(
+        "bin_dir",
+        "A place where the binutils live.",
+        default=None,
+    ),
+    Parameter(
+        "bin_prefix",
+        "A prefix that is added to binutils executables.",
+        deprecated_alias="bin-prefix",
+        default="",
+    ),
+    Parameter("objdump_command", "Full path to the objdump untility.", default=None),
+    Parameter("nm_command", "Full path to the nm untility.", default=None),
+    Parameter("size_command", "Full path to the size untility.", default=None),
+    Parameter(
+        "old_mangling_file",
+        "Full path to a mangling file for old elf.",
+        default=None,
+    ),
+    Parameter(
+        "new_mangling_file",
+        "Full path to a mangling file for new elf.",
+        default=None,
+    ),
+    Parameter("html_file", "The filename of the generated single page HTML report."),
+    Parameter("html_dir", "The directory of the generated multi page HTML report."),
+    Parameter("pdf_file", "The filename of the generated pdf report."),
+    Parameter("project_title", "A project title to use for all reports."),
+    Parameter(
+        "driver_file",
+        "A yaml file that contains settings and driver information.",
+    ),
+    Parameter(
+        "driver_template_file",
+        "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read.",
+    ),
+    Parameter(
+        "html_template_dir",
+        "A directory that contains template html files. Defaults to elf_diff's own html directory.",
+        no_cmd_line=True,
+    ),
+    Parameter(
+        "mass_report",
+        "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.",
+        default=False,
+        is_flag=True,
+    ),
+    Parameter(
+        "language",
+        "A hint about the language that the elf was compiled from (choices: c++).",
+        default="c++",
+    ),
+    Parameter(
+        "similarity_threshold",
+        "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
+        default=0.5,
+    ),
+    Parameter(
+        "skip_symbol_similarities",
+        "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
+        default=False,
+        is_flag=True,
+    ),
+    Parameter(
+        "consider_equal_sized_identical",
+        "If this flag is defined, symbols of equal size are considered as identical (and thus ignored in most cases).",
+        default=False,
+        is_flag=True,
+    ),
+    Parameter(
+        "skip_details",
+        "If this flag is defined, report details are displayed",
+        default=False,
+        is_flag=True,
+    ),
+    Parameter(
+        "symbol_selection_regex",
+        "A regex that is applied to select symbols to be considered for both, the old and the new elf file",
+        default=None,
+    ),
+    Parameter(
+        "symbol_selection_regex_old",
+        "A regex that is applied to select symbols to be considered for the old elf file",
+        default=None,
+    ),
+    Parameter(
+        "symbol_selection_regex_new",
+        "A regex that is applied to select symbols to be considered for the new elf file",
+        default=None,
+    ),
+    Parameter(
+        "symbol_exclusion_regex",
+        "A regex that is applied to select symbols to be excluded for both, the old and the new elf file",
+        default=None,
+    ),
+    Parameter(
+        "symbol_exclusion_regex_old",
+        "A regex that is applied to select symbols to be excluded for the old elf file",
+        default=None,
+    ),
+    Parameter(
+        "symbol_exclusion_regex_new",
+        "A regex that is applied to select symbols to be excluded for the new elf file",
+        default=None,
+    ),
+]
+
+
 class Settings(object):
     def __init__(self, module_path):
         """Initialize settings class."""
         self.module_path = module_path
 
-        self.setupParameters()
+        self.parameters = parameters
 
         self.presetDefaults()
 
@@ -75,145 +207,6 @@ class Settings(object):
         self.considerCommandLineArgs(cmd_line_args)
 
         self.validateAndInitSettings()
-
-    def setupParameters(self):
-
-        self.parameters = [
-            Parameter("old_binary_filename", "The old version of the elf binary."),
-            Parameter("new_binary_filename", "The new version of the elf binary."),
-            Parameter(
-                "old_alias",
-                "An alias string that is supposed to be used to reference the old binary version.",
-            ),
-            Parameter(
-                "new_alias",
-                "An alias string that is supposed to be used to reference the new binary version.",
-            ),
-            Parameter(
-                "old_info_file",
-                "A text file that contains information about the old binary version.",
-            ),
-            Parameter(
-                "new_info_file",
-                "A text file that contains information about the new binary version.",
-            ),
-            Parameter(
-                "build_info",
-                "A string that contains build information that is to be added to the report.",
-                default="",
-            ),
-            Parameter(
-                "bin_dir",
-                "A place where the binutils live.",
-                default=None,
-            ),
-            Parameter(
-                "bin_prefix",
-                "A prefix that is added to binutils executables.",
-                deprecated_alias="bin-prefix",
-                default="",
-            ),
-            Parameter(
-                "objdump_command", "Full path to the objdump untility.", default=None
-            ),
-            Parameter("nm_command", "Full path to the nm untility.", default=None),
-            Parameter("size_command", "Full path to the size untility.", default=None),
-            Parameter(
-                "old_mangling_file",
-                "Full path to a mangling file for old elf.",
-                default=None,
-            ),
-            Parameter(
-                "new_mangling_file",
-                "Full path to a mangling file for new elf.",
-                default=None,
-            ),
-            Parameter(
-                "html_file", "The filename of the generated single page HTML report."
-            ),
-            Parameter(
-                "html_dir", "The directory of the generated multi page HTML report."
-            ),
-            Parameter("pdf_file", "The filename of the generated pdf report."),
-            Parameter("project_title", "A project title to use for all reports."),
-            Parameter(
-                "driver_file",
-                "A yaml file that contains settings and driver information.",
-            ),
-            Parameter(
-                "driver_template_file",
-                "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read.",
-            ),
-            Parameter(
-                "html_template_dir",
-                "A directory that contains template html files. Defaults to elf_diff's own html directory.",
-                no_cmd_line=True,
-            ),
-            Parameter(
-                "mass_report",
-                "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.",
-                default=False,
-                is_flag=True,
-            ),
-            Parameter(
-                "language",
-                "A hint about the language that the elf was compiled from (choices: c++).",
-                default="c++",
-            ),
-            Parameter(
-                "similarity_threshold",
-                "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
-                default=0.5,
-            ),
-            Parameter(
-                "skip_symbol_similarities",
-                "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
-                default=False,
-                is_flag=True,
-            ),
-            Parameter(
-                "consider_equal_sized_identical",
-                "If this flag is defined, symbols of equal size are considered as identical (and thus ignored in most cases).",
-                default=False,
-                is_flag=True,
-            ),
-            Parameter(
-                "skip_details",
-                "If this flag is defined, report details are displayed",
-                default=False,
-                is_flag=True,
-            ),
-            Parameter(
-                "symbol_selection_regex",
-                "A regex that is applied to select symbols to be considered for both, the old and the new elf file",
-                default=None,
-            ),
-            Parameter(
-                "symbol_selection_regex_old",
-                "A regex that is applied to select symbols to be considered for the old elf file",
-                default=None,
-            ),
-            Parameter(
-                "symbol_selection_regex_new",
-                "A regex that is applied to select symbols to be considered for the new elf file",
-                default=None,
-            ),
-            Parameter(
-                "symbol_exclusion_regex",
-                "A regex that is applied to select symbols to be excluded for both, the old and the new elf file",
-                default=None,
-            ),
-            Parameter(
-                "symbol_exclusion_regex_old",
-                "A regex that is applied to select symbols to be excluded for the old elf file",
-                default=None,
-            ),
-            Parameter(
-                "symbol_exclusion_regex_new",
-                "A regex that is applied to select symbols to be excluded for the new elf file",
-                default=None,
-            ),
-        ]
 
     def presetDefaults(self):
 
