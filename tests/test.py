@@ -250,16 +250,19 @@ class TestCommandLineArgs(unittest.TestCase):
             output_file=html_file,
         )
 
-    def test_bin_dir(self):  # pylint: disable=no-self-use
+    def test_bin_dir(self):
         self.runSimpleTest({"bin_dir": "/usr/bin"})
 
-    def test_bin_prefix(self):  # pylint: disable=no-self-use
+    def test_bin_prefix1(self):
         self.runSimpleTestArm({"bin_prefix": "arm-linux-gnueabi-"})
 
-    def test_build_info(self):  # pylint: disable=no-self-use
+    def test_bin_prefix2(self):
+        self.runSimpleTestArm({"bin_prefix": "___bad_prefix___"})
+
+    def test_build_info(self):
         self.runSimpleTest({"build_info": "Some buildinfo string"})
 
-    def test_consider_equal_sized_identical(self):  # pylint: disable=no-self-use
+    def test_consider_equal_sized_identical(self):
         self.runSimpleTest({"consider_equal_sized_identical": None})
 
     def test_driver_file(self):
@@ -367,10 +370,10 @@ class TestCommandLineArgs(unittest.TestCase):
         self.assertTrue(os.path.isfile(html_file))
         self.assertTrue(os.path.isfile(template_file))
 
-    def test_new_alias(self):  # pylint: disable=no-self-use
+    def test_new_alias(self):
         self.runSimpleTest({"new_alias": "New alias"})
 
-    def test_new_binary_filename(self):
+    def test_new_binary_filename(self):  # pylint: disable=no-self-use
         # This is already tested by all simple tests
         pass
 
@@ -384,16 +387,16 @@ class TestCommandLineArgs(unittest.TestCase):
         # TODO: Add a test with a compiler that supports no platform specific binutils but some other sort of demangling
         pass
 
-    def test_nm_command(self):  # pylint: disable=no-self-use
+    def test_nm_command(self):
         self.runSimpleTest({"nm_command": "/usr/bin/nm"})
 
-    def test_objdump_command(self):  # pylint: disable=no-self-use
+    def test_objdump_command(self):
         self.runSimpleTest({"nm_command": "/usr/bin/objdump"})
 
-    def test_old_alias(self):  # pylint: disable=no-self-use
+    def test_old_alias(self):
         self.runSimpleTest({"old_alias": "Old alias"})
 
-    def test_old_binary_filename(self):
+    def test_old_binary_filename(self):  # pylint: disable=no-self-use
         # This is already tested by all simple tests
         pass
 
@@ -412,38 +415,38 @@ class TestCommandLineArgs(unittest.TestCase):
         self.runSimpleTestBase({"pdf_file": pdf_file})
         self.assertTrue(os.path.isfile(pdf_file))
 
-    def test_project_title(self):  # pylint: disable=no-self-use
+    def test_project_title(self):
         self.runSimpleTest({"project_title": "A Project"})
 
-    def test_similarity_threshold(self):  # pylint: disable=no-self-use
+    def test_similarity_threshold(self):
         self.runSimpleTest({"similarity_threshold": "0.5"})
 
-    def test_size_command(self):  # pylint: disable=no-self-use
+    def test_size_command(self):
         self.runSimpleTest({"nm_command": "/usr/bin/size"})
 
-    def test_skip_details(self):  # pylint: disable=no-self-use
+    def test_skip_details(self):
         self.runSimpleTest({"skip_details": None})
 
-    def test_skip_symbol_similarities(self):  # pylint: disable=no-self-use
+    def test_skip_symbol_similarities(self):
         self.runSimpleTest({"skip_symbol_similarities": None})
 
     def test_symbol_exclusion_regex(self):
         self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_exclusion_regex_new(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2({"symbol_exclusion_regex_new": ".*IStay.*"})
 
     def test_symbol_exclusion_regex_old(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2({"symbol_exclusion_regex_old": ".*IStay.*"})
 
     def test_symbol_selection_regex(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2({"symbol_selection_regex": ".*IStay.*"})
 
     def test_symbol_selection_regex_new(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2({"symbol_selection_regex_new": ".*IStay.*"})
 
     def test_symbol_selection_regex_old(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2({"symbol_selection_regex_old": ".*IStay.*"})
 
 
 if __name__ == "__main__":

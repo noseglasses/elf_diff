@@ -20,23 +20,5 @@
 #
 
 
-def tendencySymbol(from_size, to_size):
-    if from_size > to_size:
-        return "*"
-    return ""
-
-
-def formatMemChange(what, from_size, to_size):
-    tendency_symbol = tendencySymbol(from_size, to_size)
-    difference = to_size - from_size
-    return "%s: %d -> %d bytes (%+d bytes) %s" % (
-        what,
-        from_size,
-        to_size,
-        difference,
-        tendency_symbol,
-    )
-
-
 def listIntersection(l1, l2):
     return sorted(list(set(l1) & set(l2)))
