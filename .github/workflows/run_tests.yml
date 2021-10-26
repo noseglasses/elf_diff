@@ -17,6 +17,7 @@ jobs:
         python-version: 3.9
     - name: Install Ubuntu packages
       run: |
+         sudo apt update
          sudo apt install -y python3-pip
          sudo apt install -y g++-arm-linux-gnueabi binutils-arm-linux-gnueabi
     - name: Install dependencies
@@ -30,7 +31,7 @@ jobs:
         cd test_output
         python3 -m coverage run --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
         python3 -m coverage run --parallel-mode ../tests/test_cpp_symbols.py
-        python3 -m coverage combine
+        python3 -m coverage combine *
         python3 -m coverage xml
     - uses: actions/upload-artifact@v2
       with:

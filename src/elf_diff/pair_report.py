@@ -204,6 +204,7 @@ class PersistingSymbolsOverview(HTMLContent):
         super().__init__()
         self.persisting_symbols = persisting_symbols
         self.have_title = True
+        self.overall_size_difference = 0
 
     def generateContent(self):
 
@@ -216,7 +217,6 @@ class PersistingSymbolsOverview(HTMLContent):
 
         html_template_filename = "persisting_symbols_overview_content.html"
 
-        self.overall_size_difference = 0
         self.content = ""
 
         for persisting_symbol in self.persisting_symbols:
@@ -734,6 +734,9 @@ class PairReport(Report):
 
         self.base_page_keywords = None
 
+        self.similar_symbols_overview = None
+        self.similar_symbols_details = None
+
         self.html_contents = []
 
     def validateSettings(self):
@@ -1035,18 +1038,27 @@ class PairReport(Report):
                 "<style>\n%s\n</style>\n" % html.escapeString(file.read())
             )
 
+        if self.similar_symbols_overview is not None:
+            num_similar_symbols = str(
+                len(self.similar_symbols_overview.similar_symbols)
+            )
+            similar_symbols_overview_content = (
+                self.similar_symbols_overview.getContent()
+            )
+        else:
+            num_similar_symbols = "0"
+            similar_symbols_overview_content = ""
+
         return {
             "persisting_symbols_overview_visible": True,
             "disappeared_symbols_overview_visible": True,
             "new_symbols_overview_visible": True,
             "similar_symbols_overview_visible": True,
-            "num_similar_symbols": str(
-                len(self.similar_symbols_overview.similar_symbols)
-            ),
+            "num_similar_symbols": num_similar_symbols,
             "persisting_symbols_overview": self.persisting_symbols_overview.getContent(),
             "disappeared_symbols_overview": self.disappeared_symbols_overview.getContent(),
             "new_symbols_overview": self.new_symbols_overview.getContent(),
-            "similar_symbols_overview": self.similar_symbols_overview.getContent(),
+            "similar_symbols_overview": similar_symbols_overview_content,
             "persisting_symbols_delta": self.persisting_symbols_overview.overall_size_difference,
             "disappeared_symbols_size": self.disappeared_symbols_overview.overall_symbol_size,
             "new_symbols_size": self.new_symbols_overview.overall_symbol_size,
@@ -1060,11 +1072,12 @@ class PairReport(Report):
 
         html_template_file = "pair_report_single_page.html"
 
+        similar_symbol_details_content = ""
+
         if self.settings.skip_details:
             persisting_symbol_details_content = ""
             disappeared_symbol_details_content = ""
             new_symbol_details_content = ""
-            similar_symbol_details_content = ""
         else:
             persisting_symbol_details_content = (
                 self.persisting_symbols_details.getContent()
@@ -1073,7 +1086,12 @@ class PairReport(Report):
                 self.disappeared_symbols_details.getContent()
             )
             new_symbol_details_content = self.new_symbols_details.getContent()
-            similar_symbol_details_content = self.similar_symbols_details.getContent()
+
+            # Persisting symbol details may be skipped due to users' choice
+            if self.similar_symbols_details is not None:
+                similar_symbol_details_content = (
+                    self.similar_symbols_details.getContent()
+                )
 
         single_page_keywords = {
             "stats_content": self.statistics_overview.getContent(),

@@ -26,9 +26,13 @@ import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
 
+# import shutil
+
 bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
-sys.path.append(bin_path + "/../src")
+root_dir = os.path.join(bin_path, "..")
+
+sys.path.append(os.path.join(root_dir, "src"))
 
 from elf_diff.settings import parameters
 
@@ -45,12 +49,11 @@ parser.add_argument(
     action="store_true",
     help="Add this flag to enable coverage generation",
 )
-parser.add_argument("unittest_args", nargs="*")
 
-args = parser.parse_args()
+args, unittest_args = parser.parse_known_args()
 
 # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
-sys.argv[1:] = args.unittest_args
+sys.argv[1:] = unittest_args
 
 testing_dir = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
@@ -59,6 +62,7 @@ if args.test_installed_package is True:
 else:
     bin_dir = os.path.join(testing_dir, "..", "bin")
     if args.enable_code_coverage is True:
+        print("Running with coverage testing")
         elf_diff_start = [
             sys.executable,
             "-m",
@@ -189,36 +193,76 @@ def runElfDiff(args_dict):
     )
 
 
-def runSimpleTest(args_dict):
-    """Runs a simple test with a set of arguments"""
-    actual_args_dict = args_dict
-    actual_args_dict["old_binary_filename"] = old_binary_x86_64
-    actual_args_dict["new_binary_filename"] = new_binary_x86_64
-    runElfDiff(actual_args_dict)
-
-
-def runSimpleTestArm(args_dict):
-    """Runs a simple test with a set of arguments"""
-    actual_args_dict = args_dict
-    actual_args_dict["old_binary_filename"] = old_binary_arm
-    actual_args_dict["new_binary_filename"] = new_binary_arm
-    runElfDiff(actual_args_dict)
-
-
 class TestCommandLineArgs(unittest.TestCase):
+    def setUp(self):
+        self.old_pwd = os.getcwd()
+        self.test_dir = self.id()
+        if not os.path.exists(self.test_dir):
+            os.mkdir(self.test_dir)
+        os.chdir(self.test_dir)
+
+    def tearDown(self):
+        os.chdir(self.old_pwd)
+
+    def runSimpleTestBase(
+        self,
+        args_dict,
+        old_binary_filename=old_binary_x86_64,
+        new_binary_filename=new_binary_x86_64,
+        output_file=None,
+    ):
+        """Runs a simple test with a set of arguments"""
+        actual_args_dict = args_dict
+        actual_args_dict["old_binary_filename"] = old_binary_filename
+        actual_args_dict["new_binary_filename"] = new_binary_filename
+        runElfDiff(actual_args_dict)
+        if output_file is not None:
+            self.assertTrue(os.path.isfile(output_file))
+
+    def runSimpleTest(self, args_dict):
+        """Runs a simple test with a set of arguments"""
+        html_file = "single_page_report.html"
+        actual_args_dict = args_dict
+        actual_args_dict["html_file"] = html_file
+        self.runSimpleTestBase(args_dict=actual_args_dict, output_file=html_file)
+
+    def runSimpleTest2(self, args_dict):
+        """Runs a simple test with a set of arguments"""
+        html_file = "single_page_report.html"
+        actual_args_dict = args_dict
+        actual_args_dict["html_file"] = html_file
+        self.runSimpleTestBase(
+            args_dict=actual_args_dict,
+            old_binary_filename=old_binary2_x86_64,
+            new_binary_filename=new_binary2_x86_64,
+            output_file=html_file,
+        )
+
+    def runSimpleTestArm(self, args_dict):
+        """Runs a simple test with a set of arguments"""
+        html_file = "single_page_report.html"
+        actual_args_dict = args_dict
+        actual_args_dict["html_file"] = html_file
+        self.runSimpleTestBase(
+            args_dict=actual_args_dict,
+            old_binary_filename=old_binary_arm,
+            new_binary_filename=new_binary_arm,
+            output_file=html_file,
+        )
+
     def test_bin_dir(self):  # pylint: disable=no-self-use
-        runSimpleTest({"bin_dir": "/usr/bin"})
+        self.runSimpleTest({"bin_dir": "/usr/bin"})
 
     def test_bin_prefix(self):  # pylint: disable=no-self-use
-        runSimpleTestArm({"bin_prefix": "arm-linux-gnueabi-"})
+        self.runSimpleTestArm({"bin_prefix": "arm-linux-gnueabi-"})
 
     def test_build_info(self):  # pylint: disable=no-self-use
-        runSimpleTest({"build_info": "Some buildinfo string"})
+        self.runSimpleTest({"build_info": "Some buildinfo string"})
 
     def test_consider_equal_sized_identical(self):  # pylint: disable=no-self-use
-        runSimpleTest({"consider_equal_sized_identical": None})
+        self.runSimpleTest({"consider_equal_sized_identical": None})
 
-    def test_driver_file1(self):
+    def test_driver_file(self):
 
         driver_yaml_file = "pair_report.driver.yml"
 
@@ -260,7 +304,36 @@ class TestCommandLineArgs(unittest.TestCase):
         self.assertTrue(os.path.isfile(html_file))
         self.assertTrue(os.path.isfile(template_file))
 
-    def test_driver_file2(self):
+    def test_driver_template_file(self):
+        driver_template_file = "driver_template.yml"
+        self.runSimpleTest({"driver_template_file": driver_template_file})
+        self.assertTrue(os.path.isfile(driver_template_file))
+
+    def test_html_dir(self):
+        html_dir = "parameter_test_multi_page_pair_report"
+        self.runSimpleTestBase({"html_dir": html_dir})
+        self.assertTrue(os.path.isdir(html_dir))
+
+    def test_html_file(self):  # pylint: disable=no-self-use
+        # Already tested by all simple tests
+        pass
+
+    def test_html_template_dir(self):
+        # Parameter currently not exported
+        # source_template_path = os.path.join(root_dir, "src", "elf_diff", "html")
+        # target_template_path = "template_copy"
+        # shutil.copytree(source_template_path, target_template_path)
+        # self.runSimpleTest({"html_template_dir": target_template_path})
+        pass
+
+    def test_language1(self):
+        self.runSimpleTest({"language": "c++"})
+
+    @unittest.expectedFailure
+    def test_language2(self):
+        self.runSimpleTest({"language": "___unknown___"})
+
+    def test_mass_report(self):
 
         driver_yaml_file = "mass_report.driver.yml"
 
@@ -294,99 +367,83 @@ class TestCommandLineArgs(unittest.TestCase):
         self.assertTrue(os.path.isfile(html_file))
         self.assertTrue(os.path.isfile(template_file))
 
-    def test_driver_template_file(self):
-        driver_template_file = "driver_template.yml"
-        runSimpleTest({"driver_template_file": driver_template_file})
-        self.assertTrue(os.path.isfile(driver_template_file))
-
-    def test_html_dir(self):
-        html_dir = "parameter_test_multi_page_pair_report"
-        runSimpleTest({"html_dir": html_dir})
-        self.assertTrue(os.path.isdir(html_dir))
-
-    def test_html_file(self):
-        html_file = "parameter_test_single_page_pair_report.html"
-        runSimpleTest({"html_file": html_file})
-        self.assertTrue(os.path.isfile(html_file))
-
-    def test_html_template_dir(self):
-        pass
-
-    def test_language(self):
-        pass
-
-    def test_mass_report(self):
-        pass
-
     def test_new_alias(self):  # pylint: disable=no-self-use
-        runSimpleTest({"new_alias": "New alias"})
+        self.runSimpleTest({"new_alias": "New alias"})
 
     def test_new_binary_filename(self):
         # This is already tested by all simple tests
         pass
 
     def test_new_info_file(self):
-        pass
+        new_info_file = "new_info.txt"
+        with open(new_info_file, "w") as f:
+            f.write("Some additional new info")
+        self.runSimpleTest({"new_info_file": new_info_file})
 
     def test_new_mangling_file(self):
+        # TODO: Add a test with a compiler that supports no platform specific binutils but some other sort of demangling
         pass
 
     def test_nm_command(self):  # pylint: disable=no-self-use
-        runSimpleTest({"nm_command": "/usr/bin/nm"})
+        self.runSimpleTest({"nm_command": "/usr/bin/nm"})
 
     def test_objdump_command(self):  # pylint: disable=no-self-use
-        runSimpleTest({"nm_command": "/usr/bin/objdump"})
+        self.runSimpleTest({"nm_command": "/usr/bin/objdump"})
 
     def test_old_alias(self):  # pylint: disable=no-self-use
-        runSimpleTest({"old_alias": "Old alias"})
+        self.runSimpleTest({"old_alias": "Old alias"})
 
     def test_old_binary_filename(self):
         # This is already tested by all simple tests
         pass
 
     def test_old_info_file(self):
-        pass
+        old_info_file = "old_info.txt"
+        with open(old_info_file, "w") as f:
+            f.write("Some additional old info")
+        self.runSimpleTest({"old_info_file": old_info_file})
 
     def test_old_mangling_file(self):
+        # TODO: Add a test with a compiler that supports no platform specific binutils but some other sort of demangling
         pass
 
     def test_pdf_file(self):
         pdf_file = "parameter_test_single_page_pair_report.pdf"
-        runSimpleTest({"pdf_file": pdf_file})
+        self.runSimpleTestBase({"pdf_file": pdf_file})
         self.assertTrue(os.path.isfile(pdf_file))
 
     def test_project_title(self):  # pylint: disable=no-self-use
-        runSimpleTest({"project_title": "A Project"})
+        self.runSimpleTest({"project_title": "A Project"})
 
     def test_similarity_threshold(self):  # pylint: disable=no-self-use
-        runSimpleTest({"similarity_threshold": "0.5"})
+        self.runSimpleTest({"similarity_threshold": "0.5"})
 
     def test_size_command(self):  # pylint: disable=no-self-use
-        runSimpleTest({"nm_command": "/usr/bin/size"})
+        self.runSimpleTest({"nm_command": "/usr/bin/size"})
 
     def test_skip_details(self):  # pylint: disable=no-self-use
-        runSimpleTest({"skip_details": None})
+        self.runSimpleTest({"skip_details": None})
 
     def test_skip_symbol_similarities(self):  # pylint: disable=no-self-use
-        runSimpleTest({"skip_symbol_similarities": None})
+        self.runSimpleTest({"skip_symbol_similarities": None})
 
     def test_symbol_exclusion_regex(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_exclusion_regex_new(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_exclusion_regex_old(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_selection_regex(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_selection_regex_new(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
     def test_symbol_selection_regex_old(self):
-        pass
+        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
 
 
 if __name__ == "__main__":
