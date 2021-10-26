@@ -22,6 +22,7 @@
 from elf_diff.html import postHighlightSourceCodeRemoveTags
 from elf_diff.html import postHighlightSourceCode
 from elf_diff.html import escapeString
+from elf_diff.error_handling import unrecoverableError
 
 import difflib
 
@@ -234,4 +235,4 @@ def getSymbolType(language):
     if language == "c++":
         return CppSymbol
 
-    return None
+    unrecoverableError(f"Unknown language definition '{language}' encountered")
