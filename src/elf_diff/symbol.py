@@ -19,7 +19,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.html import postHighlightSourceCodeRemoveTags
 from elf_diff.html import postHighlightSourceCode
 from elf_diff.html import escapeString
 from elf_diff.error_handling import unrecoverableError
@@ -87,13 +86,6 @@ class Symbol(object):
 
         # print("Symbols equal")
         return True
-
-    def getDifferencesAsString(self, other, indent):
-        diff = difflib.ndiff(self.instruction_lines, other.instruction_lines)
-        # print list(diff)
-        return postHighlightSourceCodeRemoveTags(
-            indent + ("\n" + indent).join(list(diff))
-        )
 
     def getDifferencesAsHTML(self, other, indent):
         diff_class = difflib.HtmlDiff(tabsize=3, wrapcolumn=200)
