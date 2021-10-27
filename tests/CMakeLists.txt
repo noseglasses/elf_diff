@@ -18,7 +18,7 @@
 #
 cmake_minimum_required(VERSION 2.8)
 
-project(elf_diff_test)
+project(elf_diff_test CXX)
 
 if(NOT "${PLATFORM}" STREQUAL "")
   set(PLATFORM_POSTFIX "-${PLATFORM}")

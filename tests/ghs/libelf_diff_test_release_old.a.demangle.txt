@@ -1,0 +1,16 @@
+..gh.f.p.4.a.1.r.0.e.1
+..gh.f.p.4.a.1.r.0.e.1
+..gh.f.p.3.a.1.r.0.e.2
+..gh.f.p.3.a.1.r.0.e.2
+..gh.f.p.3.a.1.r.0.e.3
+..gh.f.p.3.a.1.r.0.e.3
+..gh.f.p.3.a.1.r.0.e.4
+..gh.f.p.3.a.1.r.0.e.4
+f__4TestSFiT1
+Test::f(int, int)
+g__4TestFfT1
+Test::g(float, float)
+persisting1__Fi
+persisting1(int)
+persisting2__Fi
+persisting2(int)

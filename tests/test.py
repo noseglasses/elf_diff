@@ -74,13 +74,27 @@ else:
     else:
         elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
-old_binary_x86_64 = os.path.join(testing_dir, "libelf_diff_test_release_old.a")
-new_binary_x86_64 = os.path.join(testing_dir, "libelf_diff_test_release_new.a")
-old_binary2_x86_64 = os.path.join(testing_dir, "libelf_diff_test_debug_old.a")
-new_binary2_x86_64 = os.path.join(testing_dir, "libelf_diff_test_debug_new.a")
+old_binary_x86_64 = os.path.join(
+    testing_dir, "x86_64", "libelf_diff_test_release_old.a"
+)
+new_binary_x86_64 = os.path.join(
+    testing_dir, "x86_64", "libelf_diff_test_release_new.a"
+)
+old_binary2_x86_64 = os.path.join(testing_dir, "x86_64", "libelf_diff_test_debug_old.a")
+new_binary2_x86_64 = os.path.join(testing_dir, "x86_64", "libelf_diff_test_debug_new.a")
 
-old_binary_arm = os.path.join(testing_dir, "libelf_diff_test_release_old-arm.a")
-new_binary_arm = os.path.join(testing_dir, "libelf_diff_test_release_new-arm.a")
+old_binary_arm = os.path.join(testing_dir, "arm", "libelf_diff_test_release_old.a")
+new_binary_arm = os.path.join(testing_dir, "arm", "libelf_diff_test_release_new.a")
+
+old_binary_ghs = os.path.join(testing_dir, "ghs", "libelf_diff_test_release_old.a")
+new_binary_ghs = os.path.join(testing_dir, "ghs", "libelf_diff_test_release_new.a")
+
+old_mangling_file_ghs = os.path.join(
+    testing_dir, "ghs", "libelf_diff_test_release_old.a.demangle.txt"
+)
+new_mangling_file_ghs = os.path.join(
+    testing_dir, "ghs", "libelf_diff_test_release_new.a.demangle.txt"
+)
 
 verbose_output = True
 
@@ -250,12 +264,25 @@ class TestCommandLineArgs(unittest.TestCase):
             output_file=html_file,
         )
 
+    def runSimpleTestGhs(self, args_dict):
+        """Runs a simple test with a set of arguments"""
+        html_file = "single_page_report.html"
+        actual_args_dict = args_dict
+        actual_args_dict["html_file"] = html_file
+        self.runSimpleTestBase(
+            args_dict=actual_args_dict,
+            old_binary_filename=old_binary_ghs,
+            new_binary_filename=new_binary_ghs,
+            output_file=html_file,
+        )
+
     def test_bin_dir(self):
         self.runSimpleTest({"bin_dir": "/usr/bin"})
 
     def test_bin_prefix1(self):
         self.runSimpleTestArm({"bin_prefix": "arm-linux-gnueabi-"})
 
+    @unittest.expectedFailure
     def test_bin_prefix2(self):
         self.runSimpleTestArm({"bin_prefix": "___bad_prefix___"})
 
@@ -384,8 +411,7 @@ class TestCommandLineArgs(unittest.TestCase):
         self.runSimpleTest({"new_info_file": new_info_file})
 
     def test_new_mangling_file(self):
-        # TODO: Add a test with a compiler that supports no platform specific binutils but some other sort of demangling
-        pass
+        self.runSimpleTestGhs({"new_mangling_file": new_mangling_file_ghs})
 
     def test_nm_command(self):
         self.runSimpleTest({"nm_command": "/usr/bin/nm"})
@@ -407,8 +433,7 @@ class TestCommandLineArgs(unittest.TestCase):
         self.runSimpleTest({"old_info_file": old_info_file})
 
     def test_old_mangling_file(self):
-        # TODO: Add a test with a compiler that supports no platform specific binutils but some other sort of demangling
-        pass
+        self.runSimpleTestGhs({"old_mangling_file": old_mangling_file_ghs})
 
     def test_pdf_file(self):
         pdf_file = "parameter_test_single_page_pair_report.pdf"

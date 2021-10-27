@@ -376,7 +376,11 @@ class Settings(object):
         for exe_extension in exe_extensions:
             basename = self.bin_prefix + name + exe_extension
             command = shutil.which(basename)
-            if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+            if (
+                (command is not None)
+                and (os.path.isfile(command))
+                and (os.access(command, os.X_OK))
+            ):
                 setattr(self, command_name, command)
                 return
 
