@@ -68,6 +68,7 @@ else:
             "-m",
             "coverage",
             "run",
+            "--branch",
             "--parallel-mode",  # Creates individual .coverage* files for each run
             os.path.join(bin_dir, "elf_diff"),
         ]
