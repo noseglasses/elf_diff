@@ -26,24 +26,24 @@ jobs:
         cd example_output/simple
         python3 ../../bin/elf_diff \
           --html_dir pair_report_multi_page \
-          --old_binary ../../tests/libelf_diff_test_debug_old.a \
-          --new_binary ../../tests/libelf_diff_test_debug_new.a
+          --old_binary ../../tests/x86_64/libelf_diff_test_debug_old.a \
+          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a
         python3 ../../bin/elf_diff \
           --html_file pair_report_output.html \
-          --old_binary ../../tests/libelf_diff_test_debug_old.a \
-          --new_binary ../../tests/libelf_diff_test_debug_new.a
+          --old_binary ../../tests/x86_64/libelf_diff_test_debug_old.a \
+          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a
     - name: Examples
       run: |
         mkdir -p example_output/simple2
         cd example_output/simple2
         python3 ../../bin/elf_diff \
           --html_dir pair_report_multi_page \
-          --old_binary ../../tests/libelf_diff_test2_debug_old.a \
-          --new_binary ../../tests/libelf_diff_test2_debug_new.a
+          --old_binary ../../tests/x86_64/libelf_diff_test2_debug_old.a \
+          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a
         python3 ../../bin/elf_diff \
           --html_file pair_report_output.html \
-          --old_binary ../../tests/libelf_diff_test2_debug_old.a \
-          --new_binary ../../tests/libelf_diff_test2_debug_new.a
+          --old_binary ../../tests/x86_64/libelf_diff_test2_debug_old.a \
+          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a
     - name: Prepare Example Deploy 1
       run: |
         mkdir -p example_deploy/examples/simple
