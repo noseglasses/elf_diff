@@ -977,7 +977,7 @@ table.bin_col td:nth-child(3) {
 
 
 <table class="sortable persisting_symbols">
-  <thead><tr><th>Symbol</th><th>Type</th><th>Old Size/bytes</th><th>New Size/bytes</th><th>Delta/bytes</th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
 		<tr>
 		<td>
@@ -1064,7 +1064,7 @@ table.bin_col td:nth-child(3) {
   
 
 <table class="sortable isolated_symbols">
-  <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
 		<tr>
 		<td>
@@ -1139,7 +1139,7 @@ table.bin_col td:nth-child(3) {
 
 <H4>Columns</H4>
 <table>
-  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+  <tr><td>Symbol</td><td>The symbol name (possibly demangled)</td></tr>
 	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
 	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
 </table>
@@ -1148,7 +1148,7 @@ table.bin_col td:nth-child(3) {
   
 
 <table class="sortable isolated_symbols">
-  <thead><tr><th>Symbol</th><th>Type</th><th>Size/bytes</th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
 		<tr>
 		<td>
@@ -1223,7 +1223,7 @@ table.bin_col td:nth-child(3) {
 
 <H4>Columns</H4>
 <table>
-  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+  <tr><td>Symbol</td><td>The symbol name (possibly demangled)</td></tr>
 	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
 	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
 </table>
@@ -1233,7 +1233,7 @@ table.bin_col td:nth-child(3) {
   
 
 <table class="sortable similar_symbols">
-  <thead><tr><th>Id</th><th>Symbols</th><th>Types</th><th>Size/bytes</th><th>Delta/bytes</th><th>Sig. Sim./%</th><th>Instr. Sim./%</th></thead>
+  <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
   <tbody>
 		<tr>
 		<td>
@@ -1455,8 +1455,8 @@ table.bin_col td:nth-child(3) {
   <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
   <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
 	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
-	<tr><td>Size</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
-	<tr><td>Delta</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sizes</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Deltas</td><td>The difference in symbol size</td></tr>
 	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
 	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
 </table>
@@ -1830,7 +1830,7 @@ Similar pair 5
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-10-28 15:40:12 by elf_diff 6734624aca99df891b6265f3c0d5d0245204cfeb (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-10-28 17:13:16 by elf_diff 61a3488bc76588aacf29fbd415ff93f40e46e2a7 (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>

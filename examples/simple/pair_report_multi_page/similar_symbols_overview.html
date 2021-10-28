@@ -18,7 +18,7 @@
 
 
 <table class="sortable similar_symbols">
-  <thead><tr><th>Id</th><th>Symbols</th><th>Types</th><th>Size/bytes</th><th>Delta/bytes</th><th>Sig. Sim./%</th><th>Instr. Sim./%</th></thead>
+  <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
   <tbody>
 		<tr>
 		<td>
@@ -240,8 +240,8 @@
   <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
   <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
 	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
-	<tr><td>Size</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
-	<tr><td>Delta</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sizes</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Deltas</td><td>The difference in symbol size</td></tr>
 	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
 	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
 </table>
