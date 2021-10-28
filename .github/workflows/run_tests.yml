@@ -31,7 +31,7 @@ jobs:
         cd test_output
         python3 -m coverage run --branch --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
         python3 -m coverage run --branch --parallel-mode ../tests/test_cpp_symbols.py
-        python3 -m coverage combine *
+        python3 -m coverage combine * */*
         python3 -m coverage xml
     - uses: actions/upload-artifact@v2
       with:
