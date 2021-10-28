@@ -25,6 +25,7 @@ import inspect
 import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
+import re
 
 # import shutil
 
@@ -208,17 +209,42 @@ def runElfDiff(args_dict):
     )
 
 
-class TestCommandLineArgs(unittest.TestCase):
+class TestCaseWithSubdirs(unittest.TestCase):
+    @staticmethod
+    def _setUpScoped(scope, directory):
+        scope.old_pwd = os.getcwd()
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+        os.chdir(directory)
+
+    @staticmethod
+    def _tearDownScoped(scope):
+        os.chdir(scope.old_pwd)
+
+    @classmethod
+    def setUpClass(cls):
+        TestCaseWithSubdirs._setUpScoped(cls, cls.__name__)
+
+    @classmethod
+    def tearDownClass(cls):
+        TestCaseWithSubdirs._tearDownScoped(cls)
+
     def setUp(self):
-        self.old_pwd = os.getcwd()
-        self.test_dir = self.id()
-        if not os.path.exists(self.test_dir):
-            os.mkdir(self.test_dir)
-        os.chdir(self.test_dir)
+        test_function_full_id = self.id()
+        # Just take the final portion of the test id after the final period
+        test_name_re = re.compile(r".*\.(\w*)")
+        m = test_name_re.match(test_function_full_id)
+        if m is None:
+            print("Strange test name")
+            sys.exit(1)
+        test_dir = m.group(1)
+        TestCaseWithSubdirs._setUpScoped(self, test_dir)
 
     def tearDown(self):
-        os.chdir(self.old_pwd)
+        TestCaseWithSubdirs._tearDownScoped(self)
 
+
+class TestCommandLineArgs(TestCaseWithSubdirs):
     def runSimpleTestBase(
         self,
         args_dict,
