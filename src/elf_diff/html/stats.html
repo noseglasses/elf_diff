@@ -70,5 +70,28 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 </table>
 
 <H2><a id="symbols"></a>Symbols</H2>
-<p>{{total_symbols_old}} symbols found in {{old_binary_file}}</p>
-<p>{{total_symbols_new}} symbols found in {{new_binary_file}}</p>
+<table class = "fixed_table size_overview">
+	<col align="left">
+	<col align="right">
+	<col align="right">
+  <tbody>
+    <tr>
+      <th></th><th>Old Binary</th><th>New Binary</th>
+    </tr>
+    <tr>
+      <td>Total</td><td>{{num_total_symbols_old}}</td><td>{{num_total_symbols_new}}</td>
+    </tr>
+    <tr>
+      <td>Selected</td><td>{{num_selected_symbols_old}}</td><td>{{num_selected_symbols_new}}</td>
+    </tr>
+    <tr>
+      <td>Dropped</td><td>{{num_dropped_symbols_old}}</td><td>{{num_dropped_symbols_new}}</td>
+    </tr>
+    <tr>
+      <td>Selection Regex</td><td>{{symbol_selection_regex_old}}</td><td>{{symbol_selection_regex_new}}</td>
+    </tr>
+    <tr>
+      <td>Exclusion Regex</td><td>{{symbol_exclusion_regex_old}}</td><td>{{symbol_exclusion_regex_new}}</td>
+    </tr>
+  </tbody>
+</table>

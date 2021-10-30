@@ -654,6 +654,31 @@ class StatisticsOverview(HTMLContent):
         old_binary = self.binary_pair.old_binary
         new_binary = self.binary_pair.new_binary
 
+        num_selected_symbols_old = len(old_binary.symbols.keys())
+        num_selected_symbols_new = len(new_binary.symbols.keys())
+
+        num_dropped_symbols_old = old_binary.num_symbols_dropped
+        num_dropped_symbols_new = new_binary.num_symbols_dropped
+
+        num_total_symbols_old = num_selected_symbols_old + num_dropped_symbols_old
+        num_total_symbols_new = num_selected_symbols_new + num_dropped_symbols_new
+
+        symbol_selection_regex_old = ".*"
+        if old_binary.symbol_selection_regex is not None:
+            symbol_selection_regex_old = old_binary.symbol_selection_regex
+
+        symbol_selection_regex_new = ".*"
+        if new_binary.symbol_selection_regex is not None:
+            symbol_selection_regex_new = new_binary.symbol_selection_regex
+
+        symbol_exclusion_regex_old = ""
+        if old_binary.symbol_exclusion_regex is not None:
+            symbol_exclusion_regex_old = old_binary.symbol_exclusion_regex
+
+        symbol_exclusion_regex_new = ""
+        if new_binary.symbol_exclusion_regex is not None:
+            symbol_exclusion_regex_new = new_binary.symbol_exclusion_regex
+
         self.keywords = {
             "old_binary_file": html.escapeString(self.settings.old_alias),
             "new_binary_file": html.escapeString(self.settings.new_alias),
@@ -682,8 +707,16 @@ class StatisticsOverview(HTMLContent):
             "bss_size_change_overall": html.highlightNumberDelta(
                 old_binary.bss_size, new_binary.bss_size
             ),
-            "total_symbols_old": str(len(old_binary.symbols.keys())),
-            "total_symbols_new": str(len(new_binary.symbols.keys())),
+            "num_selected_symbols_old": str(num_selected_symbols_old),
+            "num_selected_symbols_new": str(num_selected_symbols_new),
+            "num_dropped_symbols_old": str(num_dropped_symbols_old),
+            "num_dropped_symbols_new": str(num_dropped_symbols_new),
+            "num_total_symbols_old": str(num_total_symbols_old),
+            "num_total_symbols_new": str(num_total_symbols_new),
+            "symbol_selection_regex_old": symbol_selection_regex_old,
+            "symbol_selection_regex_new": symbol_selection_regex_new,
+            "symbol_exclusion_regex_old": symbol_exclusion_regex_old,
+            "symbol_exclusion_regex_new": symbol_exclusion_regex_new,
         }
 
     def generateContent(self):
