@@ -95,10 +95,12 @@ class Binary(object):
         self.progmem_size = 0
         self.static_ram_size = 0
 
+        self.symbol_selection_regex = symbol_selection_regex
         self.symbol_selection_regex_compiled = None
         if symbol_selection_regex is not None:
             self.symbol_selection_regex_compiled = re.compile(symbol_selection_regex)
 
+        self.symbol_exclusion_regex = symbol_exclusion_regex
         self.symbol_exclusion_regex_compiled = None
         if symbol_exclusion_regex is not None:
             self.symbol_exclusion_regex_compiled = re.compile(symbol_exclusion_regex)
@@ -112,6 +114,7 @@ class Binary(object):
             )
 
         self.symbols = {}
+        self.num_symbols_dropped = 0
 
         self.parseSymbols()
 
@@ -241,6 +244,9 @@ class Binary(object):
                 symbol_name_possibly_mangled = header_match.group(2)
                 symbol_name = self.mangling.demangle(symbol_name_possibly_mangled)
                 cur_symbol = self.getNextSymbol(symbol_name)
+
+                if cur_symbol is None:
+                    self.num_symbols_dropped += 1
             else:
                 instruction_line_match = re.match(instruction_line_re, line)
                 if cur_symbol:
