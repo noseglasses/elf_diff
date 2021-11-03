@@ -18,7 +18,7 @@
 # Install requirements with one of the following commands
 # pip install -r requirements
 # py -m pip install -r requirements
-jinja2 == 2.10
+jinja2 == 2.11.3
 pyyaml == 3.12
 progressbar2 == 3.53
 GitPython == 3.1
