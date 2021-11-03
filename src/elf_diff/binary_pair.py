@@ -41,13 +41,13 @@ class BinaryPairSettings(object):
 
 class SimilarityPair(object):
     def __init__(
-        self, old_symbol, new_symbol, symbol_similarity, instructions_similarity
+        self, old_symbol, new_symbol, signature_similarity, instruction_similarity
     ):
         """Initialize similarity pair object."""
         self.old_symbol = old_symbol
         self.new_symbol = new_symbol
-        self.symbol_similarity = symbol_similarity
-        self.instructions_similarity = instructions_similarity
+        self.signature_similarity = signature_similarity
+        self.instruction_similarity = instruction_similarity
         self.instructions_equal = self.old_symbol.instructionsEqual(self.new_symbol)
 
 
@@ -104,6 +104,7 @@ class BinaryPair(object):
 
         self.computeSizeChanges()
 
+        self.similar_symbols = []
         if not settings.skip_symbol_similarities:
             self.computeSimilarities()
 
@@ -137,12 +138,14 @@ class BinaryPair(object):
         self.disappeared_symbol_names = sorted(
             self.old_symbol_names - self.new_symbol_names
         )
-        self.new_symbol_names = sorted(self.new_symbol_names - self.old_symbol_names)
+        self.appeared_symbol_names = sorted(
+            self.new_symbol_names - self.old_symbol_names
+        )
 
     def computeSizeChanges(self):
         self.analyseSymbolSizeChanges()
         self.computeNumSymbolsDisappeared()
-        self.computeNumSymbolsNew()
+        self.computeNumSymbolsAppeared()
         self.computeNumAssembliesDiffer()
 
     def computeSimilarities(self):
@@ -150,9 +153,9 @@ class BinaryPair(object):
 
     def determineSimilarSymbols(self):
 
-        n_old_symbol_names = len(self.disappeared_symbol_names)
+        n_disappeared_symbol_names = len(self.disappeared_symbol_names)
 
-        if (n_old_symbol_names == 0) or (len(self.new_symbol_names) == 0):
+        if (n_disappeared_symbol_names == 0) or (len(self.new_symbol_names) == 0):
             return []
 
         symbol_pairs = []
@@ -161,7 +164,7 @@ class BinaryPair(object):
 
         print("Detecting symbol similarities...")
         sys.stdout.flush()
-        for i in progressbar.progressbar(range(n_old_symbol_names)):
+        for i in progressbar.progressbar(range(n_disappeared_symbol_names)):
             old_symbol_name = self.disappeared_symbol_names[i]
             sys.stdout.flush()
 
@@ -174,13 +177,13 @@ class BinaryPair(object):
             for new_symbol_name in matching_symbols:
                 new_symbol = self.new_binary.symbols[new_symbol_name]
 
-                symbol_similarity = similar(old_symbol_name, new_symbol_name)
+                signature_similarity = similar(old_symbol_name, new_symbol_name)
 
-                instructions_similarity = None
+                instruction_similarity = None
                 if (old_symbol.instructions is not None) and (
                     new_symbol.instructions is not None
                 ):
-                    instructions_similarity = similar(
+                    instruction_similarity = similar(
                         old_symbol.instructions, new_symbol.instructions
                     )
 
@@ -188,8 +191,8 @@ class BinaryPair(object):
                     SimilarityPair(
                         old_symbol=old_symbol,
                         new_symbol=new_symbol,
-                        symbol_similarity=symbol_similarity,
-                        instructions_similarity=instructions_similarity,
+                        signature_similarity=signature_similarity,
+                        instruction_similarity=instruction_similarity,
                     )
                 )
 
@@ -199,8 +202,8 @@ class BinaryPair(object):
         sorted_symbol_pairs = sorted(
             symbol_pairs,
             key=lambda e: (
-                e.symbol_similarity,
-                e.instructions_similarity,
+                e.signature_similarity,
+                e.instruction_similarity,
                 e.new_symbol.size - e.old_symbol.size,
             ),
             reverse=True,
@@ -238,19 +241,19 @@ class BinaryPair(object):
             symbol = self.old_binary.symbols[symbol_name]
             self.num_bytes_disappeared += symbol.size
 
-    def computeNumSymbolsNew(self):
-        self.num_bytes_new = 0
-        self.num_symbols_new = len(self.new_symbol_names)
+    def computeNumSymbolsAppeared(self):
+        self.num_bytes_appeared = 0
+        self.num_symbols_appeared = len(self.appeared_symbol_names)
 
-        if self.num_symbols_new == 0:
+        if self.num_symbols_appeared == 0:
             return
 
-        print("Analyzing new symbols...")
+        print("Analyzing appeared symbols...")
         sys.stdout.flush()
-        for i in progressbar.progressbar(range(len(self.new_symbol_names))):
-            symbol_name = self.new_symbol_names[i]
+        for i in progressbar.progressbar(range(len(self.appeared_symbol_names))):
+            symbol_name = self.appeared_symbol_names[i]
             symbol = self.new_binary.symbols[symbol_name]
-            self.num_bytes_new += symbol.size
+            self.num_bytes_appeared += symbol.size
 
     def computeNumAssembliesDiffer(self):
         self.num_assemblies_differ = 0

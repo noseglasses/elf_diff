@@ -19,14 +19,50 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.report import Report
 from elf_diff.binary_pair import BinaryPair
-from elf_diff.error_handling import unrecoverableError
-import elf_diff.html as html
+from elf_diff.error_handling import unrecoverableError, warning
+from elf_diff.jinja import Configurator
 from elf_diff.git import gitRepoInfo
+from elf_diff.auxiliary import getDirectoryThatStoresModule, deprecationWarning
+import os
+import datetime
+import tempfile
 
 
-class MassReport(Report):
+def convertHTMLToPDF(html_file, pdf_file):
+    try:
+        from weasyprint import HTML
+    except ImportError:
+        warning("Unable to import module weasyprint")
+        warning("No pdf export supported")
+        return
+
+    HTML(html_file).write_pdf(pdf_file)
+
+
+def highlightNumberClass(number):
+    if number > 0:
+        return "deterioration"
+    elif number < 0:
+        return "improvement"
+
+    return "unchanged"
+
+
+def highlightNumber(number):
+    css_class = highlightNumberClass(number)
+
+    if number == 0:
+        return '<span class="%s number">%d</span>' % (css_class, number)
+
+    return '<span class="%s number">%+d</span>' % (css_class, number)
+
+
+def highlightNumberDelta(old_size, new_size):
+    return highlightNumber(new_size - old_size)
+
+
+class MassReport(object):
 
     html_template_file = "mass_report_template.html"
 
@@ -77,13 +113,13 @@ class MassReport(Report):
                     short_name=binary_pair.short_name,
                     code_size_old_overall=binary_pair.old_binary.progmem_size,
                     code_size_new_overall=binary_pair.new_binary.progmem_size,
-                    code_size_delta_overall=html.highlightNumberDelta(
+                    code_size_delta_overall=highlightNumberDelta(
                         binary_pair.old_binary.progmem_size,
                         binary_pair.new_binary.progmem_size,
                     ),
                     static_ram_old_overall=binary_pair.old_binary.static_ram_size,
                     static_ram_new_overall=binary_pair.new_binary.static_ram_size,
-                    static_ram_change_overall=html.highlightNumberDelta(
+                    static_ram_change_overall=highlightNumberDelta(
                         binary_pair.old_binary.static_ram_size,
                         binary_pair.new_binary.static_ram_size,
                     ),
@@ -103,7 +139,7 @@ class MassReport(Report):
                      <td>{short_name}</td>
                      <td>{num_persisting_symbols}</td>
                      <td>{num_disappeared_symbols}</td>
-                     <td>{num_new_symbols}</td>
+                     <td>{num_appeared_symbols}</td>
                    </tr>
                 """.format(
                     short_name=binary_pair.short_name,
@@ -111,7 +147,7 @@ class MassReport(Report):
                         len(binary_pair.persisting_symbol_names)
                     ),
                     num_disappeared_symbols=str(binary_pair.num_symbols_disappeared),
-                    num_new_symbols=str(binary_pair.num_symbols_new),
+                    num_appeared_symbols=str(binary_pair.num_symbols_appeared),
                 )
             )
 
@@ -119,20 +155,13 @@ class MassReport(Report):
 
     def configureJinjaKeywords(self, skip_details):
 
-        import datetime
-
         resource_consumtption_table = self.generateResourceConsumptionTableHTML()
         symbols_table = self.generateSymbolsTableHTML()
 
         if self.settings.project_title:
-            doc_title = html.escapeString(self.settings.project_title)
+            doc_title = self.settings.project_title
         else:
             doc_title = "ELF Binary Comparison - Mass Report"
-
-        (
-            sortable_js_content,
-            elf_diff_general_css_content,
-        ) = self.getSinglePageScriptContent()
 
         return {
             "elf_diff_repo_base": self.settings.module_path,
@@ -140,18 +169,49 @@ class MassReport(Report):
             "page_title": u"ELF Binary Comparison - (c) 2019 by noseglasses",
             "resource_consumption_table": resource_consumtption_table,
             "symbols_table": symbols_table,
-            "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "elfdiff_git_version": gitRepoInfo(self.settings),
-            "sortable_js_content": sortable_js_content,
-            "elf_diff_general_css_content": elf_diff_general_css_content,
+            "generation_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "elf_diff_version": gitRepoInfo(self.settings),
         }
 
     def generate(self, html_output_file):
         template_keywords = self.configureJinjaKeywords(self.settings.skip_details)
 
-        html.configureTemplateWrite(
-            self.settings,
+        jinja_template_directory = os.path.join(
+            getDirectoryThatStoresModule(self), "j2"
+        )
+
+        configurator = Configurator(self.settings, jinja_template_directory)
+        configurator.configureTemplateWrite(
             MassReport.html_template_file,
             html_output_file,
             template_keywords,
         )
+
+
+def writeMassReport(settings):
+
+    deprecationWarning("mass reports")
+
+    mass_report = MassReport(settings)
+    mass_report.single_page = True
+
+    if settings.html_file:
+        mass_report.generate(settings.html_file)
+        print("Single page html mass report '" + settings.html_file + "' written")
+
+    if settings.pdf_file:
+
+        tmp_html_file = os.path.join(
+            tempfile._get_default_tempdir(),
+            next(tempfile._get_candidate_names()) + ".html",
+        )
+
+        mass_report.generate(tmp_html_file)
+
+        print("Temp report: " + tmp_html_file)
+
+        convertHTMLToPDF(tmp_html_file, settings.pdf_file)
+
+        os.remove(tmp_html_file)
+
+        print("Single page pdf mass report '" + settings.pdf_file + "' written")

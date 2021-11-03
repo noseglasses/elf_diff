@@ -20,6 +20,16 @@ You should have received a copy of the GNU General Public License along with alo
 this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
+
+{% import 'macros.j2' as aux %}
+
+{% if is_single_page_report == True %}
+{% set link_target_frame='' %}
+{% else %}
+{% set link_target_frame='target="details"' %}
+<{{ aux.overview_header_tag}}>{{ symbol_class | capitalize }} Symbols</{{ aux.overview_header_tag}}>
+{% endif %}
+
 {% if symbols|length == 0 %}
 No symbols considered.<br>
 {% else %}
@@ -27,40 +37,42 @@ No symbols considered.<br>
   <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
   <tbody>
 		{% for symbol in symbols -%}
+        {% set old_symbol=symbol.related_symbols.old %}
+        {% set new_symbol=symbol.related_symbols.new %}
 		<tr>
 		<td>
-      {% if symbol["have_details"] == True %}
-		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}"  {{ link_target_frame }}>
+      {% if symbol.display_info.display_symbol_details == True %}
+		  <a name="{{ aux.overview_anchor('similar', symbol.id) }}"></a><a href="{{ aux.details_file(is_single_page_report, 'similar', symbol.id) }}#{{ aux.details_anchor('similar', symbol.id) }}"  {{ link_target_frame }}>
       {% endif %}
-		  {{ symbol["table_id"] }}
-      {% if symbol["have_details"] == True %}
+		  {{ symbol.id }}
+      {% if symbol.display_info.display_symbol_details == True %}
 		  &#9432;
 		  </a>
       {% endif %}
 		</td>
 		<td>
-		  {{ symbol["old_representation"] }}
+		  {{ aux.replace_highlighting_tags(symbol.old.signature_tagged) }}
 		  <br>
-		  {{ symbol["new_representation"] }}
+		  {{ aux.replace_highlighting_tags(symbol.new.signature_tagged) }}
 		</td>
 		<td>
-		  {{ symbol["old_type"] }}
+		  {{ old_symbol.type }}
 		  <br>
-		  {{ symbol["new_type"] }}
+		  {{ new_symbol.type }}
 		</td>
 		<td>
-		  <span class="number">{{ symbol["old_size"] }}</span>
+		  <span class="number">{{ old_symbol.size }}</span>
 		  <br>
-		  <span class="number">{{ symbol["new_size"] }}</span>
+		  <span class="number">{{ new_symbol.size }}</span>
 		</td>
 		<td>
-			<span class="{{ symbol["size_diff_class"] }} number">{{ symbol["size_diff"] }}</span>
+			<span class="{{ aux.highlighting_css_class(symbol.related_symbols.size_delta) }} number">{{ symbol.related_symbols.size_delta }}</span>
 		</td>
 		<td>
-		  <span class="number">{{ symbol["signature_similarity"] }}</span>
+		  <span class="number">{{ symbol.similarities.signature | round(1) }}</span>
 		</td>
 		<td>
-		  <span class="number">{{ symbol["instruction_similarity"] }}</span>
+		  <span class="number">{{ symbol.similarities.instruction | round(1) }}</span>
 		</td>
 		</tr>
 		{% endfor %}

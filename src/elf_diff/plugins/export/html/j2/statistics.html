@@ -1,0 +1,104 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% import 'macros.j2' as aux %}
+
+{% if is_single_page_report == False %}
+<{{ aux.overview_header_tag}}>Statistics</{{ aux.overview_header_tag}}>
+{% endif %}
+
+<table cellspacing="5" cellpadding="0" class = "stats">
+  <tbody>
+	  <tr>
+		  <td>
+				<H4><a id="rc_program_storage"></a>Program Storage</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.code}}</td><td>{{document.statistics.overall.new.resource_consumption.code}}</td><td>{{document.statistics.overall.delta.resource_consumption.code}}</td></tr>
+						<tr><td>text</td><td>{{document.statistics.overall.old.resource_consumption.text}}</td><td>{{document.statistics.overall.new.resource_consumption.text}}</td><td>{{document.statistics.overall.delta.resource_consumption.text}}</td></tr>
+						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.delta.resource_consumption.data}}</td></tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H4><a id="rc_static_ram"></a>Static RAM</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.static_ram}}</td><td>{{document.statistics.overall.new.resource_consumption.static_ram}}</td><td>{{document.statistics.overall.delta.resource_consumption.static_ram}}</td></tr>
+						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.new.resource_consumption.data}}</td><td>{{document.statistics.overall.delta.resource_consumption.data}}</td></tr>
+						<tr><td>bss</td><td>{{document.statistics.overall.old.resource_consumption.bss}}</td><td>{{document.statistics.overall.new.resource_consumption.bss}}</td><td>{{document.statistics.overall.delta.resource_consumption.bss}}</td></tr>
+					</tbody>
+				</table>
+			</td>
+			<td>
+			  <H4><a id="rc_legend"></a>Legend</H4>
+        <table>
+					<col align="left">
+					<col align="left">
+					<tbody>
+						<tr><td>text</td><td>instructions</td></tr>
+						<tr><td>data</td><td>initialized global or static variables</td></tr>
+						<tr><td>bss</td><td>uninitialized global or static variables</td></tr>
+					</tbody>
+				</table>
+			</td>
+	  </tr>
+	</tbody>
+</table>
+
+
+<{{ aux.overview_header_tag}}><a id="symbols"></a>Symbols</{{ aux.overview_header_tag}}>
+<table class = "fixed_table size_overview">
+	<col align="left">
+	<col align="right">
+	<col align="right">
+  <tbody>
+    <tr>
+      <th></th><th>Old Binary</th><th>New Binary</th>
+    </tr>
+    <tr>
+      <td>Total</td><td>{{document.statistics.symbols.old.count.total}}</td><td>{{document.statistics.symbols.new.count.total}}</td>
+    </tr>
+    <tr>
+      <td>Selected</td><td>{{document.statistics.symbols.old.count.selected}}</td><td>{{document.statistics.symbols.new.count.selected}}</td>
+    </tr>
+    <tr>
+      <td>Dropped</td><td>{{document.statistics.symbols.old.count.dropped}}</td><td>{{document.statistics.symbols.new.count.dropped}}</td>
+    </tr>
+    <tr>
+      <td>Selection Regex</td><td>{{document.statistics.symbols.old.regex.selection}}</td><td>{{document.statistics.symbols.new.regex.selection}}</td>
+    </tr>
+    <tr>
+      <td>Exclusion Regex</td><td>{{document.statistics.symbols.old.regex.exclusion}}</td><td>{{document.statistics.symbols.new.regex.exclusion}}</td>
+    </tr>
+  </tbody>
+</table>

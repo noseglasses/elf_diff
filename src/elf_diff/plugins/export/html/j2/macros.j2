@@ -1,0 +1,57 @@
+{#
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{% macro highlighting_css_class(value) -%}
+{% if value > 0 -%}
+deterioration
+{% elif value < 0 -%}
+improvement
+{% else -%}
+unchanged
+{% endif %}
+{% endmacro -%}
+
+{%- macro overview_anchor(symbol_class, id) -%}
+{{symbol_class}}_symbol_overview_{{id}}
+{%- endmacro -%}
+
+{%- macro details_anchor(symbol_class, id) -%}
+{{symbol_class}}_symbol_details_{{id}}
+{%- endmacro -%}
+
+{% macro details_file(is_single_page_report, symbol_class, id) -%}
+{% if is_single_page_report == False %}
+details/{{symbol_class}}/{{id}}.html
+{% endif %}
+{% endmacro %}
+
+{% macro replace_highlighting_tags(s) -%}
+{{ s | replace('...HIGHLIGHT_START...', '<span class="diff_highlight">') | replace('...HIGHLIGHT_END...', '</span>') }}
+{% endmacro %}
+
+highlight_start_tag = "...HIGHLIGHT_START..."
+highlight_end_tag = "...HIGHLIGHT_END..."
+
+{% set details_header_tag='H4' %}
+{% set overview_header_tag='H3' %}
+

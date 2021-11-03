@@ -1,0 +1,182 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% set home = '<a href="#home">&#x21A9;</a>' %}
+
+{#
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg=="/>
+  <meta name="robots" content="noindex">
+  <title>{{ document.general.page_title }}</title>
+  <script>
+  {{ include_raw_iso_8859_1('js/sorttable.js') | e }}
+  </script>
+  <style>
+  {{ include_raw('css/elf_diff_general.css') | e}}
+	</style>
+</head>
+<body>
+  <div id="content">
+  <H1><a id="home"></a>
+	<img style="vertical-align:text-top" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg==" alt="elf_diff Logo"/>
+	{{document.general.doc_title}}</H1>
+
+  <H2>Overview</H2>
+  <ul>
+    <li><a href="#binaries">Binaries</a></li>
+    <li><a href="#rc">Resource Consumption</a>
+        <ul>
+          <li><a href="#rc_program_storage">Program Storage</a></li>
+          <li><a href="#rc_static_ram">Static RAM</a></li>
+          <li><a href="#rc_legend">Legend</a></li>
+        </ul>
+    </li>
+    <li><a href="#symbols">Symbols</a>
+        <ul>
+          <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
+          <li><a href="#symbols_disappeared_symbols">Symbols Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">New Symbols</a></li>
+					{% if document.configuration.display_similar_symbols == True %}
+          <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+          {% endif %}
+        </ul>
+    </li>
+    {% if document.configuration.display_binary_details == True %}
+    <li><a href="#binary_details">Binary Details</a>
+        <ul>
+          {% if document.configuration.display_old_binary_info == True %}
+          <li><a href="#binary_details_old_binary_info">{{document.files.input.old.binary_path}}</a></li>
+          {% endif %}
+          {% if document.configuration.display_new_binary_info == True %}
+          <li><a href="#binary_details_new_binary_info">{{document.files.input.new.binary_path}}</a></li>
+          {% endif %}
+        </ul>
+    </li>
+    {% endif %}
+  </ul>
+
+  <H2><a id="binaries"></a>Binaries {{home}}</H2>
+  <p>old: {{document.files.input.old.binary_path}}</p>
+  <p>new: {{document.files.input.new.binary_path}}</p>
+
+  <H2><a id="rc"></a>Statistics {{home}}</H2>
+  {{ statistics }}
+
+  <H2><a id="symbols"></a>Symbols {{home}}</H2>
+
+  <H3><a id="symbols_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
+  {{ persisting_symbol_overview }}
+
+  <H3><a id="symbols_symbols_disappeared"></a>Disappeared Symbols {{home}}</H3>
+  {{ disappeared_symbol_overview }}
+
+  <H3><a id="symbols_appeared_symbols"></a>New Symbols {{home}}</H3>
+  {{ appeared_symbol_overview }}
+
+  {% if document.configuration.display_similar_symbols == True %}
+  <H3><a id="symbols_similar_symbols"></a>Similar Symbols {{home}}</H3>
+  {{ similar_symbol_overview }}
+  {% endif %}
+
+  {% if document.configuration.display_binary_details == True %}
+  <H2><a id="binary_details"></a>Binary Details {{home}}</H2>
+  {% endif %}
+
+  {% if document.configuration.display_old_binary_info == True %}
+  <H3><a id="binary_details_old_binary_info"></a>{{document.files.input.old.binary_path}} {{home}}</H3>
+  <pre>
+  {{ document.old_binary_info }}
+  </pre>
+  {% endif %}
+
+  {% if document.configuration.display_new_binary_info == True %}
+  <H3><a id="binary_details_new_binary_info"></a>{{document.files.input.new.binary_path}} {{home}}</H3>
+  <pre>
+  {{ document.new_binary_info }}
+  </pre>
+  {% endif %}
+
+  {% if document.configuration.display_build_info == True %}
+  <H2>Build Info</H2>
+  <pre>
+  {{ document.build_info }}
+  </pre>
+  {% endif %}
+
+  {% if document.configuration.display_details == True %}
+  <H2><a id="symbol_details"></a>Symbol Details {{home}}</H2>
+
+  <H3><a id="symbol_details_persisting_symbols"></a>Persisting Symbols {{home}}</H3>
+  {{ persisting_symbol_detail }}
+
+  <H3><a id="symbol_details_symbols_disappeared"></a>Disappeared Symbols {{home}}</H3>
+  {{ disappeared_symbol_detail }}
+
+  <H3><a id="symbol_details_appeared_symbols"></a>New Symbols {{home}}</H3>
+  {{ appeared_symbol_detail }}
+
+  {% if document.configuration.display_similar_symbols == True %}
+  <H3><a id="symbol_details_similar_symbols"></a>Similar Symbols {{home}}</H3>
+  {{ similar_symbol_detail }}
+  {% endif %}
+  {% endif %}
+  </div>
+  <div id="footer">
+  <footer>
+    <span class="monospace">
+      <hr>
+      <p>
+Generated {{document.general.generation_date}} by elf_diff {{document.general.elf_diff_version}} (https://github.com/noseglasses/elf_diff)<br>
+© 2021 by noseglasses (shinynoseglasses@gmail.com)
+      </p>
+      <p>
+Using sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
+      </p>
+     </span>
+   </footer>
+   </div>
+</body>
+</html>

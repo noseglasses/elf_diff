@@ -22,6 +22,7 @@
 import sys
 import os
 import shutil
+import argparse
 
 from elf_diff.binary_pair import BinaryPairSettings
 from elf_diff.error_handling import unrecoverableError
@@ -38,6 +39,7 @@ class Parameter(object):
         alias=None,
         no_cmd_line=False,
         is_flag=False,
+        action=None,
     ):
         """Initialize parameter class."""
         self.name = name
@@ -47,6 +49,7 @@ class Parameter(object):
         self.deprecated_alias = deprecated_alias
         self.no_cmd_line = no_cmd_line
         self.is_flag = is_flag
+        self.action = action
 
 
 parameters = [
@@ -100,6 +103,9 @@ parameters = [
     Parameter("html_file", "The filename of the generated single page HTML report."),
     Parameter("html_dir", "The directory of the generated multi page HTML report."),
     Parameter("pdf_file", "The filename of the generated pdf report."),
+    Parameter("yaml_file", "The filename of the generated yaml report."),
+    Parameter("json_file", "The filename of the generated json report."),
+    Parameter("txt_file", "The filename of the generated text based report."),
     Parameter("project_title", "A project title to use for all reports."),
     Parameter(
         "driver_file",
@@ -113,6 +119,12 @@ parameters = [
         "html_template_dir",
         "A directory that contains template html files. Defaults to elf_diff's own html directory.",
         no_cmd_line=True,
+    ),
+    Parameter(
+        "dump_document_structure",
+        "If this flag is provided, the elf_diff document structure is written to stdout",
+        default=False,
+        is_flag=True,
     ),
     Parameter(
         "mass_report",
@@ -178,6 +190,11 @@ parameters = [
         "A regex that is applied to select symbols to be excluded for the new elf file",
         default=None,
     ),
+    Parameter(
+        "load_plugin",
+        'Loads and parametrizes a plugin. Example: --load_plugin "some/path/to/module.py;PluginClass;foo1=bar2;foo2=bar2"',
+        action="append",
+    ),
 ]
 
 
@@ -217,9 +234,6 @@ class Settings(object):
             setattr(self, parameter.name, parameter.default)
 
     def parseCommandLineArgs(self):
-
-        import argparse
-
         parser = argparse.ArgumentParser(
             description="Compares elf binaries and lists differences in symbol sizes, the disassemblies, etc."
         )
@@ -237,7 +251,7 @@ class Settings(object):
             if parameter.is_flag:
                 action = "store_true"
             else:
-                action = "store"
+                action = parameter.action or "store"
 
             parser.add_argument(
                 "--{name}".format(name=param_name),
@@ -351,7 +365,7 @@ class Settings(object):
         else:
             unrecoverableError("Please specify either none or two binaries")
 
-    def findUntility(self, name):
+    def findUtility(self, name):
         command_name = name + "_command"
         command = getattr(self, command_name)
         if command is not None:
@@ -400,9 +414,9 @@ class Settings(object):
                 % (self.new_binary_filename)
             )
 
-        self.findUntility("objdump")
-        self.findUntility("nm")
-        self.findUntility("size")
+        self.findUtility("objdump")
+        self.findUtility("nm")
+        self.findUtility("size")
 
         if self.old_info_file:
             if os.path.isfile(self.old_info_file):

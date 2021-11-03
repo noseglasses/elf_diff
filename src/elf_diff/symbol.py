@@ -19,11 +19,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.html import postHighlightSourceCode
-from elf_diff.html import escapeString
 from elf_diff.error_handling import unrecoverableError
-
-import difflib
 
 
 class Symbol(object):
@@ -32,12 +28,13 @@ class Symbol(object):
     type_data = 2
     consecutive_id = 0
 
-    def __init__(self, name):
+    def __init__(self, name, is_demangled):
         """Initialize symbol object."""
         self.name = name
+        self.is_demangled = is_demangled
         self.instruction_lines = []
         self.size = 0
-        self.type = "?"
+        self.type_ = "?"
         self.id_ = Symbol.getConsecutiveId()
 
     @staticmethod
@@ -48,9 +45,11 @@ class Symbol(object):
 
     def init(self):
         self.instructions = ""
+        instructions_for_hash = ""
         for instruction_line in self.instruction_lines:
-            self.instructions += "".join(instruction_line.split())
-        self.instructions_hash = hash(self.instructions)
+            self.instructions += "%s\n" % instruction_line
+            instructions_for_hash += "".join(instruction_line)
+        self.instructions_hash = hash(instructions_for_hash)
 
     def hasInstructions(self):
         return len(self.instruction_lines) > 0
@@ -87,33 +86,12 @@ class Symbol(object):
         # print("Symbols equal")
         return True
 
-    def getDifferencesAsHTML(self, other, indent):
-        diff_class = difflib.HtmlDiff(tabsize=3, wrapcolumn=200)
-
-        diff_table = diff_class.make_table(
-            self.instruction_lines,
-            other.instruction_lines,
-            fromdesc="Old",
-            todesc="New",
-            context=True,
-            numlines=1000,
-        )
-
-        return postHighlightSourceCode(diff_table)
-
-    def getInstructionsBlockEscaped(self, indent):
-        if self.symbol_type == Symbol.type_data:
-            return "no assembly displayed"
-        return postHighlightSourceCode(
-            escapeString(indent + ("\n" + indent).join(self.instruction_lines))
-        )
-
     def livesInProgramMemory(self):
         return (
-            (self.type != "B")
-            and (self.type != "b")
-            and (self.type != "S")
-            and (self.type != "s")
+            (self.type_ != "B")
+            and (self.type_ != "b")
+            and (self.type_ != "S")
+            and (self.type_ != "s")
         )
 
 
@@ -125,12 +103,11 @@ class CppSymbol(Symbol):
 
     symbol_prefix = {"non-virtual thunk to": 1, "vtable for": 2}
 
-    def __init__(self, name):
+    def __init__(self, name, is_demangled):
         """Initialize cpp symbol object."""
-        super(CppSymbol, self).__init__(name)
+        super(CppSymbol, self).__init__(name, is_demangled)
 
         self.initProps()
-        self.name = name
         self.name_hash = hash(name)
         self.prefix_id = None
 
