@@ -304,6 +304,8 @@ python3 -m elf_diff my_old_binary.elf my_new_binary.elf
 
 ## Generating Mass-Reports
 
+__Please note:__ Mass reports have been deprecated and are likely removed from further versions of the software.
+
 Mass reports require a driver file (yaml syntax) that specifies a list of binaries to compare pair-wise. 
 
 Let's assume you have two pairs of binaries that reside in a directory `/home/my_user`.
@@ -453,6 +455,31 @@ All this, of course, relies on the knowledge about what assembly code is associa
 This information is not included in compiled binaries by default. The compiler must explicitly be told to export additional debugging information. For the gcc-compiler the flag `-g`, e.g., will cause this information to be emitted. But careful, some build systems when building debug versions replace optimization flags like `-O3` with the debug flag `-g`. This is not what you want when looking at the performance of your code. Instead you want to add the `-g` flag and keep the optimization flag(s) in place. CMake, e.g. has a configuration variable `CMAKE_BUILD_TYPE` that can be set to the value `RelWithDebInfo` to enable a release build (with optimization enabled) that also comes with debug symbols.
 
 For binaries with debug symbols included, elf_diff will annotate the assembly code by adding the high level language statements that it was generated from.
+
+## Document Structure and Plugin System
+
+When analyzing elf binaries and processing output, _elf_diff_ relies on a intermediate datastructure that it establishes after all symbols have been parsed
+from the elf files. This data structure, called _elf_diff_ document, is the basis for the actual file export.
+
+File export relies on dedicated data export plugins for (html, pdf, yaml, json, txt, ...). Plugins receive the _elf_diff_ document and can easily extract
+and process its data to generate output of arbitrary type.
+
+## User Defined Plugins
+
+_elf_diff_'s plugin system enables developing user plugins, e.g. for custom output based on the _elf_diff_ document.
+Custom plugins are registered via the command line flag `--load_plugin`, specifying the plugin's Python module path and the name of the plugin class
+that is supposed to be loaded. Optionally the loaded plugin object can be parametrized by supplying parameter name value pairs.
+
+The following example demonstrates how to load a plugin class `MyPluginClass` from a used defined module `my_plugin_module.py`.
+
+```sh
+python3 -m elf_diff --load_plugin "~/some/dir/my_plugin_module.py;MyPluginClass;my_arg1=42;my_arg2=bla" libfoo_old.a libfoo_new.a
+```
+
+This example of course assumes that the user plugin knows how to interpret the two parameters `my_arg1` and `my_arg2`.
+
+Plugin classes must be derived from one of the plugin classes defined in elf_diff's module `plugin.py`. Please see elf_diff's default plugins
+in the subdirectories of `<elf_diff_sandbox>/src/elf_diff/plugins` as a reference on how to implement custom plugins.
 
 # Running the Tests
 

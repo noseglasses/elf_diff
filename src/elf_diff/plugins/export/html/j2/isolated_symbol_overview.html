@@ -20,27 +20,36 @@ You should have received a copy of the GNU General Public License along with alo
 this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
+{% import 'macros.j2' as aux %}
+
+{% if is_single_page_report == True %}
+{% set link_target_frame='' %}
+{% else %}
+{% set link_target_frame='target="details"' %}
+<{{ aux.overview_header_tag}}>{{ symbol_class | capitalize }} Symbols</{{ aux.overview_header_tag}}>
+{% endif %}
 
 <table class="sortable isolated_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
-		{% for symbol in symbols -%}
+		{% for isolated_symbol in symbols -%}
+        {% set symbol = isolated_symbol.actual %}
 		<tr>
 		<td>
-      {% if symbol["have_details"] == True %}
-		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}" {{ link_target_frame }}>
+      {% if isolated_symbol.display_info.display_symbol_details == True %}
+		  <a name="{{ aux.overview_anchor(symbol_class, symbol.id) }}"></a><a href="{{ aux.details_file(is_single_page_report, symbol_class, symbol.id) }}#{{ aux.details_anchor(symbol_class, symbol.id) }}" {{ link_target_frame }}>
 		  {% endif %}
-		  {{ symbol["name"]|e }}
-      {% if symbol["have_details"] == True %} {# Escape the string to avoid conflicts with < or > #}
+		  {{ symbol.name | e }} {# HTML escape the string to avoid conflicts with < or > #}
+      {% if isolated_symbol.display_info.display_symbol_details == True %}
 		  &#9432;
 		  </a>
 		  {% endif %}
 		</td>
 		<td>
-			{{ symbol["type"] }}
+			{{ symbol.type }}
 		</td>
 		<td>
-			<span class="number">{{ symbol["size"] }}</span>
+			<span class="number">{{ symbol.size }}</span>
 		</td>
 		</tr>
 		{% endfor %}

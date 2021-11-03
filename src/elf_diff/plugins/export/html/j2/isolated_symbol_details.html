@@ -1,0 +1,52 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{% import 'macros.j2' as aux %}
+
+{% set display_return_links=(is_single_page_report == True) %}
+{% set actual_symbol = symbol.actual %}
+
+{% if is_single_page_report == False %}
+{% set overview_file='../../../index.html' %}
+{% else %}
+{% set overview_file='' %}
+{% endif %}
+
+<{{ aux.details_header_tag }}><span class="monospace"><a name="{{ aux.details_anchor(symbol_class, actual_symbol.id) }}"></a>{{ symbol_class |capitalize }} symbol
+{% if display_return_links == True %}
+<a href="{{ overview_file }}#{{ aux.overview_anchor(symbol_class, actual_symbol.id) }}">
+{% endif %}
+{{ actual_symbol.name }}
+{% if display_return_links == True %}
+</a>
+{% endif %}
+: size: {{ actual_symbol.size }} bytes</span></{{ aux.details_header_tag }}>
+<pre>
+{{ actual_symbol.instructions }}
+</pre>
+
+{% if is_single_page_report == False %}
+<{{ aux.details_header_tag }}>Tree Representation</{{ aux.details_header_tag }}>
+<pre>
+{{ dump_tree_full(symbol, True) | e }}
+</pre>
+{% endif %}

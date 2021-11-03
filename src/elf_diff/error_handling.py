@@ -21,19 +21,18 @@
 
 from __future__ import print_function
 import sys
-import traceback
 
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+class UnrecoverableError(Exception):
+    pass
+
+
 def unrecoverableError(msg):
-
-    eprint("Error: {msg}".format(msg=msg))
-
-    traceback.print_stack()
-    sys.exit(1)
+    raise UnrecoverableError("{msg}".format(msg=msg))
 
 
 def warning(msg):

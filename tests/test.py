@@ -114,15 +114,17 @@ class ArgsWatcher(object):
         self.args_available = prepareArgsAvailable()
         self.args_tested = set()
 
-    def prepareArgs(self, args_dict):
-        args_list = []
-        for key, value in args_dict.items():
+    def prepareArgs(self, args_list):
+        output_args_list = []
+        for args_tuple in args_list:
+            key = args_tuple[0]
+            value = args_tuple[1]
             self.args_tested.add(key)
-            args_list.append(f"--{key}")
+            output_args_list.append(f"--{key}")
             if value is not None:
-                args_list.append(value)
+                output_args_list.append(value)
 
-        return args_list
+        return output_args_list
 
     def testIfAllArgsUsedAtLeastOnce(self):
         """Test if all elf_diff command line args are at least used once while testing"""
@@ -198,14 +200,14 @@ def runSubprocess(cmd, cwd=None, env=None):
     return [output, error]
 
 
-def runElfDiff(args_dict):
+def runElfDiff(args_list):
     """Runs elf diff with a given set of arguments
 
-    args_dict: Argument dict. Flag argmuents require None type values
+    args_list: Arguments are given as name value pair tuples. Flag argmuments require None type values
     """
-    args_list = args_watcher.prepareArgs(args_dict)
+    prepared_args_list = args_watcher.prepareArgs(args_list)
     [output, error] = runSubprocess(  # pylint: disable=unused-variable
-        elf_diff_start + args_list
+        elf_diff_start + prepared_args_list
     )
 
 
@@ -247,77 +249,77 @@ class TestCaseWithSubdirs(unittest.TestCase):
 class TestCommandLineArgs(TestCaseWithSubdirs):
     def runSimpleTestBase(
         self,
-        args_dict,
+        args_list,
         old_binary_filename=old_binary_x86_64,
         new_binary_filename=new_binary_x86_64,
         output_file=None,
     ):
         """Runs a simple test with a set of arguments"""
-        actual_args_dict = args_dict
-        actual_args_dict["old_binary_filename"] = old_binary_filename
-        actual_args_dict["new_binary_filename"] = new_binary_filename
-        runElfDiff(actual_args_dict)
+        actual_args_list = args_list
+        actual_args_list.append(("old_binary_filename", old_binary_filename))
+        actual_args_list.append(("new_binary_filename", new_binary_filename))
+        runElfDiff(actual_args_list)
         if output_file is not None:
             self.assertTrue(os.path.isfile(output_file))
 
-    def runSimpleTest(self, args_dict):
+    def runSimpleTest(self, args_list):
         """Runs a simple test with a set of arguments"""
         html_file = "single_page_report.html"
-        actual_args_dict = args_dict
-        actual_args_dict["html_file"] = html_file
-        self.runSimpleTestBase(args_dict=actual_args_dict, output_file=html_file)
+        actual_args_list = args_list
+        actual_args_list.append(("html_file", html_file))
+        self.runSimpleTestBase(args_list=actual_args_list, output_file=html_file)
 
-    def runSimpleTest2(self, args_dict):
+    def runSimpleTest2(self, args_list):
         """Runs a simple test with a set of arguments"""
         html_file = "single_page_report.html"
-        actual_args_dict = args_dict
-        actual_args_dict["html_file"] = html_file
+        actual_args_list = args_list
+        actual_args_list.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_dict=actual_args_dict,
+            args_list=actual_args_list,
             old_binary_filename=old_binary2_x86_64,
             new_binary_filename=new_binary2_x86_64,
             output_file=html_file,
         )
 
-    def runSimpleTestArm(self, args_dict):
+    def runSimpleTestArm(self, args_list):
         """Runs a simple test with a set of arguments"""
         html_file = "single_page_report.html"
-        actual_args_dict = args_dict
-        actual_args_dict["html_file"] = html_file
+        actual_args_list = args_list
+        actual_args_list.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_dict=actual_args_dict,
+            args_list=actual_args_list,
             old_binary_filename=old_binary_arm,
             new_binary_filename=new_binary_arm,
             output_file=html_file,
         )
 
-    def runSimpleTestGhs(self, args_dict):
+    def runSimpleTestGhs(self, args_list):
         """Runs a simple test with a set of arguments"""
         html_file = "single_page_report.html"
-        actual_args_dict = args_dict
-        actual_args_dict["html_file"] = html_file
+        actual_args_list = args_list
+        actual_args_list.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_dict=actual_args_dict,
+            args_list=actual_args_list,
             old_binary_filename=old_binary_ghs,
             new_binary_filename=new_binary_ghs,
             output_file=html_file,
         )
 
     def test_bin_dir(self):
-        self.runSimpleTest({"bin_dir": "/usr/bin"})
+        self.runSimpleTest([("bin_dir", "/usr/bin")])
 
     def test_bin_prefix1(self):
-        self.runSimpleTestArm({"bin_prefix": "arm-linux-gnueabi-"})
+        self.runSimpleTestArm([("bin_prefix", "arm-linux-gnueabi-")])
 
     @unittest.expectedFailure
     def test_bin_prefix2(self):
-        self.runSimpleTestArm({"bin_prefix": "___bad_prefix___"})
+        self.runSimpleTestArm([("bin_prefix", "___bad_prefix___")])
 
     def test_build_info(self):
-        self.runSimpleTest({"build_info": "Some buildinfo string"})
+        self.runSimpleTest([("build_info", "Some buildinfo string")])
 
     def test_consider_equal_sized_identical(self):
-        self.runSimpleTest({"consider_equal_sized_identical": None})
+        self.runSimpleTest([("consider_equal_sized_identical", None)])
 
     def test_driver_file(self):
 
@@ -353,7 +355,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("project_title: '" + "Project title'\n")
             f.write("driver_template_file: '" + template_file + "'\n")
 
-        runElfDiff({"driver_file": driver_yaml_file})
+        runElfDiff([("driver_file", driver_yaml_file)])
 
         # Check if all output files exist
         #
@@ -363,12 +365,15 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
     def test_driver_template_file(self):
         driver_template_file = "driver_template.yml"
-        self.runSimpleTest({"driver_template_file": driver_template_file})
+        self.runSimpleTest([("driver_template_file", driver_template_file)])
         self.assertTrue(os.path.isfile(driver_template_file))
+
+    def test_dump_document_structure(self):
+        self.runSimpleTest([("dump_document_structure", None)])
 
     def test_html_dir(self):
         html_dir = "parameter_test_multi_page_pair_report"
-        self.runSimpleTestBase({"html_dir": html_dir})
+        self.runSimpleTestBase([("html_dir", html_dir)])
         self.assertTrue(os.path.isdir(html_dir))
 
     def test_html_file(self):  # pylint: disable=no-self-use
@@ -380,15 +385,28 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         # source_template_path = os.path.join(root_dir, "src", "elf_diff", "html")
         # target_template_path = "template_copy"
         # shutil.copytree(source_template_path, target_template_path)
-        # self.runSimpleTest({"html_template_dir": target_template_path})
+        # self.runSimpleTest([("html_template_dir": target_template_path})
         pass
 
+    def test_json_file(self):
+        self.runSimpleTest([("json_file", "output.json")])
+
     def test_language1(self):
-        self.runSimpleTest({"language": "c++"})
+        self.runSimpleTest([("language", "c++")])
 
     @unittest.expectedFailure
     def test_language2(self):
-        self.runSimpleTest({"language": "___unknown___"})
+        self.runSimpleTest([("language", "___unknown___")])
+
+    def test_load_plugin(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_plugin",
+                    "$HOME/Documents/elf_diff/tests/plugin/test_plugin.py;TestExportPairReportPlugin;foo=bar;zoo=zar",
+                )
+            ]
+        )
 
     def test_mass_report(self):
 
@@ -416,7 +434,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("      new_binary: '" + new_binary2_x86_64 + "'\n")
             f.write("      short_name: 'Second binary name'\n")
 
-        runElfDiff({"driver_file": driver_yaml_file})
+        runElfDiff([("driver_file", driver_yaml_file)])
 
         # Check if all output files exist
         #
@@ -425,7 +443,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.assertTrue(os.path.isfile(template_file))
 
     def test_new_alias(self):
-        self.runSimpleTest({"new_alias": "New alias"})
+        self.runSimpleTest([("new_alias", "New alias")])
 
     def test_new_binary_filename(self):  # pylint: disable=no-self-use
         # This is already tested by all simple tests
@@ -435,19 +453,19 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         new_info_file = "new_info.txt"
         with open(new_info_file, "w") as f:
             f.write("Some additional new info")
-        self.runSimpleTest({"new_info_file": new_info_file})
+        self.runSimpleTest([("new_info_file", new_info_file)])
 
     def test_new_mangling_file(self):
-        self.runSimpleTestGhs({"new_mangling_file": new_mangling_file_ghs})
+        self.runSimpleTestGhs([("new_mangling_file", new_mangling_file_ghs)])
 
     def test_nm_command(self):
-        self.runSimpleTest({"nm_command": "/usr/bin/nm"})
+        self.runSimpleTest([("nm_command", "/usr/bin/nm")])
 
     def test_objdump_command(self):
-        self.runSimpleTest({"nm_command": "/usr/bin/objdump"})
+        self.runSimpleTest([("nm_command", "/usr/bin/objdump")])
 
     def test_old_alias(self):
-        self.runSimpleTest({"old_alias": "Old alias"})
+        self.runSimpleTest([("old_alias", "Old alias")])
 
     def test_old_binary_filename(self):  # pylint: disable=no-self-use
         # This is already tested by all simple tests
@@ -457,48 +475,54 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         old_info_file = "old_info.txt"
         with open(old_info_file, "w") as f:
             f.write("Some additional old info")
-        self.runSimpleTest({"old_info_file": old_info_file})
+        self.runSimpleTest([("old_info_file", old_info_file)])
 
     def test_old_mangling_file(self):
-        self.runSimpleTestGhs({"old_mangling_file": old_mangling_file_ghs})
+        self.runSimpleTestGhs([("old_mangling_file", old_mangling_file_ghs)])
 
     def test_pdf_file(self):
         pdf_file = "parameter_test_single_page_pair_report.pdf"
-        self.runSimpleTestBase({"pdf_file": pdf_file})
+        self.runSimpleTestBase([("pdf_file", pdf_file)])
         self.assertTrue(os.path.isfile(pdf_file))
 
     def test_project_title(self):
-        self.runSimpleTest({"project_title": "A Project"})
+        self.runSimpleTest([("project_title", "A Project")])
 
     def test_similarity_threshold(self):
-        self.runSimpleTest({"similarity_threshold": "0.5"})
+        self.runSimpleTest([("similarity_threshold", "0.5")])
 
     def test_size_command(self):
-        self.runSimpleTest({"nm_command": "/usr/bin/size"})
+        self.runSimpleTest([("nm_command", "/usr/bin/size")])
 
     def test_skip_details(self):
-        self.runSimpleTest({"skip_details": None})
+        self.runSimpleTest([("skip_details", None)])
 
     def test_skip_symbol_similarities(self):
-        self.runSimpleTest({"skip_symbol_similarities": None})
+        self.runSimpleTest([("skip_symbol_similarities", None)])
 
     def test_symbol_exclusion_regex(self):
-        self.runSimpleTest2({"symbol_exclusion_regex": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_exclusion_regex", ".*IStay.*")])
 
     def test_symbol_exclusion_regex_new(self):
-        self.runSimpleTest2({"symbol_exclusion_regex_new": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_exclusion_regex_new", ".*IStay.*")])
 
     def test_symbol_exclusion_regex_old(self):
-        self.runSimpleTest2({"symbol_exclusion_regex_old": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_exclusion_regex_old", ".*IStay.*")])
 
     def test_symbol_selection_regex(self):
-        self.runSimpleTest2({"symbol_selection_regex": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_selection_regex", ".*IStay.*")])
 
     def test_symbol_selection_regex_new(self):
-        self.runSimpleTest2({"symbol_selection_regex_new": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_selection_regex_new", ".*IStay.*")])
 
     def test_symbol_selection_regex_old(self):
-        self.runSimpleTest2({"symbol_selection_regex_old": ".*IStay.*"})
+        self.runSimpleTest2([("symbol_selection_regex_old", ".*IStay.*")])
+
+    def test_txt_file(self):
+        self.runSimpleTest([("txt_file", "output.txt")])
+
+    def test_yaml_file(self):
+        self.runSimpleTest([("yaml_file", "output.yaml")])
 
 
 if __name__ == "__main__":

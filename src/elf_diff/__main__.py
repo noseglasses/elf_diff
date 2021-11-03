@@ -21,96 +21,28 @@
 
 import os
 import inspect
-import tempfile
 from elf_diff.settings import Settings
-from elf_diff.mass_report import MassReport
-from elf_diff.pair_report import PairReport
-from elf_diff.error_handling import warning
+from elf_diff.pair_report_document import generateDocument
+from elf_diff.plugin import ExportPairReportPlugin, getRegisteredPlugins
+from elf_diff.default_plugins import registerPlugins
+from elf_diff.document_explorer import getDocumentStructureDocString
+from elf_diff.deprecated.mass_report import writeMassReport
 
 
-def convertHTMLToPDF(html_file, pdf_file):
-    try:
-        from weasyprint import HTML
-    except ImportError:
-        warning("Unable to import module weasyprint")
-        warning("No pdf export supported")
+def exportDocument(settings):
+
+    registerPlugins(settings)
+
+    plugins = getRegisteredPlugins(ExportPairReportPlugin)
+
+    if len(plugins) == 0:
         return
 
-    HTML(html_file).write_pdf(pdf_file)
+    document = generateDocument(settings)
+    assert document
 
-
-def writePairReport(settings):
-    if (
-        (settings.html_dir is None)
-        and (settings.html_file is None)
-        and (settings.pdf_file is None)
-    ):
-        settings.html_dir = "multipage_pair_report"
-        print("No output defined. Generating multipage html report.")
-
-    if settings.html_dir:
-        multi_page_pair_report = PairReport(settings)
-        multi_page_pair_report.single_page = False
-        multi_page_pair_report.writeMultiPageHTMLReport()
-        print(
-            "Multi page html pair report written to directory '"
-            + settings.html_dir
-            + "'"
-        )
-
-    single_page_pair_report = None
-    if settings.html_file:
-        single_page_pair_report = PairReport(settings)
-        single_page_pair_report.single_page = True
-
-        single_page_pair_report.writeSinglePageHTMLReport()
-        print("Single page html pair report '" + settings.html_file + "' written")
-
-    if settings.pdf_file:
-
-        if single_page_pair_report is None:
-            single_page_pair_report = PairReport(settings)
-            single_page_pair_report.single_page = True
-
-        tmp_html_file = os.path.join(
-            tempfile._get_default_tempdir(),
-            next(tempfile._get_candidate_names()) + ".html",
-        )
-
-        single_page_pair_report.writeSinglePageHTMLReport(output_file=tmp_html_file)
-
-        convertHTMLToPDF(tmp_html_file, settings.pdf_file)
-
-        os.remove(tmp_html_file)
-
-        print("Single page pdf pair report '" + settings.pdf_file + "' written")
-
-
-def writeMassReport(settings):
-
-    mass_report = MassReport(settings)
-    mass_report.single_page = True
-
-    if settings.html_file:
-        mass_report.generate(settings.html_file)
-        print("Single page html mass report '" + settings.html_file + "' written")
-
-    if settings.pdf_file:
-
-        tmp_html_file = os.path.join(
-            tempfile._get_default_tempdir(),
-            next(tempfile._get_candidate_names()) + ".html",
-        )
-
-        mass_report.generate(tmp_html_file)
-
-        print("Temp report: " + tmp_html_file)
-
-        convertHTMLToPDF(tmp_html_file, settings.pdf_file)
-
-        os.remove(tmp_html_file)
-
-        print("Single page pdf mass report '" + settings.pdf_file + "' written")
+    for plugin in plugins:
+        plugin.export(document)
 
 
 def main():
@@ -122,11 +54,14 @@ def main():
 
     report_generated = False
 
+    if settings.dump_document_structure:
+        print("\n%s" % getDocumentStructureDocString(settings))
+
     if settings.mass_report or len(settings.mass_report_members) > 0:
         writeMassReport(settings)
         report_generated = True
     elif settings.isFirmwareBinaryDefined():
-        writePairReport(settings)
+        exportDocument(settings)
         report_generated = True
 
     if settings.driver_template_file:

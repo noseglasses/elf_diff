@@ -18,7 +18,26 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
+import inspect
+import os
 
 
 def listIntersection(l1, l2):
     return sorted(list(set(l1) & set(l2)))
+
+
+def getDirectoryThatStoresModule(obj):
+    file_that_stores_class = inspect.getfile(type(obj))
+    return os.path.dirname(file_that_stores_class)
+
+
+def deprecationWarning(feature):
+    print(
+        """\
+*******************************************************************************
+PLEASE NOTE: Feature '%s' is deprecated and will likely be removed
+             from future versions of the software.
+*******************************************************************************
+"""
+        % feature
+    )

@@ -21,35 +21,46 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
 
+{% import 'macros.j2' as aux %}
+
+{% if is_single_page_report == True %}
+{% set link_target_frame='' %}
+{% else %}
+{% set link_target_frame='target="details"' %}
+<{{ aux.overview_header_tag}}>{{ symbol_class | capitalize }} Symbols</{{ aux.overview_header_tag}}>
+{% endif %}
+
 {% if symbols|length == 0 %}
 No symbols considered.<br>
 {% else %}
 <table class="sortable persisting_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
-		{% for symbol in symbols -%}
+		{% for persisting_symbol in symbols -%}
+        {% set old_symbol=persisting_symbol.related_symbols.old %}
+        {% set new_symbol=persisting_symbol.related_symbols.new %}
 		<tr>
 		<td>
-      {% if symbol["have_details"] == True %}
-		  <a name="{{ symbol["overview_anchor"] }}"></a><a href="{{ symbol["details_file"] }}#{{ symbol["details_anchor"] }}"  {{ link_target_frame }}>
+      {% if persisting_symbol.display_info.display_symbol_details == True %}
+		  <a name="{{ aux.overview_anchor('persisting', old_symbol.id) }}"></a><a href="{{ aux.details_file(is_single_page_report, 'persisting', old_symbol.id) }}#{{ aux.details_anchor('persisting', old_symbol.id) }}"  {{ link_target_frame }}>
 		  {% endif %}
-		  {{ symbol["name"]|e }} {# Escape the string to avoid conflicts with < or > #}
-      {% if symbol["have_details"] == True %}
+		  {{ old_symbol.name | e }} {# HTML escape the string to avoid conflicts with < or > #}
+      {% if persisting_symbol.display_info.display_symbol_details == True %}
 		  &#9432;
 		  </a>
 		  {% endif %}
 		</td>
 		<td>
-			{{ symbol["type"] }}
+			{{ old_symbol.type }}
 		</td>
 		<td>
-			<span class="number">{{ symbol["old_size"] }}</span>
+			<span class="number">{{ old_symbol.size }}</span>
 		</td>
 		<td>
-			<span class="number">{{ symbol["new_size"] }}</span>
+			<span class="number">{{ new_symbol.size }}</span>
 		</td>
 		<td>
-			<span class="{{ symbol["size_diff_class"] }} number">{{ symbol["size_diff"] }}</span>
+			<span class="{{ aux.highlighting_css_class(persisting_symbol.related_symbols.size_delta) }} number">{{ persisting_symbol.related_symbols.size_delta }}</span>
 		</td>
 		</tr>
 		{% endfor %}

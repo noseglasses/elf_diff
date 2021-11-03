@@ -21,12 +21,15 @@
 
 from elf_diff.error_handling import unrecoverableError
 from elf_diff.error_handling import warning
-from elf_diff.html import preHighlightSourceCode
 from elf_diff.symbol import getSymbolType
 
 import re
 import os
 import subprocess  # nosec # silence bandid warning
+
+
+def preHighlightSourceCode(src):
+    return "__ED_SOURCE_START__%s__ED_SOURCE_END__" % (src)
 
 
 class Mangling(object):
@@ -65,11 +68,11 @@ class Mangling(object):
 
     def demangle(self, symbol_name):
         if self.mangling is None:
-            return symbol_name
+            return symbol_name, False
         if symbol_name in self.mangling.keys():
-            return self.mangling[symbol_name]
+            return self.mangling[symbol_name], True
 
-        return symbol_name
+        return symbol_name, False
 
 
 class Binary(object):
@@ -87,6 +90,7 @@ class Binary(object):
         self.symbol_type = getSymbolType(settings.language)
 
         self.mangling = mangling
+        self.binutils_work = True
 
         self.text_size = 0
         self.data_size = 0
@@ -208,13 +212,33 @@ class Binary(object):
             warning(
                 "Unable to determine resource consumptions. Is the proper size utility used?"
             )
+            self.binutils_work = False
 
-    def getNextSymbol(self, symbol_name):
+    def generateSymbol(self, symbol_name, symbol_name_is_demangled):
         if self.isSymbolSelected(symbol_name):
             # print("Considering symbol " + symbol_name)
-            return self.symbol_type(symbol_name)
+            return self.symbol_type(symbol_name, symbol_name_is_demangled)
         # print("Ignoring symbol " + symbol_name)
         return None
+
+    def demangle(self, symbol_name_with_mangling_state_unknown):
+        symbol_name_demangled, was_demangled = self.mangling.demangle(
+            symbol_name_with_mangling_state_unknown
+        )
+
+        if was_demangled:
+            return symbol_name_demangled, True  # is demangled
+
+        if self.binutils_work:
+            return (
+                symbol_name_with_mangling_state_unknown,
+                True,
+            )  # Binutils work, so we expect demangling having already taken place
+
+        return (
+            symbol_name_with_mangling_state_unknown,
+            False,
+        )  # Neither explicit demangling, nor binutils demangling worked
 
     def gatherSymbolInstructions(self):
 
@@ -241,9 +265,12 @@ class Binary(object):
                     self.addSymbol(cur_symbol)
                     n_symbols += 1
 
-                symbol_name_possibly_mangled = header_match.group(2)
-                symbol_name = self.mangling.demangle(symbol_name_possibly_mangled)
-                cur_symbol = self.getNextSymbol(symbol_name)
+                symbol_name_with_mangling_state_unknown = header_match.group(2)
+
+                symbol_name, symbol_name_is_demangled = self.demangle(
+                    symbol_name_with_mangling_state_unknown
+                )
+                cur_symbol = self.generateSymbol(symbol_name, symbol_name_is_demangled)
 
                 if cur_symbol is None:
                     self.num_symbols_dropped += 1
@@ -269,6 +296,7 @@ class Binary(object):
             )
             warning("Do you use the correct binutils version?")
             warning("Please check the --bin_dir and --bin_prefix settings.")
+            self.binutils_work = False
         else:
             self.instructions_available = True
 
@@ -284,12 +312,17 @@ class Binary(object):
                 symbol_size_str = nm_match.group(1)
                 symbol_type = nm_match.group(2)
 
-                symbol_name_possibly_mangled = nm_match.group(3)
-                symbol_name = self.mangling.demangle(symbol_name_possibly_mangled)
+                symbol_name_with_mangling_state_unknown = nm_match.group(3)
+                symbol_name, symbol_name_is_demangled = self.demangle(
+                    symbol_name_with_mangling_state_unknown
+                )
 
                 if symbol_name not in self.symbols.keys():
-                    if self.isSymbolSelected(symbol_name):
-                        data_symbol = self.symbol_type(symbol_name)
+
+                    data_symbol = self.generateSymbol(
+                        symbol_name, symbol_name_is_demangled
+                    )
+                    if data_symbol is not None:
                         data_symbol.size = int(symbol_size_str)
                         data_symbol.type = symbol_type
                         self.addSymbol(data_symbol)
