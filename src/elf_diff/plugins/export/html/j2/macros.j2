@@ -21,15 +21,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 
 #}
 
-{% macro highlighting_css_class(value) -%}
-{% if value > 0 -%}
+{%- macro highlighting_css_class(value) -%}
+{%- if value > 0 -%}
 deterioration
-{% elif value < 0 -%}
+{%- elif value < 0 -%}
 improvement
-{% else -%}
+{%- else -%}
 unchanged
-{% endif %}
-{% endmacro -%}
+{%- endif %}
+{%- endmacro -%}
 
 {%- macro overview_anchor(symbol_class, id) -%}
 {{symbol_class}}_symbol_overview_{{id}}
@@ -39,15 +39,15 @@ unchanged
 {{symbol_class}}_symbol_details_{{id}}
 {%- endmacro -%}
 
-{% macro details_file(is_single_page_report, symbol_class, id) -%}
-{% if is_single_page_report == False %}
+{%- macro details_file(is_single_page_report, symbol_class, id) -%}
+{%- if is_single_page_report == False -%}
 details/{{symbol_class}}/{{id}}.html
-{% endif %}
-{% endmacro %}
+{%- endif -%}
+{%- endmacro -%}
 
-{% macro replace_highlighting_tags(s) -%}
+{%- macro replace_highlighting_tags(s) -%}
 {{ s | replace('...HIGHLIGHT_START...', '<span class="diff_highlight">') | replace('...HIGHLIGHT_END...', '</span>') }}
-{% endmacro %}
+{%- endmacro -%}
 
 highlight_start_tag = "...HIGHLIGHT_START..."
 highlight_end_tag = "...HIGHLIGHT_END..."
