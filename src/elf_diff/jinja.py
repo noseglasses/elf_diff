@@ -36,7 +36,7 @@ class Configurator(object):
         self.settings = settings
         self.template_dir = template_dir
 
-    def configureTemplate(self, template_filename, template_keywords):
+    def configureTemplate(self, template_file, template_keywords):
 
         loader = FileSystemLoader(self.template_dir)
         env = Environment(  # nosec # silence bandid warning (we are generating static code, there's no security risk without autoescaping)
@@ -73,12 +73,11 @@ class Configurator(object):
         env.globals["get_symbol_document_trees"] = getDocumentTreesOfSymbolClasses
 
         try:
-            creator = env.get_template(template_filename)
+            creator = env.get_template(template_file)
 
         except jinja2.exceptions.TemplateError as e:
             unrecoverableError(
-                f"Failed creating jinja creator for file '{template_filename}'\n"
-                + str(e)
+                f"Failed creating jinja creator for file '{template_file}'\n" + str(e)
             )
 
         try:
@@ -86,17 +85,15 @@ class Configurator(object):
             replacedContent = creator.render(template_keywords)
         except (jinja2.exceptions.TemplateError) as e:
             unrecoverableError(
-                "Failed rendering jinja template '" + template_filename + "'\n" + str(e)
+                "Failed rendering jinja template '" + template_file + "'\n" + str(e)
             )
 
         return replacedContent
 
-    def configureTemplateWrite(
-        self, template_filename, output_filename, template_keywords
-    ):
+    def configureTemplateWrite(self, template_file, output_file, template_keywords):
 
-        with codecs.open(output_filename, "w", "utf-8") as output_file:
+        with codecs.open(output_file, "w", "utf-8") as output_file:
             configured_content = self.configureTemplate(
-                template_filename, template_keywords
+                template_file, template_keywords
             )
             output_file.write(configured_content)

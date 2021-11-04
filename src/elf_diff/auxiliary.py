@@ -20,6 +20,7 @@
 #
 import inspect
 import os
+from distutils import dir_util
 
 
 def listIntersection(l1, l2):
@@ -41,3 +42,12 @@ PLEASE NOTE: Feature '%s' is deprecated and will likely be removed
 """
         % feature
     )
+
+
+def getRelpath(html_output_file, target_dir):
+    html_dirname = os.path.dirname(html_output_file)
+    return os.path.relpath(target_dir, html_dirname)
+
+
+def recursiveCopy(source_dir, target_dir):
+    dir_util.copy_tree(source_dir, target_dir)
