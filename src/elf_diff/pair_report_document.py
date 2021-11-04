@@ -954,6 +954,7 @@ class MetaDocument(CustomMetaTreeInteriorNode):
                 settings=self.settings, symbol_pair=symbol_pair, id_=id_
             )
             nodes.append(node)
+            id_ += 1
 
         def getId(node):
             return node.getValueTree().id
