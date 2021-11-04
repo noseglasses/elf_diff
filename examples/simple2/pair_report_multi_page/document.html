@@ -1,0 +1,244 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/elf_diff_general.css">
+  <script src="./js/sorttable.js"></script>
+</head>
+<body>
+
+<H2>Configuration</H2>
+elf_diffs configuration is stored in a tree structure.
+<H3>Document</H3>
+<pre>
+document
+├── build_info = &#39;&#39; &lt;str&gt; [Information about the build]
+├── configuration [Boolean flags that configure what is supposed to be displayed and how]
+│   ├── display_appeared_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about appeared symbols is supposed to be displayed]
+│   ├── display_binary_details = &#39;False&#39; &lt;bool&gt; [True if details about binaries are supposed to be displayed]
+│   ├── display_build_info = &#39;False&#39; &lt;bool&gt; [True if build information is supposed to be displayed]
+│   ├── display_details = &#39;True&#39; &lt;bool&gt; [True if symbol detail information is supposed to be displayed]
+│   ├── display_disappeared_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about disappeared symbols is supposed to be displayed]
+│   ├── display_new_binary_info = &#39;False&#39; &lt;bool&gt; [True if new binary info is supposed to be displayed]
+│   ├── display_old_binary_info = &#39;False&#39; &lt;bool&gt; [True if old binary info is supposed to be displayed]
+│   ├── display_persisting_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about persisting symbols is supposed to be displayed]
+│   ├── display_similar_symbols = &#39;True&#39; &lt;bool&gt; [True if similar symbols are supposed to be displayed]
+│   ├── display_similar_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about similar symbols is supposed to be displayed]
+│   └── instructions_available = &#39;True&#39; &lt;bool&gt; [True if instructions could be read from both binary files]
+├── files [Information about relevant files]
+│   └── input [Information about relevant input files]
+│       ├── new [Information about relevant input files]
+│       │   └── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_new.a&#39; &lt;str&gt; [The path to the binary file]
+│       └── old [Information about relevant input files]
+│           └── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_old.a&#39; &lt;str&gt; [The path to the binary file]
+├── general [General information about the document]
+│   ├── doc_title = &#39;ELF Binary Comparison&#39; &lt;str&gt; [Document title]
+│   ├── elf_diff_repo_root = &#39;/home/runner/work/elf_diff/elf_diff/src/elf_diff&#39; &lt;str&gt; [Path to the root of the elf_diff git repo]
+│   ├── elf_diff_version = &#39;cc573733aada55833132b0ced553cd14d1fdcfac&#39; &lt;str&gt; [The elf_diff version that generated the page]
+│   ├── generation_date = &#39;2021-11-04 10:00:35&#39; &lt;str&gt; [The document generation date]
+│   └── page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39; &lt;str&gt; [The title of the document page]
+├── new_binary_info = &#39;&#39; &lt;str&gt; [Info about the new binary]
+├── old_binary_info = &#39;&#39; &lt;str&gt; [Info about the old binary]
+├── statistics
+│   ├── overall [Overall statistics]
+│   │   ├── delta
+│   │   │   └── resource_consumption [Information about resource consumption]
+│   │   │       ├── bss = &#39;0&#39; &lt;int&gt; [bss section memory consumption]
+│   │   │       ├── code = &#39;11&#39; &lt;int&gt; [Memory required to store code]
+│   │   │       ├── data = &#39;0&#39; &lt;int&gt; [data section memory consumption]
+│   │   │       ├── static_ram = &#39;0&#39; &lt;int&gt; [Static RAM consumption]
+│   │   │       └── text = &#39;11&#39; &lt;int&gt; [text section memory consumption]
+│   │   ├── new
+│   │   │   └── resource_consumption [Information about resource consumption]
+│   │   │       ├── bss = &#39;0&#39; &lt;int&gt; [bss section memory consumption]
+│   │   │       ├── code = &#39;450&#39; &lt;int&gt; [Memory required to store code]
+│   │   │       ├── data = &#39;36&#39; &lt;int&gt; [data section memory consumption]
+│   │   │       ├── static_ram = &#39;36&#39; &lt;int&gt; [Static RAM consumption]
+│   │   │       └── text = &#39;414&#39; &lt;int&gt; [text section memory consumption]
+│   │   └── old
+│   │       └── resource_consumption [Information about resource consumption]
+│   │           ├── bss = &#39;0&#39; &lt;int&gt; [bss section memory consumption]
+│   │           ├── code = &#39;439&#39; &lt;int&gt; [Memory required to store code]
+│   │           ├── data = &#39;36&#39; &lt;int&gt; [data section memory consumption]
+│   │           ├── static_ram = &#39;36&#39; &lt;int&gt; [Static RAM consumption]
+│   │           └── text = &#39;403&#39; &lt;int&gt; [text section memory consumption]
+│   └── symbols [Statistics of symbols]
+│       ├── appeared
+│       │   └── count = &#39;6&#39; &lt;int&gt; [Number of symbols]
+│       ├── disappeared
+│       │   └── count = &#39;6&#39; &lt;int&gt; [Number of symbols]
+│       ├── new [Overall statistics about symbols considered]
+│       │   ├── count [Number of symbols]
+│       │   │   ├── dropped = &#39;0&#39; &lt;int&gt; [Number of symbols dropped]
+│       │   │   ├── selected = &#39;17&#39; &lt;int&gt; [Number of symbols selected]
+│       │   │   └── total = &#39;17&#39; &lt;int&gt; [Number of total symbols in binary]
+│       │   └── regex [Overall statistics about symbols considered]
+│       │       ├── exclusion = &#39;&#39; &lt;str&gt; [Regular expression used to exclude symbols found in binary]
+│       │       └── selection = &#39;.*&#39; &lt;str&gt; [Regular expression used to select symbols found in binary]
+│       ├── old [Overall statistics about symbols considered]
+│       │   ├── count [Number of symbols]
+│       │   │   ├── dropped = &#39;0&#39; &lt;int&gt; [Number of symbols dropped]
+│       │   │   ├── selected = &#39;17&#39; &lt;int&gt; [Number of symbols selected]
+│       │   │   └── total = &#39;17&#39; &lt;int&gt; [Number of total symbols in binary]
+│       │   └── regex [Overall statistics about symbols considered]
+│       │       ├── exclusion = &#39;&#39; &lt;str&gt; [Regular expression used to exclude symbols found in binary]
+│       │       └── selection = &#39;.*&#39; &lt;str&gt; [Regular expression used to select symbols found in binary]
+│       ├── persisting
+│       │   ├── count = &#39;11&#39; &lt;int&gt; [Number of symbols]
+│       │   └── resource_consumption [Total resource consumption of considered symbols of given class]
+│       │       ├── delta = &#39;8&#39; &lt;int&gt; [Change to number of bytes consumed (only for persisting and similar)]
+│       │       ├── new = &#39;179&#39; &lt;int&gt; [Overall number of bytes consumed in the old version]
+│       │       └── old = &#39;171&#39; &lt;int&gt; [Overall number of bytes consumed in the old version]
+│       └── similar
+│           └── count = &#39;18&#39; &lt;int&gt; [Number of symbols]
+└── symbols [Symbols by id/table id ]
+    ├── appeared [Dict of appeared symbols by symbol id (dict values of type AppearedSymbol)]
+    ├── disappeared [Disappeared symbols by symbol id (dict values of type DisappearedSymbol)]
+    ├── new [Dict of selected symbols of the new binary by symbol id (dict values of type Symbol)]
+    ├── old [Dict of selected symbols of the old binary by symbol id (dict values of type Symbol)]
+    ├── persisting [Persisting symbols by symbol id (dict values of type PersistingSymbol)]
+    └── similar [Similar symbols by symbol id (dict values of type SimilarSymbols)]
+</pre>
+
+<H3>Symbol Classes</H3>
+The section <span class="monospace">document.symbols</span> contains dictionaries that map symbol-ids (symbol pair-ids)
+to symbols of different classes. The subdocument structure of those classes is displayed below.
+<br>
+<b>Please note:</b> The actual symbol representations are not listed due to space constraints.
+
+
+<H4>Symbol</H4>
+<pre>
+symbol
+├── id &lt;int&gt; [Unique symbol identifier]
+├── instructions &lt;str&gt; [Code instructions (assembly with possibly high level language code intermixed)]
+├── is_demangled &lt;bool&gt; [True if the symbol name is demangled]
+├── is_stored_in_program_memory &lt;bool&gt; [True if the symbol is stored in program memory]
+├── name &lt;str&gt; [The symbol name (demangled if supported)]
+├── size &lt;int&gt; [Number of bytes occupied by the symbol]
+└── type &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
+</pre>
+
+<H4>PersistingSymbol</H4>
+<pre>
+persisting_symbol
+├── display_info
+│   ├── anchor_id &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── display_symbol_details &lt;bool&gt; [True if symbol details are supposed to be displayed]
+│   └── symbol_class &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+└── related_symbols
+    ├── new &lt;Symbol&gt; [The new symbol]
+    ├── old &lt;Symbol&gt; [The old symbol]
+    └── size_delta &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
+</pre>
+
+<H4>AppearedSymbol</H4>
+<pre>
+appeared_symbol
+├── actual &lt;Symbol&gt; [The actual symbol]
+└── display_info [The display info]
+    ├── anchor_id &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+    ├── display_symbol_details &lt;bool&gt; [True if symbol details are supposed to be displayed]
+    └── symbol_class &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+</pre>
+
+<H4>DisappearedSymbol</H4>
+<pre>
+disappeared_symbol
+├── actual &lt;Symbol&gt; [The actual symbol]
+└── display_info [The display info]
+    ├── anchor_id &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+    ├── display_symbol_details &lt;bool&gt; [True if symbol details are supposed to be displayed]
+    └── symbol_class &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+</pre>
+
+<H4>SimilarSymbols</H4>
+<pre>
+similar_symbols
+├── display_info
+│   ├── anchor_id &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── display_symbol_details &lt;bool&gt; [True if symbol details are supposed to be displayed]
+│   └── symbol_class &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+├── id &lt;int&gt; [The id of the symbol pair]
+├── new
+│   └── signature_tagged &lt;str&gt; [A tagged version of the symbol signature. Taggs &#39;...HIGHLIGHT_START...&#39; and &#39;...HIGHLIGHT_END...&#39; must be replaced accordingly, e.g. for highlighting.]
+├── old
+│   └── signature_tagged &lt;str&gt; [A tagged version of the symbol signature. Taggs &#39;...HIGHLIGHT_START...&#39; and &#39;...HIGHLIGHT_END...&#39; must be replaced accordingly, e.g. for highlighting.]
+├── related_symbols
+│   ├── new &lt;Symbol&gt; [The new symbol]
+│   ├── old &lt;Symbol&gt; [The old symbol]
+│   └── size_delta &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
+└── similarities [Symbol similarity ratios]
+    ├── instruction &lt;float&gt; [The percentage of symbol instruction similarity]
+    └── signature &lt;float&gt; [The percentage of symbol signature similarity]
+</pre>
+
+
+<H2>Jinja2 Template Variables</H2>
+The following exported variables may be used to configure Jinja2 Template files.
+<pre>
+document.build_info = &#39;&#39;
+document.configuration.display_appeared_symbols_overview = &#39;True&#39;
+document.configuration.display_binary_details = &#39;False&#39;
+document.configuration.display_build_info = &#39;False&#39;
+document.configuration.display_details = &#39;True&#39;
+document.configuration.display_disappeared_symbols_overview = &#39;True&#39;
+document.configuration.display_new_binary_info = &#39;False&#39;
+document.configuration.display_old_binary_info = &#39;False&#39;
+document.configuration.display_persisting_symbols_overview = &#39;True&#39;
+document.configuration.display_similar_symbols = &#39;True&#39;
+document.configuration.display_similar_symbols_overview = &#39;True&#39;
+document.configuration.instructions_available = &#39;True&#39;
+document.files.input.new.binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_new.a&#39;
+document.files.input.old.binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_old.a&#39;
+document.general.doc_title = &#39;ELF Binary Comparison&#39;
+document.general.elf_diff_repo_root = &#39;/home/runner/work/elf_diff/elf_diff/src/elf_diff&#39;
+document.general.elf_diff_version = &#39;cc573733aada55833132b0ced553cd14d1fdcfac&#39;
+document.general.generation_date = &#39;2021-11-04 10:00:35&#39;
+document.general.page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39;
+document.new_binary_info = &#39;&#39;
+document.old_binary_info = &#39;&#39;
+document.statistics.overall.delta.resource_consumption.bss = &#39;0&#39;
+document.statistics.overall.delta.resource_consumption.code = &#39;11&#39;
+document.statistics.overall.delta.resource_consumption.data = &#39;0&#39;
+document.statistics.overall.delta.resource_consumption.static_ram = &#39;0&#39;
+document.statistics.overall.delta.resource_consumption.text = &#39;11&#39;
+document.statistics.overall.new.resource_consumption.bss = &#39;0&#39;
+document.statistics.overall.new.resource_consumption.code = &#39;450&#39;
+document.statistics.overall.new.resource_consumption.data = &#39;36&#39;
+document.statistics.overall.new.resource_consumption.static_ram = &#39;36&#39;
+document.statistics.overall.new.resource_consumption.text = &#39;414&#39;
+document.statistics.overall.old.resource_consumption.bss = &#39;0&#39;
+document.statistics.overall.old.resource_consumption.code = &#39;439&#39;
+document.statistics.overall.old.resource_consumption.data = &#39;36&#39;
+document.statistics.overall.old.resource_consumption.static_ram = &#39;36&#39;
+document.statistics.overall.old.resource_consumption.text = &#39;403&#39;
+document.statistics.symbols.appeared.count = &#39;6&#39;
+document.statistics.symbols.disappeared.count = &#39;6&#39;
+document.statistics.symbols.new.count.dropped = &#39;0&#39;
+document.statistics.symbols.new.count.selected = &#39;17&#39;
+document.statistics.symbols.new.count.total = &#39;17&#39;
+document.statistics.symbols.new.regex.exclusion = &#39;&#39;
+document.statistics.symbols.new.regex.selection = &#39;.*&#39;
+document.statistics.symbols.old.count.dropped = &#39;0&#39;
+document.statistics.symbols.old.count.selected = &#39;17&#39;
+document.statistics.symbols.old.count.total = &#39;17&#39;
+document.statistics.symbols.old.regex.exclusion = &#39;&#39;
+document.statistics.symbols.old.regex.selection = &#39;.*&#39;
+document.statistics.symbols.persisting.count = &#39;11&#39;
+document.statistics.symbols.persisting.resource_consumption.delta = &#39;8&#39;
+document.statistics.symbols.persisting.resource_consumption.new = &#39;179&#39;
+document.statistics.symbols.persisting.resource_consumption.old = &#39;171&#39;
+document.statistics.symbols.similar.count = &#39;18&#39;
+</pre>
+
+
+</body>
+</html>

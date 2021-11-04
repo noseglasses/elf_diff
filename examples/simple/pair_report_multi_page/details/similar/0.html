@@ -1,39 +1,96 @@
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset=utf-8>
 
   <meta name="robots" content="noindex">
-  <title>Similar Symbol Pair 0</title>
+  <title>Similar Symbol 0</title>
   <link rel="stylesheet" href="../../css/elf_diff_general.css">
   <script src="../../js/sorttable.js"></script>
-  
 </head>
 <body>
 
 
+
+
+
+
+
+
+
+
+
+
 <H4><span class="monospace">
-<a name="similar_symbols_details_0"></a>
+<a name="similar_symbol_details_0"></a>
 
 Similar pair 0
 
-: old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">+0</span> bytes, sig. sim.: 97.7 %, instr. sim.: 100.0 %</span></H4>
+: old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 97.7 %, instr. sim.: 100.0 %</span></H4>
 <p>
 <span class="monospace">Old: Test::g(float, float)</span>
 <br>
 <span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float)</span>
 </p>
+Instructions unchanged
 
-    <table class="diff" id="difflib_chg_to2__top"
-           cellspacing="0" cellpadding="0" rules="groups" >
-        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
-        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
-        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
-        <tbody>
-            <tr><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td></td><td>&nbsp;No Differences Found&nbsp;</td><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td></td><td>&nbsp;No Differences Found&nbsp;</td></tr>
-        </tbody>
-    </table>
+
+<H4>Tree Representation</H4>
+<pre>
+similar_symbols
+├── display_info
+│   ├── anchor_id = &#39;16&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── display_symbol_details = &#39;True&#39; &lt;bool&gt; [True if symbol details are supposed to be displayed]
+│   └── symbol_class = &#39;similar&#39; &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+├── id = &#39;0&#39; &lt;int&gt; [The id of the symbol pair]
+├── new
+│   └── signature_tagged = &#39;Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::g(float, float)&#39; &lt;str&gt; [A tagged version of the symbol signature. Taggs &#39;...HIGHLIGHT_START...&#39; and &#39;...HIGHLIGHT_END...&#39; must be replaced accordingly, e.g. for highlighting.]
+├── old
+│   └── signature_tagged = &#39;Test::g(float, float)&#39; &lt;str&gt; [A tagged version of the symbol signature. Taggs &#39;...HIGHLIGHT_START...&#39; and &#39;...HIGHLIGHT_END...&#39; must be replaced accordingly, e.g. for highlighting.]
+├── related_symbols
+│   ├── new
+│   │   ├── id = &#39;23&#39; &lt;int&gt; [Unique symbol identifier]
+│   │   ├── instructions = &#39;endbr64 
+push   %rbp
+mov    %rsp,%rbp
+mov    %rdi,-0x8(%rbp)
+movss  %xmm0,-0xc(%rbp)
+movss  %xmm1,-0x10(%rbp)
+mov    $0x1,%eax
+pop    %rbp
+retq   
+&#39; &lt;str&gt; [Code instructions (assembly with possibly high level language code intermixed)]
+│   │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
+│   │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
+│   │   ├── name = &#39;Test1::g(float, float)&#39; &lt;str&gt; [The symbol name (demangled if supported)]
+│   │   ├── size = &#39;29&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
+│   │   └── type = &#39;?&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
+│   ├── old
+│   │   ├── id = &#39;16&#39; &lt;int&gt; [Unique symbol identifier]
+│   │   ├── instructions = &#39;endbr64 
+push   %rbp
+mov    %rsp,%rbp
+mov    %rdi,-0x8(%rbp)
+movss  %xmm0,-0xc(%rbp)
+movss  %xmm1,-0x10(%rbp)
+mov    $0x1,%eax
+pop    %rbp
+retq   
+&#39; &lt;str&gt; [Code instructions (assembly with possibly high level language code intermixed)]
+│   │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
+│   │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
+│   │   ├── name = &#39;Test::g(float, float)&#39; &lt;str&gt; [The symbol name (demangled if supported)]
+│   │   ├── size = &#39;29&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
+│   │   └── type = &#39;?&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
+│   └── size_delta = &#39;0&#39; &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
+└── similarities [Symbol similarity ratios]
+    ├── instruction = &#39;100.0&#39; &lt;float&gt; [The percentage of symbol instruction similarity]
+    └── signature = &#39;97.67441860465115&#39; &lt;float&gt; [The percentage of symbol signature similarity]
+</pre>
+
 </body>
 </html>

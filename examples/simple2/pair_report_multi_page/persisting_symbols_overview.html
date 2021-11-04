@@ -1,30 +1,215 @@
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset=utf-8>
 
   <meta name="robots" content="noindex">
   <title>Persisting Symbols Overview</title>
   <link rel="stylesheet" href="./css/elf_diff_general.css">
   <script src="./js/sorttable.js"></script>
-  
 </head>
 <body>
 
-<H3>Persisting Symbols Overview</H3>
 
+
+
+
+
+<H3>Persisting Symbols</H3>
 
 
 
 <table class="sortable persisting_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
+		
+        
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_4"></a><a href="details/persisting/4.html#persisting_symbol_details_4"  target="details">
+		  Test::smvIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  Test::smvIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  cIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  cIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_35"></a><a href="details/persisting/35.html#persisting_symbol_details_35"  target="details">
+		  
+		  fIStay(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_37"></a><a href="details/persisting/37.html#persisting_symbol_details_37"  target="details">
+		  
+		  g() 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  g()::lsvIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  g()::lsvIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_38"></a><a href="details/persisting/38.html#persisting_symbol_details_38"  target="details">
 		  
 		  implementationChanged(int) 
       
@@ -33,7 +218,7 @@
 		  
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
 			<span class="number">98</span>
@@ -45,168 +230,8 @@
 			<span class="deterioration number">8</span>
 		</td>
 		</tr>
-		<tr>
-		<td>
-      
-		  Test::smvIStay 
-      
-		</td>
-		<td>
-			D
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  Test::smvIStayButDiffer 
-      
-		</td>
-		<td>
-			D
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  cIStay 
-      
-		</td>
-		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  cIStayButDiffer 
-      
-		</td>
-		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_1"></a><a href="details/persisting/1.html#persisting_symbol_details_1"  target="details">
-		  
-		  fIStay(double) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_3"></a><a href="details/persisting/3.html#persisting_symbol_details_3"  target="details">
-		  
-		  g() 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIStay 
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIStayButDiffer 
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
+		
+        
 		<tr>
 		<td>
       
@@ -214,7 +239,7 @@
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -226,6 +251,8 @@
 			<span class="unchanged number">0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
@@ -233,7 +260,7 @@
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>

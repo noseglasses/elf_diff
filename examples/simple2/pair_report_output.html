@@ -1,15 +1,16 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset=utf-8>
   <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg=="/>
   <meta name="robots" content="noindex">
   <title>ELF Binary Comparison - (c) 2021 by noseglasses</title>
-	<script>
-/*
+  <script>
+  /*
   SortTable
   version 2
   7th April 2007
@@ -17,8 +18,8 @@
 
   Instructions:
   Download this file
-  Add &lt;script src="sorttable.js"&gt;&lt;/script&gt; to your HTML
-  Add class="sortable" to any table you'd like to make sortable
+  Add &lt;script src=&#34;sorttable.js&#34;&gt;&lt;/script&gt; to your HTML
+  Add class=&#34;sortable&#34; to any table you&#39;d like to make sortable
   Click on the headers to sort
 
   Thanks to many, many people for contributions and suggestions.
@@ -33,7 +34,7 @@ sorttable = {
   init: function() {
     // quit if this function has already been called
     if (arguments.callee.done) return;
-    // flag this function so we don't do the same thing twice
+    // flag this function so we don&#39;t do the same thing twice
     arguments.callee.done = true;
     // kill the timer
     if (_timer) clearInterval(_timer);
@@ -42,7 +43,7 @@ sorttable = {
 
     sorttable.DATE_RE = /^(\d\d?)[\/\.-](\d\d?)[\/\.-]((\d\d)?\d\d)$/;
 
-    forEach(document.getElementsByTagName('table'), function(table) {
+    forEach(document.getElementsByTagName(&#39;table&#39;), function(table) {
       if (table.className.search(/\bsortable\b/) != -1) {
         sorttable.makeSortable(table);
       }
@@ -51,20 +52,20 @@ sorttable = {
   },
 
   makeSortable: function(table) {
-    if (table.getElementsByTagName('thead').length === 0) {
-      // table doesn't have a tHead. Since it should have, create one and
+    if (table.getElementsByTagName(&#39;thead&#39;).length === 0) {
+      // table doesn&#39;t have a tHead. Since it should have, create one and
       // put the first table row in it.
-      the = document.createElement('thead');
+      the = document.createElement(&#39;thead&#39;);
       the.appendChild(table.rows[0]);
       table.insertBefore(the,table.firstChild);
     }
-    // Safari doesn't support table.tHead, sigh
-    if (table.tHead == null) table.tHead = table.getElementsByTagName('thead')[0];
+    // Safari doesn&#39;t support table.tHead, sigh
+    if (table.tHead == null) table.tHead = table.getElementsByTagName(&#39;thead&#39;)[0];
 
-    if (table.tHead.rows.length !== 1) return; // can't cope with two header rows
+    if (table.tHead.rows.length !== 1) return; // can&#39;t cope with two header rows
 
-    // Sorttable v1 put rows with a class of "sortbottom" at the bottom (as
-    // "total" rows, for example). This is B&R, since what you're supposed
+    // Sorttable v1 put rows with a class of &#34;sortbottom&#34; at the bottom (as
+    // &#34;total&#34; rows, for example). This is B&amp;R, since what you&#39;re supposed
     // to do is put them in a tfoot. So, if there are sortbottom rows,
     // for backwards compatibility, move them to tfoot (creating it if needed).
     sortbottomrows = [];
@@ -75,8 +76,8 @@ sorttable = {
     }
     if (sortbottomrows) {
       if (table.tFoot == null) {
-        // table doesn't have a tfoot. Create one.
-        tfo = document.createElement('tfoot');
+        // table doesn&#39;t have a tfoot. Create one.
+        tfo = document.createElement(&#39;tfoot&#39;);
         table.appendChild(tfo);
       }
       for (var i=0; i&lt;sortbottomrows.length; i++) {
@@ -92,39 +93,39 @@ sorttable = {
       if (!headrow[i].className.match(/\bsorttable_nosort\b/)) { // skip this col
         mtch = headrow[i].className.match(/\bsorttable_([a-z0-9]+)\b/);
         if (mtch) { override = mtch[1]; }
-	      if (mtch && typeof sorttable["sort_"+override] == 'function') {
-	        headrow[i].sorttable_sortfunction = sorttable["sort_"+override];
+	      if (mtch &amp;&amp; typeof sorttable[&#34;sort_&#34;+override] == &#39;function&#39;) {
+	        headrow[i].sorttable_sortfunction = sorttable[&#34;sort_&#34;+override];
 	      } else {
 	        headrow[i].sorttable_sortfunction = sorttable.guessType(table,i);
 	      }
 	      // make it clickable to sort
 	      headrow[i].sorttable_columnindex = i;
 	      headrow[i].sorttable_tbody = table.tBodies[0];
-	      dean_addEvent(headrow[i],"click", sorttable.innerSortFunction = function(e) {
+	      dean_addEvent(headrow[i],&#34;click&#34;, sorttable.innerSortFunction = function(e) {
 
           if (this.className.search(/\bsorttable_sorted\b/) != -1) {
-            // if we're already sorted by this column, just
+            // if we&#39;re already sorted by this column, just
             // reverse the table, which is quicker
             sorttable.reverse(this.sorttable_tbody);
-            this.className = this.className.replace('sorttable_sorted',
-                                                    'sorttable_sorted_reverse');
-            this.removeChild(document.getElementById('sorttable_sortfwdind'));
-            sortrevind = document.createElement('span');
-            sortrevind.id = "sorttable_sortrevind";
-            sortrevind.innerHTML = stIsIE ? '&nbsp&lt;font face="webdings"&gt;5&lt;/font&gt;' : '&nbsp;&#x25B4;';
+            this.className = this.className.replace(&#39;sorttable_sorted&#39;,
+                                                    &#39;sorttable_sorted_reverse&#39;);
+            this.removeChild(document.getElementById(&#39;sorttable_sortfwdind&#39;));
+            sortrevind = document.createElement(&#39;span&#39;);
+            sortrevind.id = &#34;sorttable_sortrevind&#34;;
+            sortrevind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;5&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25B4;&#39;;
             this.appendChild(sortrevind);
             return;
           }
           if (this.className.search(/\bsorttable_sorted_reverse\b/) != -1) {
-            // if we're already sorted by this column in reverse, just
+            // if we&#39;re already sorted by this column in reverse, just
             // re-reverse the table, which is quicker
             sorttable.reverse(this.sorttable_tbody);
-            this.className = this.className.replace('sorttable_sorted_reverse',
-                                                    'sorttable_sorted');
-            this.removeChild(document.getElementById('sorttable_sortrevind'));
-            sortfwdind = document.createElement('span');
-            sortfwdind.id = "sorttable_sortfwdind";
-            sortfwdind.innerHTML = stIsIE ? '&nbsp&lt;font face="webdings"&gt;6&lt;/font&gt;' : '&nbsp;&#x25BE;';
+            this.className = this.className.replace(&#39;sorttable_sorted_reverse&#39;,
+                                                    &#39;sorttable_sorted&#39;);
+            this.removeChild(document.getElementById(&#39;sorttable_sortrevind&#39;));
+            sortfwdind = document.createElement(&#39;span&#39;);
+            sortfwdind.id = &#34;sorttable_sortfwdind&#34;;
+            sortfwdind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;6&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25BE;&#39;;
             this.appendChild(sortfwdind);
             return;
           }
@@ -133,23 +134,23 @@ sorttable = {
           theadrow = this.parentNode;
           forEach(theadrow.childNodes, function(cell) {
             if (cell.nodeType === 1) { // an element
-              cell.className = cell.className.replace('sorttable_sorted_reverse','');
-              cell.className = cell.className.replace('sorttable_sorted','');
+              cell.className = cell.className.replace(&#39;sorttable_sorted_reverse&#39;,&#39;&#39;);
+              cell.className = cell.className.replace(&#39;sorttable_sorted&#39;,&#39;&#39;);
             }
           });
-          sortfwdind = document.getElementById('sorttable_sortfwdind');
+          sortfwdind = document.getElementById(&#39;sorttable_sortfwdind&#39;);
           if (sortfwdind) { sortfwdind.parentNode.removeChild(sortfwdind); }
-          sortrevind = document.getElementById('sorttable_sortrevind');
+          sortrevind = document.getElementById(&#39;sorttable_sortrevind&#39;);
           if (sortrevind) { sortrevind.parentNode.removeChild(sortrevind); }
 
-          this.className += ' sorttable_sorted';
-          sortfwdind = document.createElement('span');
-          sortfwdind.id = "sorttable_sortfwdind";
-          sortfwdind.innerHTML = stIsIE ? '&nbsp&lt;font face="webdings"&gt;6&lt;/font&gt;' : '&nbsp;&#x25BE;';
+          this.className += &#39; sorttable_sorted&#39;;
+          sortfwdind = document.createElement(&#39;span&#39;);
+          sortfwdind.id = &#34;sorttable_sortfwdind&#34;;
+          sortfwdind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;6&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25BE;&#39;;
           this.appendChild(sortfwdind);
 
 	        // build an array to sort. This is a Schwartzian transform thing,
-	        // i.e., we "decorate" each row with the actual sort key,
+	        // i.e., we &#34;decorate&#34; each row with the actual sort key,
 	        // sort based on the sort keys, and then put the rows back in order
 	        // which is a lot faster because you only do getInnerText once per row
 	        row_array = [];
@@ -179,7 +180,7 @@ sorttable = {
     sortfn = sorttable.sort_alpha;
     for (var i=0; i&lt;table.tBodies[0].rows.length; i++) {
       text = sorttable.getInnerText(table.tBodies[0].rows[i].cells[column]);
-      if (text != '') {
+      if (text != &#39;&#39;) {
         if (text.match(/^-?[£$¤]?[\d,.]+%?$/)) {
           return sorttable.sort_numeric;
         }
@@ -197,8 +198,8 @@ sorttable = {
           } else if (second &gt; 12) {
             return sorttable.sort_mmdd;
           } else {
-            // looks like a date, but we can't tell which, so assume
-            // that it's dd/mm (English imperialism!) and keep looking
+            // looks like a date, but we can&#39;t tell which, so assume
+            // that it&#39;s dd/mm (English imperialism!) and keep looking
             sortfn = sorttable.sort_ddmm;
           }
         }
@@ -210,46 +211,46 @@ sorttable = {
   getInnerText: function(node) {
     // gets the text we want to use for sorting for a cell.
     // strips leading and trailing whitespace.
-    // this is *not* a generic getInnerText function; it's special to sorttable.
+    // this is *not* a generic getInnerText function; it&#39;s special to sorttable.
     // for example, you can override the cell text with a customkey attribute.
     // it also gets .value for &lt;input&gt; fields.
 
-    if (!node) return "";
+    if (!node) return &#34;&#34;;
 
-    hasInputs = (typeof node.getElementsByTagName == 'function') &&
-                 node.getElementsByTagName('input').length;
+    hasInputs = (typeof node.getElementsByTagName == &#39;function&#39;) &amp;&amp;
+                 node.getElementsByTagName(&#39;input&#39;).length;
 
-    if (node.getAttribute("sorttable_customkey") != null) {
-      return node.getAttribute("sorttable_customkey");
+    if (node.getAttribute(&#34;sorttable_customkey&#34;) != null) {
+      return node.getAttribute(&#34;sorttable_customkey&#34;);
     }
-    else if (typeof node.textContent != 'undefined' && !hasInputs) {
-      return node.textContent.replace(/^\s+|\s+$/g, '');
+    else if (typeof node.textContent != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.textContent.replace(/^\s+|\s+$/g, &#39;&#39;);
     }
-    else if (typeof node.innerText != 'undefined' && !hasInputs) {
-      return node.innerText.replace(/^\s+|\s+$/g, '');
+    else if (typeof node.innerText != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.innerText.replace(/^\s+|\s+$/g, &#39;&#39;);
     }
-    else if (typeof node.text != 'undefined' && !hasInputs) {
-      return node.text.replace(/^\s+|\s+$/g, '');
+    else if (typeof node.text != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.text.replace(/^\s+|\s+$/g, &#39;&#39;);
     }
     else {
       switch (node.nodeType) {
         case 3:
-          if (node.nodeName.toLowerCase() == 'input') {
-            return node.value.replace(/^\s+|\s+$/g, '');
+          if (node.nodeName.toLowerCase() == &#39;input&#39;) {
+            return node.value.replace(/^\s+|\s+$/g, &#39;&#39;);
           }
         case 4:
-          return node.nodeValue.replace(/^\s+|\s+$/g, '');
+          return node.nodeValue.replace(/^\s+|\s+$/g, &#39;&#39;);
           break;
         case 1:
         case 11:
-          var innerText = '';
+          var innerText = &#39;&#39;;
           for (var i = 0; i &lt; node.childNodes.length; i++) {
             innerText += sorttable.getInnerText(node.childNodes[i]);
           }
-          return innerText.replace(/^\s+|\s+$/g, '');
+          return innerText.replace(/^\s+|\s+$/g, &#39;&#39;);
           break;
         default:
-          return '';
+          return &#39;&#39;;
       }
     }
   },
@@ -270,9 +271,9 @@ sorttable = {
      each sort function takes two parameters, a and b
      you are comparing a[0] and b[0] */
   sort_numeric: function(a,b) {
-    aa = parseFloat(a[0].replace(/[^0-9.-]/g,''));
+    aa = parseFloat(a[0].replace(/[^0-9.-]/g,&#39;&#39;));
     if (isNaN(aa)) aa = 0;
-    bb = parseFloat(b[0].replace(/[^0-9.-]/g,''));
+    bb = parseFloat(b[0].replace(/[^0-9.-]/g,&#39;&#39;));
     if (isNaN(bb)) bb = 0;
     return aa-bb;
   },
@@ -284,13 +285,13 @@ sorttable = {
   sort_ddmm: function(a,b) {
     mtch = a[0].match(sorttable.DATE_RE);
     y = mtch[3]; m = mtch[2]; d = mtch[1];
-    if (m.length === 1) m = '0'+m;
-    if (d.length === 1) d = '0'+d;
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
     dt1 = y+m+d;
     mtch = b[0].match(sorttable.DATE_RE);
     y = mtch[3]; m = mtch[2]; d = mtch[1];
-    if (m.length === 1) m = '0'+m;
-    if (d.length === 1) d = '0'+d;
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
     dt2 = y+m+d;
     if (dt1==dt2) return 0;
     if (dt1&lt;dt2) return -1;
@@ -299,13 +300,13 @@ sorttable = {
   sort_mmdd: function(a,b) {
     mtch = a[0].match(sorttable.DATE_RE);
     y = mtch[3]; d = mtch[2]; m = mtch[1];
-    if (m.length === 1) m = '0'+m;
-    if (d.length === 1) d = '0'+d;
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
     dt1 = y+m+d;
     mtch = b[0].match(sorttable.DATE_RE);
     y = mtch[3]; d = mtch[2]; m = mtch[1];
-    if (m.length === 1) m = '0'+m;
-    if (d.length === 1) d = '0'+d;
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
     dt2 = y+m+d;
     if (dt1==dt2) return 0;
     if (dt1&lt;dt2) return -1;
@@ -352,16 +353,16 @@ sorttable = {
 
 /* for Mozilla/Opera9 */
 if (document.addEventListener) {
-    document.addEventListener("DOMContentLoaded", sorttable.init, false);
+    document.addEventListener(&#34;DOMContentLoaded&#34;, sorttable.init, false);
 }
 
 /* for Internet Explorer */
 /*@cc_on @*/
 /*@if (@_win32)
-    document.write("&lt;script id=__ie_onload defer src=javascript:void(0)&gt;&lt;\/script&gt;");
-    var script = document.getElementById("__ie_onload");
+    document.write(&#34;&lt;script id=__ie_onload defer src=javascript:void(0)&gt;&lt;\/script&gt;&#34;);
+    var script = document.getElementById(&#34;__ie_onload&#34;);
     script.onreadystatechange = function() {
-        if (this.readyState == "complete") {
+        if (this.readyState == &#34;complete&#34;) {
             sorttable.init(); // call the onload handler
         }
     };
@@ -397,14 +398,14 @@ function dean_addEvent(element, type, handler) {
 		if (!handlers) {
 			handlers = element.events[type] = {};
 			// store the existing event handler (if there is one)
-			if (element["on" + type]) {
-				handlers[0] = element["on" + type];
+			if (element[&#34;on&#34; + type]) {
+				handlers[0] = element[&#34;on&#34; + type];
 			}
 		}
 		// store the event handler in the hash table
 		handlers[handler.$$guid] = handler;
 		// assign a global event handler to do all the work
-		element["on" + type] = handleEvent;
+		element[&#34;on&#34; + type] = handleEvent;
 	}
 };
 // a counter used to create unique IDs
@@ -415,7 +416,7 @@ function removeEvent(element, type, handler) {
 		element.removeEventListener(type, handler, false);
 	} else {
 		// delete the event handler from the hash table
-		if (element.events && element.events[type]) {
+		if (element.events &amp;&amp; element.events[type]) {
 			delete element.events[type][handler.$$guid];
 		}
 	}
@@ -450,7 +451,7 @@ fixEvent.stopPropagation = function() {
   this.cancelBubble = true;
 }
 
-// Dean's forEach: http://dean.edwards.name/base/forEach.js
+// Dean&#39;s forEach: http://dean.edwards.name/base/forEach.js
 /*
 	forEach, version 1.0
 	Copyright 2006, Dean Edwards
@@ -469,7 +470,7 @@ if (!Array.forEach) { // mozilla already supports this
 // generic enumeration
 Function.prototype.forEach = function(object, block, context) {
 	for (var key in object) {
-		if (typeof this.prototype[key] == "undefined") {
+		if (typeof this.prototype[key] == &#34;undefined&#34;) {
 			block.call(context, object[key], key, object);
 		}
 	}
@@ -477,7 +478,7 @@ Function.prototype.forEach = function(object, block, context) {
 
 // character enumeration
 String.forEach = function(string, block, context) {
-	Array.forEach(string.split(""), function(chr, index) {
+	Array.forEach(string.split(&#34;&#34;), function(chr, index) {
 		block.call(context, chr, index, string);
 	});
 };
@@ -487,16 +488,16 @@ var forEach = function(object, block, context) {
 	if (object) {
 		var resolve = Object; // default
 		if (object instanceof Function) {
-			// functions have a "length" property
+			// functions have a &#34;length&#34; property
 			resolve = Function;
 		} else if (object.forEach instanceof Function) {
 			// the object implements a custom forEach method so use that
 			object.forEach(block, context);
 			return;
-		} else if (typeof object == "string") {
+		} else if (typeof object == &#34;string&#34;) {
 			// the object is a string
 			resolve = String;
-		} else if (typeof object.length == "number") {
+		} else if (typeof object.length == &#34;number&#34;) {
 			// the object is array-like
 			resolve = Array;
 		}
@@ -505,10 +506,9 @@ var forEach = function(object, block, context) {
 };
 
 
-</script>
-
-	<style>
-/*
+  </script>
+  <style>
+  /*
 -*- coding: utf-8 -*-
 
 -*- mode: css -*-
@@ -571,7 +571,7 @@ tr:nth-child(even) {
 
 /* Sortability of tables */
 table .sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort)::after {
-  content: " \25B4\25BE";
+  content: &#34; \25B4\25BE&#34;;
 }
 
 thead {
@@ -868,19 +868,14 @@ table.bin_col td:nth-child(3) {
   font-family: monospace;
 }
 
-</style>
-
-  
+	</style>
 </head>
 <body>
   <div id="content">
-	
   <H1><a id="home"></a>
 	<img style="vertical-align:text-top" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg==" alt="elf_diff Logo"/>
 	ELF Binary Comparison</H1>
-  
 
-	
   <H2>Overview</H2>
   <ul>
     <li><a href="#binaries">Binaries</a></li>
@@ -894,32 +889,31 @@ table.bin_col td:nth-child(3) {
     <li><a href="#symbols">Symbols</a>
         <ul>
           <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
-          <li><a href="#symbols_symbols_disappeared">Symbols Disappeared</a></li>
-          <li><a href="#symbols_new_symbols">New Symbols</a></li>
+          <li><a href="#symbols_disappeared_symbols">Symbols Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">New Symbols</a></li>
 					
           <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
           
         </ul>
     </li>
     
-    
   </ul>
-  
 
-  
   <H2><a id="binaries"></a>Binaries <a href="#home">&#x21A9;</a></H2>
   <p>old: ../../tests/x86_64/libelf_diff_test2_debug_old.a</p>
   <p>new: ../../tests/x86_64/libelf_diff_test2_debug_new.a</p>
-  
 
-	
   <H2><a id="rc"></a>Statistics <a href="#home">&#x21A9;</a></H2>
   
+
+
+
+
 <table cellspacing="5" cellpadding="0" class = "stats">
   <tbody>
 	  <tr>
 		  <td>
-				<H3><a id="rc_program_storage"></a>Program Storage</H3>
+				<H4><a id="rc_program_storage"></a>Program Storage</H4>
 				<table class = "fixed_table size_overview">
 					<col align="left">
 					<col align="right">
@@ -927,14 +921,14 @@ table.bin_col td:nth-child(3) {
 					<col align="right">
 					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
 					<tbody>
-						<tr><td>overall</td><td>439</td><td>450</td><td><span class="deterioration number">+11</span></td></tr>
-						<tr><td>text</td><td>403</td><td>414</td><td><span class="deterioration number">+11</span></td></tr>
-						<tr><td>data</td><td>36</td><td>36</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>overall</td><td>439</td><td>450</td><td>11</td></tr>
+						<tr><td>text</td><td>403</td><td>414</td><td>11</td></tr>
+						<tr><td>data</td><td>36</td><td>36</td><td>0</td></tr>
 					</tbody>
 				</table>
 			</td>
 		  <td>
-				<H3><a id="rc_static_ram"></a>Static RAM</H3>
+				<H4><a id="rc_static_ram"></a>Static RAM</H4>
 				<table class = "fixed_table size_overview">
 					<col align="left">
 					<col align="right">
@@ -942,14 +936,14 @@ table.bin_col td:nth-child(3) {
 					<col align="right">
 					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
 					<tbody>
-						<tr><td>overall</td><td>36</td><td>36</td><td><span class="unchanged number">0</span></td></tr>
-						<tr><td>data</td><td>36</td><td>36</td><td><span class="unchanged number">0</span></td></tr>
-						<tr><td>bss</td><td>0</td><td>0</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>overall</td><td>36</td><td>36</td><td>0</td></tr>
+						<tr><td>data</td><td>36</td><td>36</td><td>0</td></tr>
+						<tr><td>bss</td><td>0</td><td>0</td><td>0</td></tr>
 					</tbody>
 				</table>
 			</td>
 			<td>
-			  <H3><a id="rc_legend"></a>Legend</H3>
+			  <H4><a id="rc_legend"></a>Legend</H4>
         <table>
 					<col align="left">
 					<col align="left">
@@ -964,7 +958,8 @@ table.bin_col td:nth-child(3) {
 	</tbody>
 </table>
 
-<H2><a id="symbols"></a>Symbols</H2>
+
+<H3><a id="symbols"></a>Symbols</H3>
 <table class = "fixed_table size_overview">
 	<col align="left">
 	<col align="right">
@@ -990,22 +985,206 @@ table.bin_col td:nth-child(3) {
     </tr>
   </tbody>
 </table>
-  
 
-	
   <H2><a id="symbols"></a>Symbols <a href="#home">&#x21A9;</a></H2>
 
   <H3><a id="symbols_persisting_symbols"></a>Persisting Symbols <a href="#home">&#x21A9;</a></H3>
   
 
 
+
+
+
+
+
+
 <table class="sortable persisting_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
+		
+        
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_4"></a><a href="#persisting_symbol_details_4"  >
+		  Test::smvIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  Test::smvIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  cIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  cIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_35"></a><a href="#persisting_symbol_details_35"  >
+		  
+		  fIStay(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_37"></a><a href="#persisting_symbol_details_37"  >
+		  
+		  g() 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  g()::lsvIStay 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  g()::lsvIStayButDiffer 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_38"></a><a href="#persisting_symbol_details_38"  >
 		  
 		  implementationChanged(int) 
       
@@ -1014,7 +1193,7 @@ table.bin_col td:nth-child(3) {
 		  
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
 			<span class="number">98</span>
@@ -1026,168 +1205,8 @@ table.bin_col td:nth-child(3) {
 			<span class="deterioration number">8</span>
 		</td>
 		</tr>
-		<tr>
-		<td>
-      
-		  Test::smvIStay 
-      
-		</td>
-		<td>
-			D
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  Test::smvIStayButDiffer 
-      
-		</td>
-		<td>
-			D
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  cIStay 
-      
-		</td>
-		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  cIStayButDiffer 
-      
-		</td>
-		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
-		  
-		  fIStay(double) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_3"></a><a href="#persisting_symbol_details_3"  >
-		  
-		  g() 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIStay 
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIStayButDiffer 
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
+		
+        
 		<tr>
 		<td>
       
@@ -1195,7 +1214,7 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1207,6 +1226,8 @@ table.bin_col td:nth-child(3) {
 			<span class="unchanged number">0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
@@ -1214,7 +1235,7 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1243,92 +1264,103 @@ table.bin_col td:nth-child(3) {
   <H3><a id="symbols_symbols_disappeared"></a>Disappeared Symbols <a href="#home">&#x21A9;</a></H3>
   
 
+
+
+
+
+
 <table class="sortable isolated_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
+		
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_2"></a><a href="#disappeared_symbol_details_2" >
-		  
-		  fIStayButDiffer(float)
-       
-		  &#9432;
-		  </a>
-		  
+		  Test::smvIAmGone 
+      
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
-			<span class="number">20</span>
+			<span class="number">4</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_0"></a><a href="#disappeared_symbol_details_0" >
+		  cIAmGone 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_34"></a><a href="#disappeared_symbol_details_34" >
 		  
-		  fIAmGone(int)
-       
+		  fIAmGone(int) 
+      
 		  &#9432;
 		  </a>
 		  
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
 			<span class="number">16</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  Test::smvIAmGone
+		  <a name="disappeared_symbol_overview_36"></a><a href="#disappeared_symbol_details_36" >
+		  
+		  fIStayButDiffer(float) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">20</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  g()::lsvIAmGone 
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  cIAmGone
+		  vIAmGone 
       
 		</td>
 		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIAmGone
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  vIAmGone
-      
-		</td>
-		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1345,95 +1377,106 @@ table.bin_col td:nth-child(3) {
 	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
 </table>
 
-  <H3><a id="symbols_new_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
+  <H3><a id="symbols_appeared_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
   
+
+
+
+
+
 
 <table class="sortable isolated_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
+		
 		<tr>
 		<td>
       
-		  <a name="new_symbol_overview_19"></a><a href="#new_symbol_details_19" >
+		  Test::smvIAmNew 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  cIAmNew 
+      
+		</td>
+		<td>
+			?
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_53"></a><a href="#appeared_symbol_details_53" >
 		  
-		  fIAmNew(short)
-       
+		  fIAmNew(short) 
+      
 		  &#9432;
 		  </a>
 		  
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
 			<span class="number">20</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  <a name="new_symbol_overview_18"></a><a href="#new_symbol_details_18" >
+		  <a name="appeared_symbol_overview_52"></a><a href="#appeared_symbol_details_52" >
 		  
-		  fIStayButDiffer(char)
-       
+		  fIStayButDiffer(char) 
+      
 		  &#9432;
 		  </a>
 		  
 		</td>
 		<td>
-			T
+			?
 		</td>
 		<td>
 			<span class="number">19</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  Test::smvIAmNew
+		  g()::lsvIAmNew 
       
 		</td>
 		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
       
-		  cIAmNew
+		  vIAmNew 
       
 		</td>
 		<td>
-			r
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  g()::lsvIAmNew
-      
-		</td>
-		<td>
-			d
-		</td>
-		<td>
-			<span class="number">4</span>
-		</td>
-		</tr>
-		<tr>
-		<td>
-      
-		  vIAmNew
-      
-		</td>
-		<td>
-			D
+			?
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1454,9 +1497,18 @@ table.bin_col td:nth-child(3) {
   <H3><a id="symbols_similar_symbols"></a>Similar Symbols <a href="#home">&#x21A9;</a></H3>
   
 
+
+
+
+
+
+
+
 <table class="sortable similar_symbols">
   <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
   <tbody>
+		
+        
 		<tr>
 		<td>
       
@@ -1469,9 +1521,9 @@ table.bin_col td:nth-child(3) {
 		  Test::smvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  D
+		  ?
 		  <br>
-		  D
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1479,7 +1531,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">83.9</span>
@@ -1488,10 +1540,12 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  <a name="similar_symbols_overview_1"></a><a href="#similar_symbols_details_1"  >
+		  <a name="similar_symbol_overview_1"></a><a href="#similar_symbol_details_1"  >
       
 		  1
       
@@ -1505,9 +1559,9 @@ table.bin_col td:nth-child(3) {
 		  fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>)
 		</td>
 		<td>
-		  T
+		  ?
 		  <br>
-		  T
+		  ?
 		</td>
 		<td>
 		  <span class="number">20</span>
@@ -1521,9 +1575,11 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">83.7</span>
 		</td>
 		<td>
-		  <span class="number">84.5</span>
+		  <span class="number">85.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
@@ -1536,9 +1592,9 @@ table.bin_col td:nth-child(3) {
 		  g()::lsvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  d
+		  ?
 		  <br>
-		  d
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1546,7 +1602,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">82.8</span>
@@ -1555,10 +1611,111 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
 		  3
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">v</span>IStayButDiffer
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">75.7</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  4
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">c</span>IStayButDiffer
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">75.7</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  5
+      
+		</td>
+		<td>
+		  Test::smvI<span class="diff_highlight">AmGone</span>
+		  <br>
+		  Test::smvI<span class="diff_highlight">Stay</span>
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  6
       
 		</td>
 		<td>
@@ -1567,9 +1724,9 @@ table.bin_col td:nth-child(3) {
 		  cIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  r
+		  ?
 		  <br>
-		  r
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1577,7 +1734,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">66.7</span>
@@ -1586,10 +1743,12 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  4
+		  7
       
 		</td>
 		<td>
@@ -1598,9 +1757,9 @@ table.bin_col td:nth-child(3) {
 		  vIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  D
+		  ?
 		  <br>
-		  D
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1608,7 +1767,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">66.7</span>
@@ -1617,10 +1776,177 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  5
+		  8
+      
+		</td>
+		<td>
+		  g()::lsvI<span class="diff_highlight">AmGone</span>
+		  <br>
+		  g()::lsvI<span class="diff_highlight">Stay</span>
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">64.3</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  9
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">g()::lsv</span>IStayButDiffer
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">63.6</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  10
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">Test::smv</span>IStayButDiffer
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">62.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  11
+      
+		</td>
+		<td>
+		  Test::smvI<span class="diff_highlight">AmGon</span>e
+		  <br>
+		  Test::smvI<span class="diff_highlight">StayButDiff</span>e<span class="diff_highlight">r</span>
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">56.4</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  12
+      
+		</td>
+		<td>
+		  g()::lsvI<span class="diff_highlight">AmGon</span>e
+		  <br>
+		  g()::lsvI<span class="diff_highlight">StayButDiff</span>e<span class="diff_highlight">r</span>
+		</td>
+		<td>
+		  ?
+		  <br>
+		  ?
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">54.1</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  13
       
 		</td>
 		<td>
@@ -1629,9 +1955,9 @@ table.bin_col td:nth-child(3) {
 		  <span class="diff_highlight">g()</span>::<span class="diff_highlight">l</span>svIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  D
+		  ?
 		  <br>
-		  d
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1639,7 +1965,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">53.3</span>
@@ -1648,10 +1974,12 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  6
+		  14
       
 		</td>
 		<td>
@@ -1660,9 +1988,9 @@ table.bin_col td:nth-child(3) {
 		  <span class="diff_highlight">v</span>IAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  r
+		  ?
 		  <br>
-		  D
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1670,7 +1998,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">53.3</span>
@@ -1679,10 +2007,12 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  7
+		  15
       
 		</td>
 		<td>
@@ -1691,9 +2021,9 @@ table.bin_col td:nth-child(3) {
 		  <span class="diff_highlight">Test</span>::s<span class="diff_highlight">m</span>vIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  d
+		  ?
 		  <br>
-		  D
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1701,7 +2031,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">53.3</span>
@@ -1710,10 +2040,12 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  8
+		  16
       
 		</td>
 		<td>
@@ -1722,9 +2054,9 @@ table.bin_col td:nth-child(3) {
 		  <span class="diff_highlight">c</span>IAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  D
+		  ?
 		  <br>
-		  r
+		  ?
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1732,7 +2064,7 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">4</span>
 		</td>
 		<td>
-			<span class="unchanged number">+0</span>
+			<span class="unchanged number">0</span>
 		</td>
 		<td>
 		  <span class="number">53.3</span>
@@ -1741,12 +2073,14 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">100.0</span>
 		</td>
 		</tr>
+		
+        
 		<tr>
 		<td>
       
-		  <a name="similar_symbols_overview_9"></a><a href="#similar_symbols_details_9"  >
+		  <a name="similar_symbol_overview_17"></a><a href="#similar_symbol_details_17"  >
       
-		  9
+		  17
       
 		  &#9432;
 		  </a>
@@ -1758,9 +2092,9 @@ table.bin_col td:nth-child(3) {
 		  fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t)
 		</td>
 		<td>
-		  T
+		  ?
 		  <br>
-		  T
+		  ?
 		</td>
 		<td>
 		  <span class="number">16</span>
@@ -1768,13 +2102,13 @@ table.bin_col td:nth-child(3) {
 		  <span class="number">20</span>
 		</td>
 		<td>
-			<span class="deterioration number">+4</span>
+			<span class="deterioration number">4</span>
 		</td>
 		<td>
 		  <span class="number">51.9</span>
 		</td>
 		<td>
-		  <span class="number">91.4</span>
+		  <span class="number">90.2</span>
 		</td>
 		</tr>
 		
@@ -1793,9 +2127,7 @@ table.bin_col td:nth-child(3) {
 </table>
 
   
-  
 
-  
   
 
   
@@ -1810,15 +2142,81 @@ table.bin_col td:nth-child(3) {
   <H3><a id="symbol_details_persisting_symbols"></a>Persisting Symbols <a href="#home">&#x21A9;</a></H3>
   
 
-<H4><span class="monospace"><a name="persisting_symbol_details_4"></a>Persisting symbol
- 
-<a href="#persisting_symbol_overview_4">
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_35"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_35">
+
+fIStay(double)
+
+</a>
+
+: old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+
+Instructions unchanged
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_37"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_37">
+
+g()
+
+</a>
+
+: old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+
+Instructions unchanged
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_38"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_38">
 
 implementationChanged(int)
- 
+
 </a>
 
 : old size: 98 bytes, new size: 106 bytes, delta: <span class="deterioration number">8</span> bytes</span></H4>
+
 
     <table class="diff" id="difflib_chg_to0__top"
            cellspacing="0" cellpadding="0" rules="groups" >
@@ -1864,62 +2262,30 @@ implementationChanged(int)
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_32">32</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_35">35</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_33">33</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_36">36</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_34">34</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to0_37">37</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_35">35</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to0_38">38</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_1"></a>Persisting symbol
- 
-<a href="#persisting_symbol_overview_1">
 
-fIStay(double)
- 
-</a>
-
-: old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
-Instructions unchanged
-
-
-<H4><span class="monospace"><a name="persisting_symbol_details_3"></a>Persisting symbol
- 
-<a href="#persisting_symbol_overview_3">
-
-g()
- 
-</a>
-
-: old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
-Instructions unchanged
 
   <H3><a id="symbol_details_symbols_disappeared"></a>Disappeared Symbols <a href="#home">&#x21A9;</a></H3>
   
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_2"></a>Disappeared symbol
- 
-<a href="#disappeared_symbol_overview_2">
-
-fIStayButDiffer(float)
- 
-</a>
-
-: size: 20 bytes</span></H4>
-<pre>
-endbr64 
-push   %rbp
-mov    %rsp,%rbp
-movss  %xmm0,-0x4(%rbp)
-movss  -0x4(%rbp),%xmm0
-pop    %rbp
-retq   
-</pre>
 
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_0"></a>Disappeared symbol
- 
-<a href="#disappeared_symbol_overview_0">
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_34"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_34">
 
 fIAmGone(int)
- 
+
 </a>
 
 : size: 16 bytes</span></H4>
@@ -1931,17 +2297,59 @@ mov    %edi,-0x4(%rbp)
 mov    -0x4(%rbp),%eax
 pop    %rbp
 retq   
+
 </pre>
 
-  <H3><a id="symbol_details_new_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_36"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_36">
+
+fIStayButDiffer(float)
+
+</a>
+
+: size: 20 bytes</span></H4>
+<pre>
+endbr64 
+push   %rbp
+mov    %rsp,%rbp
+movss  %xmm0,-0x4(%rbp)
+movss  -0x4(%rbp),%xmm0
+pop    %rbp
+retq   
+
+</pre>
+
+
+
+  <H3><a id="symbol_details_appeared_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
   
 
-<H4><span class="monospace"><a name="new_symbol_details_19"></a>New symbol
- 
-<a href="#new_symbol_overview_19">
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_53"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_53">
 
 fIAmNew(short)
- 
+
 </a>
 
 : size: 20 bytes</span></H4>
@@ -1954,15 +2362,26 @@ mov    %ax,-0x4(%rbp)
 movzwl -0x4(%rbp),%eax
 pop    %rbp
 retq   
+
 </pre>
 
 
-<H4><span class="monospace"><a name="new_symbol_details_18"></a>New symbol
- 
-<a href="#new_symbol_overview_18">
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_52"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_52">
 
 fIStayButDiffer(char)
- 
+
 </a>
 
 : size: 19 bytes</span></H4>
@@ -1975,25 +2394,86 @@ mov    %al,-0x4(%rbp)
 movzbl -0x4(%rbp),%eax
 pop    %rbp
 retq   
+
 </pre>
+
+
 
   
   <H3><a id="symbol_details_similar_symbols"></a>Similar Symbols <a href="#home">&#x21A9;</a></H3>
   
+
+
+
+
+
+
+
+
+
+
+
 <H4><span class="monospace">
-<a name="similar_symbols_details_1"></a>
- 
-<a href=".#similar_symbols_overview_1">
+<a name="similar_symbol_details_1"></a>
+
+<a href="#similar_symbol_overview_1">
 
 Similar pair 1
- 
+
 </a>
 
-: old size: 20 bytes, new size: 19 bytes, delta: <span class="improvement number">-1</span> bytes, sig. sim.: 83.7 %, instr. sim.: 84.5 %</span></H4>
+: old size: 20 bytes, new size: 19 bytes, delta: <span class="improvement number">-1</span> bytes, sig. sim.: 83.7 %, instr. sim.: 85.0 %</span></H4>
 <p>
 <span class="monospace">Old: fIStayButDiffer(<span class="diff_highlight">flo</span>a<span class="diff_highlight">t</span>)</span>
 <br>
 <span class="monospace">New: fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>)</span>
+</p>
+
+    <table class="diff" id="difflib_chg_to1__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to1__0"><a href="#difflib_chg_to1__0">f</a></td><td class="diff_header" id="from1_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td><td class="diff_next"><a href="#difflib_chg_to1__0">f</a></td><td class="diff_header" id="to1_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to1__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to1__top">t</a></td><td class="diff_header" id="to1_4">4</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,%eax</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_4">4</td><td nowrap="nowrap">mov<span class="diff_chg">ss</span>&nbsp;&nbsp;%<span class="diff_chg">xmm0</span>,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to1_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">&nbsp;&nbsp;</span>&nbsp;&nbsp;%<span class="diff_chg">al</span>,-0x4(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">ss&nbsp;</span>&nbsp;-0x4(%rbp),%x<span class="diff_sub">mm0</span></td><td class="diff_next"></td><td class="diff_header" id="to1_6">6</td><td nowrap="nowrap">mov<span class="diff_chg">zbl</span>&nbsp;-0x4(%rbp),%<span class="diff_add">ea</span>x</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_7">7</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to1_8">8</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to1_9">9</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_17"></a>
+
+<a href="#similar_symbol_overview_17">
+
+Similar pair 17
+
+</a>
+
+: old size: 16 bytes, new size: 20 bytes, delta: <span class="deterioration number">4</span> bytes, sig. sim.: 51.9 %, instr. sim.: 90.2 %</span></H4>
+<p>
+<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t)</span>
+<br>
+<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t)</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2006,56 +2486,24 @@ Similar pair 1
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
             <tr><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="to2_4">4</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,%eax</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_4">4</td><td nowrap="nowrap">mov<span class="diff_chg">ss</span>&nbsp;&nbsp;%<span class="diff_chg">xmm0</span>,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to2_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">&nbsp;&nbsp;</span>&nbsp;&nbsp;%<span class="diff_chg">al</span>,-0x4(%rbp)</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">ss&nbsp;</span>&nbsp;-0x4(%rbp),%x<span class="diff_sub">mm0</span></td><td class="diff_next"></td><td class="diff_header" id="to2_6">6</td><td nowrap="nowrap">mov<span class="diff_chg">zbl</span>&nbsp;-0x4(%rbp),%<span class="diff_add">ea</span>x</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">edi</span>,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to2_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">ax</span>,-0x4(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">&nbsp;&nbsp;&nbsp;</span>&nbsp;-0x4(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to2_6">6</td><td nowrap="nowrap">mov<span class="diff_chg">zwl</span>&nbsp;-0x4(%rbp),%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_7">7</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to2_8">8</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to2_9">9</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
 
-<H4><span class="monospace">
-<a name="similar_symbols_details_9"></a>
- 
-<a href=".#similar_symbols_overview_9">
 
-Similar pair 9
- 
-</a>
-
-: old size: 16 bytes, new size: 20 bytes, delta: <span class="deterioration number">+4</span> bytes, sig. sim.: 51.9 %, instr. sim.: 91.4 %</span></H4>
-<p>
-<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t)</span>
-<br>
-<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t)</span>
-</p>
-
-    <table class="diff" id="difflib_chg_to10__top"
-           cellspacing="0" cellpadding="0" rules="groups" >
-        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
-        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
-        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
-        <tbody>
-            <tr><td class="diff_next" id="difflib_chg_to10__0"><a href="#difflib_chg_to10__0">f</a></td><td class="diff_header" id="from10_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td><td class="diff_next"><a href="#difflib_chg_to10__0">f</a></td><td class="diff_header" id="to10_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to10_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to10_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to10__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to10__top">t</a></td><td class="diff_header" id="to10_4">4</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,%eax</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">edi</span>,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to10_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">ax</span>,-0x4(%rbp)</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_5">5</td><td nowrap="nowrap">mov<span class="diff_chg">&nbsp;&nbsp;&nbsp;</span>&nbsp;-0x4(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to10_6">6</td><td nowrap="nowrap">mov<span class="diff_chg">zwl</span>&nbsp;-0x4(%rbp),%eax</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to10_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from10_7">7</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to10_8">8</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td></tr>
-        </tbody>
-    </table>
   
   
-  
-</div>
+  </div>
   <div id="footer">
-  
   <footer>
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-10-30 08:29:18 by elf_diff 7104cde67e81716b7b0248ce1a6351582544b004 (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-11-04 10:00:36 by elf_diff cc573733aada55833132b0ced553cd14d1fdcfac (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>
@@ -2063,7 +2511,6 @@ Using sortable tables from <a href="https://kryogenix.org/code/browser/sorttable
       </p>
      </span>
    </footer>
-   
    </div>
 </body>
 </html>
