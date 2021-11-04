@@ -19,15 +19,25 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.plugin import ExportPairReportPlugin
+from elf_diff.plugin import (
+    ExportPairReportPlugin,
+    PluginConfigurationKey,
+    PluginConfigurationInformation,
+)
 from elf_diff.error_handling import warning
 from elf_diff.plugins.export.html.plugin import HTMLExportPairReportPlugin
+from elf_diff.pair_report_document import ValueTreeNode
 import tempfile
 import os
+from typing import Optional, Dict
 
 
-def convertHTMLToPDF(html_file, pdf_file):
+def convertHTMLToPDF(html_file: str, pdf_file: str):
+    """Convert a HTML file to a PDF file"""
     try:
+        # Weasyprint is not available on all platforms.
+        # Therefore, we import it on function level and
+        # tolerate it not being available.
         from weasyprint import HTML
     except ImportError:
         warning("Unable to import module weasyprint")
@@ -38,37 +48,50 @@ def convertHTMLToPDF(html_file, pdf_file):
 
 
 class PDFExportPairReportPlugin(ExportPairReportPlugin):
+    """A plugin class that exports the elf_diff document as a PDF document"""
+
     def __init__(self, settings, plugin_configuration):
         super().__init__(settings, plugin_configuration)
+        self._tmp_html_file: Optional(str) = None
 
-    @staticmethod
-    def cleanup(filename):
-        if os.path.isfile(filename):
-            os.remove(filename)
+    def cleanup(self) -> None:
+        """Cleanup the temporary HTML file"""
+        if os.path.isfile(self._tmp_html_file):
+            os.remove(self._tmp_html_file)
 
-    def export(self, document):
+    def export(self, document: ValueTreeNode) -> None:
+        """Export the PDF document"""
 
-        pdf_output_file = self.getConfigurationParameter("output_file")
+        pdf_output_file: str = self.getConfigurationParameter("output_file")
 
-        tmp_html_file = os.path.join(
+        self._tmp_html_file: str = os.path.join(
             tempfile._get_default_tempdir(),
             next(tempfile._get_candidate_names()) + ".html",
         )
 
         try:
-            plugin_configuration = {
+            plugin_configuration: Dict[str, str] = {
                 "single_page": True,
-                "output_file": tmp_html_file,
+                "output_file": self._tmp_html_file,
                 "quiet": True,
             }
-            html = HTMLExportPairReportPlugin(self.settings, plugin_configuration)
-            html.export(document)
+            html_export_plugin = HTMLExportPairReportPlugin(
+                self._settings, plugin_configuration
+            )
+            html_export_plugin.export(document)
 
-            convertHTMLToPDF(tmp_html_file, pdf_output_file)
+            convertHTMLToPDF(self._tmp_html_file, pdf_output_file)
         except Exception as e:
-            PDFExportPairReportPlugin.cleanup(tmp_html_file)
+            self.cleanup()
             raise e
 
-        PDFExportPairReportPlugin.cleanup(tmp_html_file)
+        self.cleanup()
 
         self.log("Single page pdf pair report '%s' written" % pdf_output_file)
+
+    @staticmethod
+    def getConfigurationInformation() -> PluginConfigurationInformation:
+        """Return plugin configuration information"""
+        return [PluginConfigurationKey("output_file", "The PDF output file")] + super(
+            PDFExportPairReportPlugin, PDFExportPairReportPlugin
+        ).getConfigurationInformation()

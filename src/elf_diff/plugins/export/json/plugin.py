@@ -19,23 +19,40 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.plugin import ExportPairReportPlugin
+from elf_diff.plugin import (
+    ExportPairReportPlugin,
+    PluginConfigurationKey,
+    PluginConfigurationInformation,
+)
 from elf_diff.document_explorer import DocumentExplorer, TREE_TRAVERSAL_ALL
+from elf_diff.settings import Settings
+from elf_diff.pair_report_document import ValueTreeNode
 import json
+from typing import Dict
 
 
 class JSONExportPairReportPlugin(ExportPairReportPlugin):
-    def __init__(self, settings, plugin_configuration):
+    """A plugin class that exports the elf_diff document as JSON"""
+
+    def __init__(self, settings: Settings, plugin_configuration: Dict[str, str]):
         super().__init__(settings, plugin_configuration)
 
     def export(
-        self, document
-    ):  # pylint: disable=arguments-differ # There's no visible reason why pylint warns here
-        dict_ = DocumentExplorer().generateDictionary(
+        self, document: ValueTreeNode
+    ) -> None:  # pylint: disable=arguments-differ # There's no visible reason why pylint warns here
+        """Export the elf_diff document as JSON"""
+        dict_: dict = DocumentExplorer().generateDictionary(
             document, tree_traversal_options=TREE_TRAVERSAL_ALL
         )
 
-        json_output = json.dumps(dict_, sort_keys=True, indent=4)
+        json_output: str = json.dumps(dict_, sort_keys=True, indent=4)
 
-        with open(self.plugin_configuration["output_file"], "w") as f:
+        with open(self.getConfigurationParameter("output_file"), "w") as f:
             f.write(json_output)
+
+    @staticmethod
+    def getConfigurationInformation() -> PluginConfigurationInformation:
+        """Return plugin configuration information"""
+        return [PluginConfigurationKey("output_file", "The JSON output file")] + super(
+            JSONExportPairReportPlugin, JSONExportPairReportPlugin
+        ).getConfigurationInformation()

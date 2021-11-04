@@ -28,8 +28,13 @@ import os
 import subprocess  # nosec # silence bandid warning
 
 
+SOURCE_CODE_START_TAG = "...ED_SOURCE_START..."
+SOURCE_CODE_END_TAG = "...ED_SOURCE_END..."
+
+
 def preHighlightSourceCode(src):
-    return "__ED_SOURCE_START__%s__ED_SOURCE_END__" % (src)
+    """Tag the start and end of source code in order to allow it to be replaced by some sort of tag"""
+    return "%s%s%s" % (SOURCE_CODE_START_TAG, src, SOURCE_CODE_END_TAG)
 
 
 class Mangling(object):
