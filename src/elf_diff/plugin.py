@@ -52,7 +52,13 @@ class Plugin(object):
         ).getConfigurationInformation()
         config_keys: Dict[str, PluginConfigurationKey] = {}
         for config_key in configuration_information:
+            if config_key.name in config_keys.keys():
+                pluginUnrecoverableError(
+                    "Plugin exports more than one configuration options named '{config_key.name}"
+                )
             config_keys[config_key.name] = config_key
+
+        print("Verifying config keys...")
 
         for config_key_encountered, value in self._plugin_configuration.items():
             if config_key_encountered not in config_keys.keys():
@@ -64,6 +70,10 @@ class Plugin(object):
     def pluginUnrecoverableError(self, msg: str) -> None:
         """Flag an unrecoverable error in plugin scope"""
         unrecoverableError("Plugin %s: %s" % (type(self).__name__, msg))
+
+    def pluginWarning(self, msg: str) -> None:
+        """Output a warning in plugin scope"""
+        warning("Plugin %s: %s" % (type(self).__name__, msg))
 
     def isConfigurationParameterAvailable(self, name: str) -> bool:
         """Return True if the configuration parameter is available, False otherwise"""
@@ -180,6 +190,7 @@ def registerPluginsFromCommandLine(settings: Settings) -> None:
                     % (param_tokens, plugin_definition)
                 )
                 continue
+            print(f"      {key} = '{value}'")
             plugin_configuration[key] = value
 
         plugin_class: Optional(Type) = None
