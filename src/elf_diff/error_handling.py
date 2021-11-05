@@ -19,8 +19,9 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import print_function
 import sys
+
+WARNINGS_OCCURRED = False
 
 
 def eprint(*args, **kwargs):
@@ -37,3 +38,4 @@ def unrecoverableError(msg):
 
 def warning(msg):
     eprint("Warning: {msg}".format(msg=msg))
+    WARNINGS_OCCURRED = True
