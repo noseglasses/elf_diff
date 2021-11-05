@@ -195,6 +195,12 @@ parameters = [
         'Loads and parametrizes a plugin. Example: --load_plugin "some/path/to/module.py;PluginClass;foo1=bar2;foo2=bar2"',
         action="append",
     ),
+    Parameter(
+        "debug",
+        "If enabled, elf_diff runs in debugging mode and outputs extended information if something goes wrong.",
+        default=False,
+        is_flag=True,
+    ),
 ]
 
 
