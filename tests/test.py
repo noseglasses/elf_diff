@@ -72,9 +72,10 @@ else:
             "--branch",
             "--parallel-mode",  # Creates individual .coverage* files for each run
             os.path.join(bin_dir, "elf_diff"),
+            "--debug",
         ]
     else:
-        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
+        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff"), "--debug"]
 
 old_binary_x86_64 = os.path.join(
     testing_dir, "x86_64", "libelf_diff_test_release_old.a"
@@ -97,6 +98,8 @@ old_mangling_file_ghs = os.path.join(
 new_mangling_file_ghs = os.path.join(
     testing_dir, "ghs", "libelf_diff_test_release_new.a.demangle.txt"
 )
+
+test_plugin = os.path.join(testing_dir, "plugin", "test_plugin.py")
 
 verbose_output = True
 
@@ -398,12 +401,33 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
     def test_language2(self):
         self.runSimpleTest([("language", "___unknown___")])
 
-    def test_load_plugin(self):
+    def test_load_plugin_success1(self):
         self.runSimpleTest(
             [
                 (
                     "load_plugin",
-                    "$HOME/Documents/elf_diff/tests/plugin/test_plugin.py;TestExportPairReportPlugin;foo=bar;zoo=zar",
+                    f"{test_plugin};TestExportPairReportPlugin;magic_words=clatu_ferrata_nectu",
+                )
+            ]
+        )
+
+    def test_load_plugin_success2(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_plugin",
+                    f"{test_plugin};TestExportPairReportPlugin",
+                )
+            ]
+        )
+
+    @unittest.expectedFailure
+    def test_load_plugin_failure(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_plugin",
+                    f"{test_plugin};TestExportPairReportPlugin;some_unknown_keyword=foo",
                 )
             ]
         )
