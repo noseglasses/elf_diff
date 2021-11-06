@@ -16,7 +16,7 @@
 
 <h1><img style="vertical-align:middle" src="https://github.com/noseglasses/elf_diff/blob/bb703f85ea24c7ee27998bb6b3e554843f31248c/images/favicon.png"> elf_diff - A Tool to Compare Elf Binaries</h1>
 
-# Introduction
+## Introduction
 
 This tool compares pairs of ELF binary files and provides information about differences in the contained symbols with respect to the space that they occupy in program memory (functions and global data) and in RAM (global data). Binary pairs that are passed to _elf_diff_ are typically two versions of the same program/library/firmware. _elf_diff_ can help you to find out about the impact of your changes on your code's resource consumption.
 
@@ -28,7 +28,7 @@ All results are presented in either HTML or pdf files. HTML documents are cross-
 
 _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the former compares two binaries, the latter generates an overview-report for a set of binary-pairs. Such overview-reports list only the changes in terms of symbol sizes and the amount of symbols, no disassembly is provided to gain feasible document sizes.
 
-## Example
+### Example
 
 Assume you have two compiled versions of a software and you might be interested in the most prominent differences (and possibly the similarities) between both.
 
@@ -127,13 +127,13 @@ To allow for convenient exchange and archiving, single page reports may also be 
 __Please__ __note__: If you are familiar with _elf_ _files_, the terms _symbol_ and _name_ _mangling_, you know how compilers and linkers transform 
 high level language code into binary code and how this code is stored in elf files, you might want to skip the remaining parts of the introduction section.
 
-## Content of Reports
+### Content of Reports
 
 Now, after you had a look at the different types of reports that _elf_diff_ generates, you might be interested in how the contained information is established.
 
 As already mentioned, _elf_diff_ compares binaries based on the contained symbols.
 
-### Symbols 
+#### Symbols
 
 Symbols resulting from functions and variables like
 
@@ -153,7 +153,7 @@ have the following properties:
 
 __Please note:__ There are several other properties but those are not important for understanding what _elf_diff_ does.
 
-### A Brief Excursion About Name Mangling
+#### A Brief Excursion About Name Mangling
 
 You might be surprised that the _data_ _type_ of variables is not part of the above list.
 
@@ -188,7 +188,7 @@ a process commonly called _demangling_ (e.g. by means of the tool [c++filt](http
 
 We still haven't answered the question how symbols, or rather their properties can be used to find the differences between compiled binaries. So let's get back on track.
 
-### Comparing Symbols
+#### Comparing Symbols
 
 When comparing two binaries one may group symbols based on their names and signatures (or their mangled names) as
 
@@ -213,7 +213,7 @@ Also, their
 
 might be changed.
 
-### Symbol Similarities
+#### Symbol Similarities
 
 _elf_diff_ automatically detects and visualizes pairs of similar symbols. 
 
@@ -222,7 +222,7 @@ Unfortunatelly, in some cases the relations between symbols are not unique.
 To help the user finding the most relevant symbol relations, _elf_diff_ displays the level of lexicographic similarity for every pair of similar symbols. 
 For functions the level of lexicographic similarity of the two implementations is also displayed.
 
-### Highlighted Differences
+#### Highlighted Differences
 
 To allow for conveniently analyzing implementation changes at the assembly level, the disassembled code is displayed side-by-side with differences being highlighted.
 
@@ -233,7 +233,7 @@ If you want to find out about other applications of _elf_diff_, please keep on r
 
 Don't forget to have a look at the examples section at the end of this document.
 
-# Purpose
+## Purpose
 
 * resource/performance optimization
 * debugging
@@ -250,7 +250,7 @@ The following information is part of _elf_diff_'s report pages:
 
 As _elf_diff_ operates on elf-files, it is fairly language and platform agnostic. All it requires to work is a suitable set of [GNU Binutils](https://en.wikipedia.org/wiki/GNU_Binutils) for the target platform.
 
-# Requirements
+## Requirements
 
 _elf_diff_ is a Python script. It mostly uses standard libraries but also some non-standard packages (see the file `requirements.txt`) for more information.
 
@@ -258,7 +258,7 @@ _elf_diff_ works and is automatically tested with Python 3.
 
 The following setup guide assumes Python 3 to be installed on your computer. Python setup tutorials can easily be found by googling "install python 3".
 
-# Installing
+## Installing
 
 Install the elf_diff Python package via one of the following commands
 
@@ -277,7 +277,7 @@ Alternatively when developing _elf_diff_, the following steps are required:
 
 To run _elf_diff_ from the local git-sandbox, please use the script `bin/elf_diff` that is part of the source code repo, e.g. as `bin/elf_diff -h` to display the help string.
 
-# Usage
+## Usage
 
 There is a small difference between running Python on Linux and Windows. While the command to run Python 3 from a console window under Linux is `python3`, on Windows there is a so called _Python runner_ (command `py`) that invokes the most suitable Python interpreter installed.
 
@@ -293,7 +293,7 @@ in a Windows console.
 
 In the examples provided below, we prefer the Linux syntax. Please replace the keyword `python3` with `py` when running the respective examples in a Windows environment.
 
-## Generating Pair-Reports
+### Generating Pair-Reports
 
 To generate a pair report, two binary files need to be passed to _elf_diff_ via the command line. Let's assume those files are named `my_old_binary.elf` and `my_new_binary.elf`. 
 
@@ -302,7 +302,7 @@ The following command will generate a multipage html report in a subdirectory of
 python3 -m elf_diff my_old_binary.elf my_new_binary.elf
 ```
 
-## Generating Mass-Reports
+### Generating Mass-Reports
 
 __Please note:__ Mass reports have been deprecated and are likely removed from further versions of the software.
 
@@ -334,7 +334,7 @@ python3 -m elf_diff --mass_report --driver_file my_elf_diff_driver.yaml
 
 This will generate a HTML file `elf_diff_mass_report.html` in your current working directory.
 
-## Generating pdf-Files
+### Generating pdf-Files
 
 The generation of pdf reports with _elf_diff_ requires the Python package [weasyprint](https://weasyprint.org). See the [weasyprint installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation) for more information.
 
@@ -350,7 +350,7 @@ or from within a driver file, e.g.
 pdf_file: "my_pair_report.pdf"
 ```
 
-## Specifying an Alternative HTML File Location
+### Specifying an Alternative HTML File Location
 
 Similar to specifying an explicit filename for pdf files, the same can be done for our HTML output files, either via the command line
 ```sh
@@ -362,14 +362,14 @@ html_file: "my_pair_report.html"
 ```
 this will create a single file HTML report (with the exact same content as generated pdf files).
 
-## Specifying an Alternative HTML Directory
+### Specifying an Alternative HTML Directory
 
 To generate a multi-page HTML report use the command line flag `--html_dir` to generate the HTML files e.g. in directory `my_target_dir`.
 ```sh
 python3 -m elf_diff --html_dir my_target_dir my_pair_report.hmtl my_old_binary.elf my_new_binary.elf
 ```
 
-## Using Driver Files
+### Using Driver Files
 
 The driver files that we already met when generating mass-reports can also generally be used to run _elf_diff_. Any parameters that can be passed as command line arguments to _elf_diff_ can also occur in a driver file, e.g.
 ```sh
@@ -381,11 +381,11 @@ mass_report: True
 pdf_file: my_file.pdf
 ...
 ```
-## Supplying a Project Title
+### Supplying a Project Title
 
 A project title could e.g. be a short name that summarizes the changes that you applied between the old and the new version of the compared binaries. Supply a title via the parameter `project_title`.
 
-## Adding Background Information
+### Adding Background Information
 
 Additional information about the compared binaries can be added to pair-reports. Use the parameters `old_info_file` and `new_info_file` to supply filenames of text files whose content is supposed to be added to the report.
 
@@ -400,13 +400,13 @@ build_info: >
   preserved.
 ```
 
-## Using Alias Strings
+### Using Alias Strings
 
 If you want to obtain anonymized reports, it is not desirable to reveile details about your user name (home directory) or the directory structure. In such a case, the binary filenames can be replaced by alias wherever they would appear in the reports. 
 
 Supply alias names using the `old_alias` and `new_alias` parameters for the old or the new version of the binaries, respectively.
 
-## Working with Cross-Build Binaries
+### Working with Cross-Build Binaries
 
 When working on firmware projects for embedded devices, you typically will be using a cross-build environment. If based on GNU gcc, such an environment usually not only ships with the necessary compilers but also with a set of additional tools called [GNU Binutils](https://en.wikipedia.org/wiki/GNU_Binutils).
 
@@ -424,7 +424,7 @@ python3 -m elf_diff --bin_dir <path_to_avr_binaries> --bin_prefix "avr-" my_old_
 ```
 The string `<path_to_avr_binaries>` in the above example would of course be replaced by the actual directory path where the binaries live.
 
-## Generating a Template Driver File
+### Generating a Template Driver File
 
 To generate a template driver file that can serve as a basis for your own
 driver files, just run _elf_diff_ with the `driver_template_file` parameter, e.g. as
@@ -434,19 +434,19 @@ python3 -m elf_diff --driver_template_file my_template.yaml
 
 Template files contain the default values of all available parameters, or - if the temple file is generated in the same session where a report was created - the template file will contain the actual settings used for the report generation.
 
-## Selecting and Excluding Symbols
+### Selecting and Excluding Symbols
 
 By means of the command line arguments `symbol_selection_regex` and `symbol_exclusion_regex`, symbols can be explicitly selected and excluded.
 The specified regular expressions are applied to both the old and the old binary. For more fine grained selection, please used the `*_old` and `*_new` versions of the 
 respective command line arguments.
 
-## Skip Similar Symbols Detection
+### Skip Similar Symbols Detection
 
 Similar symbol detection can be a very useful tool but it is a quite costly operation as it requires comparing all symbol names from one binary with all symbols from the other.
 Assuming that both binaries contain `n` symbols this is a `O(n^2)` operation. Therefore it is up to the user to disabe similar symbol detection and output via the command
 line argument `--skip_symbol_similarities`.
 
-## Assembly Code
+### Assembly Code
 
 For most developers who are used to program in high level languages, assembly code is a mystery.
 Still, there is some information that an assembly-novice can gather from observing assembly code. Starting with the number of assembly code statements. Normally less means good. The more assembly statements there are representing a high level language statement, the more time the processor needs to process them. On the contrary, sometimes there may be a suspiciously low number of assembly statements which might indicate that the compiler has optimized away something that it shouldn't have.
@@ -456,7 +456,7 @@ This information is not included in compiled binaries by default. The compiler m
 
 For binaries with debug symbols included, elf_diff will annotate the assembly code by adding the high level language statements that it was generated from.
 
-## Document Structure and Plugin System
+### Document Structure and Plugin System
 
 When analyzing elf binaries and processing output, _elf_diff_ relies on a intermediate datastructure that it establishes after all symbols have been parsed
 from the elf files. This data structure, called _elf_diff_ document, is the basis for the actual file export.
@@ -464,7 +464,7 @@ from the elf files. This data structure, called _elf_diff_ document, is the basi
 File export relies on dedicated data export plugins for (html, pdf, yaml, json, txt, ...). Plugins receive the _elf_diff_ document and can easily extract
 and process its data to generate output of arbitrary type.
 
-## User Defined Plugins
+### User Defined Plugins
 
 _elf_diff_'s plugin system enables developing user plugins, e.g. for custom output based on the _elf_diff_ document.
 Custom plugins are registered via the command line flag `--load_plugin`, specifying the plugin's Python module path and the name of the plugin class
@@ -481,7 +481,7 @@ This example of course assumes that the user plugin knows how to interpret the t
 Plugin classes must be derived from one of the plugin classes defined in elf_diff's module `plugin.py`. Please see elf_diff's default plugins
 in the subdirectories of `<elf_diff_sandbox>/src/elf_diff/plugins` as a reference on how to implement custom plugins.
 
-# Running the Tests
+## Running the Tests
 
 _elf_diff_ comes with a number of tests in the `tests` subdirectory of its git repository.
 Some tests are unit tests others integration tests that run _elf_diff_ through
@@ -489,7 +489,7 @@ its CLI by supplying different command line parameter sets.
 
 This section explains what tests are there and how they can be run.
 
-## Unit Tests
+### Unit Tests
 
 To run unit tests do the following.
 
@@ -498,25 +498,25 @@ cd <repo root>
 python3 ./tests/test_cpp_symbols.py
 ```
 
-## Integration Tests 
+### Integration Tests
 ```sh
 cd <repo root>
 python3 ./tests/test.py
 ```
 
-# Examples
+## Examples
 
-## Examples Page
+### Examples Page
 
 See the [examples page](https://noseglasses.github.io/elf_diff/).
 
-## libstdc++
+### libstdc++
 
 [Comparison of two versions of libstdc++](https://github.com/noseglasses/elf_diff/blob/master/examples/libstdc++_std_string_diff.pdf) shipping with gcc 4.8 and 5. There are vast differences between those two library versions which result in a great number of symbols being reported. The following command demonstrates how report generation can be resticted to a subset of symbols by using regular expressions.
 In the example we select only those symbols related to class `std::string`.
 
 ```sh
-# Generated on Ubuntu 20.04 LTS 
+## Generated on Ubuntu 20.04 LTS
 python3 -m elf_diff \
    --symbol_selection_regex "^std::string::.*"   # select any symbol name starting with std::string:: \
    --pdf_file libstdc++_std_string_diff.pdf      # generate a pdf file \
@@ -524,21 +524,21 @@ python3 -m elf_diff \
    /usr/lib/gcc/x86_64-linux-gnu/5/libstdc++.a   # path to new binary
 ```
 
-# Contributing
+## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process
 for submitting pull requests to us.
 
-# Versioning
+## Versioning
 
 We use [SemVer](https://semver.org/) for versioning. For the versions available,
 see the tags on this repository.
 
-# Authors
+## Authors
 
 * noseglasses - Initial work
 
-# License
+## License
 
 This project is licensed under the GNU General Public License Version 3
 see the LICENSE.md file for details
