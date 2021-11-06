@@ -21,7 +21,7 @@
 
 from elf_diff.binary import Binary
 from elf_diff.binary import Mangling
-import progressbar
+import progressbar  # type: ignore # Make mypy ignore this module
 import sys
 from difflib import get_close_matches
 from difflib import SequenceMatcher

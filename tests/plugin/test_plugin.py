@@ -44,7 +44,12 @@ class TestExportPairReportPlugin(ExportPairReportPlugin):
     def getConfigurationInformation() -> PluginConfigurationInformation:
         """Return plugin configuration information"""
         return [
-            PluginConfigurationKey("magic_words", "Important words", is_optional=True)
+            PluginConfigurationKey(
+                "magic_words",
+                "Important words",
+                is_optional=True,
+                default="Hocus pocus",
+            )
         ] + super(
             TestExportPairReportPlugin, TestExportPairReportPlugin
         ).getConfigurationInformation()

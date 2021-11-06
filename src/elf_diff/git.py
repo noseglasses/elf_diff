@@ -19,10 +19,10 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from git import Repo
+from git import Repo  # type: ignore # Make mypy ignore this module
 import os
 
-from elf_diff.__init__ import __version__
+from elf_diff.__init__ import __version__  # type: ignore # Make mypy ignore this module
 
 
 def gitRepoInfo(settings):

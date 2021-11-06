@@ -18,13 +18,16 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-
 import unittest
 import os
 import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
 import re
+from typing import Optional, List, Tuple, Dict
+
+ArgsPair = Tuple[str, Optional[str]]
+ArgsList = List[ArgsPair]
 
 # import shutil
 
@@ -37,6 +40,9 @@ def prepareSearchPath():
 prepareSearchPath()
 
 from elf_diff.settings import parameters
+from elf_diff.__main__ import RETURN_CODE_WARNINGS_OCCURRED
+from elf_diff.formatted_output import SEPARATOR
+import elf_diff.formatted_output as fo
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -73,10 +79,9 @@ else:
             "--branch",
             "--parallel-mode",  # Creates individual .coverage* files for each run
             os.path.join(bin_dir, "elf_diff"),
-            "--debug",
         ]
     else:
-        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff"), "--debug"]
+        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
 old_binary_x86_64 = os.path.join(
     TESTING_DIR, "x86_64", "libelf_diff_test_release_old.a"
@@ -118,17 +123,17 @@ class ArgsWatcher(object):
         self.args_available = prepareArgsAvailable()
         self.args_tested = set()
 
-    def prepareArgs(self, args_list):
-        output_args_list = []
-        for args_tuple in args_list:
+    def prepareArgs(self, args: ArgsList):
+        output_args: List[str] = []
+        for args_tuple in args:
             key = args_tuple[0]
             value = args_tuple[1]
             self.args_tested.add(key)
-            output_args_list.append(f"--{key}")
+            output_args.append(f"--{key}")
             if value is not None:
-                output_args_list.append(value)
+                output_args.append(value)
 
-        return output_args_list
+        return output_args
 
     def testIfAllArgsUsedAtLeastOnce(self):
         """Test if all elf_diff command line args are at least used once while testing"""
@@ -159,7 +164,31 @@ class ArgsWatcher(object):
 args_watcher = ArgsWatcher()
 
 
-def runSubprocess(cmd, cwd=None, env=None):
+def printFormattedCommandResults(rc: int, output: str, error: str):
+    print(f"exit code: {rc}")
+    if output == "":
+        print("nothing written to stdout")
+    else:
+        print("stdout:")
+        print(fo.START_CITATION)
+        print(output)
+        print(fo.END_CITATION)
+    if error == "":
+        print("nothing written to stderr")
+    else:
+        print("stderr:")
+        print(fo.START_CITATION)
+        print(error)
+        print(fo.END_CITATION)
+
+
+def runSubprocess(
+    test_name: str,
+    cmd: str,
+    cwd: Optional[str] = None,
+    env: Optional[Dict[str, str]] = None,
+    expected_return_code=0,
+) -> List:
 
     if cwd is None:
         cwd = os.getcwd()
@@ -168,8 +197,19 @@ def runSubprocess(cmd, cwd=None, env=None):
         env = os.environ.copy()
 
     if verbose_output:
-        print("   Running command: {cmd}".format(cmd='"' + '" "'.join(cmd) + '"'))
+        print(SEPARATOR)
+        print(f"Test {test_name}")
+        print(SEPARATOR)
+        sys.stdout.write(f'{cmd[0]}" ')
+        for cmd_line_param in cmd[1:]:
+            if cmd_line_param.startswith("--"):
+                sys.stdout.write("\\\n   ")
+            sys.stdout.write(f'"{cmd_line_param}" ')
+        sys.stdout.write("\n")
 
+    rc = -1
+    output = ""
+    error = ""
     try:
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd, env=env
@@ -183,39 +223,51 @@ def runSubprocess(cmd, cwd=None, env=None):
         error = e.decode("utf8")
 
     except (OSError) as e:
+        print(SEPARATOR)
         print(e)
+        print(f"Failed running command in directory '{cwd}'")
+        printFormattedCommandResults(rc, output, error)
         sys.exit(1)
 
-    if rc != 0:
-        print("Failed running command %s in directory %s failed" % (str(cmd), cwd))
-        print("   exit code: %d" % (rc))
-        print("   stdout: %s" % (output))
-        print("   stderr: %s" % (error))
+    if rc != expected_return_code:
+        print(SEPARATOR)
+        print("Encountered an unexpected return code")
+        print(f"expected return code: {expected_return_code}")
+        printFormattedCommandResults(rc, output, error)
         sys.exit(1)
 
     if verbose_output:
-        print("      exit code: %d" % (rc))
-        if len(output) > 0:
-            print("      stdout: %s" % (output))
-
-        if len(error) > 0:
-            print("      stderr: %s" % (error))
+        print(SEPARATOR)
+        printFormattedCommandResults(rc, output, error)
+        print(SEPARATOR)
 
     return [output, error]
 
 
-def runElfDiff(args_list):
+def runElfDiff(test_name: str, args: ArgsList, expected_return_code=0):
     """Runs elf diff with a given set of arguments
 
-    args_list: Arguments are given as name value pair tuples. Flag argmuments require None type values
+    args: Arguments are given as name value pair tuples. Flag argmuments require None type values
     """
-    prepared_args_list = args_watcher.prepareArgs(args_list)
+    prepared_args = args_watcher.prepareArgs(args)
     [output, error] = runSubprocess(  # pylint: disable=unused-variable
-        elf_diff_start + prepared_args_list
+        test_name=test_name,
+        cmd=elf_diff_start + prepared_args,
+        expected_return_code=expected_return_code,
     )
 
 
 class TestCaseWithSubdirs(unittest.TestCase):
+    def getTestShortName(self):
+        test_function_full_id = self.id()
+        # Just take the final portion of the test id after the final period
+        test_name_re = re.compile(r".*\.(\w*)")
+        m = test_name_re.match(test_function_full_id)
+        if m is None:
+            print("Strange test name")
+            sys.exit(1)
+        return m.group(1)
+
     @staticmethod
     def _setUpScoped(scope, directory):
         scope.old_pwd = os.getcwd()
@@ -236,78 +288,89 @@ class TestCaseWithSubdirs(unittest.TestCase):
         TestCaseWithSubdirs._tearDownScoped(cls)
 
     def setUp(self):
-        test_function_full_id = self.id()
-        # Just take the final portion of the test id after the final period
-        test_name_re = re.compile(r".*\.(\w*)")
-        m = test_name_re.match(test_function_full_id)
-        if m is None:
-            print("Strange test name")
-            sys.exit(1)
-        test_dir = m.group(1)
-        TestCaseWithSubdirs._setUpScoped(self, test_dir)
+        self.default_args: ArgsList = [("debug", None)]
+        self.expected_return_code = 0
+
+        test_name = self.getTestShortName()
+        TestCaseWithSubdirs._setUpScoped(self, test_name)
 
     def tearDown(self):
         TestCaseWithSubdirs._tearDownScoped(self)
 
 
 class TestCommandLineArgs(TestCaseWithSubdirs):
+    def runElfDiff(self, **kvargs) -> None:
+        runElfDiff(test_name=self.getTestShortName(), **kvargs)
+
     def runSimpleTestBase(
         self,
-        args_list,
+        args: ArgsList = [],
         old_binary_filename=old_binary_x86_64,
         new_binary_filename=new_binary_x86_64,
         output_file=None,
     ):
         """Runs a simple test with a set of arguments"""
-        actual_args_list = args_list
-        actual_args_list.append(("old_binary_filename", old_binary_filename))
-        actual_args_list.append(("new_binary_filename", new_binary_filename))
-        runElfDiff(actual_args_list)
+        actual_args = args
+        actual_args += self.default_args
+        actual_args.append(("old_binary_filename", old_binary_filename))
+        actual_args.append(("new_binary_filename", new_binary_filename))
+        self.runElfDiff(
+            args=actual_args, expected_return_code=self.expected_return_code
+        )
         if output_file is not None:
             self.assertTrue(os.path.isfile(output_file))
 
-    def runSimpleTest(self, args_list):
+    def runSimpleTest(self, args: Optional[ArgsList] = None):
         """Runs a simple test with a set of arguments"""
+        args = args or []
         html_file = "single_page_report.html"
-        actual_args_list = args_list
-        actual_args_list.append(("html_file", html_file))
-        self.runSimpleTestBase(args_list=actual_args_list, output_file=html_file)
+        actual_args = args
+        actual_args.append(("html_file", html_file))
+        self.runSimpleTestBase(args=actual_args, output_file=html_file)
 
-    def runSimpleTest2(self, args_list):
+    def runSimpleTest2(self, args: Optional[ArgsList] = None):
         """Runs a simple test with a set of arguments"""
+        args = args or []
         html_file = "single_page_report.html"
-        actual_args_list = args_list
-        actual_args_list.append(("html_file", html_file))
+        actual_args = args
+        actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_list=actual_args_list,
+            args=actual_args,
             old_binary_filename=old_binary2_x86_64,
             new_binary_filename=new_binary2_x86_64,
             output_file=html_file,
         )
 
-    def runSimpleTestArm(self, args_list):
+    def runSimpleTestArm(self, args: Optional[ArgsList] = None):
         """Runs a simple test with a set of arguments"""
+        args = args or []
         html_file = "single_page_report.html"
-        actual_args_list = args_list
-        actual_args_list.append(("html_file", html_file))
+        actual_args = args
+        actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_list=actual_args_list,
+            args=actual_args,
             old_binary_filename=old_binary_arm,
             new_binary_filename=new_binary_arm,
             output_file=html_file,
         )
 
-    def runSimpleTestGhs(self, args_list):
+    def runSimpleTestGhs(self, args: Optional[ArgsList] = None):
         """Runs a simple test with a set of arguments"""
+        args = args or []
         html_file = "single_page_report.html"
-        actual_args_list = args_list
-        actual_args_list.append(("html_file", html_file))
+        actual_args = args
+        actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
-            args_list=actual_args_list,
+            args=actual_args,
             old_binary_filename=old_binary_ghs,
             new_binary_filename=new_binary_ghs,
             output_file=html_file,
         )
+
+    def test_run_elf_diff_without_debug(self):
+        # By resetting the default args, we make sure that the --debug flag is removed
+        self.default_args = []
+        self.runSimpleTest()
 
     def test_bin_dir(self):
         self.runSimpleTest([("bin_dir", "/usr/bin")])
@@ -359,7 +422,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("project_title: '" + "Project title'\n")
             f.write("driver_template_file: '" + template_file + "'\n")
 
-        runElfDiff([("driver_file", driver_yaml_file)])
+        self.runElfDiff(args=[("driver_file", driver_yaml_file)])
 
         # Check if all output files exist
         #
@@ -401,6 +464,41 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
     @unittest.expectedFailure
     def test_language2(self):
         self.runSimpleTest([("language", "___unknown___")])
+
+    def test_list_default_plugins(self):
+        self.runSimpleTest([("list_default_plugins", None)])
+
+    def test_load_default_plugin_success(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_default_plugin",
+                    "html_export;single_page=True;output_file=bla.html",
+                )
+            ]
+        )
+
+    @unittest.expectedFailure
+    def test_load_default_plugin_failure1(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_default_plugin",
+                    "some_unknown_default_plugin",
+                )
+            ]
+        )
+
+    @unittest.expectedFailure
+    def test_load_default_plugin_failure2(self):
+        self.runSimpleTest(
+            [
+                (
+                    "load_default_plugin",
+                    "html_export;some_bad_parameter=i_m_bad",
+                )
+            ]
+        )
 
     def test_load_plugin_success1(self):
         self.runSimpleTest(
@@ -459,7 +557,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("      new_binary: '" + new_binary2_x86_64 + "'\n")
             f.write("      short_name: 'Second binary name'\n")
 
-        runElfDiff([("driver_file", driver_yaml_file)])
+        self.runElfDiff(args=[("driver_file", driver_yaml_file)])
 
         # Check if all output files exist
         #
@@ -481,6 +579,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTest([("new_info_file", new_info_file)])
 
     def test_new_mangling_file(self):
+        self.expected_return_code = RETURN_CODE_WARNINGS_OCCURRED
         self.runSimpleTestGhs([("new_mangling_file", new_mangling_file_ghs)])
 
     def test_nm_command(self):
@@ -503,6 +602,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTest([("old_info_file", old_info_file)])
 
     def test_old_mangling_file(self):
+        self.expected_return_code = RETURN_CODE_WARNINGS_OCCURRED
         self.runSimpleTestGhs([("old_mangling_file", old_mangling_file_ghs)])
 
     def test_pdf_file(self):
@@ -551,6 +651,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
 
 if __name__ == "__main__":
-    unittest.main(exit=False)
+    unittest.main()
+    # unittest.main(exit=False)
     # args_watcher.exportTestSkeletons()
     # args_watcher.testIfAllArgsUsedAtLeastOnce()

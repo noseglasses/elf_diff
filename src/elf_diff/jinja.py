@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-from elf_diff.error_handling import unrecoverableError
+
 from elf_diff.document_explorer import (
     DocumentExplorer,
     StringSink,
@@ -76,7 +76,7 @@ class Configurator(object):
             creator = env.get_template(template_file)
 
         except jinja2.exceptions.TemplateError as e:
-            unrecoverableError(
+            raise Exception(
                 f"Failed creating jinja creator for file '{template_file}'\n" + str(e)
             )
 
@@ -84,7 +84,7 @@ class Configurator(object):
             sys.stdout.flush()
             replacedContent = creator.render(template_keywords)
         except (jinja2.exceptions.TemplateError) as e:
-            unrecoverableError(
+            raise Exception(
                 "Failed rendering jinja template '" + template_file + "'\n" + str(e)
             )
 

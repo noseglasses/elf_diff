@@ -25,7 +25,7 @@ import shutil
 import argparse
 
 from elf_diff.binary_pair import BinaryPairSettings
-from elf_diff.error_handling import unrecoverableError
+
 from elf_diff.error_handling import warning
 
 
@@ -196,6 +196,17 @@ parameters = [
         action="append",
     ),
     Parameter(
+        "load_default_plugin",
+        'Loads and parametrizes a default plugin. Example --load_default_plugin "html_export;single_page=False;template_dir=some_directory"',
+        action="append",
+    ),
+    Parameter(
+        "list_default_plugins",
+        "Writes a list of default plugins to stdout",
+        default=False,
+        is_flag=True,
+    ),
+    Parameter(
         "debug",
         "If enabled, elf_diff runs in debugging mode and outputs extended information if something goes wrong.",
         default=False,
@@ -210,6 +221,49 @@ class Settings(object):
         self.module_path = module_path
 
         self.parameters = parameters
+
+        # To enable static type checking, we have to pre-define all command line parameters
+        self.old_binary_filename: str
+        self.new_binary_filename: str
+        self.old_alias: str
+        self.new_alias: str
+        self.old_info_file: str
+        self.new_info_file: str
+        self.build_info: str
+        self.bin_dir: str
+        self.bin_prefix: str
+        self.objdump_command: str
+        self.nm_command: str
+        self.size_command: str
+        self.old_mangling_file: str
+        self.new_mangling_file: str
+        self.html_file: str
+        self.html_dir: str
+        self.pdf_file: str
+        self.yaml_file: str
+        self.json_file: str
+        self.txt_file: str
+        self.project_title: str
+        self.driver_file: str
+        self.driver_template_file: str
+        self.html_template_dir: str
+        self.dump_document_structure: bool
+        self.mass_report: bool
+        self.language: str
+        self.similarity_threshold: float
+        self.skip_symbol_similarities: bool
+        self.consider_equal_sized_identical: bool
+        self.skip_details: bool
+        self.symbol_selection_regex: str
+        self.symbol_selection_regex_old: str
+        self.symbol_selection_regex_new: str
+        self.symbol_exclusion_regex: str
+        self.symbol_exclusion_regex_old: str
+        self.symbol_exclusion_regex_new: str
+        self.load_plugin: str
+        self.load_default_plugin: str
+        self.list_default_plugins: bool
+        self.debug: bool
 
         self.presetDefaults()
 
@@ -236,7 +290,6 @@ class Settings(object):
         self.mass_report_members = []
 
         for parameter in self.parameters:
-
             setattr(self, parameter.name, parameter.default)
 
     def parseCommandLineArgs(self):
@@ -301,7 +354,7 @@ class Settings(object):
             try:
                 my_yaml = yaml.load(stream, Loader=yaml.SafeLoader)
             except yaml.YAMLError as exc:
-                unrecoverableError(exc)
+                raise Exception(exc)
 
         for parameter in self.parameters:
 
@@ -319,19 +372,19 @@ class Settings(object):
 
                 short_name = data_set.get("short_name")
                 if not short_name:
-                    unrecoverableError(
+                    raise Exception(
                         "No short_name defined for binary pair " + str(bin_pair_id)
                     )
 
                 old_binary = data_set.get("old_binary")
                 if not old_binary:
-                    unrecoverableError(
+                    raise Exception(
                         "No old_binary defined for binary pair " + str(bin_pair_id)
                     )
 
                 new_binary = data_set.get("new_binary")
                 if not new_binary:
-                    unrecoverableError(
+                    raise Exception(
                         "No new_binary defined for binary pair " + str(bin_pair_id)
                     )
 
@@ -358,18 +411,18 @@ class Settings(object):
             pass
         elif len(cmd_line_args.binaries) == 2:
             if self.old_binary_filename is not None:
-                unrecoverableError("Old binary filename redundantly defined")
+                raise Exception("Old binary filename redundantly defined")
 
             else:
                 self.old_binary_filename = cmd_line_args.binaries[0]
 
             if self.new_binary_filename is not None:
-                unrecoverableError("Old binary filename redundantly defined")
+                raise Exception("Old binary filename redundantly defined")
 
             else:
                 self.new_binary_filename = cmd_line_args.binaries[1]
         else:
-            unrecoverableError("Please specify either none or two binaries")
+            raise Exception("Please specify either none or two binaries")
 
     def findUtility(self, name):
         command_name = name + "_command"
@@ -404,18 +457,18 @@ class Settings(object):
                 setattr(self, command_name, command)
                 return
 
-        unrecoverableError(f"Unnable to find {name} command")
+        raise Exception(f"Unnable to find {name} command")
 
     def validateAndInitSettings(self):
 
         if self.old_binary_filename and not os.path.isfile(self.old_binary_filename):
-            unrecoverableError(
+            raise Exception(
                 "Old binary '%s' is not a file or cannot be found"
                 % (self.old_binary_filename)
             )
 
         if self.new_binary_filename and not os.path.isfile(self.new_binary_filename):
-            unrecoverableError(
+            raise Exception(
                 "New binary '%s' is not a file or cannot be found"
                 % (self.new_binary_filename)
             )
@@ -429,7 +482,7 @@ class Settings(object):
                 with open(self.old_info_file, "r") as f:
                     self.old_binary_info = f.read()
             else:
-                unrecoverableError(
+                raise Exception(
                     "Unable to find old info file '%s'" % (self.old_info_file)
                 )
         else:
@@ -440,7 +493,7 @@ class Settings(object):
                 with open(self.new_info_file, "r") as f:
                     self.new_binary_info = f.read()
             else:
-                unrecoverableError(
+                raise Exception(
                     "Unable to find new info file '%s'" % (self.new_info_file)
                 )
         else:

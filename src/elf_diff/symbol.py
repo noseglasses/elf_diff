@@ -19,8 +19,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.error_handling import unrecoverableError
-
 
 class Symbol(object):
 
@@ -204,4 +202,4 @@ def getSymbolType(language):
     if language == "c++":
         return CppSymbol
 
-    unrecoverableError(f"Unknown language definition '{language}' encountered")
+    raise Exception(f"Unknown language definition '{language}' encountered")
