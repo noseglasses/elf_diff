@@ -60,7 +60,7 @@ As a newcomer on a project, it’s easy to experience frustration. Here’s some
 
 * Keeping your patch up to date is important. Review the ticket on Github to ensure that the Needs tests, Needs documentation, and Patch needs improvement flags are unchecked once you’ve addressed all review comments.
 
-Working on your first Pull Request? You can learn how from this *free* series, [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
+Working on your first Pull Request? You can learn how from this _free_ series, [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
 
@@ -71,9 +71,9 @@ For something that is bigger than a one or two line fix:
 1. Create your own fork of the code on Github
 2. Do the changes in your fork
 3. If you like the change and think the project could use it:
-    * Be sure to read the [PR checklist](PR_CHECKLIST.md)
-    * Submit a pull request from your fork to _elf_diff_'s repo on Github.
-    * Check the Github workflows on your pull request and fix any errors if there are any
+   * Be sure to read the [PR checklist](PR_CHECKLIST.md)
+   * Submit a pull request from your fork to _elf_diff_'s repo on Github.
+   * Check the Github workflows on your pull request and fix any errors if there are any
       until Github reports the pull request as ready to be merged.
       
 If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
