@@ -21,7 +21,6 @@
 
 import unittest
 import os
-import inspect
 import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
@@ -29,11 +28,13 @@ import re
 
 # import shutil
 
-bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
 
-root_dir = os.path.join(bin_path, "..")
+def prepareSearchPath():
+    module_dir = os.path.dirname(sys.modules[__name__].__file__)
+    sys.path.append(os.path.join(module_dir, "..", "src"))
 
-sys.path.append(os.path.join(root_dir, "src"))
+
+prepareSearchPath()
 
 from elf_diff.settings import parameters
 
@@ -56,12 +57,12 @@ args, unittest_args = parser.parse_known_args()
 # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
 sys.argv[1:] = unittest_args
 
-testing_dir = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
+TESTING_DIR = os.path.dirname(sys.modules[__name__].__file__)
 
 if args.test_installed_package is True:
     elf_diff_start = [sys.executable, "-m", "elf_diff"]
 else:
-    bin_dir = os.path.join(testing_dir, "..", "bin")
+    bin_dir = os.path.join(TESTING_DIR, "..", "bin")
     if args.enable_code_coverage is True:
         print("Running with coverage testing")
         elf_diff_start = [
@@ -78,28 +79,28 @@ else:
         elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff"), "--debug"]
 
 old_binary_x86_64 = os.path.join(
-    testing_dir, "x86_64", "libelf_diff_test_release_old.a"
+    TESTING_DIR, "x86_64", "libelf_diff_test_release_old.a"
 )
 new_binary_x86_64 = os.path.join(
-    testing_dir, "x86_64", "libelf_diff_test_release_new.a"
+    TESTING_DIR, "x86_64", "libelf_diff_test_release_new.a"
 )
-old_binary2_x86_64 = os.path.join(testing_dir, "x86_64", "libelf_diff_test_debug_old.a")
-new_binary2_x86_64 = os.path.join(testing_dir, "x86_64", "libelf_diff_test_debug_new.a")
+old_binary2_x86_64 = os.path.join(TESTING_DIR, "x86_64", "libelf_diff_test_debug_old.a")
+new_binary2_x86_64 = os.path.join(TESTING_DIR, "x86_64", "libelf_diff_test_debug_new.a")
 
-old_binary_arm = os.path.join(testing_dir, "arm", "libelf_diff_test_release_old.a")
-new_binary_arm = os.path.join(testing_dir, "arm", "libelf_diff_test_release_new.a")
+old_binary_arm = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_old.a")
+new_binary_arm = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_new.a")
 
-old_binary_ghs = os.path.join(testing_dir, "ghs", "libelf_diff_test_release_old.a")
-new_binary_ghs = os.path.join(testing_dir, "ghs", "libelf_diff_test_release_new.a")
+old_binary_ghs = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_old.a")
+new_binary_ghs = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_new.a")
 
 old_mangling_file_ghs = os.path.join(
-    testing_dir, "ghs", "libelf_diff_test_release_old.a.demangle.txt"
+    TESTING_DIR, "ghs", "libelf_diff_test_release_old.a.demangle.txt"
 )
 new_mangling_file_ghs = os.path.join(
-    testing_dir, "ghs", "libelf_diff_test_release_new.a.demangle.txt"
+    TESTING_DIR, "ghs", "libelf_diff_test_release_new.a.demangle.txt"
 )
 
-test_plugin = os.path.join(testing_dir, "plugin", "test_plugin.py")
+test_plugin = os.path.join(TESTING_DIR, "plugin", "test_plugin.py")
 
 verbose_output = True
 
@@ -341,12 +342,12 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("new_alias: " + "a_new_alias\n")
             f.write(
                 "old_info_file: '"
-                + os.path.join(testing_dir, "old_binary_info.txt")
+                + os.path.join(TESTING_DIR, "old_binary_info.txt")
                 + "'\n"
             )
             f.write(
                 "new_info_file: '"
-                + os.path.join(testing_dir, "new_binary_info.txt")
+                + os.path.join(TESTING_DIR, "new_binary_info.txt")
                 + "'\n"
             )
             f.write("build_info: >\n")
