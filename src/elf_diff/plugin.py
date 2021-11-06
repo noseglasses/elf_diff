@@ -18,19 +18,36 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-from elf_diff.error_handling import warning, unrecoverableError
-from elf_diff.auxiliary import getDirectoryThatStoresModule
+from elf_diff.error_handling import warning
+from elf_diff.auxiliary import getDirectoryThatStoresModuleOfObj
 from elf_diff.settings import Settings
 import importlib
 import importlib.util
 from typing import List, Type, Dict, Optional
 
 
+class PluginException(Exception):
+    def __init__(self, plugin, msg: str):
+        super().__init__("Plugin %s: %s" % (type(self).__name__, msg))
+
+
 class PluginConfigurationKey(object):
-    def __init__(self, name: str, description: str, is_optional: bool = False):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        is_optional: bool = False,
+        default: Optional[str] = None,
+    ):
         self.name = name
         self.description = description
         self.is_optional = is_optional
+        self.default = default
+
+        if self.is_optional and (default is None):
+            raise Exception(
+                f"Optional configuration key {name} is lacking a default value"
+            )
 
 
 PluginConfigurationInformation = List[PluginConfigurationKey]
@@ -53,8 +70,9 @@ class Plugin(object):
         config_keys: Dict[str, PluginConfigurationKey] = {}
         for config_key in configuration_information:
             if config_key.name in config_keys.keys():
-                pluginUnrecoverableError(
-                    "Plugin exports more than one configuration options named '{config_key.name}"
+                raise PluginException(
+                    self,
+                    "Plugin exports more than one configuration options named '{config_key.name}",
                 )
             config_keys[config_key.name] = config_key
 
@@ -62,14 +80,11 @@ class Plugin(object):
 
         for config_key_encountered, value in self._plugin_configuration.items():
             if config_key_encountered not in config_keys.keys():
-                self.pluginUnrecoverableError(
+                raise PluginException(
+                    self,
                     "Unexpected configuration entry '%s = %s' encountered"
-                    % (config_key_encountered, value)
+                    % (config_key_encountered, value),
                 )
-
-    def pluginUnrecoverableError(self, msg: str) -> None:
-        """Flag an unrecoverable error in plugin scope"""
-        unrecoverableError("Plugin %s: %s" % (type(self).__name__, msg))
 
     def pluginWarning(self, msg: str) -> None:
         """Output a warning in plugin scope"""
@@ -82,13 +97,25 @@ class Plugin(object):
     def getConfigurationParameter(self, name: str) -> str:
         """Returns the value of a configuration parameter or throw an error if unavailable"""
         if name not in self._plugin_configuration.keys():
-            self.pluginUnrecoverableError("Lacking parameter '%s'" % name)
+            configuration_information = type(self).getConfigurationInformation()
+            for key in configuration_information:
+                if key.name == name:
+                    if key.default is None:
+                        raise PluginException(
+                            self,
+                            "Trying to access the undefined default value of configuration key '{key.name}'",
+                        )
+                    return key.default
+
+            raise Exception(
+                f"Trying to access the default value of an undefined configuration key '{key}'"
+            )
 
         return self._plugin_configuration[name]
 
     def getModulePath(self) -> str:
         """Return the directory that holds the plugin module"""
-        return getDirectoryThatStoresModule(self)
+        return getDirectoryThatStoresModuleOfObj(self)
 
     def log(self, msg: str) -> None:
         """Output a log message in plugin scope"""
@@ -103,7 +130,10 @@ class Plugin(object):
         """Returns plugin configuration information"""
         return [
             PluginConfigurationKey(
-                name="quiet", description="Disables plugin logging", is_optional=True
+                name="quiet",
+                description="Disables plugin logging",
+                is_optional=True,
+                default="False",
             )
         ]
 
@@ -115,50 +145,58 @@ class ExportPairReportPlugin(Plugin):
         pass
 
 
-PLUGIN_TYPES = [ExportPairReportPlugin]
+PLUGIN_TYPES: List[Type[Plugin]] = [ExportPairReportPlugin]
 
-REGISTERED_PLUGINS = {}
+ACTIVE_PLUGINS: Dict[Type[Plugin], List[Plugin]] = {}
 
 for plugin_type in PLUGIN_TYPES:
-    REGISTERED_PLUGINS[plugin_type] = []
+    ACTIVE_PLUGINS[plugin_type] = []
 
 
-def registerPluginClass(
+def activatePluginByType(
     settings: Settings, class_, plugin_configuration: Dict[str, str]
 ) -> None:
     """Register a plugin by providing its plugin class and configuration parameters"""
     for plugin_type in PLUGIN_TYPES:
         if issubclass(class_, plugin_type):
-            REGISTERED_PLUGINS[plugin_type].append(
-                class_(settings, plugin_configuration)
-            )
+            ACTIVE_PLUGINS[plugin_type].append(class_(settings, plugin_configuration))
 
 
-def registerPlugin(settings: Settings, plugin_object) -> bool:
+def activatePlugin(settings: Settings, plugin_object) -> bool:
     """Register a plugin object"""
     class_ = type(plugin_object)
-    sucessfully_registered = False
+    sucessfully_activated = False
     for plugin_type in PLUGIN_TYPES:
         if issubclass(class_, plugin_type):
-            REGISTERED_PLUGINS[plugin_type].append(plugin_object)
-            sucessfully_registered = True
-    return sucessfully_registered
+            ACTIVE_PLUGINS[plugin_type].append(plugin_object)
+            sucessfully_activated = True
+    return sucessfully_activated
 
 
 def loadPluginClass(plugin_path: str, class_name: str) -> Type:
     """Load a plugin class with given name from a module with given path"""
     spec = importlib.util.spec_from_file_location("elf_diff.user_plugin", plugin_path)
+    if spec is None:
+        raise Exception(f"Unable to load python module from '{plugin_path}'")
+
+    if spec.loader is None:
+        raise Exception("No loader in spec")
+
     plugin_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(plugin_module)
+    if plugin_module is None:
+        raise Exception("Unable to load python module from spec")
+
+    # mypy chokes on next line: error: "_LoaderProtocol" has no attribute "exec_module"
+    spec.loader.exec_module(plugin_module)  # type: ignore
     return getattr(plugin_module, class_name)
 
 
-def getRegisteredPlugins(plugin_type: Type) -> List:
-    """Return a list of registered plugin objects of a given type"""
-    return REGISTERED_PLUGINS[plugin_type]
+def getActivePlugins(plugin_type: Type) -> List:
+    """Return a list of activated plugin objects of a given type"""
+    return ACTIVE_PLUGINS[plugin_type]
 
 
-def registerPluginsFromCommandLine(settings: Settings) -> None:
+def activatePluginsFromCommandLine(settings: Settings) -> None:
     """Register any plugins that are defined via command line switches"""
     if (not settings.load_plugin) or (len(settings.load_plugin) == 0):
         return
@@ -169,7 +207,7 @@ def registerPluginsFromCommandLine(settings: Settings) -> None:
     )
 
     for plugin_definition in settings.load_plugin:
-        tokens: List(str) = plugin_definition.split(";")
+        tokens: List[str] = plugin_definition.split(";")
         if len(tokens) < 2:
             warning("Ignoring strange load_plugin definition '%s'" % plugin_definition)
             continue
@@ -177,7 +215,7 @@ def registerPluginsFromCommandLine(settings: Settings) -> None:
         class_name: str = tokens[1]
 
         print(
-            "   module '%s', class '%s', %s configuration params"
+            "   module '%s', class '%s', %s configuration parameters"
             % (path, class_name, (len(tokens) - 2))
         )
 
@@ -193,11 +231,11 @@ def registerPluginsFromCommandLine(settings: Settings) -> None:
             print(f"      {key} = '{value}'")
             plugin_configuration[key] = value
 
-        plugin_class: Optional(Type) = None
+        plugin_class: Optional[Type] = None
         try:
             plugin_class = loadPluginClass(path, class_name)
         except Exception as e:
             warning("Unable to load plugin class: %s" % e)
             continue
 
-        registerPluginClass(settings, plugin_class, plugin_configuration)
+        activatePluginByType(settings, plugin_class, plugin_configuration)

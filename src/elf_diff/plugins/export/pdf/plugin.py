@@ -29,7 +29,7 @@ from elf_diff.plugins.export.html.plugin import HTMLExportPairReportPlugin
 from elf_diff.pair_report_document import ValueTreeNode
 import tempfile
 import os
-from typing import Optional, Dict
+from typing import Dict
 
 
 def convertHTMLToPDF(html_file: str, pdf_file: str):
@@ -38,13 +38,12 @@ def convertHTMLToPDF(html_file: str, pdf_file: str):
         # Weasyprint is not available on all platforms.
         # Therefore, we import it on function level and
         # tolerate it not being available.
-        from weasyprint import HTML
+        from weasyprint import HTML  # type: ignore # Make mypy ignore this module
     except ImportError:
         warning("Unable to import module weasyprint")
         warning("No pdf export supported")
-        return
-
-    HTML(html_file).write_pdf(pdf_file)
+    else:
+        HTML(html_file).write_pdf(pdf_file)
 
 
 class PDFExportPairReportPlugin(ExportPairReportPlugin):
@@ -52,7 +51,7 @@ class PDFExportPairReportPlugin(ExportPairReportPlugin):
 
     def __init__(self, settings, plugin_configuration):
         super().__init__(settings, plugin_configuration)
-        self._tmp_html_file: Optional(str) = None
+        self._tmp_html_file: str
 
     def cleanup(self) -> None:
         """Cleanup the temporary HTML file"""
@@ -64,23 +63,22 @@ class PDFExportPairReportPlugin(ExportPairReportPlugin):
 
         pdf_output_file: str = self.getConfigurationParameter("output_file")
 
-        self._tmp_html_file: str = os.path.join(
-            tempfile._get_default_tempdir(),
-            next(tempfile._get_candidate_names()) + ".html",
-        )
-
         try:
-            plugin_configuration: Dict[str, str] = {
-                "single_page": True,
-                "output_file": self._tmp_html_file,
-                "quiet": True,
-            }
-            html_export_plugin = HTMLExportPairReportPlugin(
-                self._settings, plugin_configuration
-            )
-            html_export_plugin.export(document)
+            with tempfile.TemporaryDirectory() as tmp:
+                self._tmp_html_file = os.path.join(tmp, "tmp_html_file.html")
 
-            convertHTMLToPDF(self._tmp_html_file, pdf_output_file)
+                # use path
+                plugin_configuration: Dict[str, str] = {
+                    "single_page": "True",
+                    "output_file": self._tmp_html_file,
+                    "quiet": "True",
+                }
+                html_export_plugin = HTMLExportPairReportPlugin(
+                    self._settings, plugin_configuration
+                )
+                html_export_plugin.export(document)
+
+                convertHTMLToPDF(self._tmp_html_file, pdf_output_file)
         except Exception as e:
             self.cleanup()
             raise e

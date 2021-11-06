@@ -20,10 +20,10 @@
 #
 
 from elf_diff.binary_pair import BinaryPair
-from elf_diff.error_handling import unrecoverableError, warning
+from elf_diff.error_handling import warning
 from elf_diff.jinja import Configurator
 from elf_diff.git import gitRepoInfo
-from elf_diff.auxiliary import getDirectoryThatStoresModule, deprecationWarning
+from elf_diff.auxiliary import getDirectoryThatStoresModuleOfObj, deprecationWarning
 import os
 import datetime
 import tempfile
@@ -31,7 +31,7 @@ import tempfile
 
 def convertHTMLToPDF(html_file, pdf_file):
     try:
-        from weasyprint import HTML
+        from weasyprint import HTML  # type: ignore # Make mypy ignore this module
     except ImportError:
         warning("Unable to import module weasyprint")
         warning("No pdf export supported")
@@ -71,7 +71,7 @@ class MassReport(object):
         self.settings = settings
 
         if len(self.settings.mass_report_members) == 0:
-            unrecoverableError(
+            raise Exception(
                 "No mass report binary_pairs members defined in driver file"
             )
 
@@ -177,7 +177,7 @@ class MassReport(object):
         template_keywords = self.configureJinjaKeywords(self.settings.skip_details)
 
         jinja_template_directory = os.path.join(
-            getDirectoryThatStoresModule(self), "j2"
+            getDirectoryThatStoresModuleOfObj(self), "j2"
         )
 
         configurator = Configurator(self.settings, jinja_template_directory)

@@ -35,14 +35,15 @@
 # The raw tree is a nested tree structure where every node can either contain named subnodes or
 # properties whose names start with an underscore.
 
-from elf_diff.error_handling import unrecoverableError
+
 from elf_diff.binary_pair import BinaryPair
 from elf_diff.git import gitRepoInfo
 import elf_diff.string_diff as string_diff
 import copy
 import datetime
 import sys
-import progressbar
+import progressbar  # type: ignore # Make mypy ignore this module
+from typing import Type
 
 
 def typeName(obj):
@@ -71,7 +72,7 @@ class ValueTreeNode(object):
             # print("Members available")
             # for key in self.__dict__.keys():
             #    print("   %s" % key)
-            unrecoverableError(
+            raise Exception(
                 "Tree node %s does not have a member '%s'" % (self.getPath(), name)
             )
         return self.__dict__[name]
@@ -134,7 +135,7 @@ class RawTreeValidator(object):
 
     def checkChildName(self, key):
         if key in self.child_node_names_encountered:
-            unrecoverableError(
+            raise Exception(
                 "Child name %s ambiguously defined in raw tree of node %s"
                 % (key, self.node.getPath())
             )
@@ -144,7 +145,7 @@ class RawTreeValidator(object):
         for key, value in self.raw_tree.items():
             if isRawTreeProperty(key):
                 if not isRawTreePropertyValid(key, value):
-                    unrecoverableError(
+                    raise Exception(
                         "Invalid raw tree property (type) %s of %s"
                         % (key, self.node.getPath())
                     )
@@ -197,6 +198,14 @@ def isRawTreeLeafNode(raw_tree):
     return True
 
 
+class MetaTreeException(Exception):
+    def __init__(self, meta_tree_node: Type, msg: str):
+        super().__init__(
+            "Meta tree node %s %s: %s"
+            % (typeName(meta_tree_node), meta_tree_node.getPath(), msg)
+        )
+
+
 class MetaTreeNodeBase(object):
     """A common base class for all meta tree node types"""
 
@@ -212,11 +221,6 @@ class MetaTreeNodeBase(object):
 
         self.setupFromRawTree()
 
-    def unrecoverableError(self, what):
-        unrecoverableError(
-            "Meta tree node %s %s: %s" % (typeName(self), self.getPath(), what)
-        )
-
     def getValueTree(self):
         return self._v
 
@@ -231,12 +235,12 @@ class MetaTreeNodeBase(object):
     def assertMetaArgsDefined(self, args_list):
         for meta_arg in args_list:
             if meta_arg not in self._raw_tree_properties.keys():
-                self.unrecoverableError("Lacking meta attribute %s" % meta_arg)
+                raise MetaTreeException(self, "Lacking meta attribute %s" % meta_arg)
 
     def validate(self):
         if "_validator" in self._raw_tree_properties.keys():
             if self._raw_tree_properties["_validator"](self) is False:
-                self.unrecoverableError("Validation failed")
+                raise MetaTreeException(self, "Validation failed")
 
     def formatDocString(self):
         self.assertMetaArgsDefined(["_doc"])
@@ -295,8 +299,8 @@ class MetaTreeInteriorNode(MetaTreeNodeBase):
                 continue
 
             if isinstance(child_raw_tree, str):
-                self.unrecoverableError(
-                    "Strange subnode %s = %s" % (key, child_raw_tree)
+                raise MetaTreeException(
+                    self, "Strange subnode %s = %s" % (key, child_raw_tree)
                 )
 
             child_node = generateMetaTreeNode(child_raw_tree, child_raw_tree_properties)
@@ -313,8 +317,8 @@ class MetaTreeInteriorNode(MetaTreeNodeBase):
         """Notification method called by the associated value tree node"""
         child = self._children[name]
         if not isinstance(child, MetaTreeLeafNode):
-            self.unrecoverableError(
-                "Attempted assignment to a non leaf value %s" % name
+            raise MetaTreeException(
+                self, "Attempted assignment to a non leaf value %s" % name
             )
         child._value = value
 
@@ -335,9 +339,10 @@ class MetaTreeInteriorNode(MetaTreeNodeBase):
         # Make sure that any child meta tree nodes are also defined in the raw tree.
         for child_name in self._children.keys():
             if child_name not in tree_validator.child_node_names_encountered:
-                self.unrecoverableError(
+                raise MetaTreeException(
+                    self,
                     "Accidentally exports child node '%s' that is not present in the raw tree"
-                    % child_name
+                    % child_name,
                 )
 
     def validate(self):
@@ -366,13 +371,14 @@ class MetaTreeLeafNode(MetaTreeNodeBase):
 
     def validate(self):
         if self._value is None:
-            self.unrecoverableError("Value yet unset")
+            raise MetaTreeException(self, "Value yet unset")
         if ("_type" in self._raw_tree_properties.keys()) and (
             not isinstance(self._value, self._raw_tree_properties["_type"])
         ):
-            self.unrecoverableError(
+            raise MetaTreeException(
+                self,
                 "Value type mismatch: Expected %s, obtained %s"
-                % (str(self._raw_tree_properties["_type"]), str(type(self._value)))
+                % (str(self._raw_tree_properties["_type"]), str(type(self._value))),
             )
         super().validate()
 
@@ -639,13 +645,14 @@ SYMBOL_TYPES = (
 
 def assertAllDictValueMembersAreInstance(node, type_):
     if not isinstance(node._value, dict):
-        node.unrecoverableError("Expected value type dict")
+        raise MetaTreeException(node, "Expected value type dict")
 
     for key, value in node._value.items():
         if not isinstance(value, type_):
-            node.unrecoverableError(
+            raise MetaTreeException(
+                node,
                 "Dict member type validation failed. id: %s, expected node type: %s, actual: %s"
-                % (key, type_.__name__, typeName(value))
+                % (key, type_.__name__, typeName(value)),
             )
     return True
 
@@ -836,10 +843,10 @@ class MetaDocument(CustomMetaTreeInteriorNode):
 
     def validateSettings(self):
         if not self.settings.old_binary_filename:
-            unrecoverableError("No old binary filename defined")
+            raise Exception("No old binary filename defined")
 
         if not self.settings.new_binary_filename:
-            unrecoverableError("No new binary filename defined")
+            raise Exception("No new binary filename defined")
 
     def registerSymbolNodes(self, nodes_list, symbol_class, id_getter):
         value_raw_tree = {}

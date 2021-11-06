@@ -20,72 +20,97 @@
 #
 
 from elf_diff.settings import Settings
-from elf_diff.pair_report_document import generateDocument
-from elf_diff.plugin import ExportPairReportPlugin, getRegisteredPlugins
-from elf_diff.default_plugins import registerPlugins
+from elf_diff.pair_report_document import generateDocument, ValueTreeNode
+from elf_diff.plugin import Plugin, ExportPairReportPlugin, getActivePlugins
+from elf_diff.default_plugins import activatePlugins, listDefaultPlugins
 from elf_diff.document_explorer import getDocumentStructureDocString
 from elf_diff.deprecated.mass_report import writeMassReport
+from elf_diff.formatted_output import SEPARATOR
 import elf_diff.error_handling as error_handling
 import os
 import inspect
 import sys
 import traceback
-from typing import Optional
+from typing import Optional, List
+
+RETURN_CODE_UNRECOVERABLE_ERROR = 1
+RETURN_CODE_WARNINGS_OCCURRED = 2
+
+# Unicode characters cause problems with encoding on Windows
+if os.name == "nt":
+    CHECKERED_FLAG = ""
+    PLEADING_FACE = ":-("
+    CLOUD_WITH_RAIN = ""
+    HOT_BEVERAGE = "hot coffee"
+    WARNING = "Warning: "
+    ERROR = "Error: "
+
+else:
+    CHECKERED_FLAG = "\U0001F3C1"
+    PLEADING_FACE = "\U0001F97A"
+    CLOUD_WITH_RAIN = "\U0001F327"
+    HOT_BEVERAGE = "\u2615"
+    WARNING = "\u26A0"
+    ERROR = "\u26A0"
 
 
-def exportDocument(settings):
+def exportDocument(settings: Settings) -> None:
 
-    registerPlugins(settings)
+    activatePlugins(settings)
 
-    plugins = getRegisteredPlugins(ExportPairReportPlugin)
+    plugins: List[Plugin] = getActivePlugins(ExportPairReportPlugin)
 
     if len(plugins) == 0:
         return
 
-    document = generateDocument(settings)
+    document: ValueTreeNode = generateDocument(settings)
     assert document
 
     for plugin in plugins:
-        plugin.export(document)
+        if isinstance(plugin, ExportPairReportPlugin):
+            plugin.export(document)
 
 
-def errorOutput():
-    separator = "═" * 80
-    if (not settings) or settings.debug:
-        print(separator)
+def errorOutput(
+    settings: Settings, exception: Exception, force_stacktrace: bool = False
+):
+    if force_stacktrace or (not settings) or settings.debug:
+        print(SEPARATOR)
         print("")
         print(traceback.format_exc())
     else:
         print("")
 
-    pleading_face = "\U0001F97A"
-    cloud_with_rain = "\U0001F327"
-    hot_beverage = "\u2615"
-    warning = "\u26A0"
-
     print(
         f"""\
-{separator}
- elf_diff is unconsolable {pleading_face} but something went wrong {cloud_with_rain}
-{separator}
+{SEPARATOR}
+ elf_diff is unconsolable {PLEADING_FACE} but something went wrong {CLOUD_WITH_RAIN}
+{SEPARATOR}
 
- {warning} {e}
+ {ERROR} {exception}
 
-{separator}
- Don't let this take you down! Have a nice {hot_beverage} and start over.
-{separator}
+{SEPARATOR}
+ Don't let this take you down! Have a nice {HOT_BEVERAGE} and start over.
+{SEPARATOR}
 """
     )
 
 
+def processChoices(settings: Settings) -> None:
+    """Process any relevant choices in the settings"""
+    if settings.list_default_plugins:
+        print("\n%s" % listDefaultPlugins())
+
+
 def main():
-    errors_occurred = False
     settings: Optional(Settings) = None
     try:
-        module_path = os.path.dirname(
+        module_path: str = os.path.dirname(
             os.path.realpath(inspect.getfile(inspect.currentframe()))
         )
         settings = Settings(module_path)
+
+        processChoices(settings)
 
         report_generated = False
 
@@ -103,19 +128,15 @@ def main():
             settings.writeParameterTemplateFile(
                 settings.driver_template_file, output_actual_values=report_generated
             )
-    except Exception as e:
-
-        errorOutput()
-        errors_occurred = True
-        sys.exit(1)
+    except Exception as exception:
+        errorOutput(settings, exception, force_stacktrace=True)
+        sys.exit(RETURN_CODE_UNRECOVERABLE_ERROR)
     else:
-        chequered_flag = "\U0001F3C1"
-        print(f"{chequered_flag} Done.")
+        print(f"{CHECKERED_FLAG} Done.")
 
     if error_handling.WARNINGS_OCCURRED:
-        warning = "\u26A0"
-        print(f"{warning} Watch out! Warnings occurred.")
-        sys.exit(1)
+        print(f"{WARNING} Watch out! Warnings occurred.")
+        sys.exit(RETURN_CODE_WARNINGS_OCCURRED)
 
 
 if __name__ == "__main__":

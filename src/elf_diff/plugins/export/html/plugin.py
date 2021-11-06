@@ -25,14 +25,21 @@ from elf_diff.plugin import (
 )
 from elf_diff.jinja import Configurator
 from elf_diff.symbol import Symbol
-from elf_diff.auxiliary import recursiveCopy
+from elf_diff.auxiliary import recursiveCopy, getDirectoryThatStoresModule
 from elf_diff.binary import SOURCE_CODE_START_TAG, SOURCE_CODE_END_TAG
 from elf_diff.pair_report_document import ValueTreeNode
 from elf_diff.settings import Settings
 import os
 from shutil import copyfile
 import difflib
-from typing import Callable, Optional, Dict, List
+import sys
+from typing import Callable, Optional, Dict, List, Type
+
+DEFAULT_SINGLE_PAGE_REPORT_OUTPUT_FILE = "elf_diff_report.html"
+DEFAULT_MULTI_PAGE_REPORT_DIR = "elf_diff_report"
+DEFAULT_TEMPLATE_DIRECTORY: str = os.path.join(
+    getDirectoryThatStoresModule(sys.modules[__name__]), "j2"
+)
 
 
 def postHighlightSourceCode(src: str) -> str:
@@ -43,7 +50,7 @@ def postHighlightSourceCode(src: str) -> str:
     )
 
 
-def getDifferencesAsHTML(old_symbol: Symbol, new_symbol: Symbol) -> str:
+def getDifferencesAsHTML(old_symbol: ValueTreeNode, new_symbol: ValueTreeNode) -> str:
     """Generate a tabular formatted version of the differences of the
     assembly instructions of two symbols
     """
@@ -72,6 +79,14 @@ def getDifferencesAsHTML(old_symbol: Symbol, new_symbol: Symbol) -> str:
 class PluginScope(object):
     """Stores relevant information used across the scope of the plugin"""
 
+    def __init__(self) -> None:
+        self.skip_symbol_similarities: bool
+        self.consider_equal_sized_identical: bool
+        self.single_page: bool
+        self.jinja_configurator: Configurator
+        self.output_dir: str
+        self.document: ValueTreeNode
+
     def getCommonJinjaKeywords(self) -> dict:
         """Get Jinja keywords that are used in all template files"""
         return {"is_single_page_report": self.single_page, "document": self.document}
@@ -86,9 +101,9 @@ class Content(object):
 
     def __init__(self) -> None:
         """Initializes content of a frame or a file"""
-        self._template_keywords: Optional(dict) = None
-        self._html: Optional(str) = None
-        self._plugin_scope: Optional(PluginScope) = None
+        self._template_keywords: dict
+        self._html: str
+        self._plugin_scope: PluginScope
 
     def prepareTemplateKeywords(self) -> None:
         """Prepare Jinja2 keywords used for template configuration"""
@@ -110,6 +125,10 @@ class Content(object):
         the index.html file
         """
         pass
+
+    def getTitle(self) -> str:  # pylint: disable=no-self-use
+        """Return a title that relates to the content"""
+        return ""
 
     def getHTML(self) -> str:
         """Return the generated HTML content"""
@@ -163,12 +182,10 @@ class SymbolClassProperties(object):
         self.id_getter: Callable = id_getter
         self.name_getter: Callable = name_getter
         self.additional_overview_content: Optional[str] = additional_overview_content
-        self.symbol_class_alias_getter: Optional[
-            Callable
-        ] = symbol_class_alias_getter or (
+        self.symbol_class_alias_getter: Callable = symbol_class_alias_getter or (
             lambda symbol_class_properties: symbol_class_properties.class_
         )
-        self.update_entity_keywords: Optional[Callable] = update_entity_keywords or (
+        self.update_entity_keywords: Callable = update_entity_keywords or (
             lambda symbol, keywords: None
         )
 
@@ -189,21 +206,22 @@ class SymbolEntity(Content):
         self._symbol_of_class: ValueTreeNode = symbol_of_class
         self._symbol_class_properties: SymbolClassProperties = symbol_class_properties
         self._plugin_scope: PluginScope = plugin_scope
-        self._html: Optional(str) = None
 
     def prepareTemplateKeywords(self) -> None:
         """Prepares the keywords used for configuring a related Jinja template file"""
-        if self._template_keywords is None:
-            self._template_keywords = self._plugin_scope.getCommonJinjaKeywords()
-            self._template_keywords.update(
-                {
-                    "symbol": self._symbol_of_class,
-                    "symbol_class": self._symbol_class_properties.class_,
-                }
-            )
-            self._symbol_class_properties.update_entity_keywords(
-                self._symbol_of_class, self._template_keywords
-            )
+        if hasattr(self, "_template_keywords"):
+            return
+
+        self._template_keywords = self._plugin_scope.getCommonJinjaKeywords()
+        self._template_keywords.update(
+            {
+                "symbol": self._symbol_of_class,
+                "symbol_class": self._symbol_class_properties.class_,
+            }
+        )
+        self._symbol_class_properties.update_entity_keywords(
+            self._symbol_of_class, self._template_keywords
+        )
 
     def getOutputFilepath(self) -> str:
         """Get the filepath of the output file associated with the symbol entity.
@@ -229,10 +247,11 @@ class SymbolEntity(Content):
 
     def generateHTML(self) -> None:
         """Generate the HTML code associated with the symbol entity"""
-        self.prepareTemplateKeywords()
 
-        if self._html is not None:
+        if hasattr(self, "_html"):
             return
+
+        self.prepareTemplateKeywords()
 
         # Appeared and disappeared symbols use the same Jinja template files.
         # We use "isolated" as name for the joint symbol class in filenames.
@@ -270,19 +289,25 @@ class SymbolOverview(Content):
     def generateHTML(self) -> None:
         """Generate the HTML code of the symbol overview table"""
 
+        if hasattr(self, "_html"):
+            return
+
         symbol_class: str = self._symbol_class_properties.class_
 
         symbols_of_class: dict = getattr(
             self._plugin_scope.document.symbols, symbol_class
         )
         if len(symbols_of_class) == 0:
-            return f"No {symbol_class} symbols"
+            self._html = f"No {symbol_class} symbols"
+            return
 
         template_keywords: dict = self._plugin_scope.getCommonJinjaKeywords()
         template_keywords.update(
             {"symbols": symbols_of_class.values(), "symbol_class": symbol_class}
         )
 
+        if self._symbol_class_properties.symbol_class_alias_getter is None:
+            raise Exception("Missing symbol_class_alias_getter")
         symbol_class_alias: str = (
             self._symbol_class_properties.symbol_class_alias_getter(
                 self._symbol_class_properties
@@ -328,7 +353,7 @@ class SymbolDetails(Content):
 
     def generateHTML(self) -> None:
         """Generate the HTML that represents the symbol details"""
-        if self._html is not None:
+        if hasattr(self, "_html"):
             return
 
         symbols_of_class: dict = getattr(
@@ -395,15 +420,17 @@ class StatisticsOverview(Content):
         """Prepare Jinja template keywords that configure the statistics overview
         template file.
         """
-        if self._template_keywords is not None:
+        if hasattr(self, "_template_keywords"):
             return
 
-        self._template_keywords: str = self._plugin_scope.getCommonJinjaKeywords()
+        self._template_keywords: Dict[
+            str, Type
+        ] = self._plugin_scope.getCommonJinjaKeywords()
 
     def generateHTML(self) -> None:
         """Generate the HTML representation of the statistics content"""
 
-        if self._html is not None:
+        if hasattr(self, "_html"):
             return
 
         html_template_file = "statistics.html"
@@ -441,14 +468,14 @@ class DocumentPage(Content):
         """Prepare the template keywords the configure the document page's
         Jinja template file
         """
-        if self._template_keywords is not None:
+        if hasattr(self, "_template_keywords"):
             return
 
         self._template_keywords: dict = self._plugin_scope.getCommonJinjaKeywords()
 
     def generateHTML(self) -> None:
         """Generate the HTML code of the documents page"""
-        if self._html is not None:
+        if hasattr(self, "_html"):
             return
 
         html_template_file = "document.html"
@@ -486,41 +513,40 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
         """Initialize the pair report class."""
         super().__init__(settings, plugin_configuration)
 
-        jinja_template_dir: str = os.path.join(self.getModulePath(), "j2")
+        jinja_template_dir: str = self.getConfigurationParameter(name="template_dir")
 
         plugin_scope = PluginScope()
-        plugin_scope.skip_symbol_similarities: bool = (
+        plugin_scope.skip_symbol_similarities = bool(
             self._settings.skip_symbol_similarities
         )
-        plugin_scope.consider_equal_sized_identical: bool = (
+        plugin_scope.consider_equal_sized_identical = bool(
             self._settings.consider_equal_sized_identical
         )
-        plugin_scope.single_page: bool = self.getConfigurationParameter("single_page")
+        if self.getConfigurationParameter("single_page") == "True":
+            plugin_scope.single_page = True
+        else:
+            plugin_scope.single_page = False
         plugin_scope.jinja_configurator = Configurator(
             self._settings, jinja_template_dir
         )
         if self.isConfigurationParameterAvailable("output_dir"):
-            plugin_scope.output_dir: str = self.getConfigurationParameter("output_dir")
+            plugin_scope.output_dir = self.getConfigurationParameter("output_dir")
 
         self._plugin_scope = plugin_scope
 
-        self.symbol_overviews: Dict(str) = {}
-        self.symbol_details: Dict(str) = {}
+        self.symbol_overviews: Dict[str, SymbolOverview] = {}
+        self.symbol_details: Dict[str, SymbolDetails] = {}
 
-        for symbol_class in self.SYMBOL_CLASSES:
-            self.symbol_overviews[symbol_class] = None
-            self.symbol_details[symbol_class] = None
+        self.statistics_overview: StatisticsOverview
+        self.document_page: DocumentPage
 
-        self.statistics_overview: Optional(StatisticsOverview) = None
-        self.document_page: Optional(DocumentPage) = None
-
-        self._html_contents: List(Content) = []
+        self._html_contents: List[Content] = []
 
         self._content_is_prepared = False
 
     def export(self, document: ValueTreeNode) -> None:
         """Export files (plugin interface method)"""
-        self._plugin_scope.document: ValueTreeNode = document
+        self._plugin_scope.document = document
 
         if self._plugin_scope.single_page:
             self.exportSinglePage()
@@ -550,7 +576,7 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
 
     def preparePersistingSymbolsContent(self) -> None:
         """Prepare persisting symbols"""
-        additional_overview_content: Optional(str) = None
+        additional_overview_content = None
         if self._plugin_scope.consider_equal_sized_identical:
             additional_overview_content = "Equal sized symbols forcefully ignored."
 
@@ -645,13 +671,15 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
         for information_type in self.INFORMATION_TYPES:
             contents = getattr(self, f"symbol_{information_type}s")
             for symbol_class in self.SYMBOL_CLASSES:
-                content = contents[symbol_class]
-                content_html = ""
-                if content is not None:
-                    content_html: str = content.getHTML()
-                template_keywords[
-                    f"{symbol_class}_symbol_{information_type}"
-                ] = content_html
+                # Some symbol classes like 'similar' may be suppressed by users choice
+                if symbol_class in contents.keys():
+                    content = contents[symbol_class]
+                    content_html: str = ""
+                    if content is not None:
+                        content_html = content.getHTML()
+                    template_keywords[
+                        f"{symbol_class}_symbol_{information_type}"
+                    ] = content_html
 
         template_keywords.update(
             {
@@ -675,7 +703,7 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
 
         self.prepareContent()
 
-        dirs: List(str) = [
+        dirs: List[str] = [
             output_dir,
             os.path.join(output_dir, "details"),
             os.path.join(output_dir, "details", "persisting"),
@@ -728,17 +756,27 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
         return [
             PluginConfigurationKey(
                 "single_page",
-                "If true, a single-page HTML report will be exported, multi-page otherwise.",
+                "If True, a single-page HTML report will be exported, multi-page otherwise",
+                is_optional=True,
+                default="False",
             ),
             PluginConfigurationKey(
                 "output_file",
-                "The output file that is used for single-page report",
+                "The output file that is used for single-page report (default ",
                 is_optional=True,
+                default=DEFAULT_SINGLE_PAGE_REPORT_OUTPUT_FILE,
             ),
             PluginConfigurationKey(
                 "output_dir",
                 "The output directory that is used for multi-page report",
                 is_optional=True,
+                default=DEFAULT_MULTI_PAGE_REPORT_DIR,
+            ),
+            PluginConfigurationKey(
+                "template_dir",
+                "The directory where Jinja2 templates are read from",
+                is_optional=True,
+                default=DEFAULT_TEMPLATE_DIRECTORY,
             ),
         ] + super(
             HTMLExportPairReportPlugin, HTMLExportPairReportPlugin

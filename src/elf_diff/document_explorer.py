@@ -24,7 +24,8 @@ from elf_diff.pair_report_document import (
     MetaDocument,
     getDocumentTreesOfSymbolClasses,
 )
-import anytree
+import anytree  # type: ignore # Make mypy ignore this module
+import os
 
 
 class TreeTraversalOptions(object):
@@ -272,7 +273,13 @@ class DocumentExplorer(object):
 
         self.sink.init()
 
-        for pre, _, node in anytree.RenderTree(anytree_tree):
+        # Non-ascii styles cause problems with encoding on Windows system
+        if os.name == "nt":
+            style = anytree.AsciiStyle()
+        else:
+            style = anytree.ContStyle()
+
+        for pre, _, node in anytree.RenderTree(anytree_tree, style=style):
             self.sink.output(
                 "%s%s"
                 % (

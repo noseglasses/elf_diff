@@ -27,9 +27,13 @@ def listIntersection(l1, l2):
     return sorted(list(set(l1) & set(l2)))
 
 
-def getDirectoryThatStoresModule(obj):
+def getDirectoryThatStoresModuleOfObj(obj):
     file_that_stores_class = inspect.getfile(type(obj))
     return os.path.dirname(file_that_stores_class)
+
+
+def getDirectoryThatStoresModule(module):
+    return os.path.dirname(module.__file__)
 
 
 def deprecationWarning(feature):

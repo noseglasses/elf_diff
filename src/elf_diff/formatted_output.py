@@ -18,23 +18,13 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-
-import sys
 import os
 
-WARNINGS_OCCURRED = False
+# Unicode characters cause problems with encoding on Windows
+if os.name == "nt":
+    SEPARATOR = separator = "=" * 80
+else:
+    SEPARATOR = separator = "═" * 80
 
-
-def printToStderr(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
-
-def warning(msg):
-    if os.name == "nt":
-        warning_unicode = "!!!"
-    else:
-        warning_unicode = "\u26A0"
-    warning_cascade = warning_unicode * 3
-    print(f"{warning_cascade} Warning: {msg} {warning_cascade}")
-    global WARNINGS_OCCURRED
-    WARNINGS_OCCURRED = True
+START_CITATION = "'''"
+END_CITATION = "'''"

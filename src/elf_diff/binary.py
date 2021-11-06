@@ -19,7 +19,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from elf_diff.error_handling import unrecoverableError
 from elf_diff.error_handling import warning
 from elf_diff.symbol import getSymbolType
 
@@ -80,6 +79,61 @@ class Mangling(object):
         return symbol_name, False
 
 
+class SymbolCollector(object):
+    def __init__(self, binary):
+        self.header_line_re = re.compile("^(0x)?[0-9A-Fa-f]+ <(.+)>:")
+        self.instruction_line_re = re.compile(
+            r"^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*"
+        )
+        self.cur_symbol = None
+        self.symbols = []
+        self.n_instruction_lines = 0
+        self.binary = binary
+
+    def submitSymbol(self):
+        self.symbols.append(self.cur_symbol)
+        self.cur_symbol = None
+
+    def checkSymbolHeaderLine(self, line):
+        header_match = re.match(self.header_line_re, line)
+        if header_match:
+            if self.cur_symbol:
+                self.submitSymbol()
+
+            symbol_name_with_mangling_state_unknown = header_match.group(2)
+
+            symbol_name, symbol_name_is_demangled = self.binary.demangle(
+                symbol_name_with_mangling_state_unknown
+            )
+            self.cur_symbol = self.binary.generateSymbol(
+                symbol_name, symbol_name_is_demangled
+            )
+            return True
+
+        return False
+
+    def gatherSymbolInstructions(self, objdump_output):
+        for line in objdump_output.splitlines():
+
+            is_header_line = self.checkSymbolHeaderLine(line)
+            if is_header_line:
+                continue
+
+            instruction_line_match = re.match(self.instruction_line_re, line)
+            if instruction_line_match:
+                self.n_instruction_lines += 1
+            if self.cur_symbol:
+                if instruction_line_match:
+                    # print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
+                    self.cur_symbol.addInstructions(instruction_line_match.group(2))
+                else:
+                    if (len(line) > 0) and (not line.isspace()):
+                        self.cur_symbol.addInstructions(preHighlightSourceCode(line))
+
+        if self.cur_symbol:
+            self.submitSymbol()
+
+
 class Binary(object):
     def __init__(
         self,
@@ -115,10 +169,10 @@ class Binary(object):
             self.symbol_exclusion_regex_compiled = re.compile(symbol_exclusion_regex)
 
         if not self.filename:
-            unrecoverableError("No binary filename defined")
+            raise Exception("No binary filename defined")
 
         if not os.path.isfile(self.filename):
-            unrecoverableError(
+            raise Exception(
                 "Unable to find filename {filename}".format(filename=filename)
             )
 
@@ -224,6 +278,7 @@ class Binary(object):
             # print("Considering symbol " + symbol_name)
             return self.symbol_type(symbol_name, symbol_name_is_demangled)
         # print("Ignoring symbol " + symbol_name)
+        self.num_symbols_dropped += 1
         return None
 
     def demangle(self, symbol_name_with_mangling_state_unknown):
@@ -246,64 +301,18 @@ class Binary(object):
         )  # Neither explicit demangling, nor binutils demangling worked
 
     def gatherSymbolInstructions(self):
-
         objdump_output = self.readObjdumpOutput()
 
-        # print("Output:")
-        # print("%s" % (objdump_output))
+        symbol_collector = SymbolCollector(self)
+        symbol_collector.gatherSymbolInstructions(objdump_output)
 
-        header_line_re = re.compile("^(0x)?[0-9A-Fa-f]+ <(.+)>:")
-        instruction_line_re = re.compile(
-            r"^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*"
-        )
+        for symbol in symbol_collector.symbols:
+            self.addSymbol(symbol)
 
-        cur_symbol = None
-        n_symbols = 0
-        n_instruction_lines = 0
-        self.instructions_available = False
+        self.instructions_available = len(symbol_collector.symbols) > 0
 
-        for line in objdump_output.splitlines():
-
-            header_match = re.match(header_line_re, line)
-            if header_match:
-                if cur_symbol:
-                    self.addSymbol(cur_symbol)
-                    n_symbols += 1
-
-                symbol_name_with_mangling_state_unknown = header_match.group(2)
-
-                symbol_name, symbol_name_is_demangled = self.demangle(
-                    symbol_name_with_mangling_state_unknown
-                )
-                cur_symbol = self.generateSymbol(symbol_name, symbol_name_is_demangled)
-
-                if cur_symbol is None:
-                    self.num_symbols_dropped += 1
-            else:
-                instruction_line_match = re.match(instruction_line_re, line)
-                if cur_symbol:
-                    if instruction_line_match:
-                        # print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
-                        cur_symbol.addInstructions(instruction_line_match.group(2))
-                        n_instruction_lines = n_instruction_lines + 1
-                    else:
-                        if (len(line) > 0) and (not line.isspace()):
-                            cur_symbol.addInstructions(preHighlightSourceCode(line))
-
-        if cur_symbol:
-            self.addSymbol(cur_symbol)
-
-        if n_instruction_lines == 0:
-            warning(
-                "Unable to read assembly from binary {filename}.".format(
-                    filename=self.filename
-                )
-            )
-            warning("Do you use the correct binutils version?")
-            warning("Please check the --bin_dir and --bin_prefix settings.")
-            self.binutils_work = False
-        else:
-            self.instructions_available = True
+        if symbol_collector.n_instruction_lines == 0:
+            warning(f"Unable to read assembly from binary '{self.filename}'.")
 
     def gatherSymbolProperties(self):
         nm_output = self.readNMOutput()
@@ -331,8 +340,6 @@ class Binary(object):
                         data_symbol.size = int(symbol_size_str)
                         data_symbol.type = symbol_type
                         self.addSymbol(data_symbol)
-                    else:
-                        self.num_symbols_dropped += 1
                 else:
                     self.symbols[symbol_name].size = int(symbol_size_str)
                     self.symbols[symbol_name].type = symbol_type
