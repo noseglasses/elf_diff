@@ -25,13 +25,24 @@ jobs:
         python3 -m pip install --upgrade pip
         python3 -m pip install coverage
         python3 -m pip install -r ./requirements.txt
-    - name: Test
+    - name: Prepare tests
       run: |
         mkdir test_output
+    - name: Command line args test
+      run: |
         cd test_output
         python3 -m coverage run --branch --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
+    - name: Symbol unit tests
+      run: |
+        cd test_output
         python3 -m coverage run --branch --parallel-mode ../tests/test_cpp_symbols.py
+    - name: Combine coverage
+      run: |
+        cd test_output
         python3 -m coverage combine * */*
+    - name: Convert coverage
+      run: |
+        cd test_output
         python3 -m coverage xml
     - uses: actions/upload-artifact@v2
       with:
