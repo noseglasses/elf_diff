@@ -21,11 +21,15 @@
 
 import unittest
 import os
-import inspect
 import sys
 
-bin_path = os.path.dirname(os.path.realpath(inspect.getfile(inspect.currentframe())))
-sys.path.append(os.path.join(bin_path, "..", "src"))
+
+def prepareSearchPath():
+    module_dir = os.path.dirname(sys.modules[__name__].__file__)
+    sys.path.append(os.path.join(module_dir, "..", "src"))
+
+
+prepareSearchPath()
 
 from elf_diff.symbol import Symbol
 from elf_diff.symbol import CppSymbol
