@@ -37,5 +37,8 @@ def unrecoverableError(msg):
 
 
 def warning(msg):
-    eprint("Warning: {msg}".format(msg=msg))
+    warning_unicode = "\u26A0"
+    warning_cascade = warning_unicode * 3
+    eprint(f"{warning_cascade} Warning: {msg} {warning_cascade}")
+    global WARNINGS_OCCURRED
     WARNINGS_OCCURRED = True

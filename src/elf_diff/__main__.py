@@ -25,7 +25,7 @@ from elf_diff.plugin import ExportPairReportPlugin, getRegisteredPlugins
 from elf_diff.default_plugins import registerPlugins
 from elf_diff.document_explorer import getDocumentStructureDocString
 from elf_diff.deprecated.mass_report import writeMassReport
-from elf_diff.error_handling import WARNINGS_OCCURRED
+import elf_diff.error_handling as error_handling
 import os
 import inspect
 import sys
@@ -49,8 +49,36 @@ def exportDocument(settings):
         plugin.export(document)
 
 
-def main():
+def errorOutput():
+    separator = "═" * 80
+    if (not settings) or settings.debug:
+        print(separator)
+        print("")
+        print(traceback.format_exc())
+    else:
+        print("")
 
+    pleading_face = "\U0001F97A"
+    cloud_with_rain = "\U0001F327"
+    hot_beverage = "\u2615"
+    warning = "\u26A0"
+
+    print(
+        f"""\
+{separator}
+ elf_diff is unconsolable {pleading_face} but something went wrong {cloud_with_rain}
+{separator}
+
+ {warning} {e}
+
+{separator}
+ Don't let this take you down! Have a nice {hot_beverage} and start over.
+{separator}
+"""
+    )
+
+
+def main():
     errors_occurred = False
     settings: Optional(Settings) = None
     try:
@@ -77,35 +105,16 @@ def main():
             )
     except Exception as e:
 
-        separator = "═" * 80
-        if (not settings) or settings.debug:
-            print(separator)
-            print("")
-            print(traceback.format_exc())
-        else:
-            print("")
-
-        pleading_face = "\U0001F97A"
-        cloud_with_rain = "\U0001F327"
-        hot_beverage = "\u2615"
-        warning = "\u26A0"
-
-        print(
-            f"""\
-{separator}
- elf_diff is unconsolable {pleading_face} but something went wrong {cloud_with_rain}
-{separator}
-
- {warning} {e}
-
-{separator}
- Don't let this take you down! Have a nice {hot_beverage} and start over.
-{separator}
-"""
-        )
+        errorOutput()
         errors_occurred = True
+        sys.exit(1)
+    else:
+        chequered_flag = "\U0001F3C1"
+        print(f"{chequered_flag} Done.")
 
-    if WARNINGS_OCCURRED or errors_occurred:
+    if error_handling.WARNINGS_OCCURRED:
+        warning = "\u26A0"
+        print(f"{warning} Watch out! Warnings occurred.")
         sys.exit(1)
 
 
