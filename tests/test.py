@@ -65,6 +65,15 @@ sys.argv[1:] = unittest_args
 
 TESTING_DIR = os.path.dirname(sys.modules[__name__].__file__)
 
+if os.name == "nt":
+    STANDARD_BIN_DIR = r"C:\msys64\mingw64\bin"
+    ARM_BIN_PREFIX = "arm-none-eabi-"
+    EXE_SUFFIX = ".exe"
+else:
+    STANDARD_BIN_DIR = "/usr/bin"
+    ARM_BIN_PREFIX = "arm-linux-gnueabi-"
+    EXE_SUFFIX = ""
+
 if args.test_installed_package is True:
     elf_diff_start = [sys.executable, "-m", "elf_diff"]
 else:
@@ -200,7 +209,7 @@ def runSubprocess(
         print(SEPARATOR)
         print(f"Test {test_name}")
         print(SEPARATOR)
-        sys.stdout.write(f'{cmd[0]}" ')
+        sys.stdout.write(f'"{cmd[0]}" ')
         for cmd_line_param in cmd[1:]:
             if cmd_line_param.startswith("--"):
                 sys.stdout.write("\\\n   ")
@@ -373,10 +382,10 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTest()
 
     def test_bin_dir(self):
-        self.runSimpleTest([("bin_dir", "/usr/bin")])
+        self.runSimpleTest([("bin_dir", STANDARD_BIN_DIR)])
 
     def test_bin_prefix1(self):
-        self.runSimpleTestArm([("bin_prefix", "arm-linux-gnueabi-")])
+        self.runSimpleTestArm([("bin_prefix", ARM_BIN_PREFIX)])
 
     @unittest.expectedFailure
     def test_bin_prefix2(self):
@@ -583,10 +592,10 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTestGhs([("new_mangling_file", new_mangling_file_ghs)])
 
     def test_nm_command(self):
-        self.runSimpleTest([("nm_command", "/usr/bin/nm")])
+        self.runSimpleTest([("nm_command", os.path.join(STANDARD_BIN_DIR, f"nm{EXE_SUFFIX}"))])
 
     def test_objdump_command(self):
-        self.runSimpleTest([("nm_command", "/usr/bin/objdump")])
+        self.runSimpleTest([("objdump_command", os.path.join(STANDARD_BIN_DIR, f"objdump{EXE_SUFFIX}"))])
 
     def test_old_alias(self):
         self.runSimpleTest([("old_alias", "Old alias")])
@@ -617,7 +626,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTest([("similarity_threshold", "0.5")])
 
     def test_size_command(self):
-        self.runSimpleTest([("nm_command", "/usr/bin/size")])
+        self.runSimpleTest([("nm_command", os.path.join(STANDARD_BIN_DIR, f"size{EXE_SUFFIX}"))])
 
     def test_skip_details(self):
         self.runSimpleTest([("skip_details", None)])

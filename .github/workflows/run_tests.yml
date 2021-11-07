@@ -67,6 +67,12 @@ jobs:
         xcopy "C:\msys64\mingw64\share\fonts\TTF" "C:\Users\runneradmin\.fonts" /e /i
         echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH
         rm C:\msys64\mingw64\bin\python.exe
+    - name: Install binutils
+      run: |
+        which objdump
+        which nm
+        which size
+        C:\msys64\usr\bin\bash -lc 'pacman -S mingw-w64-x86_64-arm-none-eabi-binutils --noconfirm'
     - name: Install elf_diff Python Dependencies
       run: |
         python -m pip install --upgrade pip
