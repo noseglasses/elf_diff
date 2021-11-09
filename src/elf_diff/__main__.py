@@ -84,7 +84,7 @@ def errorOutput(
     print(
         f"""\
 {SEPARATOR}
- elf_diff is unconsolable {PLEADING_FACE} but something went wrong {CLOUD_WITH_RAIN}
+ elf_diff is unconsolable {PLEADING_FACE} Something went wrong {CLOUD_WITH_RAIN}
 {SEPARATOR}
 
  {ERROR} {exception}

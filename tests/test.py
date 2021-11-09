@@ -592,10 +592,19 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTestGhs([("new_mangling_file", new_mangling_file_ghs)])
 
     def test_nm_command(self):
-        self.runSimpleTest([("nm_command", os.path.join(STANDARD_BIN_DIR, f"nm{EXE_SUFFIX}"))])
+        self.runSimpleTest(
+            [("nm_command", os.path.join(STANDARD_BIN_DIR, f"nm{EXE_SUFFIX}"))]
+        )
 
     def test_objdump_command(self):
-        self.runSimpleTest([("objdump_command", os.path.join(STANDARD_BIN_DIR, f"objdump{EXE_SUFFIX}"))])
+        self.runSimpleTest(
+            [
+                (
+                    "objdump_command",
+                    os.path.join(STANDARD_BIN_DIR, f"objdump{EXE_SUFFIX}"),
+                )
+            ]
+        )
 
     def test_old_alias(self):
         self.runSimpleTest([("old_alias", "Old alias")])
@@ -626,7 +635,9 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         self.runSimpleTest([("similarity_threshold", "0.5")])
 
     def test_size_command(self):
-        self.runSimpleTest([("nm_command", os.path.join(STANDARD_BIN_DIR, f"size{EXE_SUFFIX}"))])
+        self.runSimpleTest(
+            [("nm_command", os.path.join(STANDARD_BIN_DIR, f"size{EXE_SUFFIX}"))]
+        )
 
     def test_skip_details(self):
         self.runSimpleTest([("skip_details", None)])
@@ -654,6 +665,9 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
     def test_txt_file(self):
         self.runSimpleTest([("txt_file", "output.txt")])
+
+    def test_xml_file(self):
+        self.runSimpleTest([("xml_file", "output.xml")])
 
     def test_yaml_file(self):
         self.runSimpleTest([("yaml_file", "output.yaml")])

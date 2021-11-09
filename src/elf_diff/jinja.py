@@ -22,7 +22,7 @@
 from elf_diff.document_explorer import (
     DocumentExplorer,
     StringSink,
-    TreeTraversalOptions,
+    dumpTreeTxt,
 )
 from elf_diff.pair_report_document import getDocumentTreesOfSymbolClasses
 import jinja2
@@ -61,12 +61,12 @@ class Configurator(object):
             0
         ]
 
-        env.globals["dump_tree"] = lambda node, display_values: DocumentExplorer(
-            StringSink, display_values=display_values
-        ).dumpDocumentTree(node)
-        env.globals["dump_tree_full"] = lambda node, display_values: DocumentExplorer(
-            StringSink, display_values=display_values
-        ).dumpDocumentTree(node, TreeTraversalOptions(visit_value_tree_nodes=True))
+        env.globals["dump_tree"] = dumpTreeTxt
+        env.globals[
+            "dump_tree_full"
+        ] = lambda value_tree_node, display_values: dumpTreeTxt(
+            value_tree_node, display_values, only_base_tree=False
+        )
         env.globals["dump_leaf_paths"] = lambda node: DocumentExplorer(
             StringSink
         ).dumpDocumentLeafPaths(node)

@@ -54,7 +54,7 @@ def getDifferencesAsHTML(old_symbol: ValueTreeNode, new_symbol: ValueTreeNode) -
     """Generate a tabular formatted version of the differences of the
     assembly instructions of two symbols
     """
-    if old_symbol.type == Symbol.type_data:
+    if old_symbol.type == Symbol.TYPE_DATA:
         return "Data symbol -> no assembly"
     elif old_symbol.instructions == new_symbol.instructions:
         return "Instructions unchanged"

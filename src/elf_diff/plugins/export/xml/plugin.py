@@ -24,38 +24,38 @@ from elf_diff.plugin import (
     PluginConfigurationKey,
     PluginConfigurationInformation,
 )
-from elf_diff.document_explorer import (
-    DocumentExplorer,
-    TREE_TRAVERSAL_ALL,
-    StringSink,
-    GeneratorOptions,
-)
+from elf_diff.document_explorer import generateDictionary, TREE_TRAVERSAL_ALL
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import ValueTreeNode
+from dicttoxml import dicttoxml  # type: ignore # Make mypy ignore this module
 from typing import Dict
+from defusedxml.minidom import parseString  # type: ignore # Make mypy ignore this module
 
 
-class TXTExportPairReportPlugin(ExportPairReportPlugin):
-    """A plugin class that exports the elf_diff document as a text file"""
+class XMLExportPairReportPlugin(ExportPairReportPlugin):
+    """A plugin class that exports the elf_diff document as XML"""
 
     def __init__(self, settings: Settings, plugin_configuration: Dict[str, str]):
         super().__init__(settings, plugin_configuration)
 
-    def export(self, document: ValueTreeNode):
-        txt_output: str = DocumentExplorer(
-            StringSink, display_values=True
-        ).dumpDocumentTree(
-            document=document,
-            tree_traversal_options=TREE_TRAVERSAL_ALL,
-            generator_options=GeneratorOptions(enforce_names_alpha=False),
+    def export(
+        self, document: ValueTreeNode
+    ) -> None:  # pylint: disable=arguments-differ # There's no visible reason why pylint warns here
+        """Export the elf_diff document as XML"""
+        dict_: dict = generateDictionary(
+            document, tree_traversal_options=TREE_TRAVERSAL_ALL
         )
 
+        xml = dicttoxml(dict_, custom_root="elf_diff", attr_type=False)
+
+        dom = parseString(xml)
+
         with open(self.getConfigurationParameter("output_file"), "w") as f:
-            f.write(txt_output)
+            f.write(str(dom.toprettyxml()))
 
     @staticmethod
     def getConfigurationInformation() -> PluginConfigurationInformation:
         """Return plugin configuration information"""
-        return [PluginConfigurationKey("output_file", "The text output file")] + super(
-            TXTExportPairReportPlugin, TXTExportPairReportPlugin
+        return [PluginConfigurationKey("output_file", "The XML output file")] + super(
+            XMLExportPairReportPlugin, XMLExportPairReportPlugin
         ).getConfigurationInformation()

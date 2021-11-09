@@ -24,7 +24,11 @@ from elf_diff.plugin import (
     PluginConfigurationKey,
     PluginConfigurationInformation,
 )
-from elf_diff.document_explorer import DocumentExplorer, TREE_TRAVERSAL_ALL
+from elf_diff.document_explorer import (
+    generateDictionary,
+    TREE_TRAVERSAL_ALL,
+    GeneratorOptions,
+)
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import ValueTreeNode
 import yaml
@@ -39,12 +43,12 @@ class YAMLExportPairReportPlugin(ExportPairReportPlugin):
 
     def export(self, document: ValueTreeNode) -> None:
         """Export the elf_diff document as YAML"""
-        dict_: dict = DocumentExplorer().generateDictionary(
-            document, tree_traversal_options=TREE_TRAVERSAL_ALL
+        generator_options = GeneratorOptions(enforce_names_alpha=False)
+        dict_: dict = generateDictionary(
+            document,
+            tree_traversal_options=TREE_TRAVERSAL_ALL,
+            generator_options=generator_options,
         )
-
-        # import json
-        # print(json.dumps(dict_, sort_keys=True, indent=4))
 
         yaml_output: str = yaml.dump(dict_, default_flow_style=False)
 

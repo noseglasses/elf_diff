@@ -102,10 +102,11 @@ parameters = [
     ),
     Parameter("html_file", "The filename of the generated single page HTML report."),
     Parameter("html_dir", "The directory of the generated multi page HTML report."),
-    Parameter("pdf_file", "The filename of the generated pdf report."),
-    Parameter("yaml_file", "The filename of the generated yaml report."),
-    Parameter("json_file", "The filename of the generated json report."),
+    Parameter("pdf_file", "The filename of the generated PDF report."),
+    Parameter("yaml_file", "The filename of the generated YAML report."),
+    Parameter("json_file", "The filename of the generated JSON report."),
     Parameter("txt_file", "The filename of the generated text based report."),
+    Parameter("xml_file", "The filename of the generated XML report."),
     Parameter("project_title", "A project title to use for all reports."),
     Parameter(
         "driver_file",
@@ -243,6 +244,7 @@ class Settings(object):
         self.yaml_file: str
         self.json_file: str
         self.txt_file: str
+        self.xml_file: str
         self.project_title: str
         self.driver_file: str
         self.driver_template_file: str

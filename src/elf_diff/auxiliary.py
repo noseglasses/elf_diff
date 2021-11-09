@@ -20,6 +20,7 @@
 #
 import inspect
 import os
+import re
 from distutils import dir_util
 
 
@@ -55,3 +56,7 @@ def getRelpath(html_output_file, target_dir):
 
 def recursiveCopy(source_dir, target_dir):
     dir_util.copy_tree(source_dir, target_dir)
+
+
+def isNameToken(str_: str) -> bool:
+    return re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", str_) is not None
