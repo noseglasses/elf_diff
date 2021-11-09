@@ -24,7 +24,11 @@ from elf_diff.plugin import (
     PluginConfigurationKey,
     PluginConfigurationInformation,
 )
-from elf_diff.document_explorer import DocumentExplorer, TREE_TRAVERSAL_ALL
+from elf_diff.document_explorer import (
+    generateDictionary,
+    TREE_TRAVERSAL_ALL,
+    GeneratorOptions,
+)
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import ValueTreeNode
 import json
@@ -41,8 +45,11 @@ class JSONExportPairReportPlugin(ExportPairReportPlugin):
         self, document: ValueTreeNode
     ) -> None:  # pylint: disable=arguments-differ # There's no visible reason why pylint warns here
         """Export the elf_diff document as JSON"""
-        dict_: dict = DocumentExplorer().generateDictionary(
-            document, tree_traversal_options=TREE_TRAVERSAL_ALL
+        generator_options = GeneratorOptions(enforce_names_alpha=False)
+        dict_: dict = generateDictionary(
+            document,
+            tree_traversal_options=TREE_TRAVERSAL_ALL,
+            generator_options=generator_options,
         )
 
         json_output: str = json.dumps(dict_, sort_keys=True, indent=4)

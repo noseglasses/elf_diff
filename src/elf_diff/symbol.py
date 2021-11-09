@@ -22,9 +22,10 @@
 
 class Symbol(object):
 
-    type_function = 1
-    type_data = 2
-    consecutive_id = 0
+    TYPE_FUNCTION = 1
+    TYPE_DATA = 2
+
+    _consecutive_id = 0
 
     def __init__(self, name, is_demangled):
         """Initialize symbol object."""
@@ -37,8 +38,8 @@ class Symbol(object):
 
     @staticmethod
     def getConsecutiveId():
-        tmp = Symbol.consecutive_id
-        Symbol.consecutive_id += 1
+        tmp = Symbol._consecutive_id
+        Symbol._consecutive_id += 1
         return tmp
 
     def init(self):
@@ -153,10 +154,10 @@ class CppSymbol(Symbol):
 
         rest, self.arguments = CppSymbol.getArgumentsPortion(rest, "(", ")")
         if rest is not None:
-            self.symbol_type = Symbol.type_function
+            self.symbol_type = Symbol.TYPE_FUNCTION
         else:
             rest = self.name
-            self.symbol_type = Symbol.type_data
+            self.symbol_type = Symbol.TYPE_DATA
 
         # Check if the symbol lives within a class or namespace.
         # We cannot distinguish between those two as from a naming perspective both are equal.

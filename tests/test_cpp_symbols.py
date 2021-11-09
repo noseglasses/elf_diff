@@ -80,12 +80,12 @@ class TestCppSymbol(unittest.TestCase):
 
     def __dataSymbolTest(self):
         t = self.__RAIITestAux(self)
-        t.symbol_type = Symbol.type_data
+        t.symbol_type = Symbol.TYPE_DATA
         return t
 
     def __functionSymbolTest(self):
         t = self.__dataSymbolTest()
-        t.symbol_type = Symbol.type_function
+        t.symbol_type = Symbol.TYPE_FUNCTION
         return t
 
     def __simpleDataTest(self):

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+# -*- mode: python -*-
 #
 # elf_diff
 #
@@ -15,14 +18,6 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# Install requirements with one of the following commands
-# pip install -r requirements
-# py -m pip install -r requirements
-jinja2 >= 2.11.3
-pyyaml >= 5.4
-progressbar2 == 3.53
-GitPython == 3.1
-weasyprint == 53.3
-anytree == 2.8.0
-dicttoxml >= 1.7.4
-defusedxml >= 0.7.1
+class TreeAddressable(object):
+    def getPath(self) -> str:
+        pass
