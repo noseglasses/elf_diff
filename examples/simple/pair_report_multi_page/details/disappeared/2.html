@@ -45,7 +45,7 @@ retq
 <H4>Tree Representation</H4>
 <pre>
 disappeared_symbol
-├── actual
+├── old_symbol
 │   ├── id = &#39;2&#39; &lt;int&gt; [Unique symbol identifier]
 │   ├── instructions = &#39;endbr64 
 push   %rbp
@@ -62,7 +62,7 @@ retq
 │   ├── name = &#39;Test::g(float, float)&#39; &lt;str&gt; [The symbol name (demangled if supported)]
 │   ├── size = &#39;29&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
 │   └── type = &#39;?&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
-└── display_info [The display info]
+└── display_info [Information that configures how things are displayed]
     ├── anchor_id = &#39;2&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
     ├── display_symbol_details = &#39;True&#39; &lt;bool&gt; [True if symbol details are supposed to be displayed]
     └── symbol_class = &#39;disappeared&#39; &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
