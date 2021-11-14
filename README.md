@@ -5,6 +5,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/08f1e1dd9e3240799be5470e86ad5a58)](https://www.codacy.com/gh/noseglasses/elf_diff/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=noseglasses/elf_diff&amp;utm_campaign=Badge_Grade)
 
 ![check code formatting](https://github.com/noseglasses/elf_diff/actions/workflows/black_code_formatting.yml/badge.svg)
+![type checking](https://github.com/noseglasses/elf_diff/actions/workflows/type_checking_mypy.yml/badge.svg)
 ![CodeQL analysis](https://github.com/noseglasses/elf_diff/actions/workflows/codeql-analysis.yml/badge.svg)
 ![lint generated html](https://github.com/noseglasses/elf_diff/actions/workflows/lint_generated_html.yml/badge.svg)
 ![lint python](https://github.com/noseglasses/elf_diff/actions/workflows/lint_python_flake8.yml/badge.svg)
