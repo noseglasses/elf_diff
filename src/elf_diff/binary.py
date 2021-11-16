@@ -338,11 +338,11 @@ class Binary(object):
                     )
                     if data_symbol is not None:
                         data_symbol.size = int(symbol_size_str)
-                        data_symbol.type = symbol_type
+                        data_symbol.type_ = symbol_type
                         self.addSymbol(data_symbol)
                 else:
                     self.symbols[symbol_name].size = int(symbol_size_str)
-                    self.symbols[symbol_name].type = symbol_type
+                    self.symbols[symbol_name].type_ = symbol_type
 
     def parseSymbols(self):
 
