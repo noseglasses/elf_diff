@@ -421,6 +421,32 @@ class Settings(object):
         else:
             raise Exception("Please specify either none or two binaries")
 
+    def _findUtilityInBinDir(
+        self, name: str, exe_extensions: List[str]
+    ) -> Optional[str]:
+        for exe_extension in exe_extensions:
+            basename: str = self.bin_prefix + name + exe_extension
+
+            if self.bin_dir is not None:
+                command = os.path.join(self.bin_dir, basename)
+                if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
+                    return command
+        return None
+
+    def _findUtilityUsingWhich(
+        self, name: str, exe_extensions: List[str]
+    ) -> Optional[str]:
+        for exe_extension in exe_extensions:
+            basename = self.bin_prefix + name + exe_extension
+            command = shutil.which(basename)
+            if (
+                (command is not None)
+                and (os.path.isfile(command))
+                and (os.access(command, os.X_OK))
+            ):
+                return command
+        return None
+
     def findUtility(self, name: str) -> None:
         """Find a utility and set a attribute of this class to the path of the utility executable"""
         command_name: str = name + "_command"
@@ -436,29 +462,21 @@ class Settings(object):
         else:
             exe_extensions = ["", ".exe"]
 
-        for exe_extension in exe_extensions:
-            basename: str = self.bin_prefix + name + exe_extension
+        command = self._findUtilityInBinDir(name, exe_extensions)
 
-            if self.bin_dir is not None:
-                command = os.path.join(self.bin_dir, basename)
-                if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
-                    setattr(self, command_name, command)
-                    return
+        if command is not None:
+            setattr(self, command_name, command)
+            return
 
-        for exe_extension in exe_extensions:
-            basename = self.bin_prefix + name + exe_extension
-            command = shutil.which(basename)
-            if (
-                (command is not None)
-                and (os.path.isfile(command))
-                and (os.access(command, os.X_OK))
-            ):
-                setattr(self, command_name, command)
-                return
+        command = self._findUtilityUsingWhich(name, exe_extensions)
+
+        if command is not None:
+            setattr(self, command_name, command)
+            return
 
         raise Exception(f"Unnable to find {name} command")
 
-    def _validateAndInitSettings(self) -> None:
+    def _validateBinaries(self) -> None:
         """Validate and initialize the settings"""
         if self.old_binary_filename and not os.path.isfile(self.old_binary_filename):
             raise Exception(
@@ -472,10 +490,7 @@ class Settings(object):
                 % (self.new_binary_filename)
             )
 
-        self.findUtility("objdump")
-        self.findUtility("nm")
-        self.findUtility("size")
-
+    def _prepareInfoFiles(self) -> None:
         if self.old_info_file:
             if os.path.isfile(self.old_info_file):
                 with open(self.old_info_file, "r") as f:
@@ -498,16 +513,27 @@ class Settings(object):
         else:
             self.new_binary_info = ""
 
+    def _prepareAlias(self) -> None:
         if self.old_alias is None:
             self.old_alias = self.old_binary_filename
 
         if self.new_alias is None:
             self.new_alias = self.new_binary_filename
 
+    def _validateAndInitSettings(self) -> None:
+        self._validateBinaries()
+
+        self.findUtility("objdump")
+        self.findUtility("nm")
+        self.findUtility("size")
+
         print("Tools:")
         print(f"   objdump: {self.objdump_command}")
         print(f"   nm:      {self.nm_command}")
         print(f"   size:    {self.size_command}")
+
+        self._prepareInfoFiles()
+        self._prepareAlias()
 
     def writeParameterTemplateFile(
         self, filename: str, output_actual_values: bool = False
