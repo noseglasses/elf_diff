@@ -369,8 +369,14 @@ class Binary(object):
                     self.symbols[symbol_name].size = int(symbol_size_str)
                     self.symbols[symbol_name].type_ = symbol_type
 
+    def _initSymbols(self) -> None:
+        for symbol_name in sorted(self.symbols.keys()):
+            symbol = self.symbols[symbol_name]
+            symbol.init()
+
     def _parseSymbols(self) -> None:
         """Parse symbols from the binary"""
         self._determineSymbolSizes()
         self._gatherSymbolInstructions()
         self._gatherSymbolProperties()
+        self._initSymbols()

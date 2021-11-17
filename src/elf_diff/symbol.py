@@ -35,7 +35,7 @@ class Symbol(object):
         self.instruction_lines: List[str] = []
         self.size: int = 0
         self.type_: str = "?"
-        self.id_: int = Symbol._getConsecutiveId()
+        self.id_: int
 
     @staticmethod
     def _getConsecutiveId() -> int:
@@ -52,6 +52,7 @@ class Symbol(object):
             self.instructions += "%s\n" % instruction_line
             instructions_for_hash += "".join(instruction_line)
         self.instructions_hash = hash(instructions_for_hash)
+        self.id_: int = Symbol._getConsecutiveId()
 
     def hasInstructions(self) -> bool:
         """Check wether a symbol has related assmbly instructions"""
