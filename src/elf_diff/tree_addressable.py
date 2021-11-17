@@ -18,6 +18,10 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
+import abc
+
+
 class TreeAddressable(object):
+    @abc.abstractmethod
     def getPath(self) -> str:
         pass

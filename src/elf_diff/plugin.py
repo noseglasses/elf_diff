@@ -24,6 +24,7 @@ from elf_diff.settings import Settings
 import importlib
 import importlib.util
 from typing import List, Type, Dict, Optional
+import abc
 
 
 class PluginException(Exception):
@@ -141,6 +142,7 @@ class Plugin(object):
 class ExportPairReportPlugin(Plugin):
     """A pair report plugin that exports the document tree"""
 
+    @abc.abstractmethod
     def export(self, document):
         pass
 

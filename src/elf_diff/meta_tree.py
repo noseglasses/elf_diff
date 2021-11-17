@@ -33,6 +33,7 @@ from typing import (  # pylint: disable=unused-import
     Any,
 )  # pylint: disable=unused-import
 import copy
+import abc
 
 
 class Node(TreeAddressable):
@@ -107,6 +108,7 @@ class Node(TreeAddressable):
             child: Node = self._children[key]
             callable_(self, child)
 
+    @abc.abstractmethod
     def configureValueTree(self, value_tree_node: Any, **kwargs: Any) -> None:
         pass
 
