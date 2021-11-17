@@ -24,7 +24,7 @@ import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
 import re
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, List, Tuple, Dict, Set, Union, Type
 
 ArgsPair = Tuple[str, Optional[str]]
 ArgsList = List[ArgsPair]
@@ -39,31 +39,31 @@ def prepareSearchPath():
 
 prepareSearchPath()
 
-from elf_diff.settings import parameters
+from elf_diff.settings import PARAMETERS
 from elf_diff.__main__ import RETURN_CODE_WARNINGS_OCCURRED
 from elf_diff.formatted_output import SEPARATOR
 import elf_diff.formatted_output as fo
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument(
     "-p",
     "--test_installed_package",
     action="store_true",
     help="Add this flag to enable testing using an installed elf_diff package",
 )
-parser.add_argument(
+PARSER.add_argument(
     "-c",
     "--enable_code_coverage",
     action="store_true",
     help="Add this flag to enable coverage generation",
 )
 
-args, unittest_args = parser.parse_known_args()
+ARGS, UNITTEST_ARGS = PARSER.parse_known_args()
 
-# Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
-sys.argv[1:] = unittest_args
+# Now set the sys.argv to the UNITTEST_ARGS (leaving sys.argv[0] alone)
+sys.argv[1:] = UNITTEST_ARGS
 
-TESTING_DIR = os.path.dirname(sys.modules[__name__].__file__)
+TESTING_DIR: str = os.path.dirname(sys.modules[__name__].__file__)
 
 if os.name == "nt":
     STANDARD_BIN_DIR = r"C:\msys64\mingw64\bin"
@@ -74,13 +74,14 @@ else:
     ARM_BIN_PREFIX = "arm-linux-gnueabi-"
     EXE_SUFFIX = ""
 
-if args.test_installed_package is True:
-    elf_diff_start = [sys.executable, "-m", "elf_diff"]
+ELF_DIFF_START: List[str]
+if ARGS.test_installed_package is True:
+    ELF_DIFF_START = [sys.executable, "-m", "elf_diff"]
 else:
-    bin_dir = os.path.join(TESTING_DIR, "..", "bin")
-    if args.enable_code_coverage is True:
+    bin_dir: str = os.path.join(TESTING_DIR, "..", "bin")
+    if ARGS.enable_code_coverage is True:
         print("Running with coverage testing")
-        elf_diff_start = [
+        ELF_DIFF_START = [
             sys.executable,
             "-m",
             "coverage",
@@ -90,53 +91,56 @@ else:
             os.path.join(bin_dir, "elf_diff"),
         ]
     else:
-        elf_diff_start = [sys.executable, os.path.join(bin_dir, "elf_diff")]
+        ELF_DIFF_START = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
-old_binary_x86_64 = os.path.join(
+OLD_BINARY_X86_64: str = os.path.join(
     TESTING_DIR, "x86_64", "libelf_diff_test_release_old.a"
 )
-new_binary_x86_64 = os.path.join(
+NEW_BINARY_X86_64: str = os.path.join(
     TESTING_DIR, "x86_64", "libelf_diff_test_release_new.a"
 )
-old_binary2_x86_64 = os.path.join(TESTING_DIR, "x86_64", "libelf_diff_test_debug_old.a")
-new_binary2_x86_64 = os.path.join(TESTING_DIR, "x86_64", "libelf_diff_test_debug_new.a")
+OLD_BINARY2_X86_64: str = os.path.join(
+    TESTING_DIR, "x86_64", "libelf_diff_test_debug_old.a"
+)
+NEW_BINARY2_X86_64: str = os.path.join(
+    TESTING_DIR, "x86_64", "libelf_diff_test_debug_new.a"
+)
 
-old_binary_arm = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_old.a")
-new_binary_arm = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_new.a")
+OLD_BINARY_ARM: str = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_old.a")
+NEW_BINARY_ARM: str = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_new.a")
 
-old_binary_ghs = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_old.a")
-new_binary_ghs = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_new.a")
+OLD_BINARY_GHS: str = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_old.a")
+NEW_BINARY_GHS: str = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_new.a")
 
-old_mangling_file_ghs = os.path.join(
+OLD_MANGLING_FILE_GHS: str = os.path.join(
     TESTING_DIR, "ghs", "libelf_diff_test_release_old.a.demangle.txt"
 )
-new_mangling_file_ghs = os.path.join(
+NEW_MANGLING_FILE_GHS: str = os.path.join(
     TESTING_DIR, "ghs", "libelf_diff_test_release_new.a.demangle.txt"
 )
 
-test_plugin = os.path.join(TESTING_DIR, "plugin", "test_plugin.py")
+TEST_PLUGIN: str = os.path.join(TESTING_DIR, "plugin", "test_plugin.py")
 
-verbose_output = True
+VERBOSE_OUTPUT = True
 
 
-def prepareArgsAvailable():
+def prepareArgsAvailable() -> Set[str]:
     args_available = set()
-    for parameter in parameters:
+    for parameter in PARAMETERS:
         args_available.add(parameter.name)
     return args_available
 
 
 class ArgsWatcher(object):
     def __init__(self):
-
-        self.args_available = prepareArgsAvailable()
-        self.args_tested = set()
+        self.args_available: Set[str] = prepareArgsAvailable()
+        self.args_tested: Set[str] = set()
 
     def prepareArgs(self, args: ArgsList):
         output_args: List[str] = []
         for args_tuple in args:
-            key = args_tuple[0]
-            value = args_tuple[1]
+            key: str = args_tuple[0]
+            value: Optional[str] = args_tuple[1]
             self.args_tested.add(key)
             output_args.append(f"--{key}")
             if value is not None:
@@ -144,12 +148,11 @@ class ArgsWatcher(object):
 
         return output_args
 
-    def testIfAllArgsUsedAtLeastOnce(self):
+    def testIfAllArgsUsedAtLeastOnce(self) -> None:
         """Test if all elf_diff command line args are at least used once while testing"""
-
         print("Args available: " + str(len(self.args_available)))
         print("Args tested: " + str(len(self.args_tested)))
-        args_not_tested = self.args_available - self.args_tested
+        args_not_tested: Set[str] = self.args_available - self.args_tested
 
         if len(args_not_tested) > 0:
             print("Command line args not tested:")
@@ -158,46 +161,51 @@ class ArgsWatcher(object):
 
         assert len(args_not_tested) == 0
 
-    def listArgs(self):
+    def printArgs(self) -> None:
+        """Print all command line arguments"""
         print("Command line args available:")
         for arg in sorted(self.args_available):
             print(f"   {arg}")
 
-    def exportTestSkeletons(self):
+    def printTestSkeletons(self) -> None:
+        """Print test skeleton functions"""
         for arg in sorted(self.args_available):
             print(f"   def test_{arg}(self):")
             print("       pass")
             print("")
 
 
-args_watcher = ArgsWatcher()
+ARGS_WATCHER = ArgsWatcher()
 
 
-def printFormattedCommandResults(rc: int, output: str, error: str):
-    print(f"exit code: {rc}")
+def formatCommandResults(rc: int, output: str, error: str) -> str:
+    o = ""
+    o += f"exit code: {rc}\n"
     if output == "":
-        print("nothing written to stdout")
+        o += "nothing written to stdout\n"
     else:
-        print("stdout:")
-        print(fo.START_CITATION)
-        print(output)
-        print(fo.END_CITATION)
+        o += "stdout:\n"
+        o += f"{fo.START_CITATION}\n"
+        o += f"{output}\n"
+        o += f"{fo.END_CITATION}\n"
     if error == "":
-        print("nothing written to stderr")
+        o += "nothing written to stderr\n"
     else:
-        print("stderr:")
-        print(fo.START_CITATION)
-        print(error)
-        print(fo.END_CITATION)
+        o += "stderr:\n"
+        o += f"{fo.START_CITATION}\n"
+        o += f"{error}\n"
+        o += f"{fo.END_CITATION}\n"
+
+    return o
 
 
 def runSubprocess(
     test_name: str,
-    cmd: str,
+    cmd: List[str],
     cwd: Optional[str] = None,
     env: Optional[Dict[str, str]] = None,
     expected_return_code=0,
-) -> List:
+) -> Tuple[str, str]:
 
     if cwd is None:
         cwd = os.getcwd()
@@ -205,7 +213,7 @@ def runSubprocess(
     if env is None:
         env = os.environ.copy()
 
-    if verbose_output:
+    if VERBOSE_OUTPUT:
         print(SEPARATOR)
         print(f"Test {test_name}")
         print(SEPARATOR)
@@ -216,9 +224,9 @@ def runSubprocess(
             sys.stdout.write(f'"{cmd_line_param}" ')
         sys.stdout.write("\n")
 
-    rc = -1
-    output = ""
-    error = ""
+    rc: int = -1
+    output: str = ""
+    error: str = ""
     try:
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd, env=env
@@ -232,44 +240,48 @@ def runSubprocess(
         error = e.decode("utf8")
 
     except (OSError) as e:
-        print(SEPARATOR)
-        print(e)
-        print(f"Failed running command in directory '{cwd}'")
-        printFormattedCommandResults(rc, output, error)
-        sys.exit(1)
+        err_str = f"{SEPARATOR}\n"
+        err_str += f"{e}\n"
+        err_str += f"Failed running command in directory '{cwd}'\n"
+        err_str += formatCommandResults(rc, output, error)
+        raise Exception(err_str)
+        # sys.exit(1)
 
     if rc != expected_return_code:
+        err_str = f"{SEPARATOR}\n"
+        err_str += "Encountered an unexpected return code\n"
+        err_str += f"expected return code: {expected_return_code}\n"
+        err_str += formatCommandResults(rc, output, error)
+        raise Exception(err_str)
+        # sys.exit(1)
+
+    if VERBOSE_OUTPUT:
         print(SEPARATOR)
-        print("Encountered an unexpected return code")
-        print(f"expected return code: {expected_return_code}")
-        printFormattedCommandResults(rc, output, error)
-        sys.exit(1)
-
-    if verbose_output:
-        print(SEPARATOR)
-        printFormattedCommandResults(rc, output, error)
+        print(formatCommandResults(rc, output, error))
         print(SEPARATOR)
 
-    return [output, error]
+    return (output, error)
 
 
-def runElfDiff(test_name: str, args: ArgsList, expected_return_code=0):
+def runElfDiff(test_name: str, args: ArgsList, expected_return_code=0) -> None:
     """Runs elf diff with a given set of arguments
 
     args: Arguments are given as name value pair tuples. Flag argmuments require None type values
     """
-    prepared_args = args_watcher.prepareArgs(args)
-    [output, error] = runSubprocess(  # pylint: disable=unused-variable
+    prepared_args: List[str] = ARGS_WATCHER.prepareArgs(args)
+    (output, error) = runSubprocess(  # pylint: disable=unused-variable
         test_name=test_name,
-        cmd=elf_diff_start + prepared_args,
+        cmd=ELF_DIFF_START + prepared_args,
         expected_return_code=expected_return_code,
     )
 
 
 class TestCaseWithSubdirs(unittest.TestCase):
-    def getTestShortName(self):
-        test_function_full_id = self.id()
+    old_pwd: Optional[str] = None
+
+    def _getTestShortName(self) -> str:
         # Just take the final portion of the test id after the final period
+        test_function_full_id: str = self.id()
         test_name_re = re.compile(r".*\.(\w*)")
         m = test_name_re.match(test_function_full_id)
         if m is None:
@@ -279,6 +291,8 @@ class TestCaseWithSubdirs(unittest.TestCase):
 
     @staticmethod
     def _setUpScoped(scope, directory):
+        # type: (Union[TestCaseWithSubdirs, Type[TestCaseWithSubdirs]], str) -> None
+        """Generate and change to a directory that represents either the test or the test class scope"""
         scope.old_pwd = os.getcwd()
         if not os.path.exists(directory):
             os.mkdir(directory)
@@ -286,40 +300,47 @@ class TestCaseWithSubdirs(unittest.TestCase):
 
     @staticmethod
     def _tearDownScoped(scope):
-        os.chdir(scope.old_pwd)
+        # type: (Union[TestCaseWithSubdirs, Type[TestCaseWithSubdirs]]) -> None
+        """Return to the previous scope"""
+        if scope.old_pwd is not None:
+            os.chdir(scope.old_pwd)
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
+        """Standard test set up method for class scope"""
         TestCaseWithSubdirs._setUpScoped(cls, cls.__name__)
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
+        """Standard test tear down method for class scope"""
         TestCaseWithSubdirs._tearDownScoped(cls)
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Standard test set up method"""
         self.default_args: ArgsList = [("debug", None)]
         self.expected_return_code = 0
 
-        test_name = self.getTestShortName()
+        test_name: str = self._getTestShortName()
         TestCaseWithSubdirs._setUpScoped(self, test_name)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
+        """Standard test tear down method"""
         TestCaseWithSubdirs._tearDownScoped(self)
 
 
 class TestCommandLineArgs(TestCaseWithSubdirs):
     def runElfDiff(self, **kvargs) -> None:
-        runElfDiff(test_name=self.getTestShortName(), **kvargs)
+        runElfDiff(test_name=self._getTestShortName(), **kvargs)
 
     def runSimpleTestBase(
         self,
-        args: ArgsList = [],
-        old_binary_filename=old_binary_x86_64,
-        new_binary_filename=new_binary_x86_64,
+        args: Optional[ArgsList] = None,
+        old_binary_filename=OLD_BINARY_X86_64,
+        new_binary_filename=NEW_BINARY_X86_64,
         output_file=None,
     ):
         """Runs a simple test with a set of arguments"""
-        actual_args = args
+        actual_args: ArgsList = args or []
         actual_args += self.default_args
         actual_args.append(("old_binary_filename", old_binary_filename))
         actual_args.append(("new_binary_filename", new_binary_filename))
@@ -345,8 +366,8 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=old_binary2_x86_64,
-            new_binary_filename=new_binary2_x86_64,
+            old_binary_filename=OLD_BINARY2_X86_64,
+            new_binary_filename=NEW_BINARY2_X86_64,
             output_file=html_file,
         )
 
@@ -358,8 +379,8 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=old_binary_arm,
-            new_binary_filename=new_binary_arm,
+            old_binary_filename=OLD_BINARY_ARM,
+            new_binary_filename=NEW_BINARY_ARM,
             output_file=html_file,
         )
 
@@ -371,8 +392,8 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=old_binary_ghs,
-            new_binary_filename=new_binary_ghs,
+            old_binary_filename=OLD_BINARY_GHS,
+            new_binary_filename=NEW_BINARY_GHS,
             output_file=html_file,
         )
 
@@ -408,8 +429,8 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
         with open(driver_yaml_file, "w") as f:
 
-            f.write("old_binary_filename: '" + old_binary_x86_64 + "'\n")
-            f.write("new_binary_filename: '" + new_binary_x86_64 + "'\n")
+            f.write("old_binary_filename: '" + OLD_BINARY_X86_64 + "'\n")
+            f.write("new_binary_filename: '" + NEW_BINARY_X86_64 + "'\n")
             f.write("old_alias: " + "an_old_alias\n")
             f.write("new_alias: " + "a_new_alias\n")
             f.write(
@@ -514,7 +535,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             [
                 (
                     "load_plugin",
-                    f"{test_plugin};TestExportPairReportPlugin;magic_words=clatu_ferrata_nectu",
+                    f"{TEST_PLUGIN};TestExportPairReportPlugin;magic_words=clatu_ferrata_nectu",
                 )
             ]
         )
@@ -524,7 +545,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             [
                 (
                     "load_plugin",
-                    f"{test_plugin};TestExportPairReportPlugin",
+                    f"{TEST_PLUGIN};TestExportPairReportPlugin",
                 )
             ]
         )
@@ -535,7 +556,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             [
                 (
                     "load_plugin",
-                    f"{test_plugin};TestExportPairReportPlugin;some_unknown_keyword=foo",
+                    f"{TEST_PLUGIN};TestExportPairReportPlugin;some_unknown_keyword=foo",
                 )
             ]
         )
@@ -559,11 +580,11 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             f.write("driver_template_file: '" + template_file + "'\n")
 
             f.write("binary_pairs:\n")
-            f.write("    - old_binary: '" + old_binary_x86_64 + "'\n")
-            f.write("      new_binary: '" + new_binary_x86_64 + "'\n")
+            f.write("    - old_binary: '" + OLD_BINARY_X86_64 + "'\n")
+            f.write("      new_binary: '" + NEW_BINARY_X86_64 + "'\n")
             f.write("      short_name: 'First binary name'\n")
-            f.write("    - old_binary: '" + old_binary2_x86_64 + "'\n")
-            f.write("      new_binary: '" + new_binary2_x86_64 + "'\n")
+            f.write("    - old_binary: '" + OLD_BINARY2_X86_64 + "'\n")
+            f.write("      new_binary: '" + NEW_BINARY2_X86_64 + "'\n")
             f.write("      short_name: 'Second binary name'\n")
 
         self.runElfDiff(args=[("driver_file", driver_yaml_file)])
@@ -589,7 +610,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
     def test_new_mangling_file(self):
         self.expected_return_code = RETURN_CODE_WARNINGS_OCCURRED
-        self.runSimpleTestGhs([("new_mangling_file", new_mangling_file_ghs)])
+        self.runSimpleTestGhs([("new_mangling_file", NEW_MANGLING_FILE_GHS)])
 
     def test_nm_command(self):
         self.runSimpleTest(
@@ -621,7 +642,7 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
     def test_old_mangling_file(self):
         self.expected_return_code = RETURN_CODE_WARNINGS_OCCURRED
-        self.runSimpleTestGhs([("old_mangling_file", old_mangling_file_ghs)])
+        self.runSimpleTestGhs([("old_mangling_file", OLD_MANGLING_FILE_GHS)])
 
     def test_pdf_file(self):
         pdf_file = "parameter_test_single_page_pair_report.pdf"
@@ -676,5 +697,5 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 if __name__ == "__main__":
     unittest.main()
     # unittest.main(exit=False)
-    # args_watcher.exportTestSkeletons()
-    # args_watcher.testIfAllArgsUsedAtLeastOnce()
+    # ARGS_WATCHER.printTestSkeletons()
+    # ARGS_WATCHER.testIfAllArgsUsedAtLeastOnce()

@@ -24,19 +24,24 @@ from elf_diff.document_explorer import (
     StringSink,
     dumpTreeTxt,
 )
+from elf_diff.settings import Settings
 from elf_diff.pair_report_document import getDocumentTreesOfSymbolClasses
 import jinja2
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 import sys
 import codecs
+from typing import Dict, Any
 
 
 class Configurator(object):
-    def __init__(self, settings, template_dir):
-        self.settings = settings
-        self.template_dir = template_dir
+    def __init__(self, settings: Settings, template_dir: str):
+        self.settings: Settings = settings
+        self.template_dir: str = template_dir
 
-    def configureTemplate(self, template_file, template_keywords):
+    def configureTemplate(
+        self, template_file: str, template_keywords: Dict[str, Any]
+    ) -> str:
+        """Configure a Jinja2 template file from a set of keyword definitions. The configured content is returned as a string."""
 
         loader = FileSystemLoader(self.template_dir)
         env = Environment(  # nosec # silence bandid warning (we are generating static code, there's no security risk without autoescaping)
@@ -90,10 +95,12 @@ class Configurator(object):
 
         return replacedContent
 
-    def configureTemplateWrite(self, template_file, output_file, template_keywords):
-
-        with codecs.open(output_file, "w", "utf-8") as output_file:
-            configured_content = self.configureTemplate(
+    def configureTemplateWrite(
+        self, template_file: str, output_file: str, template_keywords: Dict[str, Any]
+    ) -> None:
+        """Configure a Jinja2 template file and write the configured output to an output file"""
+        with codecs.open(output_file, "w", "utf-8") as f:
+            configured_content: str = self.configureTemplate(
                 template_file, template_keywords
             )
-            output_file.write(configured_content)
+            f.write(configured_content)

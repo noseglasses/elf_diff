@@ -22,19 +22,22 @@
 import sys
 import os
 
-WARNINGS_OCCURRED = False
+WARNINGS_OCCURRED: bool = False
 
 
-def printToStderr(*args, **kwargs):
+def printToStderr(*args, **kwargs) -> None:
+    """Print a message to stderr"""
     print(*args, file=sys.stderr, **kwargs)
 
 
-def warning(msg):
+def warning(msg: str) -> None:
+    """Print a warning message"""
+    warning_unicode: str
     if os.name == "nt":
         warning_unicode = "!!!"
     else:
         warning_unicode = "\u26A0"
-    warning_cascade = warning_unicode * 3
+    warning_cascade: str = warning_unicode * 3
     print(f"{warning_cascade} Warning: {msg} {warning_cascade}")
     global WARNINGS_OCCURRED
     WARNINGS_OCCURRED = True

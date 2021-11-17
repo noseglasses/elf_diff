@@ -24,12 +24,14 @@ from elf_diff.error_handling import warning
 from elf_diff.jinja import Configurator
 from elf_diff.git import gitRepoInfo
 from elf_diff.auxiliary import getDirectoryThatStoresModuleOfObj, deprecationWarning
+from elf_diff.settings import Settings
 import os
 import datetime
 import tempfile
+from typing import List, Dict, Optional
 
 
-def convertHTMLToPDF(html_file, pdf_file):
+def convertHTMLToPDF(html_file: str, pdf_file: str) -> None:
     try:
         from weasyprint import HTML  # type: ignore # Make mypy ignore this module
     except ImportError:
@@ -40,7 +42,7 @@ def convertHTMLToPDF(html_file, pdf_file):
     HTML(html_file).write_pdf(pdf_file)
 
 
-def highlightNumberClass(number):
+def cssNumberClassOf(number: int) -> str:
     if number > 0:
         return "deterioration"
     elif number < 0:
@@ -49,8 +51,8 @@ def highlightNumberClass(number):
     return "unchanged"
 
 
-def highlightNumber(number):
-    css_class = highlightNumberClass(number)
+def highlightNumber(number: int) -> str:
+    css_class: str = cssNumberClassOf(number)
 
     if number == 0:
         return '<span class="%s number">%d</span>' % (css_class, number)
@@ -58,17 +60,17 @@ def highlightNumber(number):
     return '<span class="%s number">%+d</span>' % (css_class, number)
 
 
-def highlightNumberDelta(old_size, new_size):
+def highlightNumberDelta(old_size: int, new_size: int) -> str:
     return highlightNumber(new_size - old_size)
 
 
 class MassReport(object):
 
-    html_template_file = "mass_report_template.html"
+    HTML_TEMLATE_FILE = "mass_report_template.html"
 
-    def __init__(self, settings):
+    def __init__(self, settings: Settings):
         """Initialize mass report object."""
-        self.settings = settings
+        self.settings: Settings = settings
 
         if len(self.settings.mass_report_members) == 0:
             raise Exception(
@@ -77,25 +79,20 @@ class MassReport(object):
 
         self.generatePairReports()
 
-    def generatePairReports(self):
+    def generatePairReports(self) -> None:
 
-        self.binary_pairs = []
+        self.binary_pairs: List[BinaryPair] = []
 
-        for pair_report_setting in self.settings.mass_report_members:
-
+        for binary_pair_settings in self.settings.mass_report_members:
             binary_pair = BinaryPair(
-                self.settings,
-                pair_report_setting.old_binary_filename,
-                pair_report_setting.new_binary_filename,
+                settings=self.settings, pair_settings=binary_pair_settings
             )
-
-            binary_pair.short_name = pair_report_setting.short_name
 
             self.binary_pairs.append(binary_pair)
 
-    def generateResourceConsumptionTableHTML(self):
+    def generateResourceConsumptionTableHTML(self) -> str:
 
-        table_lines_html = []
+        table_lines_html: List[str] = []
 
         for binary_pair in self.binary_pairs:
 
@@ -110,7 +107,7 @@ class MassReport(object):
                      <td>{static_ram_change_overall}</td>
                    </tr>
                 """.format(
-                    short_name=binary_pair.short_name,
+                    short_name=binary_pair.pair_settings.short_name,
                     code_size_old_overall=binary_pair.old_binary.progmem_size,
                     code_size_new_overall=binary_pair.new_binary.progmem_size,
                     code_size_delta_overall=highlightNumberDelta(
@@ -128,9 +125,9 @@ class MassReport(object):
 
         return "\n".join(table_lines_html)
 
-    def generateSymbolsTableHTML(self):
+    def generateSymbolsTableHTML(self) -> str:
 
-        table_lines_html = []
+        table_lines_html: List[str] = []
 
         for binary_pair in self.binary_pairs:
 
@@ -142,7 +139,7 @@ class MassReport(object):
                      <td>{num_appeared_symbols}</td>
                    </tr>
                 """.format(
-                    short_name=binary_pair.short_name,
+                    short_name=binary_pair.pair_settings.short_name,
                     num_persisting_symbols=str(
                         len(binary_pair.persisting_symbol_names)
                     ),
@@ -155,9 +152,10 @@ class MassReport(object):
 
     def configureJinjaKeywords(self, skip_details):
 
-        resource_consumtption_table = self.generateResourceConsumptionTableHTML()
-        symbols_table = self.generateSymbolsTableHTML()
+        resource_consumtption_table: str = self.generateResourceConsumptionTableHTML()
+        symbols_table: str = self.generateSymbolsTableHTML()
 
+        doc_title: str
         if self.settings.project_title:
             doc_title = self.settings.project_title
         else:
@@ -173,45 +171,53 @@ class MassReport(object):
             "elf_diff_version": gitRepoInfo(self.settings),
         }
 
-    def generate(self, html_output_file):
-        template_keywords = self.configureJinjaKeywords(self.settings.skip_details)
+    def generate(self, html_output_file: str) -> None:
+        template_keywords: Dict[str, str] = self.configureJinjaKeywords(
+            self.settings.skip_details
+        )
 
-        jinja_template_directory = os.path.join(
+        jinja_template_directory: str = os.path.join(
             getDirectoryThatStoresModuleOfObj(self), "j2"
         )
 
         configurator = Configurator(self.settings, jinja_template_directory)
         configurator.configureTemplateWrite(
-            MassReport.html_template_file,
+            MassReport.HTML_TEMLATE_FILE,
             html_output_file,
             template_keywords,
         )
 
 
-def writeMassReport(settings):
+def writeMassReport(settings: Settings) -> None:
 
     deprecationWarning("mass reports")
 
     mass_report = MassReport(settings)
-    mass_report.single_page = True
 
     if settings.html_file:
         mass_report.generate(settings.html_file)
         print("Single page html mass report '" + settings.html_file + "' written")
 
     if settings.pdf_file:
+        tmp_html_file: Optional[str] = None
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                tmp_html_file = os.path.join(tmp, "tmp_html_file.html")
 
-        tmp_html_file = os.path.join(
-            tempfile._get_default_tempdir(),
-            next(tempfile._get_candidate_names()) + ".html",
-        )
+                mass_report.generate(tmp_html_file)
 
-        mass_report.generate(tmp_html_file)
+                print("Temp report: " + tmp_html_file)
 
-        print("Temp report: " + tmp_html_file)
+                convertHTMLToPDF(tmp_html_file, settings.pdf_file)
 
-        convertHTMLToPDF(tmp_html_file, settings.pdf_file)
+                os.remove(tmp_html_file)
+                tmp_html_file = None
+        except Exception as e:
+            if tmp_html_file is not None:
+                os.remove(tmp_html_file)
+            raise e
 
-        os.remove(tmp_html_file)
+        if tmp_html_file is not None:
+            os.remove(tmp_html_file)
 
         print("Single page pdf mass report '" + settings.pdf_file + "' written")
