@@ -31,18 +31,22 @@ jobs:
         mkdir test_output
     - name: Command line args test
       run: |
+        export COVERAGE_RCFILE=$PWD/.coveragerc
         cd test_output
         python3 -m coverage run --branch --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
     - name: Symbol unit tests
       run: |
+        export COVERAGE_RCFILE=$PWD/.coveragerc
         cd test_output
         python3 -m coverage run --branch --parallel-mode ../tests/test_cpp_symbols.py
     - name: Combine coverage
       run: |
+        export COVERAGE_RCFILE=$PWD/.coveragerc
         cd test_output
         python3 -m coverage combine * */*
     - name: Convert coverage
       run: |
+        export COVERAGE_RCFILE=$PWD/.coveragerc
         cd test_output
         python3 -m coverage xml
     - uses: actions/upload-artifact@v2
