@@ -1,7 +1,7 @@
 #
 # elf_diff
 #
-# Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
+# Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,14 +15,8 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# Install requirements with one of the following commands
-# pip install -r requirements.txt
-# py -m pip install -r requirements.txt
-jinja2 >= 2.11.3
-pyyaml >= 5.4
-progressbar2 == 3.53
-GitPython == 3.1
-weasyprint == 53.3
-anytree == 2.8.0
-dicttoxml >= 1.7.4
-defusedxml >= 0.7.1
+# Install test requirements with one of the following commands
+# pip install -r test_requirements.txt
+# py -m pip install -r test_requirements.txt
+coverage >= 6.1.2
+deepdiff >= 5.6.0
