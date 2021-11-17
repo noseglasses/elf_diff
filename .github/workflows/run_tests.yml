@@ -24,6 +24,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install coverage
+        python3 -m pip install deepdiff
         python3 -m pip install -r ./requirements.txt
     - name: Prepare tests
       run: |

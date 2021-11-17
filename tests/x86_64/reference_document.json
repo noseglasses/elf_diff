@@ -1,0 +1,758 @@
+{
+    "document": {
+        "build_info": "",
+        "configuration": {
+            "display_appeared_symbols_overview": true,
+            "display_binary_details": false,
+            "display_build_info": false,
+            "display_details": true,
+            "display_disappeared_symbols_overview": true,
+            "display_new_binary_info": false,
+            "display_old_binary_info": false,
+            "display_persisting_symbols_overview": true,
+            "display_similar_symbols": true,
+            "display_similar_symbols_overview": true,
+            "instructions_available": true
+        },
+        "files": {
+            "input": {
+                "new": {
+                    "binary_path": "/home/flo/Documents/elf_diff_test/../elf_diff/tests/x86_64/libelf_diff_test_release_new.a"
+                },
+                "old": {
+                    "binary_path": "/home/flo/Documents/elf_diff_test/../elf_diff/tests/x86_64/libelf_diff_test_release_old.a"
+                }
+            }
+        },
+        "general": {
+            "doc_title": "ELF Binary Comparison",
+            "document_version": 1,
+            "elf_diff_repo_root": "/home/flo/Documents/elf_diff/src/elf_diff",
+            "elf_diff_version": "b018a4faed98bd1cc7c4bae20bb877c551338c12",
+            "generation_date": "2021-11-17 20:26:14",
+            "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses"
+        },
+        "new_binary_info": "",
+        "old_binary_info": "",
+        "statistics": {
+            "overall": {
+                "delta": {
+                    "resource_consumption": {
+                        "bss": 0,
+                        "code": 2,
+                        "data": 0,
+                        "static_ram": 0,
+                        "text": 2
+                    }
+                },
+                "new": {
+                    "resource_consumption": {
+                        "bss": 0,
+                        "code": 331,
+                        "data": 8,
+                        "static_ram": 8,
+                        "text": 323
+                    }
+                },
+                "old": {
+                    "resource_consumption": {
+                        "bss": 0,
+                        "code": 329,
+                        "data": 8,
+                        "static_ram": 8,
+                        "text": 321
+                    }
+                }
+            },
+            "symbols": {
+                "appeared": {
+                    "count": 4
+                },
+                "disappeared": {
+                    "count": 4
+                },
+                "new": {
+                    "count": {
+                        "dropped": 0,
+                        "selected": 7,
+                        "total": 7
+                    },
+                    "regex": {
+                        "exclusion": "",
+                        "selection": ".*"
+                    }
+                },
+                "old": {
+                    "count": {
+                        "dropped": 0,
+                        "selected": 7,
+                        "total": 7
+                    },
+                    "regex": {
+                        "exclusion": "",
+                        "selection": ".*"
+                    }
+                },
+                "persisting": {
+                    "count": 3,
+                    "resource_consumption": {
+                        "delta": 0,
+                        "new": 40,
+                        "old": 40
+                    }
+                },
+                "similar": {
+                    "count": 6
+                }
+            }
+        },
+        "symbols": {
+            "appeared": {
+                "21": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "21",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 21,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::f(int, int)",
+                            "size": 21,
+                            "type": "T"
+                        }
+                    }
+                },
+                "22": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "22",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 22,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::g(float, float)",
+                            "size": 29,
+                            "type": "T"
+                        }
+                    }
+                },
+                "23": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "23",
+                            "display_symbol_details": false,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 23,
+                            "instructions": "",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::m_",
+                            "size": 4,
+                            "type": "D"
+                        }
+                    }
+                },
+                "24": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "24",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 24,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "func(double)",
+                            "size": 20,
+                            "type": "T"
+                        }
+                    }
+                }
+            },
+            "disappeared": {
+                "10": {
+                    "disappeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "10",
+                            "display_symbol_details": true,
+                            "symbol_class": "disappeared"
+                        },
+                        "old_symbol": {
+                            "id": 10,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "func(int)",
+                            "size": 18,
+                            "type": "T"
+                        }
+                    }
+                },
+                "7": {
+                    "disappeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "7",
+                            "display_symbol_details": true,
+                            "symbol_class": "disappeared"
+                        },
+                        "old_symbol": {
+                            "id": 7,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test::f(int, int)",
+                            "size": 21,
+                            "type": "T"
+                        }
+                    }
+                },
+                "8": {
+                    "disappeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "8",
+                            "display_symbol_details": true,
+                            "symbol_class": "disappeared"
+                        },
+                        "old_symbol": {
+                            "id": 8,
+                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test::g(float, float)",
+                            "size": 29,
+                            "type": "T"
+                        }
+                    }
+                },
+                "9": {
+                    "disappeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "9",
+                            "display_symbol_details": false,
+                            "symbol_class": "disappeared"
+                        },
+                        "old_symbol": {
+                            "id": 9,
+                            "instructions": "",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test::m_",
+                            "size": 4,
+                            "type": "D"
+                        }
+                    }
+                }
+            },
+            "new": {
+                "21": {
+                    "new_symbol": {
+                        "id": 21,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::f(int, int)",
+                        "size": 21,
+                        "type": "T"
+                    }
+                },
+                "22": {
+                    "new_symbol": {
+                        "id": 22,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::g(float, float)",
+                        "size": 29,
+                        "type": "T"
+                    }
+                },
+                "23": {
+                    "new_symbol": {
+                        "id": 23,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::m_",
+                        "size": 4,
+                        "type": "D"
+                    }
+                },
+                "24": {
+                    "new_symbol": {
+                        "id": 24,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "func(double)",
+                        "size": 20,
+                        "type": "T"
+                    }
+                },
+                "25": {
+                    "new_symbol": {
+                        "id": 25,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting1(int)",
+                        "size": 18,
+                        "type": "T"
+                    }
+                },
+                "26": {
+                    "new_symbol": {
+                        "id": 26,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting2(int)",
+                        "size": 18,
+                        "type": "T"
+                    }
+                },
+                "27": {
+                    "new_symbol": {
+                        "id": 27,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "var",
+                        "size": 4,
+                        "type": "D"
+                    }
+                }
+            },
+            "old": {
+                "10": {
+                    "old_symbol": {
+                        "id": 10,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "func(int)",
+                        "size": 18,
+                        "type": "T"
+                    }
+                },
+                "11": {
+                    "old_symbol": {
+                        "id": 11,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting1(int)",
+                        "size": 18,
+                        "type": "T"
+                    }
+                },
+                "12": {
+                    "old_symbol": {
+                        "id": 12,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting2(int)",
+                        "size": 18,
+                        "type": "T"
+                    }
+                },
+                "13": {
+                    "old_symbol": {
+                        "id": 13,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "var",
+                        "size": 4,
+                        "type": "D"
+                    }
+                },
+                "7": {
+                    "old_symbol": {
+                        "id": 7,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test::f(int, int)",
+                        "size": 21,
+                        "type": "T"
+                    }
+                },
+                "8": {
+                    "old_symbol": {
+                        "id": 8,
+                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test::g(float, float)",
+                        "size": 29,
+                        "type": "T"
+                    }
+                },
+                "9": {
+                    "old_symbol": {
+                        "id": 9,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test::m_",
+                        "size": 4,
+                        "type": "D"
+                    }
+                }
+            },
+            "persisting": {
+                "11": {
+                    "persisting_symbol": {
+                        "display_info": {
+                            "anchor_id": "11",
+                            "display_symbol_details": true,
+                            "symbol_class": "persisting"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 25,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "size": 18,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 11,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "size": 18,
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "12": {
+                    "persisting_symbol": {
+                        "display_info": {
+                            "anchor_id": "12",
+                            "display_symbol_details": true,
+                            "symbol_class": "persisting"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 26,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "size": 18,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 12,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "size": 18,
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "13": {
+                    "persisting_symbol": {
+                        "display_info": {
+                            "anchor_id": "13",
+                            "display_symbol_details": false,
+                            "symbol_class": "persisting"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 27,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "var",
+                                "size": 4,
+                                "type": "D"
+                            },
+                            "old_symbol": {
+                                "id": 13,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "var",
+                                "size": 4,
+                                "type": "D"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                }
+            },
+            "similar": {
+                "0": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "8",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 0,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::g(float, float)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::g(float, float)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 22,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::g(float, float)",
+                                "size": 29,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 8,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::g(float, float)",
+                                "size": 29,
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        },
+                        "similarities": {
+                            "instruction": 100.0,
+                            "signature": 97.67441860465115
+                        }
+                    }
+                },
+                "1": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "7",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 1,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::f(int, int)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::f(int, int)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 21,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::f(int, int)",
+                                "size": 21,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 7,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::f(int, int)",
+                                "size": 21,
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        },
+                        "similarities": {
+                            "instruction": 100.0,
+                            "signature": 97.14285714285714
+                        }
+                    }
+                },
+                "2": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "9",
+                            "display_symbol_details": false,
+                            "symbol_class": "similar"
+                        },
+                        "id": 2,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::m_"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::m_"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 23,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::m_",
+                                "size": 4,
+                                "type": "D"
+                            },
+                            "old_symbol": {
+                                "id": 9,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::m_",
+                                "size": 4,
+                                "type": "D"
+                            },
+                            "size_delta": 0
+                        },
+                        "similarities": {
+                            "instruction": 100.0,
+                            "signature": 94.11764705882352
+                        }
+                    }
+                },
+                "3": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "7",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 3,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...g(...HIGHLIGHT_END...f...HIGHLIGHT_START...loa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::f...HIGHLIGHT_START...(in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 22,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::g(float, float)",
+                                "size": 29,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 7,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::f(int, int)",
+                                "size": 21,
+                                "type": "T"
+                            },
+                            "size_delta": 8
+                        },
+                        "similarities": {
+                            "instruction": 82.05128205128204,
+                            "signature": 61.53846153846154
+                        }
+                    }
+                },
+                "4": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "8",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 4,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...f...HIGHLIGHT_END...(...HIGHLIGHT_START...in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...g...HIGHLIGHT_END...(...HIGHLIGHT_START...floa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 21,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::f(int, int)",
+                                "size": 21,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 8,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::g(float, float)",
+                                "size": 29,
+                                "type": "T"
+                            },
+                            "size_delta": -8
+                        },
+                        "similarities": {
+                            "instruction": 82.05128205128204,
+                            "signature": 61.53846153846154
+                        }
+                    }
+                },
+                "5": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "10",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 5,
+                        "new": {
+                            "signature_tagged": "func(...HIGHLIGHT_START...double...HIGHLIGHT_END...)"
+                        },
+                        "old": {
+                            "signature_tagged": "func(...HIGHLIGHT_START...int...HIGHLIGHT_END...)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 24,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "func(double)",
+                                "size": 20,
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 10,
+                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "func(int)",
+                                "size": 18,
+                                "type": "T"
+                            },
+                            "size_delta": 2
+                        },
+                        "similarities": {
+                            "instruction": 93.46733668341709,
+                            "signature": 57.14285714285714
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
