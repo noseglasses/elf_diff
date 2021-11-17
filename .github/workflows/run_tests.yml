@@ -23,9 +23,8 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install coverage
-        python3 -m pip install deepdiff
         python3 -m pip install -r ./requirements.txt
+        python3 -m pip install -r ./tests/test_requirements.txt
     - name: Prepare tests
       run: |
         mkdir test_output
@@ -83,6 +82,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install --upgrade cffi
         python -m pip install -r ./requirements.txt
+        python -m pip install -r ./tests/test_requirements.txt
     - name: Test
       shell: bash
       run: |
