@@ -24,7 +24,17 @@ import subprocess  # nosec # silence bandid warning
 import sys
 import argparse
 import re
-from typing import Optional, List, Tuple, Dict, Set, Union, Type
+import json
+from typing import (  # pylint: disable=unused-import
+    Optional,
+    List,
+    Tuple,
+    Dict,
+    Set,
+    Union,
+    Type,
+)  # pylint: disable=unused-import
+from deepdiff import DeepDiff  # type: ignore # Make mypy ignore this module
 
 ArgsPair = Tuple[str, Optional[str]]
 ArgsList = List[ArgsPair]
@@ -328,7 +338,7 @@ class TestCaseWithSubdirs(unittest.TestCase):
         TestCaseWithSubdirs._tearDownScoped(self)
 
 
-class TestCommandLineArgs(TestCaseWithSubdirs):
+class ElfDiffExecutingTests(TestCaseWithSubdirs):
     def runElfDiff(self, **kvargs) -> None:
         runElfDiff(test_name=self._getTestShortName(), **kvargs)
 
@@ -397,6 +407,8 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
             output_file=html_file,
         )
 
+
+class TestCommandLineArgs(ElfDiffExecutingTests):
     def test_run_elf_diff_without_debug(self):
         # By resetting the default args, we make sure that the --debug flag is removed
         self.default_args = []
@@ -692,6 +704,40 @@ class TestCommandLineArgs(TestCaseWithSubdirs):
 
     def test_yaml_file(self):
         self.runSimpleTest([("yaml_file", "output.yaml")])
+
+
+class TestDocumentIntegrity(ElfDiffExecutingTests):
+    def test_document_simple(self):
+        output_file = "output.json"
+        self.runSimpleTest([("json_file", output_file)])
+
+        # The output file is generated in the current directory
+        if not os.path.exists(output_file):
+            raise Exception(f"Missing output file '{output_file}'")
+        test_tree: Dict
+        with open(output_file, "r") as f:
+            test_tree = json.load(f)
+
+        reference_document: str = os.path.join(
+            TESTING_DIR, "x86_64", "reference_document.json"
+        )
+        if not os.path.exists(reference_document):
+            raise Exception(f"Missing reference document file '{reference_document}'")
+        reference_tree: Dict
+        with open(reference_document, "r") as f:
+            reference_tree = json.load(f)
+
+        exclude_paths = [
+            "root['document']['files']['input']['new']['binary_path']",
+            "root['document']['files']['input']['old']['binary_path']",
+            "root['document']['general']['elf_diff_repo_root']",
+            "root['document']['general']['elf_diff_version']",
+            "root['document']['general']['generation_date']",
+        ]
+        diff = DeepDiff(test_tree, reference_tree, exclude_paths=exclude_paths)
+
+        if len(diff) > 0:
+            raise Exception("documents differ:\n%s" % diff)
 
 
 if __name__ == "__main__":
