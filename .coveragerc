@@ -1,0 +1,11 @@
+[run]
+omit =
+    */dist-packages/*
+
+[report]
+exclude_lines =
+    # Skip any pass lines such as may be used for @abstractmethod
+    pass
+
+    raise\s+PluginException
+    raise\s+Exception
