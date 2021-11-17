@@ -20,6 +20,7 @@
 #
 from elf_diff.value_tree import ValueType
 from elf_diff.value_tree import Value as ValueTreeValue
+from elf_diff.settings import Settings
 from elf_diff.pair_report_document import (
     ValueTreeNode,
     getDocumentTreesOfSymbolClasses,
@@ -484,7 +485,7 @@ def getSymbolTypeStructureTxt(
     return result
 
 
-def getDocumentStructureDocString(settings):
+def getDocumentStructureDocString(settings: Settings) -> str:
     """Return a representation of the main document and the symbol classes as formatted text"""
     display_values = False
     document_doc_string = dumpDocumentStructureTxt(display_values=display_values)

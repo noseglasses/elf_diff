@@ -49,7 +49,8 @@ class Node(TreeAddressable):
 
         self.parseOptionalArgs(*args)
 
-    def parseOptionalArgs(self, *args):
+    def parseOptionalArgs(self, *args: Any) -> None:
+        """Parse any optional arguments"""
         for opt_arg in args:
             if isinstance(opt_arg, Properties):
                 if self._properties is not None:
@@ -58,14 +59,14 @@ class Node(TreeAddressable):
                 self._properties.validate(self)
 
             elif issubclass(type(opt_arg), Node):
-                node = opt_arg
+                node: Node = opt_arg
                 self._children[node._name] = node
             elif isinstance(opt_arg, Value):
-                value = opt_arg
+                value: Value = opt_arg
                 self._values[value._name] = value
                 value._parent = self
             elif isinstance(opt_arg, Multiple):
-                multi_node = opt_arg
+                multi_node: Multiple = opt_arg
                 spawned = multi_node.spawn()
                 # Pass the spawned nodes and values as if they would have been added
                 # to this node's constructor

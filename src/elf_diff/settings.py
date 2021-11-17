@@ -19,27 +19,29 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
+from elf_diff.binary_pair_settings import BinaryPairSettings
+from elf_diff.error_handling import warning
+
 import sys
 import os
 import shutil
 import argparse
-
-from elf_diff.binary_pair import BinaryPairSettings
-
-from elf_diff.error_handling import warning
+import yaml
+import datetime
+from typing import Optional, Union, List, Dict, Any
 
 
 class Parameter(object):
     def __init__(
         self,
-        name,
-        description,
-        default=None,
-        deprecated_alias=None,
-        alias=None,
-        no_cmd_line=False,
-        is_flag=False,
-        action=None,
+        name: str,
+        description: str,
+        default: Optional[Union[int, float, str]] = None,
+        deprecated_alias: Optional[str] = None,
+        alias: Optional[str] = None,
+        no_cmd_line: bool = False,
+        is_flag: bool = False,
+        action: Optional[str] = None,
     ):
         """Initialize parameter class."""
         self.name = name
@@ -52,7 +54,7 @@ class Parameter(object):
         self.action = action
 
 
-parameters = [
+PARAMETERS = [
     Parameter("old_binary_filename", "The old version of the elf binary."),
     Parameter("new_binary_filename", "The new version of the elf binary."),
     Parameter(
@@ -219,9 +221,9 @@ parameters = [
 class Settings(object):
     def __init__(self, module_path):
         """Initialize settings class."""
-        self.module_path = module_path
+        self.module_path: str = module_path
 
-        self.parameters = parameters
+        self.parameters: List[Parameter] = PARAMETERS
 
         # To enable static type checking, we have to pre-define all command line parameters
         self.old_binary_filename: str
@@ -267,34 +269,32 @@ class Settings(object):
         self.list_default_plugins: bool
         self.debug: bool
 
-        self.presetDefaults()
+        self._presetDefaults()
 
-        cmd_line_args = self.parseCommandLineArgs()
+        cmd_line_args = self._parseCommandLineArgs()
 
-        self.old_binary_filename = None
-        self.new_binary_filename = None
+        self.old_binary_filename: Optional[str] = None
+        self.new_binary_filename: Optional[str] = None
 
-        self.old_alias = None
-        self.new_alias = None
+        self.old_alias: Optional[str] = None
+        self.new_alias: Optional[str] = None
 
         if cmd_line_args.driver_file:
+            self.driver_file: str = cmd_line_args.driver_file
+            self._readDriverFile()
 
-            self.driver_file = cmd_line_args.driver_file
+        self._considerCommandLineArgs(cmd_line_args)
 
-            self.readDriverFile()
+        self._validateAndInitSettings()
 
-        self.considerCommandLineArgs(cmd_line_args)
-
-        self.validateAndInitSettings()
-
-    def presetDefaults(self):
-
-        self.mass_report_members = []
+    def _presetDefaults(self) -> None:
+        """Preset default values"""
+        self.mass_report_members: List[BinaryPairSettings] = []
 
         for parameter in self.parameters:
             setattr(self, parameter.name, parameter.default)
 
-    def parseCommandLineArgs(self):
+    def _parseCommandLineArgs(self) -> object:
         parser = argparse.ArgumentParser(
             description="Compares elf binaries and lists differences in symbol sizes, the disassemblies, etc."
         )
@@ -304,11 +304,13 @@ class Settings(object):
             if parameter.no_cmd_line:
                 continue
 
+            param_name: str
             if parameter.alias:
                 param_name = parameter.alias
             else:
                 param_name = parameter.name
 
+            action: str
             if parameter.is_flag:
                 action = "store_true"
             else:
@@ -338,20 +340,18 @@ class Settings(object):
             help="The binaries to be compared (this is an alternative to --old_binary_filename and --new_binary_filename)",
         )
 
-        actual_args = list()
+        actual_args: List[str] = []
         for arg_pos in range(1, len(sys.argv)):
-            arg = sys.argv[arg_pos]
+            arg: str = sys.argv[arg_pos]
             if arg == "--":
                 break
             actual_args.append(arg)
 
         return parser.parse_args(actual_args)
 
-    def readDriverFile(self):
-
-        import yaml
-
-        my_yaml = None
+    def _readDriverFile(self) -> None:
+        """Read a YAML driver file"""
+        my_yaml: Dict
         with open(self.driver_file, "r") as stream:
             try:
                 my_yaml = yaml.load(stream, Loader=yaml.SafeLoader)
@@ -359,35 +359,33 @@ class Settings(object):
                 raise Exception(exc)
 
         for parameter in self.parameters:
-
             if parameter.name in my_yaml.keys():
-
                 setattr(self, parameter.name, my_yaml[parameter.name])
 
         # Read binary pairs
 
         if "binary_pairs" in my_yaml.keys():
 
-            bin_pair_id = 1
+            bin_pair_id: int = 1
 
             for data_set in my_yaml["binary_pairs"]:
 
-                short_name = data_set.get("short_name")
+                short_name: str = data_set.get("short_name")
                 if not short_name:
                     raise Exception(
-                        "No short_name defined for binary pair " + str(bin_pair_id)
+                        f"No short_name defined for binary pair {bin_pair_id}"
                     )
 
-                old_binary = data_set.get("old_binary")
+                old_binary: str = data_set.get("old_binary")
                 if not old_binary:
                     raise Exception(
-                        "No old_binary defined for binary pair " + str(bin_pair_id)
+                        f"No old_binary defined for binary pair {bin_pair_id}"
                     )
 
-                new_binary = data_set.get("new_binary")
+                new_binary: str = data_set.get("new_binary")
                 if not new_binary:
                     raise Exception(
-                        "No new_binary defined for binary pair " + str(bin_pair_id)
+                        f"No new_binary defined for binary pair {bin_pair_id}"
                     )
 
                 bp = BinaryPairSettings(short_name, old_binary, new_binary)
@@ -396,10 +394,9 @@ class Settings(object):
 
                 bin_pair_id += 1
 
-    def considerCommandLineArgs(self, cmd_line_args):
-
+    def _considerCommandLineArgs(self, cmd_line_args: Any) -> None:
+        """Consider the supplied command line arguments"""
         for parameter in self.parameters:
-
             if parameter.no_cmd_line:
                 continue
 
@@ -414,33 +411,33 @@ class Settings(object):
         elif len(cmd_line_args.binaries) == 2:
             if self.old_binary_filename is not None:
                 raise Exception("Old binary filename redundantly defined")
-
             else:
                 self.old_binary_filename = cmd_line_args.binaries[0]
 
             if self.new_binary_filename is not None:
                 raise Exception("Old binary filename redundantly defined")
-
             else:
                 self.new_binary_filename = cmd_line_args.binaries[1]
         else:
             raise Exception("Please specify either none or two binaries")
 
-    def findUtility(self, name):
-        command_name = name + "_command"
-        command = getattr(self, command_name)
+    def findUtility(self, name: str) -> None:
+        """Find a utility and set a attribute of this class to the path of the utility executable"""
+        command_name: str = name + "_command"
+        command: Optional[str] = getattr(self, command_name)
         if command is not None:
             if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
                 return
             warning(f"Unable to find predefined {command_name} = {command}")
 
+        exe_extensions: List[str]
         if os.name == "nt":
             exe_extensions = [".exe", ""]
         else:
             exe_extensions = ["", ".exe"]
 
         for exe_extension in exe_extensions:
-            basename = self.bin_prefix + name + exe_extension
+            basename: str = self.bin_prefix + name + exe_extension
 
             if self.bin_dir is not None:
                 command = os.path.join(self.bin_dir, basename)
@@ -461,8 +458,8 @@ class Settings(object):
 
         raise Exception(f"Unnable to find {name} command")
 
-    def validateAndInitSettings(self):
-
+    def _validateAndInitSettings(self) -> None:
+        """Validate and initialize the settings"""
         if self.old_binary_filename and not os.path.isfile(self.old_binary_filename):
             raise Exception(
                 "Old binary '%s' is not a file or cannot be found"
@@ -512,10 +509,10 @@ class Settings(object):
         print(f"   nm:      {self.nm_command}")
         print(f"   size:    {self.size_command}")
 
-    def writeParameterTemplateFile(self, filename, output_actual_values=False):
-
-        import datetime
-
+    def writeParameterTemplateFile(
+        self, filename: str, output_actual_values: bool = False
+    ) -> None:
+        """Write a template file with all existing parameters"""
         with open(filename, "w") as f:
 
             f.write("# This is an auto generated elf_diff driver file\n")
@@ -541,5 +538,8 @@ class Settings(object):
                 f.write('{name}: "{value}"\n'.format(name=parameter.name, value=value))
                 f.write("\n")
 
-    def isFirmwareBinaryDefined(self):
-        return self.old_binary_filename or self.new_binary_filename
+    def isFirmwareBinaryDefined(self) -> bool:
+        """Check if any firmware binary is defined"""
+        return (self.old_binary_filename is not None) or (
+            self.new_binary_filename is not None
+        )

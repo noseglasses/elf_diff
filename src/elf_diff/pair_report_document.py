@@ -32,7 +32,7 @@
 # their documentation and means of validating the corresponding value tree nodes.
 
 from elf_diff.binary import Binary
-from elf_diff.binary_pair import BinaryPair
+from elf_diff.binary_pair import BinaryPair, BinaryPairSettings
 from elf_diff.git import gitRepoInfo
 import elf_diff.string_diff as string_diff
 from elf_diff.symbol import Symbol as ElfSymbol
@@ -44,7 +44,7 @@ from elf_diff.meta_tree_properties import Properties, Doc, Type, AliasType
 import datetime
 import sys
 import progressbar  # type: ignore # Make mypy ignore this module
-from typing import Dict, Union, Tuple, List, Any, Optional
+from typing import Dict, Union, Tuple, Any, Optional, Collection
 
 ELF_DIFF_DOCUMENT_VERSION = 1
 
@@ -656,7 +656,7 @@ class MetaDocument(Node):
     def setupSymbolsDict(
         document: ValueTreeNode,
         settings: Settings,
-        symbols: List[ElfSymbol],
+        symbols: Collection[ElfSymbol],
         symbol_class: str,
     ) -> None:
         """Setup (new/old) elf symbols from a symbol list"""
@@ -792,9 +792,13 @@ class MetaDocument(Node):
         document = value_tree_node
 
         _validateSettings(settings)
-
+        binary_pair_settings = BinaryPairSettings(
+            short_name="",
+            old_binary_filename=settings.old_binary_filename,
+            new_binary_filename=settings.new_binary_filename,
+        )
         self.binary_pair = BinaryPair(
-            settings, settings.old_binary_filename, settings.new_binary_filename
+            settings=settings, pair_settings=binary_pair_settings
         )
 
         old_binary: Binary = self.binary_pair.old_binary

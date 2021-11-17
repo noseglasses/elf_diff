@@ -20,45 +20,48 @@
 #
 
 from elf_diff.error_handling import warning
-from elf_diff.symbol import getSymbolType
+from elf_diff.symbol import getSymbolType, Symbol
+from elf_diff.settings import Settings
 
 import re
 import os
 import subprocess  # nosec # silence bandid warning
+from typing import Optional, List, Type, Dict, Tuple
 
 
 SOURCE_CODE_START_TAG = "...ED_SOURCE_START..."
 SOURCE_CODE_END_TAG = "...ED_SOURCE_END..."
 
 
-def preHighlightSourceCode(src):
+def preHighlightSourceCode(src: str) -> str:
     """Tag the start and end of source code in order to allow it to be replaced by some sort of tag"""
     return "%s%s%s" % (SOURCE_CODE_START_TAG, src, SOURCE_CODE_END_TAG)
 
 
 class Mangling(object):
-    def __init__(self, mangling_file):
+    def __init__(self, mangling_file: Optional[str]):
         """Init mangling class."""
-        self.mangling_file = mangling_file
-        self.mangling = None
+        self.mangling_file: Optional[str] = mangling_file
+        self.mangling: Optional[Dict[str, str]] = None
 
-        self.setupMangling()
+        self._setupMangling()
 
-    def setupMangling(self):
+    def _setupMangling(self) -> None:
+        """Setup the mangling by reading symbols from a mangling file"""
         if self.mangling_file is None:
             return
         if not os.path.isfile(self.mangling_file):
             return
         with open(self.mangling_file, "r") as f:
-            lines = f.read().splitlines()
+            lines: List[str] = f.read().splitlines()
             self.mangling = {}
-            line_id = 0
+            line_id: int = 0
             # Read line pairs, first line is mangled, second line is demangled symbol
             for line in lines:
                 if line_id == 0:
-                    mangled_symbol = line
+                    mangled_symbol: str = line
                 else:
-                    demangled_symbol = line
+                    demangled_symbol: str = line
                     self.mangling[mangled_symbol] = demangled_symbol
                 line_id = (line_id + 1) % 2
 
@@ -70,7 +73,8 @@ class Mangling(object):
                 + "'"
             )
 
-    def demangle(self, symbol_name):
+    def demangle(self, symbol_name: str) -> Tuple[str, bool]:
+        """Try to demangle a symbol"""
         if self.mangling is None:
             return symbol_name, False
         if symbol_name in self.mangling.keys():
@@ -85,37 +89,43 @@ class SymbolCollector(object):
         self.instruction_line_re = re.compile(
             r"^\s*[0-9A-Fa-f]+:\s*((?:\s*[0-9a-fA-F]{2})+)\s+(.*)\s*"
         )
-        self.cur_symbol = None
-        self.symbols = []
-        self.n_instruction_lines = 0
-        self.binary = binary
+        self.cur_symbol: Optional[Symbol] = None
+        self.symbols: List[Symbol] = []
+        self.n_instruction_lines: int = 0
+        self.binary = binary  # type: Binary
 
-    def submitSymbol(self):
-        self.symbols.append(self.cur_symbol)
-        self.cur_symbol = None
+    def _submitSymbol(self) -> None:
+        """Submit the most recent symbol that was collected"""
+        if self.cur_symbol is not None:
+            self.symbols.append(self.cur_symbol)
+            self.cur_symbol = None
 
-    def checkSymbolHeaderLine(self, line):
+    def _checkSymbolHeaderLine(self, line: str) -> bool:
+        """Check a line read from a file and process it if it is a symbol header line"""
         header_match = re.match(self.header_line_re, line)
         if header_match:
             if self.cur_symbol:
-                self.submitSymbol()
+                self._submitSymbol()
 
-            symbol_name_with_mangling_state_unknown = header_match.group(2)
+            symbol_name_with_mangling_state_unknown: str = header_match.group(2)
 
+            symbol_name: str
+            symbol_name_is_demangled: bool
             symbol_name, symbol_name_is_demangled = self.binary.demangle(
                 symbol_name_with_mangling_state_unknown
             )
-            self.cur_symbol = self.binary.generateSymbol(
+            self.cur_symbol = self.binary._generateSymbol(
                 symbol_name, symbol_name_is_demangled
             )
             return True
 
         return False
 
-    def gatherSymbolInstructions(self, objdump_output):
+    def _gatherSymbolInstructions(self, objdump_output: str) -> None:
+        """Gather the symbol instructions of a symbol"""
         for line in objdump_output.splitlines():
 
-            is_header_line = self.checkSymbolHeaderLine(line)
+            is_header_line: bool = self._checkSymbolHeaderLine(line)
             if is_header_line:
                 continue
 
@@ -131,39 +141,39 @@ class SymbolCollector(object):
                         self.cur_symbol.addInstructions(preHighlightSourceCode(line))
 
         if self.cur_symbol:
-            self.submitSymbol()
+            self._submitSymbol()
 
 
 class Binary(object):
     def __init__(
         self,
-        settings,
-        filename,
-        symbol_selection_regex=None,
-        symbol_exclusion_regex=None,
-        mangling=None,
+        settings: Settings,
+        filename: str,
+        symbol_selection_regex: Optional[str] = None,
+        symbol_exclusion_regex: Optional[str] = None,
+        mangling: Optional[Mangling] = None,
     ):
         """Init binary object."""
-        self.settings = settings
-        self.filename = filename
-        self.symbol_type = getSymbolType(settings.language)
+        self.settings: Settings = settings
+        self.filename: str = filename
+        self.symbol_type: Type[Symbol] = getSymbolType(settings.language)
 
-        self.mangling = mangling
-        self.binutils_work = True
+        self.mangling: Optional[Mangling] = mangling
+        self.binutils_work: bool = True
 
-        self.text_size = 0
-        self.data_size = 0
-        self.bss_size = 0
-        self.overall_size = 0
-        self.progmem_size = 0
-        self.static_ram_size = 0
+        self.text_size: int = 0
+        self.data_size: int = 0
+        self.bss_size: int = 0
+        self.overall_size: int = 0
+        self.progmem_size: int = 0
+        self.static_ram_size: int = 0
 
-        self.symbol_selection_regex = symbol_selection_regex
+        self.symbol_selection_regex: Optional[str] = symbol_selection_regex
         self.symbol_selection_regex_compiled = None
         if symbol_selection_regex is not None:
             self.symbol_selection_regex_compiled = re.compile(symbol_selection_regex)
 
-        self.symbol_exclusion_regex = symbol_exclusion_regex
+        self.symbol_exclusion_regex: Optional[str] = symbol_exclusion_regex
         self.symbol_exclusion_regex_compiled = None
         if symbol_exclusion_regex is not None:
             self.symbol_exclusion_regex_compiled = re.compile(symbol_exclusion_regex)
@@ -176,28 +186,28 @@ class Binary(object):
                 "Unable to find filename {filename}".format(filename=filename)
             )
 
-        self.symbols = {}
-        self.num_symbols_dropped = 0
+        self.symbols: Dict[str, Symbol] = {}
+        self.num_symbols_dropped: int = 0
 
-        self.parseSymbols()
+        self._parseSymbols()
 
-    def readObjdumpOutput(self):
-
-        cmd = [self.settings.objdump_command, "-drwCS", self.filename]
+    def _readObjdumpOutput(self) -> str:
+        """Read the output of the objdump command applied to the binary"""
+        cmd: List[str] = [self.settings.objdump_command, "-drwCS", self.filename]
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 
-        output = o.decode("utf8")
+        output: str = o.decode("utf8")
         # error = e.decode('utf8')
 
         return output
 
-    def readNMOutput(self):
-
-        cmd = [
+    def _readNMOutput(self) -> str:
+        """Read the output of the nm command applied to the binary"""
+        cmd: List[str] = [
             self.settings.nm_command,
             "--print-size",
             "--size-sort",
@@ -211,29 +221,31 @@ class Binary(object):
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 
-        output = o.decode("utf8")
+        output: str = o.decode("utf8")
         # error = e.decode('utf8')
 
         return output
 
-    def readSizeOutput(self):
-
-        cmd = [self.settings.size_command, self.filename]
+    def _readSizeOutput(self) -> str:
+        """read the output of the size command appliead to the binary"""
+        cmd: List[str] = [self.settings.size_command, self.filename]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 
-        output = o.decode("utf8")
+        output: str = o.decode("utf8")
         # error = e.decode('utf8')
 
         return output
 
-    def addSymbol(self, symbol):
+    def _addSymbol(self, symbol: Symbol) -> None:
+        """Add a new symbol to the collection of symbols associated with the binary"""
         symbol.init()
 
         self.symbols[symbol.name] = symbol
 
-    def isSymbolSelected(self, symbol_name):
+    def _isSymbolSelected(self, symbol_name: str) -> bool:
+        """Check if a symbol is selected via a regex"""
         if self.symbol_exclusion_regex_compiled is not None:
             if re.match(self.symbol_exclusion_regex_compiled, symbol_name):
                 return False
@@ -246,12 +258,12 @@ class Binary(object):
 
         return False
 
-    def determineSymbolSizes(self):
-
-        size_output = self.readSizeOutput()
+    def _determineSymbolSizes(self) -> None:
+        """Determine the sizes of symbols"""
+        size_output: str = self._readSizeOutput()
 
         size_re = re.compile(r"^\s*([0-9]+)\s+([0-9]+)\s+([0-9]+)\s+([0-9]+)")
-        sizes_sucessfully_determined = False
+        sizes_sucessfully_determined: bool = False
         for line in size_output.splitlines():
             size_match = re.match(size_re, line)
             if size_match:
@@ -273,21 +285,30 @@ class Binary(object):
             )
             self.binutils_work = False
 
-    def generateSymbol(self, symbol_name, symbol_name_is_demangled):
-        if self.isSymbolSelected(symbol_name):
+    def _generateSymbol(
+        self, symbol_name: str, symbol_name_is_demangled: bool
+    ) -> Optional[Symbol]:
+        """Generate a symbol based on a symbol name but only if the symbol is intented to be selected."""
+        if self._isSymbolSelected(symbol_name):
             # print("Considering symbol " + symbol_name)
             return self.symbol_type(symbol_name, symbol_name_is_demangled)
         # print("Ignoring symbol " + symbol_name)
         self.num_symbols_dropped += 1
         return None
 
-    def demangle(self, symbol_name_with_mangling_state_unknown):
-        symbol_name_demangled, was_demangled = self.mangling.demangle(
-            symbol_name_with_mangling_state_unknown
-        )
+    def demangle(
+        self, symbol_name_with_mangling_state_unknown: str
+    ) -> Tuple[str, bool]:
+        """Try to demangle a symbol name"""
+        if self.mangling is not None:
+            symbol_name_demangled: str
+            was_demangled: bool
+            symbol_name_demangled, was_demangled = self.mangling.demangle(
+                symbol_name_with_mangling_state_unknown
+            )
 
-        if was_demangled:
-            return symbol_name_demangled, True  # is demangled
+            if was_demangled:
+                return symbol_name_demangled, True  # is demangled
 
         if self.binutils_work:
             return (
@@ -300,22 +321,24 @@ class Binary(object):
             False,
         )  # Neither explicit demangling, nor binutils demangling worked
 
-    def gatherSymbolInstructions(self):
-        objdump_output = self.readObjdumpOutput()
+    def _gatherSymbolInstructions(self) -> None:
+        """Gather the instructions associated with a symbol"""
+        objdump_output: str = self._readObjdumpOutput()
 
         symbol_collector = SymbolCollector(self)
-        symbol_collector.gatherSymbolInstructions(objdump_output)
+        symbol_collector._gatherSymbolInstructions(objdump_output)
 
         for symbol in symbol_collector.symbols:
-            self.addSymbol(symbol)
+            self._addSymbol(symbol)
 
-        self.instructions_available = len(symbol_collector.symbols) > 0
+        self.instructions_available: bool = len(symbol_collector.symbols) > 0
 
         if symbol_collector.n_instruction_lines == 0:
             warning(f"Unable to read assembly from binary '{self.filename}'.")
 
-    def gatherSymbolProperties(self):
-        nm_output = self.readNMOutput()
+    def _gatherSymbolProperties(self) -> None:
+        """Gather the properties of a symbol"""
+        nm_output: str = self._readNMOutput()
 
         self.num_symbols_dropped = 0
         nm_regex = re.compile(r"^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
@@ -323,29 +346,31 @@ class Binary(object):
             nm_match = re.match(nm_regex, line)
 
             if nm_match:
-                symbol_size_str = nm_match.group(1)
-                symbol_type = nm_match.group(2)
+                symbol_size_str: str = nm_match.group(1)
+                symbol_type: str = nm_match.group(2)
 
-                symbol_name_with_mangling_state_unknown = nm_match.group(3)
+                symbol_name_with_mangling_state_unknown: str = nm_match.group(3)
+
+                symbol_name: str
+                symbol_name_is_demangled: bool
                 symbol_name, symbol_name_is_demangled = self.demangle(
                     symbol_name_with_mangling_state_unknown
                 )
 
                 if symbol_name not in self.symbols.keys():
-
-                    data_symbol = self.generateSymbol(
+                    data_symbol: Optional[Symbol] = self._generateSymbol(
                         symbol_name, symbol_name_is_demangled
                     )
                     if data_symbol is not None:
                         data_symbol.size = int(symbol_size_str)
                         data_symbol.type_ = symbol_type
-                        self.addSymbol(data_symbol)
+                        self._addSymbol(data_symbol)
                 else:
                     self.symbols[symbol_name].size = int(symbol_size_str)
                     self.symbols[symbol_name].type_ = symbol_type
 
-    def parseSymbols(self):
-
-        self.determineSymbolSizes()
-        self.gatherSymbolInstructions()
-        self.gatherSymbolProperties()
+    def _parseSymbols(self) -> None:
+        """Parse symbols from the binary"""
+        self._determineSymbolSizes()
+        self._gatherSymbolInstructions()
+        self._gatherSymbolProperties()

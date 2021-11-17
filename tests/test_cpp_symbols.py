@@ -22,9 +22,11 @@
 import unittest
 import os
 import sys
+from typing import Optional
 
 
-def prepareSearchPath():
+def prepareSearchPath() -> None:
+    """Prepare the module search path in order to load elf_diff modules"""
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
     sys.path.append(os.path.join(module_dir, "..", "src"))
 
@@ -36,13 +38,19 @@ from elf_diff.symbol import CppSymbol
 
 
 class TestCppSymbol(unittest.TestCase):
-    class __RAIITestAux(object):
+    class _RAIITestAux(CppSymbol):
         def __init__(self, master_test):
             self.master_test = master_test
-            for prop in CppSymbol.props:
+            for prop in CppSymbol.PROPS:
                 setattr(self, prop, None)
+            self.full_name: Optional[str] = None
+            self.arguments: Optional[str] = None
+            self.namespace: Optional[str] = None
+            self.template_parameters: Optional[str] = None
+            self.symbol_type: Optional[int] = None
 
-        def run(self):
+        def run(self) -> None:
+            """Run the symbol test"""
 
             # Establisch symbol name
             self.name = ""
@@ -56,7 +64,8 @@ class TestCppSymbol(unittest.TestCase):
             if self.namespace is not None:
                 self.name += "::"
 
-            self.name += self.full_name
+            if self.full_name is not None:
+                self.name += self.full_name
 
             if self.arguments is not None:
                 self.name += "(" + self.arguments + ")"
@@ -78,60 +87,60 @@ class TestCppSymbol(unittest.TestCase):
     def setUp(self):
         self.template_parameters = "std::size_t, std::vector<int>"
 
-    def __dataSymbolTest(self):
-        t = self.__RAIITestAux(self)
+    def _dataSymbolTest(self):
+        t = self._RAIITestAux(self)
         t.symbol_type = Symbol.TYPE_DATA
         return t
 
-    def __functionSymbolTest(self):
-        t = self.__dataSymbolTest()
+    def _functionSymbolTest(self):
+        t = self._dataSymbolTest()
         t.symbol_type = Symbol.TYPE_FUNCTION
         return t
 
-    def __simpleDataTest(self):
-        p = self.__dataSymbolTest()
+    def _simpleDataTest(self):
+        p = self._dataSymbolTest()
         p.full_name = "a"
         return p
 
     def simpleDataTest(self):
-        self.__simpleDataTest().run()
+        self._simpleDataTest().run()
 
     def testDataInNamespace(self):
-        p = self.__simpleDataTest()
+        p = self._simpleDataTest()
         p.namespace = "n"
         p.run()
 
     def testDataInClassInNamespace(self):
-        p = self.__simpleDataTest()
+        p = self._simpleDataTest()
         p.namespace = "n::c"
         p.run()
 
     def testDataInTemplateClass(self):
-        p = self.__simpleDataTest()
+        p = self._simpleDataTest()
         p.namespace = "c"
         p.template_parameters = self.template_parameters
         p.run()
 
     def testSimpleFunction(self):
-        p = self.__functionSymbolTest()
+        p = self._functionSymbolTest()
         p.full_name = "f"
         p.arguments = ""
         p.run()
 
     def __simpleFunctionWithSimpleArgs(self):
-        p = self.__functionSymbolTest()
+        p = self._functionSymbolTest()
         p.full_name = "f"
         p.arguments = "int, double"
         return p
 
     def __simpleFunctionWithTemplateArg(self):
-        p = self.__functionSymbolTest()
+        p = self._functionSymbolTest()
         p.full_name = "f"
         p.arguments = "std::vector<int>, double"
         return p
 
     def __simpleFunctionWithTemplateArgWithBraces(self):
-        p = self.__functionSymbolTest()
+        p = self._functionSymbolTest()
         p.full_name = "f"
         p.arguments = "std::array<int, (foo)3>, double"
         return p

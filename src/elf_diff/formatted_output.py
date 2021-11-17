@@ -21,10 +21,11 @@
 import os
 
 # Unicode characters cause problems with encoding on Windows
+SEPARATOR: str
 if os.name == "nt":
-    SEPARATOR = separator = "=" * 80
+    SEPARATOR = "=" * 80
 else:
-    SEPARATOR = separator = "═" * 80
+    SEPARATOR = "═" * 80
 
-START_CITATION = "'''"
-END_CITATION = "'''"
+START_CITATION: str = "'''"
+END_CITATION: str = "'''"

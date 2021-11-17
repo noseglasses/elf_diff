@@ -19,41 +19,44 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
 import difflib
+from typing import List
 
 HIGHLIGHT_START_TAG = "...HIGHLIGHT_START..."
 HIGHLIGHT_END_TAG = "...HIGHLIGHT_END..."
 
 
-def tagStringDiffSource(str1, str2):
-    seqm = difflib.SequenceMatcher(None, str1, str2)
-    output = []
+def tagStringDiffSource(str1: str, str2: str):
+    """Determine the difference between two strings, and tag them wrt. the source string"""
+    seqm = difflib.SequenceMatcher(isjunk=None, a=str1, b=str2)
+    output: List[str] = []
     for opcode, a0, a1, b0, b1 in seqm.get_opcodes():  # pylint: disable=unused-variable
         if opcode == "equal":
-            output.append(seqm.a[a0:a1])
+            output.append(str1[a0:a1])
         elif opcode == "insert":
             pass
         elif opcode == "delete":
-            output.append(HIGHLIGHT_START_TAG + seqm.a[a0:a1] + HIGHLIGHT_END_TAG)
+            output.append(HIGHLIGHT_START_TAG + str1[a0:a1] + HIGHLIGHT_END_TAG)
         elif opcode == "replace":
-            output.append(HIGHLIGHT_START_TAG + seqm.a[a0:a1] + HIGHLIGHT_END_TAG)
+            output.append(HIGHLIGHT_START_TAG + str1[a0:a1] + HIGHLIGHT_END_TAG)
         else:
             raise RuntimeError("unexpected opcode")
 
     return "".join(output)
 
 
-def tagStringDiffTarget(str1, str2):
-    seqm = difflib.SequenceMatcher(None, str1, str2)
+def tagStringDiffTarget(str1: str, str2: str):
+    """Determine the difference between two strings, and tag them wrt. the target string"""
+    seqm = difflib.SequenceMatcher(isjunk=None, a=str1, b=str2)
     output = []
     for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
         if opcode == "equal":
-            output.append(seqm.a[a0:a1])
+            output.append(str1[a0:a1])
         elif opcode == "insert":
-            output.append(HIGHLIGHT_START_TAG + seqm.b[b0:b1] + HIGHLIGHT_END_TAG)
+            output.append(HIGHLIGHT_START_TAG + str2[b0:b1] + HIGHLIGHT_END_TAG)
         elif opcode == "delete":
             pass
         elif opcode == "replace":
-            output.append(HIGHLIGHT_START_TAG + seqm.b[b0:b1] + HIGHLIGHT_END_TAG)
+            output.append(HIGHLIGHT_START_TAG + str2[b0:b1] + HIGHLIGHT_END_TAG)
         else:
             raise RuntimeError("unexpected opcode")
 
