@@ -60,7 +60,8 @@ class Symbol(object):
 
     def addInstructions(self, instruction_line: str) -> None:
         """Add a line of assmbly instructions"""
-        self.instruction_lines.append(instruction_line)
+        instruction_line_stripped = instruction_line.strip()
+        self.instruction_lines.append(instruction_line_stripped)
 
     def instructionsEqual(self, other):
         # type: (Symbol) -> bool
