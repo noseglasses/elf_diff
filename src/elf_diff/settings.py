@@ -54,161 +54,184 @@ class Parameter(object):
         self.action = action
 
 
-PARAMETERS = [
-    Parameter("old_binary_filename", "The old version of the elf binary."),
-    Parameter("new_binary_filename", "The new version of the elf binary."),
-    Parameter(
-        "old_alias",
-        "An alias string that is supposed to be used to reference the old binary version.",
-    ),
-    Parameter(
-        "new_alias",
-        "An alias string that is supposed to be used to reference the new binary version.",
-    ),
-    Parameter(
-        "old_info_file",
-        "A text file that contains information about the old binary version.",
-    ),
-    Parameter(
-        "new_info_file",
-        "A text file that contains information about the new binary version.",
-    ),
-    Parameter(
-        "build_info",
-        "A string that contains build information that is to be added to the report.",
-        default="",
-    ),
-    Parameter(
-        "bin_dir",
-        "A place where the binutils live.",
-        default=None,
-    ),
-    Parameter(
-        "bin_prefix",
-        "A prefix that is added to binutils executables.",
-        deprecated_alias="bin-prefix",
-        default="",
-    ),
-    Parameter("objdump_command", "Full path to the objdump untility.", default=None),
-    Parameter("nm_command", "Full path to the nm untility.", default=None),
-    Parameter("size_command", "Full path to the size untility.", default=None),
-    Parameter(
-        "old_mangling_file",
-        "Full path to a mangling file for old elf.",
-        default=None,
-    ),
-    Parameter(
-        "new_mangling_file",
-        "Full path to a mangling file for new elf.",
-        default=None,
-    ),
-    Parameter("html_file", "The filename of the generated single page HTML report."),
-    Parameter("html_dir", "The directory of the generated multi page HTML report."),
-    Parameter("pdf_file", "The filename of the generated PDF report."),
-    Parameter("yaml_file", "The filename of the generated YAML report."),
-    Parameter("json_file", "The filename of the generated JSON report."),
-    Parameter("txt_file", "The filename of the generated text based report."),
-    Parameter("xml_file", "The filename of the generated XML report."),
-    Parameter("project_title", "A project title to use for all reports."),
-    Parameter(
-        "driver_file",
-        "A yaml file that contains settings and driver information.",
-    ),
-    Parameter(
-        "driver_template_file",
-        "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read.",
-    ),
-    Parameter(
-        "html_template_dir",
-        "A directory that contains template html files. Defaults to elf_diff's own html directory.",
-        no_cmd_line=True,
-    ),
-    Parameter(
-        "dump_document_structure",
-        "If this flag is provided, the elf_diff document structure is written to stdout",
-        default=False,
-        is_flag=True,
-    ),
-    Parameter(
-        "mass_report",
-        "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.",
-        default=False,
-        is_flag=True,
-    ),
-    Parameter(
-        "language",
-        "A hint about the language that the elf was compiled from (choices: c++).",
-        default="c++",
-    ),
-    Parameter(
-        "similarity_threshold",
-        "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
-        default=0.5,
-    ),
-    Parameter(
-        "skip_symbol_similarities",
-        "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
-        default=False,
-        is_flag=True,
-    ),
-    Parameter(
-        "consider_equal_sized_identical",
-        "If this flag is defined, symbols of equal size are considered as identical (and thus ignored in most cases).",
-        default=False,
-        is_flag=True,
-    ),
-    Parameter(
-        "skip_details",
-        "If this flag is defined, report details are displayed",
-        default=False,
-        is_flag=True,
-    ),
-    Parameter(
-        "symbol_selection_regex",
-        "A regex that is applied to select symbols to be considered for both, the old and the new elf file",
-        default=None,
-    ),
-    Parameter(
-        "symbol_selection_regex_old",
-        "A regex that is applied to select symbols to be considered for the old elf file",
-        default=None,
-    ),
-    Parameter(
-        "symbol_selection_regex_new",
-        "A regex that is applied to select symbols to be considered for the new elf file",
-        default=None,
-    ),
-    Parameter(
-        "symbol_exclusion_regex",
-        "A regex that is applied to select symbols to be excluded for both, the old and the new elf file",
-        default=None,
-    ),
-    Parameter(
-        "symbol_exclusion_regex_old",
-        "A regex that is applied to select symbols to be excluded for the old elf file",
-        default=None,
-    ),
-    Parameter(
-        "symbol_exclusion_regex_new",
-        "A regex that is applied to select symbols to be excluded for the new elf file",
-        default=None,
-    ),
-    Parameter(
-        "load_plugin",
-        'Loads and parametrizes a plugin. Example: --load_plugin "some/path/to/module.py;PluginClass;foo1=bar2;foo2=bar2"',
-        action="append",
-    ),
-    Parameter(
-        "load_default_plugin",
-        'Loads and parametrizes a default plugin. Example --load_default_plugin "html_export;single_page=False;template_dir=some_directory"',
-        action="append",
-    ),
-    Parameter(
-        "list_default_plugins",
-        "Writes a list of default plugins to stdout",
-        default=False,
-        is_flag=True,
-    ),
+GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
+    "Binaries": [
+        Parameter("old_binary_filename", "The old version of the elf binary."),
+        Parameter("new_binary_filename", "The new version of the elf binary."),
+        Parameter(
+            "language",
+            "A hint about the language that the elf was compiled from (choices: c++).",
+            default="c++",
+        ),
+    ],
+    "Report Content": [
+        Parameter("project_title", "A project title to use for all reports."),
+        Parameter(
+            "old_alias",
+            "An alias string that is supposed to be used to reference the old binary version.",
+        ),
+        Parameter(
+            "new_alias",
+            "An alias string that is supposed to be used to reference the new binary version.",
+        ),
+        Parameter(
+            "old_info_file",
+            "A text file that contains information about the old binary version.",
+        ),
+        Parameter(
+            "new_info_file",
+            "A text file that contains information about the new binary version.",
+        ),
+        Parameter(
+            "build_info",
+            "A string that contains build information that is to be added to the report.",
+            default="",
+        ),
+        Parameter(
+            "similarity_threshold",
+            "A threshold value between 0 and 1 above which two compared symbols are considered being similar",
+            default=0.5,
+        ),
+        Parameter(
+            "skip_symbol_similarities",
+            "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
+            default=False,
+            is_flag=True,
+        ),
+        Parameter(
+            "consider_equal_sized_identical",
+            "If this flag is defined, symbols of equal size are considered as identical (and thus ignored in most cases).",
+            default=False,
+            is_flag=True,
+        ),
+        Parameter(
+            "skip_details",
+            "If this flag is defined, report details are displayed",
+            default=False,
+            is_flag=True,
+        ),
+        Parameter(
+            "html_template_dir",
+            "A directory that contains template html files. Defaults to elf_diff's own html directory.",
+            no_cmd_line=True,
+        ),
+    ],
+    "Binutils": [
+        Parameter(
+            "bin_dir",
+            "A place where the binutils live.",
+            default=None,
+        ),
+        Parameter(
+            "bin_prefix",
+            "A prefix that is added to binutils executables.",
+            default="",
+        ),
+        Parameter(
+            "objdump_command", "Full path to the objdump untility.", default=None
+        ),
+        Parameter("nm_command", "Full path to the nm untility.", default=None),
+        Parameter("size_command", "Full path to the size untility.", default=None),
+    ],
+    "Mangling": [
+        Parameter(
+            "old_mangling_file",
+            "Full path to a mangling file for old elf.",
+            default=None,
+        ),
+        Parameter(
+            "new_mangling_file",
+            "Full path to a mangling file for new elf.",
+            default=None,
+        ),
+    ],
+    "Output": [
+        Parameter(
+            "html_file", "The filename of the generated single page HTML report."
+        ),
+        Parameter("html_dir", "The directory of the generated multi page HTML report."),
+        Parameter("pdf_file", "The filename of the generated PDF report."),
+        Parameter("yaml_file", "The filename of the generated YAML report."),
+        Parameter("json_file", "The filename of the generated JSON report."),
+        Parameter("txt_file", "The filename of the generated text based report."),
+        Parameter("xml_file", "The filename of the generated XML report."),
+        Parameter(
+            "dump_document_structure",
+            "If this flag is provided, the elf_diff document structure is written to stdout",
+            default=False,
+            is_flag=True,
+        ),
+        Parameter(
+            "mass_report",
+            "Forces a mass report being generated. Otherwise the decision whether to generate a mass report is based on the binary_pairs found in the driver file.",
+            default=False,
+            is_flag=True,
+        ),
+    ],
+    "Symbol Selection": [
+        Parameter(
+            "symbol_selection_regex",
+            "A regex that is applied to select symbols to be considered for both, the old and the new elf file",
+            default=None,
+        ),
+        Parameter(
+            "symbol_selection_regex_old",
+            "A regex that is applied to select symbols to be considered for the old elf file",
+            default=None,
+        ),
+        Parameter(
+            "symbol_selection_regex_new",
+            "A regex that is applied to select symbols to be considered for the new elf file",
+            default=None,
+        ),
+        Parameter(
+            "symbol_exclusion_regex",
+            "A regex that is applied to select symbols to be excluded for both, the old and the new elf file",
+            default=None,
+        ),
+        Parameter(
+            "symbol_exclusion_regex_old",
+            "A regex that is applied to select symbols to be excluded for the old elf file",
+            default=None,
+        ),
+        Parameter(
+            "symbol_exclusion_regex_new",
+            "A regex that is applied to select symbols to be excluded for the new elf file",
+            default=None,
+        ),
+    ],
+    "Plugins": [
+        Parameter(
+            "load_plugin",
+            'Loads and parametrizes a plugin. Example: --load_plugin "some/path/to/module.py;PluginClass;foo1=bar2;foo2=bar2"',
+            action="append",
+        ),
+        Parameter(
+            "load_default_plugin",
+            'Loads and parametrizes a default plugin. Example --load_default_plugin "html_export;single_page=False;template_dir=some_directory"',
+            action="append",
+        ),
+        Parameter(
+            "list_default_plugins",
+            "Writes a list of default plugins to stdout",
+            default=False,
+            is_flag=True,
+        ),
+    ],
+    "Driver Files": [
+        Parameter(
+            "driver_file",
+            "A yaml file that contains settings and driver information.",
+        ),
+        Parameter(
+            "driver_template_file",
+            "A yaml file that is generated at the end of the run. It contains default parameters if no report was generated or, otherwise, the parameters that were read.",
+        ),
+    ],
+}
+
+
+UNGROUPED_PARAMETERS = [
     Parameter(
         "debug",
         "If enabled, elf_diff runs in debugging mode and outputs extended information if something goes wrong.",
@@ -217,13 +240,18 @@ PARAMETERS = [
     ),
 ]
 
+PARAMETERS: List[Parameter] = []
+for key, value in GROUPED_PARAMETERS.items():
+    PARAMETERS += value
+
+for parameter in UNGROUPED_PARAMETERS:
+    PARAMETERS.append(parameter)
+
 
 class Settings(object):
     def __init__(self, module_path):
         """Initialize settings class."""
         self.module_path: str = module_path
-
-        self.parameters: List[Parameter] = PARAMETERS
 
         # To enable static type checking, we have to pre-define all command line parameters
         self.old_binary_filename: str
@@ -271,7 +299,7 @@ class Settings(object):
 
         self._presetDefaults()
 
-        cmd_line_args = self._parseCommandLineArgs()
+        cmd_line_args = Settings._parseCommandLineArgs()
 
         self.old_binary_filename: Optional[str] = None
         self.new_binary_filename: Optional[str] = None
@@ -291,47 +319,71 @@ class Settings(object):
         """Preset default values"""
         self.mass_report_members: List[BinaryPairSettings] = []
 
-        for parameter in self.parameters:
+        for parameter in PARAMETERS:
             setattr(self, parameter.name, parameter.default)
 
-    def _parseCommandLineArgs(self) -> object:
+    @staticmethod
+    def _addParameterToGroup(
+        parameter: Parameter,
+        args_group: Union[argparse.ArgumentParser, argparse._ArgumentGroup],
+    ) -> None:
+        """Adds an argument to an arguments group or directly top level to the parser (if passed as args_group)"""
+        param_name: str
+        if parameter.alias:
+            param_name = parameter.alias
+        else:
+            param_name = parameter.name
+
+        action: str
+        if parameter.is_flag:
+            action = "store_true"
+        else:
+            action = parameter.action or "store"
+
+        args_group.add_argument(
+            "--{name}".format(name=param_name),
+            default=parameter.default,
+            dest=parameter.name,
+            action=action,
+            help=parameter.description,
+        )
+
+        if parameter.deprecated_alias:
+            args_group.add_argument(
+                "--{name}".format(name=parameter.deprecated_alias),
+                default=parameter.default,
+                dest=parameter.name,
+                action=action,
+                help=parameter.description + " (deprecated)",
+            )
+
+    @staticmethod
+    def _prepareParser() -> argparse.ArgumentParser:
+        """Prepare the argsparse command line parser and add all arguments to the parser or its args groups"""
         parser = argparse.ArgumentParser(
             description="Compares elf binaries and lists differences in symbol sizes, the disassemblies, etc."
         )
 
-        for parameter in self.parameters:
+        for group_name, parameters in GROUPED_PARAMETERS.items():
+            args_group = parser.add_argument_group(group_name)
 
+            for parameter in parameters:
+                if parameter.no_cmd_line:
+                    continue
+                Settings._addParameterToGroup(parameter, args_group)
+
+        for parameter in UNGROUPED_PARAMETERS:
             if parameter.no_cmd_line:
                 continue
 
-            param_name: str
-            if parameter.alias:
-                param_name = parameter.alias
-            else:
-                param_name = parameter.name
+            Settings._addParameterToGroup(parameter, parser)
 
-            action: str
-            if parameter.is_flag:
-                action = "store_true"
-            else:
-                action = parameter.action or "store"
+        return parser
 
-            parser.add_argument(
-                "--{name}".format(name=param_name),
-                default=parameter.default,
-                dest=parameter.name,
-                action=action,
-                help=parameter.description,
-            )
-
-            if parameter.deprecated_alias:
-                parser.add_argument(
-                    "--{name}".format(name=parameter.deprecated_alias),
-                    default=parameter.default,
-                    dest=parameter.name,
-                    action=action,
-                    help=parameter.description + " (deprecated)",
-                )
+    @staticmethod
+    def _parseCommandLineArgs() -> object:
+        """Parse command line arguments"""
+        parser = Settings._prepareParser()
 
         parser.add_argument(
             "binaries",
@@ -358,7 +410,7 @@ class Settings(object):
             except yaml.YAMLError as exc:
                 raise Exception(exc)
 
-        for parameter in self.parameters:
+        for parameter in PARAMETERS:
             if parameter.name in my_yaml.keys():
                 setattr(self, parameter.name, my_yaml[parameter.name])
 
@@ -396,7 +448,7 @@ class Settings(object):
 
     def _considerCommandLineArgs(self, cmd_line_args: Any) -> None:
         """Consider the supplied command line arguments"""
-        for parameter in self.parameters:
+        for parameter in PARAMETERS:
             if parameter.no_cmd_line:
                 continue
 
@@ -549,7 +601,7 @@ class Settings(object):
             )
             f.write("\n")
 
-            for parameter in self.parameters:
+            for parameter in PARAMETERS:
 
                 if output_actual_values:
                     value = getattr(self, parameter.name)
