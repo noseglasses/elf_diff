@@ -28,8 +28,8 @@
             "doc_title": "ELF Binary Comparison",
             "document_version": 1,
             "elf_diff_repo_root": "/home/flo/Documents/elf_diff/src/elf_diff",
-            "elf_diff_version": "b018a4faed98bd1cc7c4bae20bb877c551338c12",
-            "generation_date": "2021-11-17 20:26:14",
+            "elf_diff_version": "d63dc16a1503d4e0e71e5cf6d286d5fc28ffce57",
+            "generation_date": "2021-11-18 17:50:55",
             "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses"
         },
         "new_binary_info": "",
@@ -117,7 +117,7 @@
                         },
                         "new_symbol": {
                             "id": 21,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test1::f(int, int)",
@@ -135,7 +135,7 @@
                         },
                         "new_symbol": {
                             "id": 22,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test1::g(float, float)",
@@ -171,7 +171,7 @@
                         },
                         "new_symbol": {
                             "id": 24,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "func(double)",
@@ -191,7 +191,7 @@
                         },
                         "old_symbol": {
                             "id": 10,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "func(int)",
@@ -209,7 +209,7 @@
                         },
                         "old_symbol": {
                             "id": 7,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test::f(int, int)",
@@ -227,7 +227,7 @@
                         },
                         "old_symbol": {
                             "id": 8,
-                            "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test::g(float, float)",
@@ -259,7 +259,7 @@
                 "21": {
                     "new_symbol": {
                         "id": 21,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test1::f(int, int)",
@@ -270,7 +270,7 @@
                 "22": {
                     "new_symbol": {
                         "id": 22,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test1::g(float, float)",
@@ -292,7 +292,7 @@
                 "24": {
                     "new_symbol": {
                         "id": 24,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "func(double)",
@@ -303,7 +303,7 @@
                 "25": {
                     "new_symbol": {
                         "id": 25,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting1(int)",
@@ -314,7 +314,7 @@
                 "26": {
                     "new_symbol": {
                         "id": 26,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting2(int)",
@@ -338,7 +338,7 @@
                 "10": {
                     "old_symbol": {
                         "id": 10,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "func(int)",
@@ -349,7 +349,7 @@
                 "11": {
                     "old_symbol": {
                         "id": 11,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting1(int)",
@@ -360,7 +360,7 @@
                 "12": {
                     "old_symbol": {
                         "id": 12,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting2(int)",
@@ -382,7 +382,7 @@
                 "7": {
                     "old_symbol": {
                         "id": 7,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test::f(int, int)",
@@ -393,7 +393,7 @@
                 "8": {
                     "old_symbol": {
                         "id": 8,
-                        "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test::g(float, float)",
@@ -424,7 +424,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 25,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "persisting1(int)",
@@ -433,7 +433,7 @@
                             },
                             "old_symbol": {
                                 "id": 11,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "persisting1(int)",
@@ -454,7 +454,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 26,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "persisting2(int)",
@@ -463,7 +463,7 @@
                             },
                             "old_symbol": {
                                 "id": 12,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "persisting2(int)",
@@ -523,7 +523,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 22,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::g(float, float)",
@@ -532,7 +532,7 @@
                             },
                             "old_symbol": {
                                 "id": 8,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::g(float, float)",
@@ -564,7 +564,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 21,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::f(int, int)",
@@ -573,7 +573,7 @@
                             },
                             "old_symbol": {
                                 "id": 7,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::f(int, int)",
@@ -646,7 +646,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 22,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::g(float, float)",
@@ -655,7 +655,7 @@
                             },
                             "old_symbol": {
                                 "id": 7,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::f(int, int)",
@@ -665,7 +665,7 @@
                             "size_delta": 8
                         },
                         "similarities": {
-                            "instruction": 82.05128205128204,
+                            "instruction": 81.36882129277566,
                             "signature": 61.53846153846154
                         }
                     }
@@ -687,7 +687,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 21,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \nnop\n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::f(int, int)",
@@ -696,7 +696,7 @@
                             },
                             "old_symbol": {
                                 "id": 8,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::g(float, float)",
@@ -706,7 +706,7 @@
                             "size_delta": -8
                         },
                         "similarities": {
-                            "instruction": 82.05128205128204,
+                            "instruction": 81.36882129277566,
                             "signature": 61.53846153846154
                         }
                     }
@@ -728,7 +728,7 @@
                         "related_symbols": {
                             "new_symbol": {
                                 "id": 24,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "func(double)",
@@ -737,7 +737,7 @@
                             },
                             "old_symbol": {
                                 "id": 10,
-                                "instructions": "endbr64 \npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret    \n",
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "func(int)",
@@ -747,7 +747,7 @@
                             "size_delta": 2
                         },
                         "similarities": {
-                            "instruction": 93.46733668341709,
+                            "instruction": 93.12169312169311,
                             "signature": 57.14285714285714
                         }
                     }
