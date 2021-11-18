@@ -74,7 +74,7 @@ ARGS, UNITTEST_ARGS = PARSER.parse_known_args()
 # Now set the sys.argv to the UNITTEST_ARGS (leaving sys.argv[0] alone)
 sys.argv[1:] = UNITTEST_ARGS
 
-TESTING_DIR: str = os.path.dirname(sys.modules[__name__].__file__)
+TESTING_DIR: str = os.path.abspath(os.path.dirname(sys.modules[__name__].__file__))
 
 if os.name == "nt":
     STANDARD_BIN_DIR = r"C:\msys64\mingw64\bin"
