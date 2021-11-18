@@ -52,7 +52,7 @@ class Symbol(object):
             self.instructions += "%s\n" % instruction_line
             instructions_for_hash += "".join(instruction_line)
         self.instructions_hash = hash(instructions_for_hash)
-        self.id_: int = Symbol._getConsecutiveId()
+        self.id_ = Symbol._getConsecutiveId()
 
     def hasInstructions(self) -> bool:
         """Check wether a symbol has related assmbly instructions"""
