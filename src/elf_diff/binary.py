@@ -121,24 +121,45 @@ class SymbolCollector(object):
 
         return False
 
+    @staticmethod
+    def _unifyX86InstructionLine(line: str) -> str:
+        # The x86 instruction 0xC3 is named retq for 64 bit and ret for 32 bit.
+        # Strangely several versions of objdump, namely 2.34 and 2.36.1 output either 'ret' or 'retq'
+        # both for x86_64 binaries.
+        #
+        # To make comparing files portable, replace the retq with ret.
+        return re.sub(r"(^.*\sc3\s+)retq(.*)$", r"\1ret\2", line)
+
+    def _unifyInstructionLine(self, line: str) -> str:
+        """Fixup the assembly output by objdump in a way that it
+        is the same for all versions of objdump
+        """
+        if self.binary.file_format == "elf64-x86-64":
+            return SymbolCollector._unifyX86InstructionLine(line)
+        return line
+
     def _gatherSymbolInstructions(self, objdump_output: str) -> None:
         """Gather the symbol instructions of a symbol"""
         for line in objdump_output.splitlines():
+            unified_line = self._unifyInstructionLine(line)
 
-            is_header_line: bool = self._checkSymbolHeaderLine(line)
+            is_header_line: bool = self._checkSymbolHeaderLine(unified_line)
             if is_header_line:
                 continue
 
-            instruction_line_match = re.match(self.instruction_line_re, line)
+            instruction_line_match = re.match(self.instruction_line_re, unified_line)
             if instruction_line_match:
                 self.n_instruction_lines += 1
             if self.cur_symbol:
                 if instruction_line_match:
-                    # print("Found instruction line \'%s\'" % (instruction_line_match.group(0)))
-                    self.cur_symbol.addInstructions(instruction_line_match.group(2))
+                    instruction_line = instruction_line_match.group(2)
+                    self.cur_symbol.addInstructions(instruction_line)
+                    # print("Found instruction line \'%s\'" % (unified_instruction_line))
                 else:
-                    if (len(line) > 0) and (not line.isspace()):
-                        self.cur_symbol.addInstructions(preHighlightSourceCode(line))
+                    if (len(unified_line) > 0) and (not unified_line.isspace()):
+                        self.cur_symbol.addInstructions(
+                            preHighlightSourceCode(unified_line)
+                        )
 
         if self.cur_symbol:
             self._submitSymbol()
@@ -168,6 +189,8 @@ class Binary(object):
         self.progmem_size: int = 0
         self.static_ram_size: int = 0
 
+        self.file_format: Optional[str] = None
+
         self.symbol_selection_regex: Optional[str] = symbol_selection_regex
         self.symbol_selection_regex_compiled = None
         if symbol_selection_regex is not None:
@@ -189,11 +212,26 @@ class Binary(object):
         self.symbols: Dict[str, Symbol] = {}
         self.num_symbols_dropped: int = 0
 
+        self._determineBinaryFileFormat()
         self._parseSymbols()
 
-    def _readObjdumpOutput(self) -> str:
+    def _readObjdumpDisassemblyOutput(self) -> str:
         """Read the output of the objdump command applied to the binary"""
         cmd: List[str] = [self.settings.objdump_command, "-drwCS", self.filename]
+        proc = subprocess.Popen(  # nosec # silence bandid warning
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+
+        o, e = proc.communicate()  # pylint: disable=unused-variable
+
+        output: str = o.decode("utf8")
+        # error = e.decode('utf8')
+
+        return output
+
+    def _readObjdumpArchiveHeadersOutput(self) -> str:
+        """Read the output of the objdump command applied to the binary"""
+        cmd: List[str] = [self.settings.objdump_command, "-a", self.filename]
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
@@ -321,9 +359,19 @@ class Binary(object):
             False,
         )  # Neither explicit demangling, nor binutils demangling worked
 
+    def _determineBinaryFileFormat(self) -> None:
+        """Get information about the architecture of the binary"""
+        objdump_output: str = self._readObjdumpArchiveHeadersOutput()
+        file_format_match = re.search(r"file format\s+(\S+)", objdump_output)
+        if file_format_match:
+            self.file_format = file_format_match.group(1)
+            print("File format of binary %s: %s" % (self.filename, self.file_format))
+        else:
+            print("Unable to detect binary file format of %s" % self.filename)
+
     def _gatherSymbolInstructions(self) -> None:
         """Gather the instructions associated with a symbol"""
-        objdump_output: str = self._readObjdumpOutput()
+        objdump_output: str = self._readObjdumpDisassemblyOutput()
 
         symbol_collector = SymbolCollector(self)
         symbol_collector._gatherSymbolInstructions(objdump_output)

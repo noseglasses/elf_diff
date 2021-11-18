@@ -107,16 +107,26 @@ class BinaryPair(object):
             mangling=Mangling(settings.new_mangling_file),
         )
 
-        self.prepareSymbols()
-        self.summarizeSymbols()
+        self._verifyBinaryCompatibility()
 
-        self.computeSizeChanges()
+        self._prepareSymbols()
+        self._summarizeSymbols()
+
+        self._computeSizeChanges()
 
         self.similar_symbols: List[SimilarityPair] = []
         if not settings.skip_symbol_similarities:
-            self.computeSimilarities()
+            self._computeSimilarities()
 
-    def summarizeSymbols(self) -> None:
+    def _verifyBinaryCompatibility(self) -> None:
+        """Verify that both binaries are compatibility"""
+        if self.old_binary.file_format != self.new_binary.file_format:
+            raise Exception(
+                "Binary formats incompatible. Old: %s, new: %s"
+                % (self.old_binary.file_format, self.new_binary.file_format)
+            )
+
+    def _summarizeSymbols(self) -> None:
         """Print a summary of the symbols detected"""
         print("Symbol Statistics:")
         print(f"   old binary ({self.pair_settings.old_binary_filename}):")
@@ -134,7 +144,7 @@ class BinaryPair(object):
         print(f"   {len(self.disappeared_symbol_names)} disappeared symbol(s)")
         print(f"   {len(self.new_symbol_names)} new symbol(s)")
 
-    def prepareSymbols(self) -> None:
+    def _prepareSymbols(self) -> None:
         """Prepare symbols"""
         self.old_symbol_names = set(self.old_binary.symbols.keys())
         self.new_symbol_names = set(self.new_binary.symbols.keys())
@@ -149,14 +159,14 @@ class BinaryPair(object):
             self.new_symbol_names - self.old_symbol_names
         )
 
-    def computeSizeChanges(self) -> None:
+    def _computeSizeChanges(self) -> None:
         """Compute the size changes of symbols from old and new binary"""
         self.analyseSymbolSizeChanges()
         self.computeNumSymbolsDisappeared()
         self.computeNumSymbolsAppeared()
         self.computeNumSymbolsWithInstructionDifferences()
 
-    def computeSimilarities(self) -> None:
+    def _computeSimilarities(self) -> None:
         """Compute the similarity rations of symbols from old and new binary"""
         self.similar_symbols = self.determineSimilarSymbols()
 
