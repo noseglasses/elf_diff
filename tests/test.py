@@ -35,6 +35,7 @@ from typing import (  # pylint: disable=unused-import
     Type,
 )  # pylint: disable=unused-import
 from deepdiff import DeepDiff  # type: ignore # Make mypy ignore this module
+from pprint import pformat
 
 ArgsPair = Tuple[str, Optional[str]]
 ArgsList = List[ArgsPair]
@@ -734,10 +735,11 @@ class TestDocumentIntegrity(ElfDiffExecutingTests):
             "root['document']['general']['elf_diff_version']",
             "root['document']['general']['generation_date']",
         ]
-        diff = DeepDiff(test_tree, reference_tree, exclude_paths=exclude_paths)
+        diff = DeepDiff(reference_tree, test_tree, exclude_paths=exclude_paths)
 
         if len(diff) > 0:
-            raise Exception("documents differ:\n%s" % diff)
+            diff_str: str = pformat(diff, indent=2)
+            raise Exception("documents differ:\n%s" % diff_str)
 
 
 if __name__ == "__main__":
