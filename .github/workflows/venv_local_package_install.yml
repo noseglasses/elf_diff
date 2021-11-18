@@ -19,11 +19,6 @@ jobs:
       run: |
          sudo apt install -y python3-pip python3-venv
          sudo apt install -y g++-arm-linux-gnueabi binutils-arm-linux-gnueabi
-
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install -r ./tests/test_requirements.txt
     - name: Generate venv
       run: |
         repo_root=$PWD
@@ -32,5 +27,7 @@ jobs:
         source ./env/bin/activate
         mkdir test
         cd test
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r "${repo_root}/tests/test_requirements.txt"
         python3 -m pip install "${repo_root}"
-        python3 ${repo_root}/tests/test.py -p
+        python3 "${repo_root}/tests/test.py" -p
