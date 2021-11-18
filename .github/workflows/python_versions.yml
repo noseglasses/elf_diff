@@ -1,0 +1,43 @@
+name: Python Version Test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Ubuntu packages
+      run: |
+         sudo apt update
+         sudo apt install -y g++-arm-linux-gnueabi binutils-arm-linux-gnueabi
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9, "3.10"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r ./requirements.txt
+        python3 -m pip install -r ./tests/test_requirements.txt
+    - name: Prepare tests
+      run: |
+        mkdir test_output
+    - name: Command line args test
+      run: |
+        cd test_output
+        python3 ../tests/test.py
+    - name: Symbol unit tests
+      run: |
+        cd test_output
+        python3 ../tests/test_cpp_symbols.py
