@@ -26,7 +26,7 @@
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_3"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_11"></a>Persisting symbol
 
 persisting1(int)
 
@@ -39,13 +39,13 @@ persisting1(int)
         <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
         <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
         <tbody>
-            <tr><td class="diff_next" id="difflib_chg_to0__0"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="from0_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td><td class="diff_next"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="to0_1">1</td><td nowrap="nowrap">endbr64&nbsp;</td></tr>
+            <tr><td class="diff_next" id="difflib_chg_to0__0"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="from0_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="to0_1">1</td><td nowrap="nowrap">endbr64</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to0_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td></tr>
             <tr><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">b</span>,%eax</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">a</span>,%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from0_7">7</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td><td class="diff_next"></td><td class="diff_header" id="to0_7">7</td><td nowrap="nowrap">retq&nbsp;&nbsp;&nbsp;</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to0_7">7</td><td nowrap="nowrap">ret</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to0_8">8</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
@@ -56,19 +56,19 @@ persisting1(int)
 <pre>
 persisting_symbol
 ├── display_info [Information that configures how things are displayed]
-│   ├── anchor_id = &#39;3&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── anchor_id = &#39;11&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
 │   ├── display_symbol_details = &#39;True&#39; &lt;bool&gt; [True if symbol details are supposed to be displayed]
 │   └── symbol_class = &#39;persisting&#39; &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
 └── related_symbols [A relation between two symbols]
     ├── new_symbol
-    │   ├── id = &#39;10&#39; &lt;int&gt; [Unique symbol identifier]
-    │   ├── instructions = &#39;endbr64 
+    │   ├── id = &#39;25&#39; &lt;int&gt; [Unique symbol identifier]
+    │   ├── instructions = &#39;endbr64
 push   %rbp
 mov    %rsp,%rbp
 mov    %edi,-0x4(%rbp)
 mov    $0x2a,%eax
 pop    %rbp
-retq   
+ret
 &#39; &lt;str&gt; [Code instructions (assembly with possibly high level language code intermixed)]
     │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
     │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
@@ -76,14 +76,14 @@ retq
     │   ├── size = &#39;18&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
     │   └── type = &#39;T&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
     ├── old_symbol
-    │   ├── id = &#39;3&#39; &lt;int&gt; [Unique symbol identifier]
-    │   ├── instructions = &#39;endbr64 
+    │   ├── id = &#39;11&#39; &lt;int&gt; [Unique symbol identifier]
+    │   ├── instructions = &#39;endbr64
 push   %rbp
 mov    %rsp,%rbp
 mov    %edi,-0x4(%rbp)
 mov    $0x2b,%eax
 pop    %rbp
-retq   
+ret
 &#39; &lt;str&gt; [Code instructions (assembly with possibly high level language code intermixed)]
     │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
     │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
