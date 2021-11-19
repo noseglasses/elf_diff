@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-11-19
+### Added
+- CI tests of Python versions 3.5-3.10
+- Command line arguments grouped in -h output
+- Determine binary file type
+- Refuse comparing binaries with incompatible file types
+- CI test json document output by comparing against reference document
+- test_requirements.txt (Python packages required for testing)
+- thorough Python type checking for the whole codebase
+- CI check typing using mypy
+- XML export plugin
+- improved error-output at CLI
+- make errors and warnings more prominent
+- use unicode characters for CLI output in non-Windows environments
+- command line options for listing default plugins
+- CI testing of plugin interface
+- allow default plugins being loaded and parametrized from command line
+- only output stack tarces if the --debug flag is set
+
+### Changed
+Enable comparison of elf_diff documents across binutils versions by
+- stripping instruction lines (remove leading and trailing whitespaces)
+- unify instruction differences in x86_64 output of objdump (0xC3 ret/retq -> ret)
+- sort symbols alphabetically before assigning integer IDs
+
 ## [0.4.0] - 2021-11-05
 ### Added
 - Badges at the top of README.md file
