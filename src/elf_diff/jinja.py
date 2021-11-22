@@ -25,7 +25,7 @@ from elf_diff.document_explorer import (
     dumpTreeTxt,
 )
 from elf_diff.settings import Settings
-from elf_diff.pair_report_document import getDocumentTreesOfSymbolClasses
+from elf_diff.pair_report_document import getDocumentTreesOfDynamicTreeNodes
 from elf_diff.string_diff import tagStringDiffSource
 import jinja2
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
@@ -76,7 +76,9 @@ class Configurator(object):
         env.globals["dump_leaf_paths"] = lambda node: DocumentExplorer(
             StringSink
         ).dumpDocumentLeafPaths(node)
-        env.globals["get_symbol_document_trees"] = getDocumentTreesOfSymbolClasses
+        env.globals[
+            "get_dynamic_node_document_trees"
+        ] = getDocumentTreesOfDynamicTreeNodes
 
         env.globals["tag_string_diff"] = tagStringDiffSource
 

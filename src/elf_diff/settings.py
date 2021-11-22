@@ -292,6 +292,9 @@ class Settings(object):
         self.dump_document_structure: bool
         self.mass_report: bool
         self.language: str
+        self.source_prefix: str
+        self.old_source_prefix: str
+        self.new_source_prefix: str
         self.similarity_threshold: float
         self.skip_symbol_similarities: bool
         self.consider_equal_sized_identical: bool

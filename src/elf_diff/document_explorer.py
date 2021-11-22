@@ -23,7 +23,7 @@ from elf_diff.value_tree import Value as ValueTreeValue
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import (
     ValueTreeNode,
-    getDocumentTreesOfSymbolClasses,
+    getDocumentTreesOfDynamicTreeNodes,
     generateDocumentTree,
 )
 from elf_diff.auxiliary import isNameToken
@@ -130,6 +130,8 @@ class ValueTreeVisitor(object):
                             self.visit(subtree, **kvargs)
                             self._afterDictEntry(id_, subtree)
                         self._afterDict(value.getName(), dict_)
+                    else:
+                        self._processValue(name, value)
                 elif isinstance(raw_value, ValueTreeNode):
                     self.visit(raw_value, **kvargs)
                 else:
@@ -474,7 +476,7 @@ def getSymbolTypeStructureTxt(
     display_values=True, only_base_tree=True
 ) -> Dict[str, str]:
     """Return a dict that maps symbol class strings to the formatted text of the corresponding symbol type"""
-    document_trees_of_symbol_classes = getDocumentTreesOfSymbolClasses()
+    document_trees_of_symbol_classes = getDocumentTreesOfDynamicTreeNodes()
     result: Dict[str, str] = {}
     for symbol_class, symbol_value_tree in document_trees_of_symbol_classes.items():
         result[symbol_class] = dumpTreeTxt(
