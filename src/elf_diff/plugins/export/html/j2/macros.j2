@@ -79,7 +79,7 @@ source_end_tag = "...ED_SOURCE_END..."
 {%- endmacro -%}
 
 {%- macro symbols_location_of_definition(document, old_symbol, new_symbol) -%}
-{%- if (document.files.input.old.debug_info_available == False) and (document.files.input.new.debug_info_available == False) -%}
+{%- if (document.configuration.display_migrated_symbols == False) -%}
 No symbol location information available.
 {%- else -%}
 Old source: {{ symbol_old_location_of_definition(document, old_symbol) }}<br>

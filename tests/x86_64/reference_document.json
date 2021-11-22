@@ -7,6 +7,8 @@
             "display_build_info": false,
             "display_details": true,
             "display_disappeared_symbols_overview": true,
+            "display_migrated_symbols": true,
+            "display_migrated_symbols_overview": true,
             "display_new_binary_info": false,
             "display_old_binary_info": false,
             "display_persisting_symbols_overview": true,
@@ -17,10 +19,28 @@
         "files": {
             "input": {
                 "new": {
-                    "binary_path": "/home/flo/Documents/elf_diff_test/../elf_diff/tests/x86_64/libelf_diff_test_release_new.a"
+                    "binary_path": "/home/flo/Documents/elf_diff/tests/x86_64/libelf_diff_test_debug_new.a",
+                    "debug_info_available": true,
+                    "source_files": {
+                        "32": {
+                            "source_file": {
+                                "filename": "src/new/test.cpp",
+                                "id": 32
+                            }
+                        }
+                    }
                 },
                 "old": {
-                    "binary_path": "/home/flo/Documents/elf_diff_test/../elf_diff/tests/x86_64/libelf_diff_test_release_old.a"
+                    "binary_path": "/home/flo/Documents/elf_diff/tests/x86_64/libelf_diff_test_debug_old.a",
+                    "debug_info_available": true,
+                    "source_files": {
+                        "12": {
+                            "source_file": {
+                                "filename": "src/old/test.cpp",
+                                "id": 12
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -28,8 +48,8 @@
             "doc_title": "ELF Binary Comparison",
             "document_version": 1,
             "elf_diff_repo_root": "/home/flo/Documents/elf_diff/src/elf_diff",
-            "elf_diff_version": "d63dc16a1503d4e0e71e5cf6d286d5fc28ffce57",
-            "generation_date": "2021-11-18 17:50:55",
+            "elf_diff_version": "5996a0194a8293b87ceb09761f3742a29e349257",
+            "generation_date": "2021-11-22 13:11:19",
             "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses"
         },
         "new_binary_info": "",
@@ -102,402 +122,656 @@
                     }
                 },
                 "similar": {
-                    "count": 6
+                    "count": 10
                 }
             }
         },
         "symbols": {
             "appeared": {
-                "21": {
+                "35": {
                     "appeared_symbol": {
                         "display_info": {
-                            "anchor_id": "21",
+                            "anchor_id": "35",
                             "display_symbol_details": true,
                             "symbol_class": "appeared"
                         },
                         "new_symbol": {
-                            "id": 21,
-                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
-                            "is_demangled": true,
-                            "is_stored_in_program_memory": true,
-                            "name": "Test1::f(int, int)",
-                            "size": 21,
-                            "type": "T"
-                        }
-                    }
-                },
-                "22": {
-                    "appeared_symbol": {
-                        "display_info": {
-                            "anchor_id": "22",
-                            "display_symbol_details": true,
-                            "symbol_class": "appeared"
-                        },
-                        "new_symbol": {
-                            "id": 22,
-                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                            "is_demangled": true,
-                            "is_stored_in_program_memory": true,
-                            "name": "Test1::g(float, float)",
-                            "size": 29,
-                            "type": "T"
-                        }
-                    }
-                },
-                "23": {
-                    "appeared_symbol": {
-                        "display_info": {
-                            "anchor_id": "23",
-                            "display_symbol_details": false,
-                            "symbol_class": "appeared"
-                        },
-                        "new_symbol": {
-                            "id": 23,
-                            "instructions": "",
-                            "is_demangled": true,
-                            "is_stored_in_program_memory": true,
-                            "name": "Test1::m_",
-                            "size": 4,
-                            "type": "D"
-                        }
-                    }
-                },
-                "24": {
-                    "appeared_symbol": {
-                        "display_info": {
-                            "anchor_id": "24",
-                            "display_symbol_details": true,
-                            "symbol_class": "appeared"
-                        },
-                        "new_symbol": {
-                            "id": 24,
+                            "id": 35,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "func(double)",
+                            "name_mangled": "_Z4funcd",
                             "size": 20,
+                            "source": {
+                                "column": 5,
+                                "file_id": 32,
+                                "line": 20
+                            },
                             "type": "T"
+                        }
+                    }
+                },
+                "36": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "36",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 36,
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::f(int, int)",
+                            "name_mangled": "_ZN5Test11fEii",
+                            "size": 21,
+                            "source": {
+                                "column": 18,
+                                "file_id": 32,
+                                "line": 29
+                            },
+                            "type": "T"
+                        }
+                    }
+                },
+                "37": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "37",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 37,
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::g(float, float)",
+                            "name_mangled": "_ZN5Test11gEff",
+                            "size": 29,
+                            "source": {
+                                "column": 11,
+                                "file_id": 32,
+                                "line": 30
+                            },
+                            "type": "T"
+                        }
+                    }
+                },
+                "38": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "38",
+                            "display_symbol_details": false,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 38,
+                            "instructions": "",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "Test1::m_",
+                            "name_mangled": "_ZN5Test12m_E",
+                            "size": 4,
+                            "source": {
+                                "column": 5,
+                                "file_id": null,
+                                "line": 40
+                            },
+                            "type": "D"
                         }
                     }
                 }
             },
             "disappeared": {
-                "10": {
+                "15": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "10",
+                            "anchor_id": "15",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 10,
+                            "id": 15,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "func(int)",
+                            "name_mangled": "_Z4funci",
                             "size": 18,
+                            "source": {
+                                "column": 5,
+                                "file_id": 12,
+                                "line": 20
+                            },
                             "type": "T"
                         }
                     }
                 },
-                "7": {
+                "16": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "7",
+                            "anchor_id": "16",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 7,
+                            "id": 16,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test::f(int, int)",
+                            "name_mangled": "_ZN4Test1fEii",
                             "size": 21,
+                            "source": {
+                                "column": 18,
+                                "file_id": 12,
+                                "line": 29
+                            },
                             "type": "T"
                         }
                     }
                 },
-                "8": {
+                "17": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "8",
+                            "anchor_id": "17",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 8,
+                            "id": 17,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test::g(float, float)",
+                            "name_mangled": "_ZN4Test1gEff",
                             "size": 29,
+                            "source": {
+                                "column": 11,
+                                "file_id": 12,
+                                "line": 30
+                            },
                             "type": "T"
                         }
                     }
                 },
-                "9": {
+                "18": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "9",
+                            "anchor_id": "18",
                             "display_symbol_details": false,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 9,
+                            "id": 18,
                             "instructions": "",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
                             "name": "Test::m_",
+                            "name_mangled": "_ZN4Test2m_E",
                             "size": 4,
+                            "source": {
+                                "column": 5,
+                                "file_id": null,
+                                "line": 40
+                            },
                             "type": "D"
                         }
                     }
                 }
             },
+            "migrated": {
+                "13": {
+                    "migrated_symbol": {
+                        "display_info": {
+                            "anchor_id": "13",
+                            "display_symbol_details": true,
+                            "symbol_class": "migrated"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 33,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "name_mangled": "_Z11persisting1i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 32,
+                                    "line": 42
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 13,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "name_mangled": "_Z11persisting1i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 12,
+                                    "line": 42
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "14": {
+                    "migrated_symbol": {
+                        "display_info": {
+                            "anchor_id": "14",
+                            "display_symbol_details": true,
+                            "symbol_class": "migrated"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 34,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "name_mangled": "_Z11persisting2i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 32,
+                                    "line": 43
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 14,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "name_mangled": "_Z11persisting2i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 12,
+                                    "line": 43
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                }
+            },
             "new": {
-                "21": {
+                "33": {
                     "new_symbol": {
-                        "id": 21,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "Test1::f(int, int)",
-                        "size": 21,
-                        "type": "T"
-                    }
-                },
-                "22": {
-                    "new_symbol": {
-                        "id": 22,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "Test1::g(float, float)",
-                        "size": 29,
-                        "type": "T"
-                    }
-                },
-                "23": {
-                    "new_symbol": {
-                        "id": 23,
-                        "instructions": "",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "Test1::m_",
-                        "size": 4,
-                        "type": "D"
-                    }
-                },
-                "24": {
-                    "new_symbol": {
-                        "id": 24,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "func(double)",
-                        "size": 20,
-                        "type": "T"
-                    }
-                },
-                "25": {
-                    "new_symbol": {
-                        "id": 25,
+                        "id": 33,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting1(int)",
+                        "name_mangled": "_Z11persisting1i",
                         "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 32,
+                            "line": 42
+                        },
                         "type": "T"
                     }
                 },
-                "26": {
+                "34": {
                     "new_symbol": {
-                        "id": 26,
+                        "id": 34,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting2(int)",
+                        "name_mangled": "_Z11persisting2i",
                         "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 32,
+                            "line": 43
+                        },
                         "type": "T"
                     }
                 },
-                "27": {
+                "35": {
                     "new_symbol": {
-                        "id": 27,
+                        "id": 35,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "func(double)",
+                        "name_mangled": "_Z4funcd",
+                        "size": 20,
+                        "source": {
+                            "column": 5,
+                            "file_id": 32,
+                            "line": 20
+                        },
+                        "type": "T"
+                    }
+                },
+                "36": {
+                    "new_symbol": {
+                        "id": 36,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::f(int, int)",
+                        "name_mangled": "_ZN5Test11fEii",
+                        "size": 21,
+                        "source": {
+                            "column": 18,
+                            "file_id": 32,
+                            "line": 29
+                        },
+                        "type": "T"
+                    }
+                },
+                "37": {
+                    "new_symbol": {
+                        "id": 37,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::g(float, float)",
+                        "name_mangled": "_ZN5Test11gEff",
+                        "size": 29,
+                        "source": {
+                            "column": 11,
+                            "file_id": 32,
+                            "line": 30
+                        },
+                        "type": "T"
+                    }
+                },
+                "38": {
+                    "new_symbol": {
+                        "id": 38,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "Test1::m_",
+                        "name_mangled": "_ZN5Test12m_E",
+                        "size": 4,
+                        "source": {
+                            "column": 5,
+                            "file_id": null,
+                            "line": 40
+                        },
+                        "type": "D"
+                    }
+                },
+                "39": {
+                    "new_symbol": {
+                        "id": 39,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "var",
+                        "name_mangled": "var",
                         "size": 4,
+                        "source": {
+                            "column": null,
+                            "file_id": null,
+                            "line": null
+                        },
                         "type": "D"
                     }
                 }
             },
             "old": {
-                "10": {
+                "13": {
                     "old_symbol": {
-                        "id": 10,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "func(int)",
-                        "size": 18,
-                        "type": "T"
-                    }
-                },
-                "11": {
-                    "old_symbol": {
-                        "id": 11,
+                        "id": 13,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting1(int)",
+                        "name_mangled": "_Z11persisting1i",
                         "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 12,
+                            "line": 42
+                        },
                         "type": "T"
                     }
                 },
-                "12": {
+                "14": {
                     "old_symbol": {
-                        "id": 12,
+                        "id": 14,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "persisting2(int)",
+                        "name_mangled": "_Z11persisting2i",
                         "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 12,
+                            "line": 43
+                        },
                         "type": "T"
                     }
                 },
-                "13": {
+                "15": {
                     "old_symbol": {
-                        "id": 13,
-                        "instructions": "",
+                        "id": 15,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
-                        "name": "var",
-                        "size": 4,
-                        "type": "D"
+                        "name": "func(int)",
+                        "name_mangled": "_Z4funci",
+                        "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 12,
+                            "line": 20
+                        },
+                        "type": "T"
                     }
                 },
-                "7": {
+                "16": {
                     "old_symbol": {
-                        "id": 7,
+                        "id": 16,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test::f(int, int)",
+                        "name_mangled": "_ZN4Test1fEii",
                         "size": 21,
+                        "source": {
+                            "column": 18,
+                            "file_id": 12,
+                            "line": 29
+                        },
                         "type": "T"
                     }
                 },
-                "8": {
+                "17": {
                     "old_symbol": {
-                        "id": 8,
+                        "id": 17,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test::g(float, float)",
+                        "name_mangled": "_ZN4Test1gEff",
                         "size": 29,
+                        "source": {
+                            "column": 11,
+                            "file_id": 12,
+                            "line": 30
+                        },
                         "type": "T"
                     }
                 },
-                "9": {
+                "18": {
                     "old_symbol": {
-                        "id": 9,
+                        "id": 18,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
                         "name": "Test::m_",
+                        "name_mangled": "_ZN4Test2m_E",
                         "size": 4,
+                        "source": {
+                            "column": 5,
+                            "file_id": null,
+                            "line": 40
+                        },
+                        "type": "D"
+                    }
+                },
+                "19": {
+                    "old_symbol": {
+                        "id": 19,
+                        "instructions": "",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "var",
+                        "name_mangled": "var",
+                        "size": 4,
+                        "source": {
+                            "column": null,
+                            "file_id": null,
+                            "line": null
+                        },
                         "type": "D"
                     }
                 }
             },
             "persisting": {
-                "11": {
-                    "persisting_symbol": {
-                        "display_info": {
-                            "anchor_id": "11",
-                            "display_symbol_details": true,
-                            "symbol_class": "persisting"
-                        },
-                        "related_symbols": {
-                            "new_symbol": {
-                                "id": 25,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "persisting1(int)",
-                                "size": 18,
-                                "type": "T"
-                            },
-                            "old_symbol": {
-                                "id": 11,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "persisting1(int)",
-                                "size": 18,
-                                "type": "T"
-                            },
-                            "size_delta": 0
-                        }
-                    }
-                },
-                "12": {
-                    "persisting_symbol": {
-                        "display_info": {
-                            "anchor_id": "12",
-                            "display_symbol_details": true,
-                            "symbol_class": "persisting"
-                        },
-                        "related_symbols": {
-                            "new_symbol": {
-                                "id": 26,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "persisting2(int)",
-                                "size": 18,
-                                "type": "T"
-                            },
-                            "old_symbol": {
-                                "id": 12,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "persisting2(int)",
-                                "size": 18,
-                                "type": "T"
-                            },
-                            "size_delta": 0
-                        }
-                    }
-                },
                 "13": {
                     "persisting_symbol": {
                         "display_info": {
                             "anchor_id": "13",
+                            "display_symbol_details": true,
+                            "symbol_class": "persisting"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 33,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "name_mangled": "_Z11persisting1i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 32,
+                                    "line": 42
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 13,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting1(int)",
+                                "name_mangled": "_Z11persisting1i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 12,
+                                    "line": 42
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "14": {
+                    "persisting_symbol": {
+                        "display_info": {
+                            "anchor_id": "14",
+                            "display_symbol_details": true,
+                            "symbol_class": "persisting"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 34,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "name_mangled": "_Z11persisting2i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 32,
+                                    "line": 43
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 14,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "persisting2(int)",
+                                "name_mangled": "_Z11persisting2i",
+                                "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 12,
+                                    "line": 43
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "19": {
+                    "persisting_symbol": {
+                        "display_info": {
+                            "anchor_id": "19",
                             "display_symbol_details": false,
                             "symbol_class": "persisting"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 27,
+                                "id": 39,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "var",
+                                "name_mangled": "var",
                                 "size": 4,
+                                "source": {
+                                    "column": null,
+                                    "file_id": null,
+                                    "line": null
+                                },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 13,
+                                "id": 19,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "var",
+                                "name_mangled": "var",
                                 "size": 4,
+                                "source": {
+                                    "column": null,
+                                    "file_id": null,
+                                    "line": null
+                                },
                                 "type": "D"
                             },
                             "size_delta": 0
@@ -509,52 +783,11 @@
                 "0": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "8",
+                            "anchor_id": "16",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
                         "id": 0,
-                        "new": {
-                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::g(float, float)"
-                        },
-                        "old": {
-                            "signature_tagged": "Test::g(float, float)"
-                        },
-                        "related_symbols": {
-                            "new_symbol": {
-                                "id": 22,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test1::g(float, float)",
-                                "size": 29,
-                                "type": "T"
-                            },
-                            "old_symbol": {
-                                "id": 8,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test::g(float, float)",
-                                "size": 29,
-                                "type": "T"
-                            },
-                            "size_delta": 0
-                        },
-                        "similarities": {
-                            "instruction": 100.0,
-                            "signature": 97.67441860465115
-                        }
-                    }
-                },
-                "1": {
-                    "similar_symbols": {
-                        "display_info": {
-                            "anchor_id": "7",
-                            "display_symbol_details": true,
-                            "symbol_class": "similar"
-                        },
-                        "id": 1,
                         "new": {
                             "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::f(int, int)"
                         },
@@ -563,35 +796,100 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 21,
+                                "id": 36,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::f(int, int)",
+                                "name_mangled": "_ZN5Test11fEii",
                                 "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 32,
+                                    "line": 29
+                                },
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 7,
+                                "id": 16,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::f(int, int)",
+                                "name_mangled": "_ZN4Test1fEii",
                                 "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 12,
+                                    "line": 29
+                                },
                                 "type": "T"
                             },
                             "size_delta": 0
                         },
                         "similarities": {
                             "instruction": 100.0,
-                            "signature": 97.14285714285714
+                            "signature": 88.88888888888889
+                        }
+                    }
+                },
+                "1": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "17",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 1,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::g(float, float)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::g(float, float)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 37,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::g(float, float)",
+                                "name_mangled": "_ZN5Test11gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 32,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 17,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::g(float, float)",
+                                "name_mangled": "_ZN4Test1gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 12,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 0
+                        },
+                        "similarities": {
+                            "instruction": 100.0,
+                            "signature": 88.88888888888889
                         }
                     }
                 },
                 "2": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "9",
+                            "anchor_id": "18",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -604,121 +902,51 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 23,
+                                "id": 38,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test1::m_",
+                                "name_mangled": "_ZN5Test12m_E",
                                 "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 9,
+                                "id": 18,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "Test::m_",
+                                "name_mangled": "_ZN4Test2m_E",
                                 "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
                                 "type": "D"
                             },
                             "size_delta": 0
                         },
                         "similarities": {
                             "instruction": 100.0,
-                            "signature": 94.11764705882352
+                            "signature": 88.0
                         }
                     }
                 },
                 "3": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "7",
+                            "anchor_id": "15",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
                         "id": 3,
-                        "new": {
-                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...g(...HIGHLIGHT_END...f...HIGHLIGHT_START...loa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
-                        },
-                        "old": {
-                            "signature_tagged": "Test::f...HIGHLIGHT_START...(in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
-                        },
-                        "related_symbols": {
-                            "new_symbol": {
-                                "id": 22,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test1::g(float, float)",
-                                "size": 29,
-                                "type": "T"
-                            },
-                            "old_symbol": {
-                                "id": 7,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test::f(int, int)",
-                                "size": 21,
-                                "type": "T"
-                            },
-                            "size_delta": 8
-                        },
-                        "similarities": {
-                            "instruction": 81.36882129277566,
-                            "signature": 61.53846153846154
-                        }
-                    }
-                },
-                "4": {
-                    "similar_symbols": {
-                        "display_info": {
-                            "anchor_id": "8",
-                            "display_symbol_details": true,
-                            "symbol_class": "similar"
-                        },
-                        "id": 4,
-                        "new": {
-                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...f...HIGHLIGHT_END...(...HIGHLIGHT_START...in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
-                        },
-                        "old": {
-                            "signature_tagged": "Test::...HIGHLIGHT_START...g...HIGHLIGHT_END...(...HIGHLIGHT_START...floa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
-                        },
-                        "related_symbols": {
-                            "new_symbol": {
-                                "id": 21,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test1::f(int, int)",
-                                "size": 21,
-                                "type": "T"
-                            },
-                            "old_symbol": {
-                                "id": 8,
-                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
-                                "is_demangled": true,
-                                "is_stored_in_program_memory": true,
-                                "name": "Test::g(float, float)",
-                                "size": 29,
-                                "type": "T"
-                            },
-                            "size_delta": -8
-                        },
-                        "similarities": {
-                            "instruction": 81.36882129277566,
-                            "signature": 61.53846153846154
-                        }
-                    }
-                },
-                "5": {
-                    "similar_symbols": {
-                        "display_info": {
-                            "anchor_id": "10",
-                            "display_symbol_details": true,
-                            "symbol_class": "similar"
-                        },
-                        "id": 5,
                         "new": {
                             "signature_tagged": "func(...HIGHLIGHT_START...double...HIGHLIGHT_END...)"
                         },
@@ -727,28 +955,358 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 24,
+                                "id": 35,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "func(double)",
+                                "name_mangled": "_Z4funcd",
                                 "size": 20,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 32,
+                                    "line": 20
+                                },
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 10,
+                                "id": 15,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
                                 "name": "func(int)",
+                                "name_mangled": "_Z4funci",
                                 "size": 18,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 12,
+                                    "line": 20
+                                },
                                 "type": "T"
                             },
                             "size_delta": 2
                         },
                         "similarities": {
                             "instruction": 93.12169312169311,
-                            "signature": 57.14285714285714
+                            "signature": 87.5
+                        }
+                    }
+                },
+                "4": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "16",
+                            "display_symbol_details": false,
+                            "symbol_class": "similar"
+                        },
+                        "id": 4,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...m_...HIGHLIGHT_END..."
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...f(int, int)...HIGHLIGHT_END..."
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 38,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::m_",
+                                "name_mangled": "_ZN5Test12m_E",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
+                                "type": "D"
+                            },
+                            "old_symbol": {
+                                "id": 16,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::f(int, int)",
+                                "name_mangled": "_ZN4Test1fEii",
+                                "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 12,
+                                    "line": 29
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": -17
+                        },
+                        "similarities": {
+                            "instruction": 0.0,
+                            "signature": 69.23076923076923
+                        }
+                    }
+                },
+                "5": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "17",
+                            "display_symbol_details": false,
+                            "symbol_class": "similar"
+                        },
+                        "id": 5,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...m_...HIGHLIGHT_END..."
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...g(float, float)...HIGHLIGHT_END..."
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 38,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::m_",
+                                "name_mangled": "_ZN5Test12m_E",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
+                                "type": "D"
+                            },
+                            "old_symbol": {
+                                "id": 17,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::g(float, float)",
+                                "name_mangled": "_ZN4Test1gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 12,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": -25
+                        },
+                        "similarities": {
+                            "instruction": 0.0,
+                            "signature": 69.23076923076923
+                        }
+                    }
+                },
+                "6": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "16",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 6,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...g(...HIGHLIGHT_END...f...HIGHLIGHT_START...loa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::f...HIGHLIGHT_START...(in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 37,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::g(float, float)",
+                                "name_mangled": "_ZN5Test11gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 32,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 16,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::f(int, int)",
+                                "name_mangled": "_ZN4Test1fEii",
+                                "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 12,
+                                    "line": 29
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": 8
+                        },
+                        "similarities": {
+                            "instruction": 81.36882129277566,
+                            "signature": 66.66666666666666
+                        }
+                    }
+                },
+                "7": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "17",
+                            "display_symbol_details": true,
+                            "symbol_class": "similar"
+                        },
+                        "id": 7,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...f...HIGHLIGHT_END...(...HIGHLIGHT_START...in...HIGHLIGHT_END...t, ...HIGHLIGHT_START...in...HIGHLIGHT_END...t)"
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...g...HIGHLIGHT_END...(...HIGHLIGHT_START...floa...HIGHLIGHT_END...t, ...HIGHLIGHT_START...floa...HIGHLIGHT_END...t)"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 36,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::f(int, int)",
+                                "name_mangled": "_ZN5Test11fEii",
+                                "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 32,
+                                    "line": 29
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 17,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::g(float, float)",
+                                "name_mangled": "_ZN4Test1gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 12,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "size_delta": -8
+                        },
+                        "similarities": {
+                            "instruction": 81.36882129277566,
+                            "signature": 66.66666666666666
+                        }
+                    }
+                },
+                "8": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "18",
+                            "display_symbol_details": false,
+                            "symbol_class": "similar"
+                        },
+                        "id": 8,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...g(float, float)...HIGHLIGHT_END..."
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...m_...HIGHLIGHT_END..."
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 37,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::g(float, float)",
+                                "name_mangled": "_ZN5Test11gEff",
+                                "size": 29,
+                                "source": {
+                                    "column": 11,
+                                    "file_id": 32,
+                                    "line": 30
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 18,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::m_",
+                                "name_mangled": "_ZN4Test2m_E",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
+                                "type": "D"
+                            },
+                            "size_delta": 25
+                        },
+                        "similarities": {
+                            "instruction": 0.0,
+                            "signature": 61.53846153846154
+                        }
+                    }
+                },
+                "9": {
+                    "similar_symbols": {
+                        "display_info": {
+                            "anchor_id": "18",
+                            "display_symbol_details": false,
+                            "symbol_class": "similar"
+                        },
+                        "id": 9,
+                        "new": {
+                            "signature_tagged": "Test...HIGHLIGHT_START...1...HIGHLIGHT_END...::...HIGHLIGHT_START...f(int, int)...HIGHLIGHT_END..."
+                        },
+                        "old": {
+                            "signature_tagged": "Test::...HIGHLIGHT_START...m_...HIGHLIGHT_END..."
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 36,
+                                "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test1::f(int, int)",
+                                "name_mangled": "_ZN5Test11fEii",
+                                "size": 21,
+                                "source": {
+                                    "column": 18,
+                                    "file_id": 32,
+                                    "line": 29
+                                },
+                                "type": "T"
+                            },
+                            "old_symbol": {
+                                "id": 18,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "Test::m_",
+                                "name_mangled": "_ZN4Test2m_E",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": null,
+                                    "line": 40
+                                },
+                                "type": "D"
+                            },
+                            "size_delta": 17
+                        },
+                        "similarities": {
+                            "instruction": 0.0,
+                            "signature": 61.53846153846154
                         }
                     }
                 }

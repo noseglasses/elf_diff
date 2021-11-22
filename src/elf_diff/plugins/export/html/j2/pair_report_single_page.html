@@ -76,12 +76,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
     </li>
     <li><a href="#symbols">Symbols</a>
         <ul>
-          <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
-          <li><a href="#symbols_disappeared_symbols">Symbols Disappeared</a></li>
-          <li><a href="#symbols_appeared_symbols">New Symbols</a></li>
+          <li><a href="#symbols_persisting_symbols">Persisting</a></li>
+          <li><a href="#symbols_disappeared_symbols">Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">Appeared</a></li>
 					{% if document.configuration.display_similar_symbols == True %}
-          <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+          <li><a href="#symbols_similar_symbols">Similar</a></li>
           {% endif %}
+					{% if document.configuration.display_migrated_symbols == True %}
+          <li><a href="#symbols_migrated_symbols">Migrated</a></li>
+					{% endif %}
         </ul>
     </li>
     {% if document.configuration.display_binary_details == True %}
@@ -99,8 +102,18 @@ this program. If not, see <http://www.gnu.org/licenses/>.
   </ul>
 
   <H2><a id="binaries"></a>Binaries {{home}}</H2>
-  <p>old: {{document.files.input.old.binary_path}}</p>
-  <p>new: {{document.files.input.new.binary_path}}</p>
+  <p>
+  old: {{document.files.input.old.binary_path}}
+	{% if document.files.input.old.debug_info_available == True %}
+	(debug)
+	{% endif %}
+	</p>
+  <p>
+  new: {{document.files.input.new.binary_path}}
+	{% if document.files.input.new.debug_info_available == True %}
+	(debug)
+	{% endif %}
+	</p>
 
   <H2><a id="rc"></a>Statistics {{home}}</H2>
   {{ statistics }}
@@ -119,6 +132,12 @@ this program. If not, see <http://www.gnu.org/licenses/>.
   {% if document.configuration.display_similar_symbols == True %}
   <H3><a id="symbols_similar_symbols"></a>Similar Symbols {{home}}</H3>
   {{ similar_symbol_overview }}
+  {% endif %}
+
+  {% if document.configuration.display_migrated_symbols == True %}
+  <H3><a id="symbols_migrated_symbols"></a>Migrated Symbols {{home}}</H3>
+  {{ migrated_symbol_overview }}
+   <p>
   {% endif %}
 
   {% if document.configuration.display_binary_details == True %}
@@ -161,6 +180,11 @@ this program. If not, see <http://www.gnu.org/licenses/>.
   {% if document.configuration.display_similar_symbols == True %}
   <H3><a id="symbol_details_similar_symbols"></a>Similar Symbols {{home}}</H3>
   {{ similar_symbol_detail }}
+  {% endif %}
+
+  {% if document.configuration.display_migrated_symbols == True %}
+  <H3><a id="symbol_details_migrated_symbols"></a>Migrated Symbols {{home}}</H3>
+  {{ migrated_symbol_detail }}
   {% endif %}
   {% endif %}
   </div>

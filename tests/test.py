@@ -104,24 +104,16 @@ else:
     else:
         ELF_DIFF_START = [sys.executable, os.path.join(bin_dir, "elf_diff")]
 
-OLD_BINARY_X86_64: str = os.path.join(
-    TESTING_DIR, "x86_64", "libelf_diff_test_release_old.a"
-)
-NEW_BINARY_X86_64: str = os.path.join(
-    TESTING_DIR, "x86_64", "libelf_diff_test_release_new.a"
-)
-OLD_BINARY2_X86_64: str = os.path.join(
-    TESTING_DIR, "x86_64", "libelf_diff_test_debug_old.a"
-)
-NEW_BINARY2_X86_64: str = os.path.join(
-    TESTING_DIR, "x86_64", "libelf_diff_test_debug_new.a"
-)
 
-OLD_BINARY_ARM: str = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_old.a")
-NEW_BINARY_ARM: str = os.path.join(TESTING_DIR, "arm", "libelf_diff_test_release_new.a")
+def getTestBinary(platform: str, test_name: str, build_type: str, new_old: str) -> str:
+    test_binary = os.path.join(
+        TESTING_DIR,
+        platform,
+        "libelf_diff_%s_%s_%s.a" % (test_name, build_type, new_old),
+    )
+    assert os.path.exists(test_binary)
+    return test_binary
 
-OLD_BINARY_GHS: str = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_old.a")
-NEW_BINARY_GHS: str = os.path.join(TESTING_DIR, "ghs", "libelf_diff_test_release_new.a")
 
 OLD_MANGLING_FILE_GHS: str = os.path.join(
     TESTING_DIR, "ghs", "libelf_diff_test_release_old.a.demangle.txt"
@@ -346,8 +338,8 @@ class ElfDiffExecutingTests(TestCaseWithSubdirs):
     def runSimpleTestBase(
         self,
         args: Optional[ArgsList] = None,
-        old_binary_filename=OLD_BINARY_X86_64,
-        new_binary_filename=NEW_BINARY_X86_64,
+        old_binary_filename=getTestBinary("x86_64", "test", "debug", "old"),
+        new_binary_filename=getTestBinary("x86_64", "test", "debug", "new"),
         output_file=None,
     ):
         """Runs a simple test with a set of arguments"""
@@ -377,8 +369,8 @@ class ElfDiffExecutingTests(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=OLD_BINARY2_X86_64,
-            new_binary_filename=NEW_BINARY2_X86_64,
+            old_binary_filename=getTestBinary("x86_64", "test2", "debug", "old"),
+            new_binary_filename=getTestBinary("x86_64", "test2", "debug", "new"),
             output_file=html_file,
         )
 
@@ -390,8 +382,8 @@ class ElfDiffExecutingTests(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=OLD_BINARY_ARM,
-            new_binary_filename=NEW_BINARY_ARM,
+            old_binary_filename=getTestBinary("arm", "test", "release", "old"),
+            new_binary_filename=getTestBinary("arm", "test", "release", "new"),
             output_file=html_file,
         )
 
@@ -403,8 +395,8 @@ class ElfDiffExecutingTests(TestCaseWithSubdirs):
         actual_args.append(("html_file", html_file))
         self.runSimpleTestBase(
             args=actual_args,
-            old_binary_filename=OLD_BINARY_GHS,
-            new_binary_filename=NEW_BINARY_GHS,
+            old_binary_filename=getTestBinary("ghs", "test", "release", "old"),
+            new_binary_filename=getTestBinary("ghs", "test", "release", "new"),
             output_file=html_file,
         )
 
@@ -442,8 +434,16 @@ class TestCommandLineArgs(ElfDiffExecutingTests):
 
         with open(driver_yaml_file, "w") as f:
 
-            f.write("old_binary_filename: '" + OLD_BINARY_X86_64 + "'\n")
-            f.write("new_binary_filename: '" + NEW_BINARY_X86_64 + "'\n")
+            f.write(
+                "old_binary_filename: '"
+                + getTestBinary("x86_64", "test", "release", "old")
+                + "'\n"
+            )
+            f.write(
+                "new_binary_filename: '"
+                + getTestBinary("x86_64", "test", "release", "new")
+                + "'\n"
+            )
             f.write("old_alias: " + "an_old_alias\n")
             f.write("new_alias: " + "a_new_alias\n")
             f.write(
@@ -593,11 +593,27 @@ class TestCommandLineArgs(ElfDiffExecutingTests):
             f.write("driver_template_file: '" + template_file + "'\n")
 
             f.write("binary_pairs:\n")
-            f.write("    - old_binary: '" + OLD_BINARY_X86_64 + "'\n")
-            f.write("      new_binary: '" + NEW_BINARY_X86_64 + "'\n")
+            f.write(
+                "    - old_binary: '"
+                + getTestBinary("x86_64", "test", "release", "old")
+                + "'\n"
+            )
+            f.write(
+                "      new_binary: '"
+                + getTestBinary("x86_64", "test", "release", "new")
+                + "'\n"
+            )
             f.write("      short_name: 'First binary name'\n")
-            f.write("    - old_binary: '" + OLD_BINARY2_X86_64 + "'\n")
-            f.write("      new_binary: '" + NEW_BINARY2_X86_64 + "'\n")
+            f.write(
+                "    - old_binary: '"
+                + getTestBinary("x86_64", "test2", "release", "old")
+                + "'\n"
+            )
+            f.write(
+                "      new_binary: '"
+                + getTestBinary("x86_64", "test2", "release", "new")
+                + "'\n"
+            )
             f.write("      short_name: 'Second binary name'\n")
 
         self.runElfDiff(args=[("driver_file", driver_yaml_file)])
@@ -740,6 +756,22 @@ class TestDocumentIntegrity(ElfDiffExecutingTests):
         if len(diff) > 0:
             diff_str: str = pformat(diff, indent=2)
             raise Exception("documents differ:\n%s" % diff_str)
+
+
+class TestSymbolMigration(ElfDiffExecutingTests):
+    def test_symbol_migration(self):
+        html_dir = "migration_test_multi_page_pair_report"
+        output_file = os.path.join(html_dir, "index.html")
+        self.runSimpleTestBase(
+            args=[("html_dir", html_dir)],
+            old_binary_filename=getTestBinary(
+                "x86_64", "migration_test", "release", "new"
+            ),
+            new_binary_filename=getTestBinary(
+                "x86_64", "migration_test", "release", "new"
+            ),
+            output_file=output_file,
+        )
 
 
 if __name__ == "__main__":

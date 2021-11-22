@@ -41,3 +41,12 @@ add_library(elf_diff_test2_debug_new${PLATFORM_POSTFIX} STATIC src/new/test2.cpp
 
 target_compile_options(elf_diff_test2_debug_old${PLATFORM_POSTFIX} PRIVATE "-g")
 target_compile_options(elf_diff_test2_debug_new${PLATFORM_POSTFIX} PRIVATE "-g")
+
+add_library(elf_diff_migration_test_release_old${PLATFORM_POSTFIX} STATIC src/old/migration_test1.cpp src/old/migration_test2.cpp)
+add_library(elf_diff_migration_test_release_new${PLATFORM_POSTFIX} STATIC src/new/migration_test1.cpp src/new/migration_test2.cpp)
+
+add_library(elf_diff_migration_test_debug_old${PLATFORM_POSTFIX} STATIC src/old/migration_test1.cpp src/old/migration_test2.cpp)
+add_library(elf_diff_migration_test_debug_new${PLATFORM_POSTFIX} STATIC src/new/migration_test1.cpp src/new/migration_test2.cpp)
+
+target_compile_options(elf_diff_migration_test_debug_old${PLATFORM_POSTFIX} PRIVATE "-g")
+target_compile_options(elf_diff_migration_test_debug_new${PLATFORM_POSTFIX} PRIVATE "-g")

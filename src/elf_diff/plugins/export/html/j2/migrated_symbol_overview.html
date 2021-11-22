@@ -1,0 +1,78 @@
+{# 
+-*- coding: utf-8 -*-
+
+-*- mode: python -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{% import 'macros.j2' as aux %}
+
+{% if is_single_page_report == True %}
+{% set link_target_frame='' %}
+{% else %}
+{% set link_target_frame='target="details"' %}
+<{{ aux.overview_header_tag}}>{{ symbol_class | capitalize }} Symbols</{{ aux.overview_header_tag}}>
+{% endif %}
+
+{% if symbols|length == 0 %}
+No symbols considered.<br>
+{% else %}
+<table class="sortable migrated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <tbody>
+		{% for migrated_symbol in symbols -%}
+        {% set old_symbol=migrated_symbol.related_symbols.old %}
+        {% set new_symbol=migrated_symbol.related_symbols.new %}
+        {% set source_location_old = aux.symbol_old_location_of_definition(document, old_symbol) %}
+        {% set source_location_new = aux.symbol_new_location_of_definition(document, new_symbol) %}
+        {% set tagged_file_location_source = aux.replace_highlighting_tags(tag_string_diff(source_location_old, source_location_new)) %}
+        {% set tagged_file_location_target = aux.replace_highlighting_tags(tag_string_diff(source_location_new, source_location_old)) %}
+		<tr>
+		<td>
+      {% if migrated_symbol.display_info.display_symbol_details == True %}
+		  <a name="{{ aux.overview_anchor('migrated', old_symbol.id) }}"></a><a href="{{ aux.details_file(is_single_page_report, 'migrated', old_symbol.id) }}#{{ aux.details_anchor('migrated', old_symbol.id) }}"  {{ link_target_frame }}>
+		  {% endif %}
+		  {{ old_symbol.name | e }} {# HTML escape the string to avoid conflicts with < or > #}
+      {% if migrated_symbol.display_info.display_symbol_details == True %}
+		  &#9432;
+		  </a>
+		  {% endif %}
+		</td>
+		<td>
+			{{ tagged_file_location_source }}
+		</td>
+		<td>
+			{{ tagged_file_location_target }}
+		</td>
+		</tr>
+		{% endfor %}
+  </tbody>
+</table>
+
+<p>
+<b>Please Note:</b> Use the settings <i>source_prefix</i>, <i>old_source_prefix</i> or <i>new_source_prefix</i> to eliminate false positives by removing path prefix from source file paths.
+</p>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+</table>
+{% endif %}

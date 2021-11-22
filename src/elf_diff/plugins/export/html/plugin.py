@@ -506,7 +506,7 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
     a single HTML page or a set of HMTL pages in a subdirectory
     """
 
-    SYMBOL_CLASSES = ["persisting", "appeared", "disappeared", "similar"]
+    SYMBOL_CLASSES = ["persisting", "appeared", "disappeared", "similar", "migrated"]
     INFORMATION_TYPES = ["overview", "detail"]
 
     def __init__(self, settings: Settings, plugin_configuration: Dict[str, str]):
@@ -595,6 +595,16 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
         )
         self.prepareContentForSymbolsOfClass(symbol_class_properties)
 
+    def prepareMigratedSymbolsContent(self) -> None:
+        """Prepare migrated symbols"""
+
+        symbol_class_properties = SymbolClassProperties(
+            class_="migrated",
+            id_getter=lambda symbol: symbol.related_symbols.old.id,
+            name_getter=lambda symbol: symbol.related_symbols.old.name,
+        )
+        self.prepareContentForSymbolsOfClass(symbol_class_properties)
+
     def prepareIsolatedSymbolsContent(self, symbol_class: str) -> None:
         """Prepare isolated symbols of a symbol class (appeared/disappeared)"""
         symbol_class_properties = SymbolClassProperties(
@@ -654,6 +664,8 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
         if not self._plugin_scope.skip_symbol_similarities:
             self.prepareSimilarSymbolsContent()
 
+        self.prepareMigratedSymbolsContent()
+
         self._content_is_prepared = True
 
     def exportSinglePage(self) -> None:
@@ -710,6 +722,7 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
             os.path.join(output_dir, "details", "disappeared"),
             os.path.join(output_dir, "details", "appeared"),
             os.path.join(output_dir, "details", "similar"),
+            os.path.join(output_dir, "details", "migrated"),
             os.path.join(output_dir, "images"),
         ]
 

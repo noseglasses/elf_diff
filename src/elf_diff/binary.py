@@ -39,9 +39,18 @@ def preHighlightSourceCode(src: str) -> str:
 
 
 class SourceFile(object):
-    def __init__(self, filename: str, id_: int):
+    _CONSECUTIVE_ID = 0
+
+    def __init__(self, filename: str):
         self.filename: str = filename
-        self.id_: int = id_
+        self.id_: int = SourceFile._getConsecutiveId()
+
+    @staticmethod
+    def _getConsecutiveId() -> int:
+        """Return a consecutive unique id for assigning unique symbol ids"""
+        tmp = Symbol._CONSECUTIVE_ID
+        Symbol._CONSECUTIVE_ID += 1
+        return tmp
 
 
 class Mangling(object):
@@ -173,13 +182,15 @@ class Binary(object):
         symbol_selection_regex: Optional[str] = None,
         symbol_exclusion_regex: Optional[str] = None,
         mangling: Optional[Mangling] = None,
+        source_prefix: str = "",
     ):
         """Init binary object."""
         self.settings: Settings = settings
         self.filename: str = filename
         self.symbol_type: Type[Symbol] = getSymbolType(settings.language)
-
         self.mangling: Optional[Mangling] = mangling
+        self.source_prefix: str = source_prefix
+
         self.binutils_work: bool = True
 
         self.text_size: int = 0
@@ -216,9 +227,9 @@ class Binary(object):
         self._determineBinaryFileFormat()
         self._parseSymbols()
 
-    def _registerSourceFile(self, filename: str, id_: int) -> SourceFile:
-        new_source_file = SourceFile(filename, id_)
-        self.source_files[id_] = new_source_file
+    def _registerSourceFile(self, filename: str) -> SourceFile:
+        new_source_file = SourceFile(filename)
+        self.source_files[new_source_file.id_] = new_source_file
         return new_source_file
 
     def _readObjdumpDisassemblyOutput(self) -> str:
@@ -252,19 +263,17 @@ class Binary(object):
     def _readNMOutput(self, demangle: bool) -> str:
         """Read the output of the nm command applied to the binary"""
 
-        if demangle:
-            demangle_token = "-C"
-        else:
-            demangle_token = ""
-
         cmd: List[str] = [
             self.settings.nm_command,
             "--print-size",
             "--size-sort",
             "--radix=d",
-            demangle_token,
-            self.filename,
         ]
+
+        if demangle:
+            cmd.append("-C")
+
+        cmd.append(self.filename)
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )  # nosec # silence bandid warning
@@ -353,16 +362,16 @@ class Binary(object):
 
     def _generateSymbol(
         self,
+        symbol_name: str,
         symbol_name_mangled: str,
-        symbol_name_possibly_demangled: str,
         symbol_name_is_demangled: bool,
     ) -> Optional[Symbol]:
         """Generate a symbol based on a symbol name but only if the symbol is intented to be selected."""
-        if self._isSymbolSelected(symbol_name_possibly_demangled):
-            # print("Considering symbol " + symbol_name_possibly_demangled)
+        if self._isSymbolSelected(symbol_name):
+            # print("Considering symbol " + symbol_name)
             return self.symbol_type(
+                symbol_name,
                 symbol_name_mangled,
-                symbol_name_possibly_demangled,
                 symbol_name_is_demangled,
             )
         # print("Ignoring symbol " + symbol_name)
@@ -441,17 +450,17 @@ class Binary(object):
                     3
                 )
 
-                symbol_name_possibly_demangled: str
+                symbol_name: str
                 symbol_name_is_demangled: bool
                 (
-                    symbol_name_possibly_demangled,
+                    symbol_name,
                     symbol_name_is_demangled,
                 ) = self.demangle(symbol_name_with_mangling_state_unknown)
 
                 if symbol_name_mangled not in self.symbols.keys():
                     data_symbol: Optional[Symbol] = self._generateSymbol(
+                        symbol_name,
                         symbol_name_mangled,
-                        symbol_name_possibly_demangled,
                         symbol_name_is_demangled,
                     )
                     if data_symbol is not None:
@@ -500,7 +509,18 @@ class Binary(object):
             self._source_line = None
             self._source_column = None
 
+        def _removeSourcePrefix(self, filename: str) -> str:
+            if self._binary.source_prefix is None:
+                return filename
+
+            if filename.startswith(self._binary.source_prefix):
+                return filename[len(self._binary.source_prefix) :]
+            return filename
+
         def parseOutput(self) -> None:
+            source_file_mapping: Dict[
+                int, SourceFile
+            ] = {}  # Maps a dwarf source id to an elf_diff SourceFile
             for line in self._readelf_output.splitlines():
                 header_line_match = re.match(self._header_line_regex, line)
                 if header_line_match:
@@ -521,7 +541,8 @@ class Binary(object):
                             raise Exception("Undeciferable info line '%s'" % line)
                         self._name_mangled = name_match.group(1)
                     elif tag == "DW_AT_decl_file":
-                        self._source_id = int(add_info)
+                        dwarf_source_id = int(add_info)
+                        self._source_id = source_file_mapping[dwarf_source_id].id_
                     elif tag == "DW_AT_decl_line":
                         self._source_line = int(add_info)
                     elif tag == "DW_AT_decl_column":
@@ -535,9 +556,16 @@ class Binary(object):
                                 raise Exception(
                                     "Unable to determine source filename from dwarf output"
                                 )
-                            source_filename = source_file_match.group(1)
-                            source_id = self._header_id
-                            self._binary._registerSourceFile(source_filename, source_id)
+                            source_filename_full = source_file_match.group(1)
+                            source_filename = self._removeSourcePrefix(
+                                source_filename_full
+                            )
+                            source_file = self._binary._registerSourceFile(
+                                source_filename
+                            )
+
+                            dwarf_source_id = self._header_id
+                            source_file_mapping[dwarf_source_id] = source_file
 
             # There might be a last ungoing data set being parsed
             self._flushSymbolInfo()

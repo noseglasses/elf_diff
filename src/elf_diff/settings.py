@@ -63,6 +63,12 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
             "A hint about the language that the elf was compiled from (choices: c++).",
             default="c++",
         ),
+        Parameter(
+            "source_prefix",
+            "A path prefix to remove from old and new source files (overridden by [old|new]_source_prefix)",
+        ),
+        Parameter("old_source_prefix", "A path prefix to remove from old source files"),
+        Parameter("new_source_prefix", "A path prefix to remove from new source files"),
     ],
     "Report Content": [
         Parameter("project_title", "A project title to use for all reports."),
