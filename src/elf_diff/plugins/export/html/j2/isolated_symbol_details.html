@@ -40,8 +40,18 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 </a>
 {% endif %}
 : size: {{ actual_symbol.size }} bytes</span></{{ aux.details_header_tag }}>
+<span class="monospace">
+<p>
+Source:
+{% if symbol_class == "appeared" %}
+{{ aux.symbol_new_location_of_definition(document, symbol.actual) }}
+{% else %}
+{{ aux.symbol_old_location_of_definition(document, symbol.actual) }}
+{% endif %}
+</p>
+</span>
 <pre>
-{{ actual_symbol.instructions }}
+{{ aux.highlight_source(actual_symbol.instructions) }}
 </pre>
 
 {% if is_single_page_report == False %}

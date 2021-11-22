@@ -44,9 +44,9 @@ Similar pair {{ symbol.id }}
 {% endif %}
 : old size: {{ old_symbol.size }} bytes, new size: {{ new_symbol.size }} bytes, delta: <span class="{{ aux.highlighting_css_class(symbol.related_symbols.size_delta) }} number">{{ symbol.related_symbols.size_delta }}</span> bytes, sig. sim.: {{ symbol.similarities.signature | round(1) }} %, instr. sim.: {{ symbol.similarities.instruction | round(1) }} %</span></{{ aux.details_header_tag }}>
 <p>
-<span class="monospace">Old: {{ aux.replace_highlighting_tags(symbol.old.signature_tagged) }}</span>
+<span class="monospace">Old: {{ aux.replace_highlighting_tags(symbol.old.signature_tagged) }} [{{ aux.symbol_old_location_of_definition(document, old_symbol) }}]</span>
 <br>
-<span class="monospace">New: {{ aux.replace_highlighting_tags(symbol.new.signature_tagged) }}</span>
+<span class="monospace">New: {{ aux.replace_highlighting_tags(symbol.new.signature_tagged) }} [{{ aux.symbol_new_location_of_definition(document, new_symbol) }}]</span>
 </p>
 {{ instruction_differences_html }}
 
