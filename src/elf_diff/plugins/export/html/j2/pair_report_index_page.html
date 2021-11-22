@@ -41,8 +41,15 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 	elf_diff binary comparison
 	</H3> 
 	<span class="monospace">
-	Old binary: {{ document.files.input.old.binary_path }}<br>
+	Old binary: {{ document.files.input.old.binary_path }}
+	{% if document.files.input.old.debug_info_available == True %}
+	(debug)
+	{% endif %}
+	<br>
   New binary:	{{ document.files.input.new.binary_path }}
+	{% if document.files.input.new.debug_info_available == True %}
+	(debug)
+	{% endif %}
 	</span>
 	{% if document.configuration.instructions_available == False %}
 	<p><b><div style="color: red;">&#9888; Unable to read instructions from elf files &#9888;</div></b></p>
@@ -58,6 +65,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
           <li><a href="./appeared_symbols_overview.html" target="overview">Appeared</a></li>
 					{% if document.configuration.display_similar_symbols == True %}
           <li><a href="./similar_symbols_overview.html" target="overview">Similar</a></li>
+					{% endif %}
+					{% if document.configuration.display_migrated_symbols == True %}
+          <li><a href="./migrated_symbols_overview.html" target="overview">Migrated</a></li>
 					{% endif %}
         </ul>
       </li>

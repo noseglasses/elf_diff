@@ -26,6 +26,7 @@ from elf_diff.document_explorer import (
 )
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import getDocumentTreesOfSymbolClasses
+from elf_diff.string_diff import tagStringDiffSource
 import jinja2
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 import sys
@@ -76,6 +77,8 @@ class Configurator(object):
             StringSink
         ).dumpDocumentLeafPaths(node)
         env.globals["get_symbol_document_trees"] = getDocumentTreesOfSymbolClasses
+
+        env.globals["tag_string_diff"] = tagStringDiffSource
 
         try:
             creator = env.get_template(template_file)

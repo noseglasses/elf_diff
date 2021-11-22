@@ -95,6 +95,7 @@ class BinaryPair(object):
             symbol_selection_regex_old,
             symbol_exclusion_regex_old,
             mangling=Mangling(settings.old_mangling_file),
+            source_prefix=settings.old_source_prefix or settings.source_prefix,
         )
         print(
             f"Parsing symbols of new binary ({self.pair_settings.new_binary_filename})"
@@ -105,18 +106,28 @@ class BinaryPair(object):
             symbol_selection_regex_new,
             symbol_exclusion_regex_new,
             mangling=Mangling(settings.new_mangling_file),
+            source_prefix=settings.new_source_prefix or settings.source_prefix,
         )
 
         self._verifyBinaryCompatibility()
 
         self._prepareSymbols()
-        self._summarizeSymbols()
 
         self._computeSizeChanges()
 
         self.similar_symbols: List[SimilarityPair] = []
         if not settings.skip_symbol_similarities:
             self._computeSimilarities()
+
+        self.migrated_symbols_avilable: bool = (
+            self.new_binary.debug_info_available
+            and self.old_binary.debug_info_available
+        )
+        self.migrated_symbol_names: List[str] = []
+        if self.migrated_symbols_avilable:
+            self._determineMigratedSymbols()
+
+        self._summarizeSymbols()
 
     def _verifyBinaryCompatibility(self) -> None:
         """Verify that both binaries are compatibility"""
@@ -144,6 +155,9 @@ class BinaryPair(object):
         print(f"   {len(self.disappeared_symbol_names)} disappeared symbol(s)")
         print(f"   {len(self.new_symbol_names)} new symbol(s)")
 
+        if self.migrated_symbols_avilable:
+            print(f"   {len(self.migrated_symbol_names)} migrated symbol(s)")
+
     def _prepareSymbols(self) -> None:
         """Prepare symbols"""
         self.old_symbol_names = set(self.old_binary.symbols.keys())
@@ -165,6 +179,24 @@ class BinaryPair(object):
         self.computeNumSymbolsDisappeared()
         self.computeNumSymbolsAppeared()
         self.computeNumSymbolsWithInstructionDifferences()
+
+    def _determineMigratedSymbols(self) -> None:
+        for persisting_symbol_name in self.persisting_symbol_names:
+            old_symbol = self.old_binary.symbols[persisting_symbol_name]
+            new_symbol = self.new_binary.symbols[persisting_symbol_name]
+
+            if (old_symbol.source_id is None) or (new_symbol.source_id is None):
+                continue
+
+            old_source_file = self.old_binary.source_files[
+                old_symbol.source_id
+            ].filename
+            new_source_file = self.new_binary.source_files[
+                new_symbol.source_id
+            ].filename
+
+            if old_source_file != new_source_file:
+                self.migrated_symbol_names.append(old_symbol.name_mangled)
 
     def _computeSimilarities(self) -> None:
         """Compute the similarity rations of symbols from old and new binary"""

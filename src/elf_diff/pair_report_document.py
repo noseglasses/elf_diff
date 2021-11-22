@@ -110,11 +110,6 @@ class Symbol(Node):
             Value("name", Doc("The symbol name (demangled if supported)"), Type(str)),
             Value("name_mangled", Doc("The mangled symbol name"), Type(str)),
             Value(
-                "name_possibly_demangled",
-                Doc("The symbol name (demangled if supported)"),
-                Type(str),
-            ),
-            Value(
                 "is_demangled", Doc("True if the symbol name is demangled"), Type(bool)
             ),
             Value(
@@ -163,9 +158,8 @@ class Symbol(Node):
     def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
         """Configure the symbol meta tree node's value tree representation from an ElfSymbol"""
         symbol: ElfSymbol = kwargs["symbol"]
-        value_tree_node.name = symbol.name_possibly_demangled
+        value_tree_node.name = symbol.name
         value_tree_node.name_mangled = symbol.name_mangled
-        value_tree_node.name_possibly_demangled = symbol.name_possibly_demangled
         value_tree_node.is_demangled = symbol.is_demangled
         value_tree_node.type = symbol.type_
         value_tree_node.id = symbol.id_
@@ -325,6 +319,35 @@ class PersistingSymbol(Node):
         )
 
 
+class MigratedSymbol(Node):
+    """A migrated symbol"""
+
+    def __init__(self):
+        super().__init__("migrated_symbol", DisplayInfo(), RelatedSymbols())
+        self.connectNodes()
+
+    def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
+        """Configure the migrated symbol's associated value tree node indirectly
+        by configuring the meta tree nodes"""
+        settings: Settings = kwargs["settings"]
+        old_symbol: Symbol = kwargs["old_symbol"]
+        new_symbol: Symbol = kwargs["new_symbol"]
+        _configureChildValueTreeNode(
+            "display_info",
+            value_tree_node,
+            settings=settings,
+            symbol_class="migrated",
+            symbol1=old_symbol,
+            symbol2=new_symbol,
+        )
+        _configureChildValueTreeNode(
+            "related_symbols",
+            value_tree_node,
+            old_symbol=old_symbol,
+            new_symbol=new_symbol,
+        )
+
+
 class SimilarSymbols(Node):
     """A similar symbols pair"""
 
@@ -391,12 +414,12 @@ class SimilarSymbols(Node):
 
         value_tree_node.id = id_
         value_tree_node.old.signature_tagged = string_diff.tagStringDiffSource(
-            similarity_pair.old_symbol.name_possibly_demangled,
-            similarity_pair.new_symbol.name_possibly_demangled,
+            similarity_pair.old_symbol.name,
+            similarity_pair.new_symbol.name,
         )
         value_tree_node.new.signature_tagged = string_diff.tagStringDiffTarget(
-            similarity_pair.old_symbol.name_possibly_demangled,
-            similarity_pair.new_symbol.name_possibly_demangled,
+            similarity_pair.old_symbol.name,
+            similarity_pair.new_symbol.name,
         )
         value_tree_node.similarities.signature = (
             similarity_pair.signature_similarity * 100.0
@@ -408,10 +431,10 @@ class SourceFile(Node):
     def __init__(self):
         super().__init__(
             "source_file",
-            Doc("A source file"),
             Value("filename", Doc("The name of the source file"), Type(str)),
             Value("id", Doc("The id of the source file"), Type(int)),
         )
+        self.connectNodes()
 
     def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
         """Configure the source file"""
@@ -427,10 +450,16 @@ SYMBOL_TYPES: Tuple = (
     AppearedSymbol,
     DisappearedSymbol,
     SimilarSymbols,
+    MigratedSymbol,
 )
 
 SymbolType = Union[
-    Symbol, PersistingSymbol, AppearedSymbol, DisappearedSymbol, SimilarSymbols
+    Symbol,
+    PersistingSymbol,
+    AppearedSymbol,
+    DisappearedSymbol,
+    SimilarSymbols,
+    MigratedSymbol,
 ]
 
 
@@ -526,6 +555,16 @@ class MetaDocument(Node):
                 Value(
                     "display_similar_symbols",
                     Doc("True if similar symbols are supposed to be displayed"),
+                ),
+                Value(
+                    "display_migrated_symbols_overview",
+                    Doc(
+                        "True if an overview about migrated symbols is supposed to be displayed"
+                    ),
+                ),
+                Value(
+                    "display_migrated_symbols",
+                    Doc("True if migrated symbols are supposed to be displayed"),
                 ),
             ),
             Value("old_binary_info", Doc("Info about the old binary"), Type(str)),
@@ -707,6 +746,12 @@ class MetaDocument(Node):
                         "Similar symbols by symbol id (dict values of type SimilarSymbols)"
                     ),
                 ),
+                Value(
+                    "migrated",
+                    Doc(
+                        "Migrated symbols by symbol id (dict values of type MigratedSymbol)"
+                    ),
+                ),
             ),
         )
         self.connectNodes()
@@ -843,13 +888,38 @@ class MetaDocument(Node):
 
         setattr(document.symbols, "similar", value_tree_nodes)
 
-    def _setupSourceFilesDict(
-        self, type_: str, source_files: Collection[binary.SourceFile]
+    def setupMigratedSymbolsDict(
+        self, document: ValueTreeNode, settings: Settings
     ) -> None:
+        """Setup a dictionary of migrated symbols"""
+        value_tree_nodes: Dict[int, ValueTreeNode] = {}
+        meta_node = MigratedSymbol()
+        meta_node._name = "migrated_symbol"
+        print("Adding migrated symbols to document")
+        sys.stdout.flush()
+        for symbol_name in progressbar.progressbar(
+            self.binary_pair.migrated_symbol_names
+        ):
+            old_symbol: ElfSymbol = self.binary_pair.old_binary.symbols[symbol_name]
+            new_symbol: ElfSymbol = self.binary_pair.new_binary.symbols[symbol_name]
+
+            node = _generateValueTree(meta_node)
+            meta_node.configureValueTree(
+                node, settings=settings, old_symbol=old_symbol, new_symbol=new_symbol
+            )
+            node.related_symbols.old = document.symbols.old[old_symbol.id_]
+            node.related_symbols.new = document.symbols.new[new_symbol.id_]
+            value_tree_nodes[old_symbol.id_] = node
+
+        setattr(document.symbols, "migrated", value_tree_nodes)
+
+    @staticmethod
+    def _setupSourceFilesDict(
+        type_: str, source_files: Collection[binary.SourceFile]
+    ) -> Dict[int, ValueTreeNode]:
         """Setup a dictionaries of source files"""
         value_tree_nodes: Dict[int, ValueTreeNode] = {}
         meta_node = SourceFile()
-        print("Adding %s source files" % type_)
         sys.stdout.flush()
         for source_file in progressbar.progressbar(source_files):
             node = _generateValueTree(meta_node)
@@ -859,12 +929,12 @@ class MetaDocument(Node):
 
     def setupSourceFiles(self, document: ValueTreeNode):
         """Setup a dictionaries of source files"""
-        old_value_tree_nodes = self._setupSourceFilesDict(
+        old_value_tree_nodes = MetaDocument._setupSourceFilesDict(
             "old", self.binary_pair.old_binary.source_files.values()
         )
         document.files.input.old.source_files = old_value_tree_nodes
 
-        new_value_tree_nodes = self._setupSourceFilesDict(
+        new_value_tree_nodes = MetaDocument._setupSourceFilesDict(
             "new", self.binary_pair.new_binary.source_files.values()
         )
         document.files.input.new.source_files = new_value_tree_nodes
@@ -941,6 +1011,12 @@ class MetaDocument(Node):
         )
         document.configuration.display_similar_symbols_overview = (
             not settings.skip_symbol_similarities
+        )
+        document.configuration.display_migrated_symbols = (
+            self.binary_pair.migrated_symbols_avilable
+        )
+        document.configuration.display_migrated_symbols_overview = (
+            self.binary_pair.migrated_symbols_avilable
         )
         document.files.input.old.binary_path = settings.old_alias
         document.files.input.new.binary_path = settings.new_alias
@@ -1038,6 +1114,7 @@ class MetaDocument(Node):
         self.setupDisappearedSymbolsDict(document, settings)
         self.setupPersistingSymbolsDict(document, settings)
         self.setupSimilarSymbolsDict(document, settings)
+        self.setupMigratedSymbolsDict(document, settings)
 
         self.setupSourceFiles(document)
 
