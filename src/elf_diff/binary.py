@@ -208,6 +208,7 @@ class Binary(object):
             raise Exception(
                 "Unable to find filename {filename}".format(filename=filename)
             )
+        self.debug_info_available: bool = False
         self.source_files: Dict[int, SourceFile] = {}
         self.symbols: Dict[str, Symbol] = {}
         self.num_symbols_dropped: int = 0
@@ -462,9 +463,11 @@ class Binary(object):
                     self.symbols[symbol_name_mangled].type_ = symbol_type
 
     class _DebugInformationCollector(object):
-        def __init__(self, binary):
-            # type: (Binary) -> None
+        def __init__(self, binary, readelf_output):
+            # type: (Binary, str) -> None
             self._binary: Binary = binary
+            self._readelf_output: str = readelf_output
+
             self._header_line_regex = re.compile(
                 r"\s*<[0-9a-f]+>\s*<[0-9a-f]+>:\s+Abbrev Number:\s*(\d+)\s+\((\w+)\).*"
             )
@@ -480,6 +483,9 @@ class Binary(object):
             self._source_line: Optional[int] = None
             self._source_column: Optional[int] = None
 
+        def isDebugInfoAvailable(self) -> bool:
+            return r"Contents of the .debug_info section:" in self._readelf_output
+
         def _flushSymbolInfo(self) -> None:
             if self._name_mangled is not None:
                 if self._name_mangled in self._binary.symbols.keys():
@@ -494,12 +500,12 @@ class Binary(object):
             self._source_line = None
             self._source_column = None
 
-        def parseReadelfOutput(self, readelf_output) -> None:
-            for line in readelf_output.splitlines():
+        def parseOutput(self) -> None:
+            for line in self._readelf_output.splitlines():
                 header_line_match = re.match(self._header_line_regex, line)
                 if header_line_match:
                     # print("Header line: %s" % line)
-                    self._header_id = header_line_match.group(1)
+                    self._header_id = int(header_line_match.group(1))
                     self._header_tag = header_line_match.group(2)
                     self._flushSymbolInfo()
                     continue
@@ -540,8 +546,11 @@ class Binary(object):
         readelf_output = self._readReadelfOutput()
         # print(readelf_output)
 
-        info_collector = Binary._DebugInformationCollector(self)
-        info_collector.parseReadelfOutput(readelf_output)
+        info_collector = Binary._DebugInformationCollector(self, readelf_output)
+        self.debug_info_available = info_collector.isDebugInfoAvailable()
+
+        if self.debug_info_available:
+            info_collector.parseOutput()
 
     def _initSymbols(self) -> None:
         for symbol_name_mangled in sorted(self.symbols.keys()):

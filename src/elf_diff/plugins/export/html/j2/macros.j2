@@ -45,13 +45,44 @@ details/{{symbol_class}}/{{id}}.html
 {%- endif -%}
 {%- endmacro -%}
 
+highlight_start_tag = "...HIGHLIGHT_START..."
+highlight_end_tag = "...HIGHLIGHT_END..."
+
 {%- macro replace_highlighting_tags(s) -%}
 {{ s | replace('...HIGHLIGHT_START...', '<span class="diff_highlight">') | replace('...HIGHLIGHT_END...', '</span>') }}
 {%- endmacro -%}
 
-highlight_start_tag = "...HIGHLIGHT_START..."
-highlight_end_tag = "...HIGHLIGHT_END..."
+source_start_tag = "...ED_SOURCE_START..."
+source_end_tag = "...ED_SOURCE_END..."
+
+{%- macro highlight_source(s) -%}
+{{ s | replace('...ED_SOURCE_START...', '<span class="source">') | replace('...ED_SOURCE_END...', '</span>') }}
+{%- endmacro -%}
 
 {% set details_header_tag='H4' %}
 {% set overview_header_tag='H3' %}
 
+{%- macro symbol_old_location_of_definition(document, symbol) -%}
+{%- if document.files.input.old.debug_info_available == True -%}
+{{ document.files.input.old.source_files[symbol.source.file_id].filename }}:{{ symbol.source.line }}:{{ symbol.source.column }}
+{%- else -%}
+?
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro symbol_new_location_of_definition(document, symbol) -%}
+{%- if document.files.input.new.debug_info_available == True -%}
+{{ document.files.input.new.source_files[symbol.source.file_id].filename }}:{{ symbol.source.line }}:{{ symbol.source.column }}
+{%- else -%}
+?
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro symbols_location_of_definition(document, old_symbol, new_symbol) -%}
+{%- if (document.files.input.old.debug_info_available == False) and (document.files.input.new.debug_info_available == False) -%}
+No symbol location information available.
+{%- else -%}
+Old source: {{ symbol_old_location_of_definition(document, old_symbol) }}<br>
+New source: {{ symbol_new_location_of_definition(document, new_symbol) }}
+{%- endif -%}
+{%- endmacro -%}

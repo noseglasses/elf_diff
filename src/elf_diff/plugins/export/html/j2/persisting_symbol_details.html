@@ -43,6 +43,11 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 </a>
 {% endif %}
 : old size: {{ old_symbol.size }} bytes, new size: {{ new_symbol.size }} bytes, delta: <span class="{{ aux.highlighting_css_class(symbol.related_symbols.size_delta) }} number">{{ persisting_symbol.related_symbols.size_delta }}</span> bytes</span></{{ aux.details_header_tag }}>
+<span class="monospace">
+<p>
+{{ aux.symbols_location_of_definition(document, old_symbol, new_symbol) }}
+</p>
+</span>
 {% if persisting_symbol.display_info.display_symbol_details %}
 {{ instruction_differences_html }}
 {% endif %}

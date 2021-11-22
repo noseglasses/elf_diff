@@ -546,6 +546,13 @@ class MetaDocument(Node):
                                 Doc("The path to the binary file"),
                                 Type(str),
                             ),
+                            Value(
+                                "debug_info_available",
+                                Doc(
+                                    "True if Dwarf debug info avaiable in the elf binary"
+                                ),
+                                Type(bool),
+                            ),
                             Value("source_files", Doc("Dict of source files")),
                         ),
                     ),
@@ -663,6 +670,7 @@ class MetaDocument(Node):
             Node(
                 "symbols",
                 Properties(Doc("Symbols by id/table id ")),
+                Type(dict),
                 Value(
                     "old",
                     Doc(
@@ -851,8 +859,6 @@ class MetaDocument(Node):
 
     def setupSourceFiles(self, document: ValueTreeNode):
         """Setup a dictionaries of source files"""
-        for source_file in self.binary_pair.old_binary.source_files.values():
-            print("filename: %s" % source_file.filename)
         old_value_tree_nodes = self._setupSourceFilesDict(
             "old", self.binary_pair.old_binary.source_files.values()
         )
@@ -936,8 +942,14 @@ class MetaDocument(Node):
         document.configuration.display_similar_symbols_overview = (
             not settings.skip_symbol_similarities
         )
-        document.files.input.new.binary_path = settings.new_alias
         document.files.input.old.binary_path = settings.old_alias
+        document.files.input.new.binary_path = settings.new_alias
+        document.files.input.old.debug_info_available = (
+            self.binary_pair.old_binary.debug_info_available
+        )
+        document.files.input.new.debug_info_available = (
+            self.binary_pair.new_binary.debug_info_available
+        )
         document.general.doc_title = doc_title
         document.general.elf_diff_repo_root = settings.module_path
         document.general.generation_date = datetime.datetime.now().strftime(
