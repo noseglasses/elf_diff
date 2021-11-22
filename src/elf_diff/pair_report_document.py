@@ -431,7 +431,21 @@ class SourceFile(Node):
     def __init__(self):
         super().__init__(
             "source_file",
-            Value("filename", Doc("The name of the source file"), Type(str)),
+            Value(
+                "path_base",
+                Doc("The name of the source file with user defined prefix stripped"),
+                Type(str),
+            ),
+            Value(
+                "path_complete", Doc("The complete name of the source file"), Type(str)
+            ),
+            Value(
+                "producer",
+                Doc(
+                    "Compiler and command line options that produced the code of the source file"
+                ),
+                Type(str),
+            ),
             Value("id", Doc("The id of the source file"), Type(int)),
         )
         self.connectNodes()
@@ -440,7 +454,9 @@ class SourceFile(Node):
         """Configure the source file"""
         source_file: binary.SourceFile = kwargs["source_file"]
 
-        value_tree_node.filename = source_file.filename
+        value_tree_node.path_base = source_file.path_base
+        value_tree_node.path_complete = source_file.path_complete
+        value_tree_node.producer = source_file.producer
         value_tree_node.id = source_file.id_
 
 
@@ -592,7 +608,12 @@ class MetaDocument(Node):
                                 ),
                                 Type(bool),
                             ),
-                            Value("source_files", Doc("Dict of source files")),
+                            Value(
+                                "source_files",
+                                Doc(
+                                    "Source file by file id (dict values of type SourceFile)"
+                                ),
+                            ),
                         ),
                     ),
                 ),
@@ -1134,11 +1155,13 @@ def generateDocument(settings: Settings) -> ValueTreeNode:
     return value_tree
 
 
-def getDocumentTreesOfSymbolClasses():
+def getDocumentTreesOfDynamicTreeNodes():
     """Returns a list that contains the meta tree nodes of all available symbol types (old/new/appeared/disappeared/persisting/similar)"""
     tree_dumps: Dict[str, SymbolType] = {}
-    for symbol_type in SYMBOL_TYPES:
-        symbol_entity_meta: SymbolType = symbol_type()
+    node_types = [SourceFile]
+    node_types += SYMBOL_TYPES
+    for node_type in node_types:
+        symbol_entity_meta: SymbolType = node_type()
         symbol_entity_value = _generateValueTree(symbol_entity_meta)
-        tree_dumps[symbol_type.__name__] = symbol_entity_value
+        tree_dumps[node_type.__name__] = symbol_entity_value
     return tree_dumps

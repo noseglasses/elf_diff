@@ -695,6 +695,14 @@ class TestCommandLineArgs(ElfDiffExecutingTests):
     def test_skip_symbol_similarities(self):
         self.runSimpleTest([("skip_symbol_similarities", None)])
 
+    def test_source_prefix1(self):
+        self.runSimpleTest(
+            [("old_source_prefix", "src/old/"), ("new_source_prefix", "src/new/")]
+        )
+
+    def test_source_prefix2(self):
+        self.runSimpleTest([("source_prefix", "src/")])
+
     def test_symbol_exclusion_regex(self):
         self.runSimpleTest2([("symbol_exclusion_regex", ".*IStay.*")])
 

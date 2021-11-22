@@ -190,10 +190,10 @@ class BinaryPair(object):
 
             old_source_file = self.old_binary.source_files[
                 old_symbol.source_id
-            ].filename
+            ].path_base
             new_source_file = self.new_binary.source_files[
                 new_symbol.source_id
-            ].filename
+            ].path_base
 
             if old_source_file != new_source_file:
                 self.migrated_symbol_names.append(old_symbol.name_mangled)

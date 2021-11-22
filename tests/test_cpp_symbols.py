@@ -70,7 +70,7 @@ class TestCppSymbol(unittest.TestCase):
             if self.arguments is not None:
                 self.name += "(" + self.arguments + ")"
 
-            s = CppSymbol(self.name, is_demangled=True)
+            s = CppSymbol(name=self.name, name_mangled="", is_demangled=True)
             s.init()
 
             self.master_test.assertTrue(s.symbol_type == self.symbol_type)

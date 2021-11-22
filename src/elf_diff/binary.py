@@ -41,15 +41,17 @@ def preHighlightSourceCode(src: str) -> str:
 class SourceFile(object):
     _CONSECUTIVE_ID = 0
 
-    def __init__(self, filename: str):
-        self.filename: str = filename
+    def __init__(self, path_base: str, path_complete: str, producer: str):
+        self.path_base: str = path_base
+        self.path_complete: str = path_complete
+        self.producer: str = producer  # Compiler and command line flags
         self.id_: int = SourceFile._getConsecutiveId()
 
     @staticmethod
     def _getConsecutiveId() -> int:
         """Return a consecutive unique id for assigning unique symbol ids"""
-        tmp = Symbol._CONSECUTIVE_ID
-        Symbol._CONSECUTIVE_ID += 1
+        tmp = SourceFile._CONSECUTIVE_ID
+        SourceFile._CONSECUTIVE_ID += 1
         return tmp
 
 
@@ -227,8 +229,14 @@ class Binary(object):
         self._determineBinaryFileFormat()
         self._parseSymbols()
 
-    def _registerSourceFile(self, filename: str) -> SourceFile:
-        new_source_file = SourceFile(filename)
+    def _registerSourceFile(
+        self, source_path_base: str, source_path_complete: str, producer: str
+    ) -> SourceFile:
+        new_source_file = SourceFile(
+            path_base=source_path_base,
+            path_complete=source_path_complete,
+            producer=producer,
+        )
         self.source_files[new_source_file.id_] = new_source_file
         return new_source_file
 
@@ -441,7 +449,7 @@ class Binary(object):
             nm_match_mangled = re.match(nm_regex, line_mangled)
             nm_match_demangled = re.match(nm_regex, line_demangled)
 
-            if nm_match_mangled:
+            if nm_match_mangled and nm_match_demangled:
                 symbol_size_str: str = nm_match_mangled.group(1)
                 symbol_type: str = nm_match_mangled.group(2)
 
@@ -483,19 +491,27 @@ class Binary(object):
             self._info_line_regex = re.compile(r"\s*<[0-9a-f]+>\s+(\S+)\s*:\s*(\S.*)")
             self._name_regex = re.compile(r".*\s+(\S+)")
             self._source_file_regex = re.compile(r".*\s+(\S+)")
+            self._producer_regex = re.compile(r"\s*\([^\)]+\):\s+(.+)")
 
             self._header_id: Optional[int] = None
             self._header_tag: Optional[str] = None
 
             self._name_mangled: Optional[str] = None
-            self._source_id: Optional[id] = None
+            self._source_id: Optional[int] = None
             self._source_line: Optional[int] = None
             self._source_column: Optional[int] = None
+
+            self._source_path_complete: Optional[str] = None
+            self._producer: Optional[str] = None
+
+            self._source_file_mapping: Dict[
+                int, SourceFile
+            ] = {}  # Maps a dwarf source id to an elf_diff SourceFile
 
         def isDebugInfoAvailable(self) -> bool:
             return r"Contents of the .debug_info section:" in self._readelf_output
 
-        def _flushSymbolInfo(self) -> None:
+        def _flushDataSet(self) -> None:
             if self._name_mangled is not None:
                 if self._name_mangled in self._binary.symbols.keys():
                     symbol = self._binary.symbols[self._name_mangled]
@@ -504,10 +520,29 @@ class Binary(object):
                     symbol.source_line = self._source_line
                     symbol.source_column = self._source_column
 
+            if self._source_path_complete is not None:
+                if self._producer is None:
+                    raise Exception("Missing Dwarf producer info in elf file")
+                if self._header_id is None:
+                    raise Exception("Missing Dwarf source file id in elf file")
+
+                source_path_base = self._removeSourcePrefix(self._source_path_complete)
+                source_file = self._binary._registerSourceFile(
+                    source_path_base=source_path_base,
+                    source_path_complete=self._source_path_complete,
+                    producer=self._producer,
+                )
+
+                dwarf_source_id = self._header_id
+                self._source_file_mapping[dwarf_source_id] = source_file
+
             self._name_mangled = None
             self._source_id = None
             self._source_line = None
             self._source_column = None
+
+            self._source_path_complete = None
+            self._producer = None
 
         def _removeSourcePrefix(self, filename: str) -> str:
             if self._binary.source_prefix is None:
@@ -518,16 +553,15 @@ class Binary(object):
             return filename
 
         def parseOutput(self) -> None:
-            source_file_mapping: Dict[
-                int, SourceFile
-            ] = {}  # Maps a dwarf source id to an elf_diff SourceFile
             for line in self._readelf_output.splitlines():
                 header_line_match = re.match(self._header_line_regex, line)
                 if header_line_match:
                     # print("Header line: %s" % line)
+
+                    self._flushDataSet()
+
                     self._header_id = int(header_line_match.group(1))
                     self._header_tag = header_line_match.group(2)
-                    self._flushSymbolInfo()
                     continue
 
                 info_line_match = re.match(self._info_line_regex, line)
@@ -542,7 +576,7 @@ class Binary(object):
                         self._name_mangled = name_match.group(1)
                     elif tag == "DW_AT_decl_file":
                         dwarf_source_id = int(add_info)
-                        self._source_id = source_file_mapping[dwarf_source_id].id_
+                        self._source_id = self._source_file_mapping[dwarf_source_id].id_
                     elif tag == "DW_AT_decl_line":
                         self._source_line = int(add_info)
                     elif tag == "DW_AT_decl_column":
@@ -556,19 +590,18 @@ class Binary(object):
                                 raise Exception(
                                     "Unable to determine source filename from dwarf output"
                                 )
-                            source_filename_full = source_file_match.group(1)
-                            source_filename = self._removeSourcePrefix(
-                                source_filename_full
-                            )
-                            source_file = self._binary._registerSourceFile(
-                                source_filename
-                            )
-
-                            dwarf_source_id = self._header_id
-                            source_file_mapping[dwarf_source_id] = source_file
+                            self._source_path_complete = source_file_match.group(1)
+                    elif tag == "DW_AT_producer":
+                        if self._header_tag == "DW_TAG_compile_unit":
+                            producer_match = re.match(self._producer_regex, add_info)
+                            if producer_match is None:
+                                raise Exception(
+                                    "Unable to determine source file producer from dwarf output"
+                                )
+                            self._producer = producer_match.group(1)
 
             # There might be a last ungoing data set being parsed
-            self._flushSymbolInfo()
+            self._flushDataSet()
 
     def _gatherDebugInformation(self) -> None:
         readelf_output = self._readReadelfOutput()
