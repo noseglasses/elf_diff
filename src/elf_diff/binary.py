@@ -33,11 +33,6 @@ SOURCE_CODE_START_TAG = "...ED_SOURCE_START..."
 SOURCE_CODE_END_TAG = "...ED_SOURCE_END..."
 
 
-def preHighlightSourceCode(src: str) -> str:
-    """Tag the start and end of source code in order to allow it to be replaced by some sort of tag"""
-    return "%s%s%s" % (SOURCE_CODE_START_TAG, src, SOURCE_CODE_END_TAG)
-
-
 class SourceFile(object):
     _CONSECUTIVE_ID = 0
 
@@ -111,9 +106,36 @@ class SymbolCollector(object):
         self.n_instruction_lines: int = 0
         self.binary = binary  # type: Binary
 
+        self._buffered_lines: List[str] = []
+
+    def cleanBufferedLines(self) -> None:
+        if len(self._buffered_lines) == 0:
+            return
+
+        # Find the first empty line before the first non-empty line before
+        # the first instruction line. We only want to have the first
+        # non-empty block of context source code considered.
+        first_index = len(self._buffered_lines)
+        for i, e in reversed(list(enumerate(self._buffered_lines))):
+            if e == "":
+                break
+            first_index = i
+
+        self._buffered_lines = self._buffered_lines[first_index:]
+
+    def flushBufferedLines(self) -> None:
+        if self.cur_symbol:
+            for line in self._buffered_lines:
+                self.cur_symbol.addInstructions(line)
+        self._buffered_lines = []
+
+    def bufferLine(self, line: str) -> None:
+        self._buffered_lines.append(line)
+
     def _submitSymbol(self) -> None:
         """Submit the most recent symbol that was collected"""
         if self.cur_symbol is not None:
+            self.flushBufferedLines()
             self.symbols.append(self.cur_symbol)
             self.cur_symbol = None
 
@@ -151,26 +173,36 @@ class SymbolCollector(object):
 
     def _gatherSymbolInstructions(self, objdump_output: str) -> None:
         """Gather the symbol instructions of a symbol"""
+        in_instruction_lines: bool = False
         for line in objdump_output.splitlines():
             unified_line = self._unifyInstructionLine(line)
 
             is_header_line: bool = self._checkSymbolHeaderLine(unified_line)
             if is_header_line:
+                in_instruction_lines = False
                 continue
 
             instruction_line_match = re.match(self.instruction_line_re, unified_line)
+
             if instruction_line_match:
+                if not in_instruction_lines:
+                    # Clean the source lines buffered so far
+                    self.cleanBufferedLines()
+                    in_instruction_lines = True
                 self.n_instruction_lines += 1
+
             if self.cur_symbol:
                 if instruction_line_match:
                     instruction_line = instruction_line_match.group(2)
-                    self.cur_symbol.addInstructions(instruction_line)
+                    self.bufferLine(instruction_line)
                     # print("Found instruction line \'%s\'" % (unified_instruction_line))
-                else:
-                    if (len(unified_line) > 0) and (not unified_line.isspace()):
-                        self.cur_symbol.addInstructions(
-                            preHighlightSourceCode(unified_line)
-                        )
+                elif unified_line.startswith(SOURCE_CODE_START_TAG):
+                    if unified_line == SOURCE_CODE_START_TAG:
+                        # Empty line
+                        self.bufferLine("")
+                    else:
+                        source_code_line = "%s%s" % (unified_line, SOURCE_CODE_END_TAG)
+                        self.bufferLine(source_code_line)
 
         if self.cur_symbol:
             self._submitSymbol()
@@ -242,7 +274,12 @@ class Binary(object):
 
     def _readObjdumpDisassemblyOutput(self) -> str:
         """Read the output of the objdump command applied to the binary"""
-        cmd: List[str] = [self.settings.objdump_command, "-drwS", self.filename]
+        cmd: List[str] = [
+            self.settings.objdump_command,
+            "-drwS",
+            "--source-comment=%s" % SOURCE_CODE_START_TAG,
+            self.filename,
+        ]
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
