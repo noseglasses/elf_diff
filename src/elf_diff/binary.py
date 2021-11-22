@@ -38,6 +38,12 @@ def preHighlightSourceCode(src: str) -> str:
     return "%s%s%s" % (SOURCE_CODE_START_TAG, src, SOURCE_CODE_END_TAG)
 
 
+class SourceFile(object):
+    def __init__(self, filename: str, id_: int):
+        self.filename: str = filename
+        self.id_: int = id_
+
+
 class Mangling(object):
     def __init__(self, mangling_file: Optional[str]):
         """Init mangling class."""
@@ -107,16 +113,10 @@ class SymbolCollector(object):
             if self.cur_symbol:
                 self._submitSymbol()
 
-            symbol_name_with_mangling_state_unknown: str = header_match.group(2)
+            symbol_name_mangled: str = header_match.group(2)
 
-            symbol_name: str
-            symbol_name_is_demangled: bool
-            symbol_name, symbol_name_is_demangled = self.binary.demangle(
-                symbol_name_with_mangling_state_unknown
-            )
-            self.cur_symbol = self.binary._generateSymbol(
-                symbol_name, symbol_name_is_demangled
-            )
+            if symbol_name_mangled in self.binary.symbols.keys():
+                self.cur_symbol = self.binary.symbols[symbol_name_mangled]
             return True
 
         return False
@@ -208,16 +208,21 @@ class Binary(object):
             raise Exception(
                 "Unable to find filename {filename}".format(filename=filename)
             )
-
+        self.source_files: Dict[int, SourceFile] = {}
         self.symbols: Dict[str, Symbol] = {}
         self.num_symbols_dropped: int = 0
 
         self._determineBinaryFileFormat()
         self._parseSymbols()
 
+    def _registerSourceFile(self, filename: str, id_: int) -> SourceFile:
+        new_source_file = SourceFile(filename, id_)
+        self.source_files[id_] = new_source_file
+        return new_source_file
+
     def _readObjdumpDisassemblyOutput(self) -> str:
         """Read the output of the objdump command applied to the binary"""
-        cmd: List[str] = [self.settings.objdump_command, "-drwCS", self.filename]
+        cmd: List[str] = [self.settings.objdump_command, "-drwS", self.filename]
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
@@ -243,19 +248,41 @@ class Binary(object):
 
         return output
 
-    def _readNMOutput(self) -> str:
+    def _readNMOutput(self, demangle: bool) -> str:
         """Read the output of the nm command applied to the binary"""
+
+        if demangle:
+            demangle_token = "-C"
+        else:
+            demangle_token = ""
+
         cmd: List[str] = [
             self.settings.nm_command,
             "--print-size",
             "--size-sort",
             "--radix=d",
-            "-C",
+            demangle_token,
             self.filename,
         ]
         proc = subprocess.Popen(  # nosec # silence bandid warning
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )  # nosec # silence bandid warning
+
+        o, e = proc.communicate()  # pylint: disable=unused-variable
+
+        output: str = o.decode("utf8")
+        # error = e.decode('utf8')
+
+        return output
+
+    def _readReadelfOutput(self) -> str:
+        """read the output of the readelf command appliead to the binary"""
+        cmd: List[str] = [
+            self.settings.readelf_command,
+            "--debug-dump=info",
+            self.filename,
+        ]
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         o, e = proc.communicate()  # pylint: disable=unused-variable
 
@@ -280,7 +307,7 @@ class Binary(object):
         """Add a new symbol to the collection of symbols associated with the binary"""
         symbol.init()
 
-        self.symbols[symbol.name] = symbol
+        self.symbols[symbol.name_mangled] = symbol
 
     def _isSymbolSelected(self, symbol_name: str) -> bool:
         """Check if a symbol is selected via a regex"""
@@ -324,12 +351,19 @@ class Binary(object):
             self.binutils_work = False
 
     def _generateSymbol(
-        self, symbol_name: str, symbol_name_is_demangled: bool
+        self,
+        symbol_name_mangled: str,
+        symbol_name_possibly_demangled: str,
+        symbol_name_is_demangled: bool,
     ) -> Optional[Symbol]:
         """Generate a symbol based on a symbol name but only if the symbol is intented to be selected."""
-        if self._isSymbolSelected(symbol_name):
-            # print("Considering symbol " + symbol_name)
-            return self.symbol_type(symbol_name, symbol_name_is_demangled)
+        if self._isSymbolSelected(symbol_name_possibly_demangled):
+            # print("Considering symbol " + symbol_name_possibly_demangled)
+            return self.symbol_type(
+                symbol_name_mangled,
+                symbol_name_possibly_demangled,
+                symbol_name_is_demangled,
+            )
         # print("Ignoring symbol " + symbol_name)
         self.num_symbols_dropped += 1
         return None
@@ -386,45 +420,138 @@ class Binary(object):
 
     def _gatherSymbolProperties(self) -> None:
         """Gather the properties of a symbol"""
-        nm_output: str = self._readNMOutput()
+        nm_output_mangled: str = self._readNMOutput(demangle=False)
+        nm_output_demangled: str = self._readNMOutput(demangle=True)
 
         self.num_symbols_dropped = 0
         nm_regex = re.compile(r"^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
-        for line in nm_output.splitlines():
-            nm_match = re.match(nm_regex, line)
+        for line_mangled, line_demangled in zip(
+            nm_output_mangled.splitlines(), nm_output_demangled.splitlines()
+        ):
+            nm_match_mangled = re.match(nm_regex, line_mangled)
+            nm_match_demangled = re.match(nm_regex, line_demangled)
 
-            if nm_match:
-                symbol_size_str: str = nm_match.group(1)
-                symbol_type: str = nm_match.group(2)
+            if nm_match_mangled:
+                symbol_size_str: str = nm_match_mangled.group(1)
+                symbol_type: str = nm_match_mangled.group(2)
 
-                symbol_name_with_mangling_state_unknown: str = nm_match.group(3)
-
-                symbol_name: str
-                symbol_name_is_demangled: bool
-                symbol_name, symbol_name_is_demangled = self.demangle(
-                    symbol_name_with_mangling_state_unknown
+                symbol_name_mangled: str = nm_match_mangled.group(3)
+                symbol_name_with_mangling_state_unknown: str = nm_match_demangled.group(
+                    3
                 )
 
-                if symbol_name not in self.symbols.keys():
+                symbol_name_possibly_demangled: str
+                symbol_name_is_demangled: bool
+                (
+                    symbol_name_possibly_demangled,
+                    symbol_name_is_demangled,
+                ) = self.demangle(symbol_name_with_mangling_state_unknown)
+
+                if symbol_name_mangled not in self.symbols.keys():
                     data_symbol: Optional[Symbol] = self._generateSymbol(
-                        symbol_name, symbol_name_is_demangled
+                        symbol_name_mangled,
+                        symbol_name_possibly_demangled,
+                        symbol_name_is_demangled,
                     )
                     if data_symbol is not None:
                         data_symbol.size = int(symbol_size_str)
                         data_symbol.type_ = symbol_type
                         self._addSymbol(data_symbol)
                 else:
-                    self.symbols[symbol_name].size = int(symbol_size_str)
-                    self.symbols[symbol_name].type_ = symbol_type
+                    self.symbols[symbol_name_mangled].size = int(symbol_size_str)
+                    self.symbols[symbol_name_mangled].type_ = symbol_type
+
+    class _DebugInformationCollector(object):
+        def __init__(self, binary):
+            # type: (Binary) -> None
+            self._binary: Binary = binary
+            self._header_line_regex = re.compile(
+                r"\s*<[0-9a-f]+>\s*<[0-9a-f]+>:\s+Abbrev Number:\s*(\d+)\s+\((\w+)\).*"
+            )
+            self._info_line_regex = re.compile(r"\s*<[0-9a-f]+>\s+(\S+)\s*:\s*(\S.*)")
+            self._name_regex = re.compile(r".*\s+(\S+)")
+            self._source_file_regex = re.compile(r".*\s+(\S+)")
+
+            self._header_id: Optional[int] = None
+            self._header_tag: Optional[str] = None
+
+            self._name_mangled: Optional[str] = None
+            self._source_id: Optional[id] = None
+            self._source_line: Optional[int] = None
+            self._source_column: Optional[int] = None
+
+        def _flushSymbolInfo(self) -> None:
+            if self._name_mangled is not None:
+                if self._name_mangled in self._binary.symbols.keys():
+                    symbol = self._binary.symbols[self._name_mangled]
+
+                    symbol.source_id = self._source_id
+                    symbol.source_line = self._source_line
+                    symbol.source_column = self._source_column
+
+            self._name_mangled = None
+            self._source_id = None
+            self._source_line = None
+            self._source_column = None
+
+        def parseReadelfOutput(self, readelf_output) -> None:
+            for line in readelf_output.splitlines():
+                header_line_match = re.match(self._header_line_regex, line)
+                if header_line_match:
+                    # print("Header line: %s" % line)
+                    self._header_id = header_line_match.group(1)
+                    self._header_tag = header_line_match.group(2)
+                    self._flushSymbolInfo()
+                    continue
+
+                info_line_match = re.match(self._info_line_regex, line)
+                if info_line_match:
+                    tag: str = info_line_match.group(1)
+                    add_info: str = info_line_match.group(2)
+
+                    if tag == "DW_AT_linkage_name":
+                        name_match = re.match(self._name_regex, add_info)
+                        if name_match is None:
+                            raise Exception("Undeciferable info line '%s'" % line)
+                        self._name_mangled = name_match.group(1)
+                    elif tag == "DW_AT_decl_file":
+                        self._source_id = int(add_info)
+                    elif tag == "DW_AT_decl_line":
+                        self._source_line = int(add_info)
+                    elif tag == "DW_AT_decl_column":
+                        self._source_column = int(add_info)
+                    elif tag == "DW_AT_name":
+                        if self._header_tag == "DW_TAG_compile_unit":
+                            source_file_match = re.match(
+                                self._source_file_regex, add_info
+                            )
+                            if source_file_match is None:
+                                raise Exception(
+                                    "Unable to determine source filename from dwarf output"
+                                )
+                            source_filename = source_file_match.group(1)
+                            source_id = self._header_id
+                            self._binary._registerSourceFile(source_filename, source_id)
+
+            # There might be a last ungoing data set being parsed
+            self._flushSymbolInfo()
+
+    def _gatherDebugInformation(self) -> None:
+        readelf_output = self._readReadelfOutput()
+        # print(readelf_output)
+
+        info_collector = Binary._DebugInformationCollector(self)
+        info_collector.parseReadelfOutput(readelf_output)
 
     def _initSymbols(self) -> None:
-        for symbol_name in sorted(self.symbols.keys()):
-            symbol = self.symbols[symbol_name]
+        for symbol_name_mangled in sorted(self.symbols.keys()):
+            symbol = self.symbols[symbol_name_mangled]
             symbol.init()
 
     def _parseSymbols(self) -> None:
         """Parse symbols from the binary"""
         self._determineSymbolSizes()
-        self._gatherSymbolInstructions()
         self._gatherSymbolProperties()
+        self._gatherSymbolInstructions()
+        self._gatherDebugInformation()
         self._initSymbols()
