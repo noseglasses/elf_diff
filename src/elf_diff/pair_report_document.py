@@ -31,6 +31,7 @@
 # The nodes of the meta tree store information about what is stored, e.g. the data types
 # their documentation and means of validating the corresponding value tree nodes.
 
+import elf_diff.binary as binary
 from elf_diff.binary import Binary
 from elf_diff.binary_pair import BinaryPair, BinaryPairSettings
 from elf_diff.git import gitRepoInfo
@@ -107,6 +108,12 @@ class Symbol(Node):
         super().__init__(
             "symbol",
             Value("name", Doc("The symbol name (demangled if supported)"), Type(str)),
+            Value("name_mangled", Doc("The mangled symbol name"), Type(str)),
+            Value(
+                "name_possibly_demangled",
+                Doc("The symbol name (demangled if supported)"),
+                Type(str),
+            ),
             Value(
                 "is_demangled", Doc("True if the symbol name is demangled"), Type(bool)
             ),
@@ -131,19 +138,43 @@ class Symbol(Node):
                 Doc("True if the symbol is stored in program memory"),
                 Type(bool),
             ),
+            Node(
+                "source",
+                Doc("Information about the symbols source definition"),
+                Value("file_id", Doc("The id of the source file"), Type(int)),
+                Value(
+                    "line",
+                    Doc(
+                        "The line number in the source file where the symbol is defined"
+                    ),
+                    Type(int),
+                ),
+                Value(
+                    "column",
+                    Doc(
+                        "The column number in the source file where the symbol is defined"
+                    ),
+                    Type(int),
+                ),
+            ),
         )
         self.connectNodes()
 
     def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
         """Configure the symbol meta tree node's value tree representation from an ElfSymbol"""
         symbol: ElfSymbol = kwargs["symbol"]
-        value_tree_node.name = symbol.name
+        value_tree_node.name = symbol.name_possibly_demangled
+        value_tree_node.name_mangled = symbol.name_mangled
+        value_tree_node.name_possibly_demangled = symbol.name_possibly_demangled
         value_tree_node.is_demangled = symbol.is_demangled
         value_tree_node.type = symbol.type_
         value_tree_node.id = symbol.id_
         value_tree_node.size = symbol.size
         value_tree_node.instructions = symbol.instructions
         value_tree_node.is_stored_in_program_memory = symbol.livesInProgramMemory()
+        value_tree_node.source.file_id = symbol.source_id
+        value_tree_node.source.line = symbol.source_line
+        value_tree_node.source.column = symbol.source_column
 
 
 class DisplayInfo(Node):
@@ -360,15 +391,34 @@ class SimilarSymbols(Node):
 
         value_tree_node.id = id_
         value_tree_node.old.signature_tagged = string_diff.tagStringDiffSource(
-            similarity_pair.old_symbol.name, similarity_pair.new_symbol.name
+            similarity_pair.old_symbol.name_possibly_demangled,
+            similarity_pair.new_symbol.name_possibly_demangled,
         )
         value_tree_node.new.signature_tagged = string_diff.tagStringDiffTarget(
-            similarity_pair.old_symbol.name, similarity_pair.new_symbol.name
+            similarity_pair.old_symbol.name_possibly_demangled,
+            similarity_pair.new_symbol.name_possibly_demangled,
         )
         value_tree_node.similarities.signature = (
             similarity_pair.signature_similarity * 100.0
         )
         value_tree_node.similarities.instruction = instruction_similarity
+
+
+class SourceFile(Node):
+    def __init__(self):
+        super().__init__(
+            "source_file",
+            Doc("A source file"),
+            Value("filename", Doc("The name of the source file"), Type(str)),
+            Value("id", Doc("The id of the source file"), Type(int)),
+        )
+
+    def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
+        """Configure the source file"""
+        source_file: binary.SourceFile = kwargs["source_file"]
+
+        value_tree_node.filename = source_file.filename
+        value_tree_node.id = source_file.id_
 
 
 SYMBOL_TYPES: Tuple = (
@@ -496,6 +546,7 @@ class MetaDocument(Node):
                                 Doc("The path to the binary file"),
                                 Type(str),
                             ),
+                            Value("source_files", Doc("Dict of source files")),
                         ),
                     ),
                 ),
@@ -784,6 +835,34 @@ class MetaDocument(Node):
 
         setattr(document.symbols, "similar", value_tree_nodes)
 
+    def _setupSourceFilesDict(
+        self, type_: str, source_files: Collection[binary.SourceFile]
+    ) -> None:
+        """Setup a dictionaries of source files"""
+        value_tree_nodes: Dict[int, ValueTreeNode] = {}
+        meta_node = SourceFile()
+        print("Adding %s source files" % type_)
+        sys.stdout.flush()
+        for source_file in progressbar.progressbar(source_files):
+            node = _generateValueTree(meta_node)
+            meta_node.configureValueTree(node, source_file=source_file)
+            value_tree_nodes[source_file.id_] = node
+        return value_tree_nodes
+
+    def setupSourceFiles(self, document: ValueTreeNode):
+        """Setup a dictionaries of source files"""
+        for source_file in self.binary_pair.old_binary.source_files.values():
+            print("filename: %s" % source_file.filename)
+        old_value_tree_nodes = self._setupSourceFilesDict(
+            "old", self.binary_pair.old_binary.source_files.values()
+        )
+        document.files.input.old.source_files = old_value_tree_nodes
+
+        new_value_tree_nodes = self._setupSourceFilesDict(
+            "new", self.binary_pair.new_binary.source_files.values()
+        )
+        document.files.input.new.source_files = new_value_tree_nodes
+
     def configureValueTree(self, value_tree_node: ValueTreeNode, **kwargs: Any) -> None:
         """Configure the values of the document based on the information available
         from the settings
@@ -947,6 +1026,8 @@ class MetaDocument(Node):
         self.setupDisappearedSymbolsDict(document, settings)
         self.setupPersistingSymbolsDict(document, settings)
         self.setupSimilarSymbolsDict(document, settings)
+
+        self.setupSourceFiles(document)
 
 
 def generateDocumentTree() -> ValueTreeNode:

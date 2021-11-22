@@ -28,13 +28,17 @@ class Symbol(object):
 
     _CONSECUTIVE_ID = 0
 
-    def __init__(self, name, is_demangled):
+    def __init__(self, name_mangled, name_possibly_demangled, is_demangled):
         """Initialize symbol object."""
-        self.name: str = name
+        self.name_mangled: str = name_mangled
+        self.name_possibly_demangled: str = name_possibly_demangled
         self.is_demangled: bool = is_demangled
         self.instruction_lines: List[str] = []
         self.size: int = 0
         self.type_: str = "?"
+        self.source_id: int = -1
+        self.source_line: int = -1
+        self.source_column: int = -1
         self.id_: int
 
     @staticmethod
@@ -85,7 +89,7 @@ class Symbol(object):
         if not isinstance(other, Symbol):
             raise Exception("Trying to compare Symbol with %s" % type(other).__name__)
 
-        if not self.name == other.name:
+        if not self.name_mangled == other.name_mangled:
             # print("Symbol name differs")
             return False
 
@@ -116,12 +120,16 @@ class CppSymbol(Symbol):
 
     SYMBOL_PREFIX: Dict[str, int] = {"non-virtual thunk to": 1, "vtable for": 2}
 
-    def __init__(self, name: str, is_demangled: bool):
+    def __init__(
+        self, name_mangled: str, name_possibly_demangled: str, is_demangled: bool
+    ):
         """Initialize cpp symbol object."""
-        super(CppSymbol, self).__init__(name, is_demangled)
+        super(CppSymbol, self).__init__(
+            name_mangled, name_possibly_demangled, is_demangled
+        )
 
         self.initProps()
-        self.name_hash: int = hash(name)
+        self.name_hash: int = hash(name_mangled)
         self.prefix_id: Optional[int] = None
 
     def initProps(self):
@@ -160,12 +168,14 @@ class CppSymbol(Symbol):
 
     def parseSignature(self) -> None:
         """Parse the symbol signature"""
-        rest: Optional[str] = self.name
+        rest: Optional[str] = self.name_possibly_demangled
 
         # Consider special prefix
         for prefix, prefix_id in self.SYMBOL_PREFIX.items():
-            if self.name.startswith(prefix):
-                rest = self.name[len(prefix) + 1 :]  # Ignore the space after the prefix
+            if self.name_possibly_demangled.startswith(prefix):
+                rest = self.name_possibly_demangled[
+                    len(prefix) + 1 :
+                ]  # Ignore the space after the prefix
                 self.prefix_id = prefix_id
                 break
 
@@ -177,7 +187,7 @@ class CppSymbol(Symbol):
         if rest is not None:
             self.symbol_type = Symbol.TYPE_FUNCTION
         else:
-            rest = self.name
+            rest = self.name_possibly_demangled
             self.symbol_type = Symbol.TYPE_DATA
 
         # Check if the symbol lives within a class or namespace.

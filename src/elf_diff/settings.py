@@ -131,6 +131,9 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
             "objdump_command", "Full path to the objdump untility.", default=None
         ),
         Parameter("nm_command", "Full path to the nm untility.", default=None),
+        Parameter(
+            "readelf_command", "Full path to the readelf untility.", default=None
+        ),
         Parameter("size_command", "Full path to the size untility.", default=None),
     ],
     "Mangling": [
@@ -265,6 +268,7 @@ class Settings(object):
         self.bin_prefix: str
         self.objdump_command: str
         self.nm_command: str
+        self.readelf_command: str
         self.size_command: str
         self.old_mangling_file: str
         self.new_mangling_file: str
@@ -577,11 +581,13 @@ class Settings(object):
 
         self.findUtility("objdump")
         self.findUtility("nm")
+        self.findUtility("readelf")
         self.findUtility("size")
 
         print("Tools:")
         print(f"   objdump: {self.objdump_command}")
         print(f"   nm:      {self.nm_command}")
+        print(f"   readelf:      {self.readelf_command}")
         print(f"   size:    {self.size_command}")
 
         self._prepareInfoFiles()
