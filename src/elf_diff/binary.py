@@ -589,53 +589,64 @@ class Binary(object):
                 return filename[len(self._binary.source_prefix) :]
             return filename
 
+        def _processHeaderLine(self, line: str) -> bool:
+            header_line_match = re.match(self._header_line_regex, line)
+            if header_line_match:
+                self._flushDataSet()
+                self._header_id = int(header_line_match.group(1))
+                self._header_tag = header_line_match.group(2)
+                return True
+            return False
+
+        def _processNameAttribute(self, add_info: str) -> None:
+            if self._header_tag == "DW_TAG_compile_unit":
+                source_file_match = re.match(self._source_file_regex, add_info)
+                if source_file_match is None:
+                    raise Exception(
+                        "Unable to determine source filename from dwarf output"
+                    )
+                self._source_path_complete = source_file_match.group(1)
+
+        def _processProducerAttribute(self, add_info: str) -> None:
+            if self._header_tag == "DW_TAG_compile_unit":
+                producer_match = re.match(self._producer_regex, add_info)
+                if producer_match is None:
+                    raise Exception(
+                        "Unable to determine source file producer from dwarf output"
+                    )
+                self._producer = producer_match.group(1)
+
+        def _processInfoLine(self, line: str) -> None:
+            info_line_match = re.match(self._info_line_regex, line)
+            if info_line_match is None:
+                return
+
+            tag: str = info_line_match.group(1)
+            add_info: str = info_line_match.group(2)
+
+            if tag == "DW_AT_linkage_name":
+                name_match = re.match(self._name_regex, add_info)
+                if name_match is None:
+                    raise Exception("Undeciferable info line '%s'" % line)
+                self._name_mangled = name_match.group(1)
+            elif tag == "DW_AT_decl_file":
+                dwarf_source_id = int(add_info)
+                self._source_id = self._source_file_mapping[dwarf_source_id].id_
+            elif tag == "DW_AT_decl_line":
+                self._source_line = int(add_info)
+            elif tag == "DW_AT_decl_column":
+                self._source_column = int(add_info)
+            elif tag == "DW_AT_name":
+                self._processNameAttribute(add_info)
+            elif tag == "DW_AT_producer":
+                self._processProducerAttribute(add_info)
+
         def parseOutput(self) -> None:
             for line in self._readelf_output.splitlines():
-                header_line_match = re.match(self._header_line_regex, line)
-                if header_line_match:
-                    # print("Header line: %s" % line)
-
-                    self._flushDataSet()
-
-                    self._header_id = int(header_line_match.group(1))
-                    self._header_tag = header_line_match.group(2)
+                if self._processHeaderLine(line):
                     continue
 
-                info_line_match = re.match(self._info_line_regex, line)
-                if info_line_match:
-                    tag: str = info_line_match.group(1)
-                    add_info: str = info_line_match.group(2)
-
-                    if tag == "DW_AT_linkage_name":
-                        name_match = re.match(self._name_regex, add_info)
-                        if name_match is None:
-                            raise Exception("Undeciferable info line '%s'" % line)
-                        self._name_mangled = name_match.group(1)
-                    elif tag == "DW_AT_decl_file":
-                        dwarf_source_id = int(add_info)
-                        self._source_id = self._source_file_mapping[dwarf_source_id].id_
-                    elif tag == "DW_AT_decl_line":
-                        self._source_line = int(add_info)
-                    elif tag == "DW_AT_decl_column":
-                        self._source_column = int(add_info)
-                    elif tag == "DW_AT_name":
-                        if self._header_tag == "DW_TAG_compile_unit":
-                            source_file_match = re.match(
-                                self._source_file_regex, add_info
-                            )
-                            if source_file_match is None:
-                                raise Exception(
-                                    "Unable to determine source filename from dwarf output"
-                                )
-                            self._source_path_complete = source_file_match.group(1)
-                    elif tag == "DW_AT_producer":
-                        if self._header_tag == "DW_TAG_compile_unit":
-                            producer_match = re.match(self._producer_regex, add_info)
-                            if producer_match is None:
-                                raise Exception(
-                                    "Unable to determine source file producer from dwarf output"
-                                )
-                            self._producer = producer_match.group(1)
+                self._processInfoLine(line)
 
             # There might be a last ungoing data set being parsed
             self._flushDataSet()
