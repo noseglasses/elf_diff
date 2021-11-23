@@ -26,11 +26,17 @@
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_26"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_1"></a>Persisting symbol
 
 g()
 
 : old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: /home/flo/Documents/elf_diff/tests/src/old/test2.cpp:32:6<br>
+New source: /home/flo/Documents/elf_diff/tests/src/new/test2.cpp:32:6
+</p>
+</span>
 
 Instructions unchanged
 
@@ -40,12 +46,12 @@ Instructions unchanged
 <pre>
 persisting_symbol
 ├── display_info [Information that configures how things are displayed]
-│   ├── anchor_id = &#39;26&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── anchor_id = &#39;1&#39; &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
 │   ├── display_symbol_details = &#39;True&#39; &lt;bool&gt; [True if symbol details are supposed to be displayed]
 │   └── symbol_class = &#39;persisting&#39; &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
 └── related_symbols [A relation between two symbols]
     ├── new_symbol
-    │   ├── id = &#39;60&#39; &lt;int&gt; [Unique symbol identifier]
+    │   ├── id = &#39;18&#39; &lt;int&gt; [Unique symbol identifier]
     │   ├── instructions = &#39;endbr64
 push   %rbp
 mov    %rsp,%rbp
@@ -56,10 +62,15 @@ ret
     │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
     │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
     │   ├── name = &#39;g()&#39; &lt;str&gt; [The symbol name (demangled if supported)]
+    │   ├── name_mangled = &#39;_Z1gv&#39; &lt;str&gt; [The mangled symbol name]
     │   ├── size = &#39;11&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
+    │   ├── source
+    │   │   ├── column = &#39;6&#39; &lt;int&gt; [The column number in the source file where the symbol is defined]
+    │   │   ├── file_id = &#39;1&#39; &lt;int&gt; [The id of the source file]
+    │   │   └── line = &#39;32&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
     │   └── type = &#39;T&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
     ├── old_symbol
-    │   ├── id = &#39;26&#39; &lt;int&gt; [Unique symbol identifier]
+    │   ├── id = &#39;1&#39; &lt;int&gt; [Unique symbol identifier]
     │   ├── instructions = &#39;endbr64
 push   %rbp
 mov    %rsp,%rbp
@@ -70,7 +81,12 @@ ret
     │   ├── is_demangled = &#39;True&#39; &lt;bool&gt; [True if the symbol name is demangled]
     │   ├── is_stored_in_program_memory = &#39;True&#39; &lt;bool&gt; [True if the symbol is stored in program memory]
     │   ├── name = &#39;g()&#39; &lt;str&gt; [The symbol name (demangled if supported)]
+    │   ├── name_mangled = &#39;_Z1gv&#39; &lt;str&gt; [The mangled symbol name]
     │   ├── size = &#39;11&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
+    │   ├── source
+    │   │   ├── column = &#39;6&#39; &lt;int&gt; [The column number in the source file where the symbol is defined]
+    │   │   ├── file_id = &#39;0&#39; &lt;int&gt; [The id of the source file]
+    │   │   └── line = &#39;32&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
     │   └── type = &#39;T&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
     └── size_delta = &#39;0&#39; &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
 </pre>

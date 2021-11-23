@@ -308,6 +308,25 @@ table.similar_symbols td:nth-child(7) {
   font-family: monospace;
 }
 
+table.migrated_symbols th:nth-child(1) { text-align: left; }
+table.migrated_symbols th:nth-child(2) { text-align: left; }
+table.migrated_symbols th:nth-child(3) { text-align: left; }
+
+table.migrated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(3) {
+  text-align: left;
+  font-family: monospace;
+}
+
 table.quad_col th:nth-child(1) { text-align: left; }
 table.quad_col th:nth-child(2) { text-align: right; }
 table.quad_col th:nth-child(3) { text-align: right; }

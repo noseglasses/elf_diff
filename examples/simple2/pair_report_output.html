@@ -818,6 +818,25 @@ table.similar_symbols td:nth-child(7) {
   font-family: monospace;
 }
 
+table.migrated_symbols th:nth-child(1) { text-align: left; }
+table.migrated_symbols th:nth-child(2) { text-align: left; }
+table.migrated_symbols th:nth-child(3) { text-align: left; }
+
+table.migrated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(3) {
+  text-align: left;
+  font-family: monospace;
+}
+
 table.quad_col th:nth-child(1) { text-align: left; }
 table.quad_col th:nth-child(2) { text-align: right; }
 table.quad_col th:nth-child(3) { text-align: right; }
@@ -888,20 +907,33 @@ table.bin_col td:nth-child(3) {
     </li>
     <li><a href="#symbols">Symbols</a>
         <ul>
-          <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
-          <li><a href="#symbols_disappeared_symbols">Symbols Disappeared</a></li>
-          <li><a href="#symbols_appeared_symbols">New Symbols</a></li>
+          <li><a href="#symbols_persisting_symbols">Persisting</a></li>
+          <li><a href="#symbols_disappeared_symbols">Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">Appeared</a></li>
 					
-          <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+          <li><a href="#symbols_similar_symbols">Similar</a></li>
           
+					
+          <li><a href="#symbols_migrated_symbols">Migrated</a></li>
+					
         </ul>
     </li>
     
   </ul>
 
   <H2><a id="binaries"></a>Binaries <a href="#home">&#x21A9;</a></H2>
-  <p>old: ../../tests/x86_64/libelf_diff_test2_debug_old.a</p>
-  <p>new: ../../tests/x86_64/libelf_diff_test2_debug_new.a</p>
+  <p>
+  old: ../../tests/x86_64/libelf_diff_test2_debug_old.a
+	
+	(debug)
+	
+	</p>
+  <p>
+  new: ../../tests/x86_64/libelf_diff_test2_debug_new.a
+	
+	(debug)
+	
+	</p>
 
   <H2><a id="rc"></a>Statistics <a href="#home">&#x21A9;</a></H2>
   
@@ -1006,17 +1038,22 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  Test::smvIStay 
+		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
+		  
+		  g() 
       
+		  &#9432;
+		  </a>
+		  
 		</td>
 		<td>
-			D
+			T
 		</td>
 		<td>
-			<span class="number">4</span>
+			<span class="number">11</span>
 		</td>
 		<td>
-			<span class="number">4</span>
+			<span class="number">11</span>
 		</td>
 		<td>
 			<span class="unchanged number">0</span>
@@ -1027,11 +1064,63 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  Test::smvIStayButDiffer 
+		  <a name="persisting_symbol_overview_2"></a><a href="#persisting_symbol_details_2"  >
+		  
+		  implementationChanged(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">98</span>
+		</td>
+		<td>
+			<span class="number">106</span>
+		</td>
+		<td>
+			<span class="deterioration number">8</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_3"></a><a href="#persisting_symbol_details_3"  >
+		  
+		  fIStay(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="number">30</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  cIStayButDiffer 
       
 		</td>
 		<td>
-			D
+			r
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1069,11 +1158,11 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  cIStayButDiffer 
+		  Test::smvIStayButDiffer 
       
 		</td>
 		<td>
-			r
+			D
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1090,63 +1179,11 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_24"></a><a href="#persisting_symbol_details_24"  >
-		  
-		  fIStay(double) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="number">30</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_26"></a><a href="#persisting_symbol_details_26"  >
-		  
-		  g() 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  g()::lsvIStay 
+		  Test::smvIStay 
       
 		</td>
 		<td>
-			d
+			D
 		</td>
 		<td>
 			<span class="number">4</span>
@@ -1184,25 +1221,20 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_30"></a><a href="#persisting_symbol_details_30"  >
-		  
-		  implementationChanged(int) 
+		  g()::lsvIStay 
       
-		  &#9432;
-		  </a>
-		  
 		</td>
 		<td>
-			T
+			d
 		</td>
 		<td>
-			<span class="number">98</span>
+			<span class="number">4</span>
 		</td>
 		<td>
-			<span class="number">106</span>
+			<span class="number">4</span>
 		</td>
 		<td>
-			<span class="deterioration number">8</span>
+			<span class="unchanged number">0</span>
 		</td>
 		</tr>
 		
@@ -1276,14 +1308,38 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  Test::smvIAmGone 
+		  <a name="disappeared_symbol_overview_0"></a><a href="#disappeared_symbol_details_0" >
+		  
+		  fIStayButDiffer(float) 
       
+		  &#9432;
+		  </a>
+		  
 		</td>
 		<td>
-			D
+			T
 		</td>
 		<td>
-			<span class="number">4</span>
+			<span class="number">20</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_4"></a><a href="#disappeared_symbol_details_4" >
+		  
+		  fIAmGone(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">16</span>
 		</td>
 		</tr>
 		
@@ -1304,38 +1360,14 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_23"></a><a href="#disappeared_symbol_details_23" >
-		  
-		  fIAmGone(int) 
+		  Test::smvIAmGone 
       
-		  &#9432;
-		  </a>
-		  
 		</td>
 		<td>
-			T
+			D
 		</td>
 		<td>
-			<span class="number">16</span>
-		</td>
-		</tr>
-		
-		<tr>
-		<td>
-      
-		  <a name="disappeared_symbol_overview_25"></a><a href="#disappeared_symbol_details_25" >
-		  
-		  fIStayButDiffer(float) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">20</span>
+			<span class="number">4</span>
 		</td>
 		</tr>
 		
@@ -1392,14 +1424,38 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  Test::smvIAmNew 
+		  <a name="appeared_symbol_overview_17"></a><a href="#appeared_symbol_details_17" >
+		  
+		  fIStayButDiffer(char) 
       
+		  &#9432;
+		  </a>
+		  
 		</td>
 		<td>
-			D
+			T
 		</td>
 		<td>
-			<span class="number">4</span>
+			<span class="number">19</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_21"></a><a href="#appeared_symbol_details_21" >
+		  
+		  fIAmNew(short) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">20</span>
 		</td>
 		</tr>
 		
@@ -1420,38 +1476,14 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_57"></a><a href="#appeared_symbol_details_57" >
-		  
-		  fIAmNew(short) 
+		  Test::smvIAmNew 
       
-		  &#9432;
-		  </a>
-		  
 		</td>
 		<td>
-			T
+			D
 		</td>
 		<td>
-			<span class="number">20</span>
-		</td>
-		</tr>
-		
-		<tr>
-		<td>
-      
-		  <a name="appeared_symbol_overview_59"></a><a href="#appeared_symbol_details_59" >
-		  
-		  fIStayButDiffer(char) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">19</span>
+			<span class="number">4</span>
 		</td>
 		</tr>
 		
@@ -1512,42 +1544,9 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
+		  <a name="similar_symbol_overview_0"></a><a href="#similar_symbol_details_0"  >
+      
 		  0
-      
-		</td>
-		<td>
-		  Test::smvIAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  Test::smvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  D
-		  <br>
-		  D
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">83.9</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="similar_symbol_overview_1"></a><a href="#similar_symbol_details_1"  >
-      
-		  1
       
 		  &#9432;
 		  </a>
@@ -1572,10 +1571,43 @@ table.bin_col td:nth-child(3) {
 			<span class="improvement number">-1</span>
 		</td>
 		<td>
-		  <span class="number">83.7</span>
+		  <span class="number">95.0</span>
 		</td>
 		<td>
 		  <span class="number">84.3</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  1
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">c</span>IStayButDiffer
+		</td>
+		<td>
+		  T
+		  <br>
+		  r
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">90.0</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
 		</td>
 		</tr>
 		
@@ -1587,14 +1619,14 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-		  g()::lsvIAm<span class="diff_highlight">Gon</span>e
+		  Test::smvIAm<span class="diff_highlight">Gon</span>e
 		  <br>
-		  g()::lsvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
+		  Test::smvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
 		</td>
 		<td>
-		  d
+		  D
 		  <br>
-		  d
+		  D
 		</td>
 		<td>
 		  <span class="number">4</span>
@@ -1605,7 +1637,7 @@ table.bin_col td:nth-child(3) {
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">82.8</span>
+		  <span class="number">80.0</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
@@ -1638,7 +1670,7 @@ table.bin_col td:nth-child(3) {
 			<span class="improvement number">-16</span>
 		</td>
 		<td>
-		  <span class="number">75.7</span>
+		  <span class="number">80.0</span>
 		</td>
 		<td>
 		  <span class="number">0.0</span>
@@ -1653,14 +1685,47 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
+		  g()::lsvIAm<span class="diff_highlight">Gon</span>e
+		  <br>
+		  g()::lsvIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
+		</td>
+		<td>
+		  d
+		  <br>
+		  d
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">77.8</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  5
+      
+		</td>
+		<td>
 		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
 		  <br>
-		  <span class="diff_highlight">c</span>IStayButDiffer
+		  <span class="diff_highlight">g()::lsv</span>IStayButDiffer
 		</td>
 		<td>
 		  T
 		  <br>
-		  r
+		  d
 		</td>
 		<td>
 		  <span class="number">20</span>
@@ -1671,7 +1736,7 @@ table.bin_col td:nth-child(3) {
 			<span class="improvement number">-16</span>
 		</td>
 		<td>
-		  <span class="number">75.7</span>
+		  <span class="number">73.9</span>
 		</td>
 		<td>
 		  <span class="number">0.0</span>
@@ -1682,7 +1747,73 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  5
+		  6
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
+		  <br>
+		  <span class="diff_highlight">Test::smv</span>IStayButDiffer
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">20</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-16</span>
+		</td>
+		<td>
+		  <span class="number">70.8</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  7
+      
+		</td>
+		<td>
+		  cIAm<span class="diff_highlight">Gon</span>e
+		  <br>
+		  cIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
+		</td>
+		<td>
+		  r
+		  <br>
+		  r
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">69.6</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  8
       
 		</td>
 		<td>
@@ -1715,40 +1846,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  6
-      
-		</td>
-		<td>
-		  cIAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  cIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  r
-		  <br>
-		  r
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">66.7</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  7
+		  9
       
 		</td>
 		<td>
@@ -1781,7 +1879,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  8
+		  10
       
 		</td>
 		<td>
@@ -1803,76 +1901,10 @@ table.bin_col td:nth-child(3) {
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">64.3</span>
+		  <span class="number">62.9</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  9
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
-		  <br>
-		  <span class="diff_highlight">g()::lsv</span>IStayButDiffer
-		</td>
-		<td>
-		  T
-		  <br>
-		  d
-		</td>
-		<td>
-		  <span class="number">20</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="improvement number">-16</span>
-		</td>
-		<td>
-		  <span class="number">63.6</span>
-		</td>
-		<td>
-		  <span class="number">0.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  10
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">f</span>IStayButDiffer<span class="diff_highlight">(float)</span>
-		  <br>
-		  <span class="diff_highlight">Test::smv</span>IStayButDiffer
-		</td>
-		<td>
-		  T
-		  <br>
-		  D
-		</td>
-		<td>
-		  <span class="number">20</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="improvement number">-16</span>
-		</td>
-		<td>
-		  <span class="number">62.2</span>
-		</td>
-		<td>
-		  <span class="number">0.0</span>
 		</td>
 		</tr>
 		
@@ -1902,7 +1934,7 @@ table.bin_col td:nth-child(3) {
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">56.4</span>
+		  <span class="number">61.2</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
@@ -1912,175 +1944,10 @@ table.bin_col td:nth-child(3) {
         
 		<tr>
 		<td>
+      
+		  <a name="similar_symbol_overview_12"></a><a href="#similar_symbol_details_12"  >
       
 		  12
-      
-		</td>
-		<td>
-		  g()::lsvI<span class="diff_highlight">AmGon</span>e
-		  <br>
-		  g()::lsvI<span class="diff_highlight">StayButDiff</span>e<span class="diff_highlight">r</span>
-		</td>
-		<td>
-		  d
-		  <br>
-		  d
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">54.1</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  13
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">Test</span>::s<span class="diff_highlight">m</span>vIAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  <span class="diff_highlight">g()</span>::<span class="diff_highlight">l</span>svIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  D
-		  <br>
-		  d
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">53.3</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  14
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">c</span>IAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  <span class="diff_highlight">v</span>IAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  r
-		  <br>
-		  D
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">53.3</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  15
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">g()</span>::<span class="diff_highlight">l</span>svIAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  <span class="diff_highlight">Test</span>::s<span class="diff_highlight">m</span>vIAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  d
-		  <br>
-		  D
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">53.3</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  16
-      
-		</td>
-		<td>
-		  <span class="diff_highlight">v</span>IAm<span class="diff_highlight">Gon</span>e
-		  <br>
-		  <span class="diff_highlight">c</span>IAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
-		</td>
-		<td>
-		  D
-		  <br>
-		  r
-		</td>
-		<td>
-		  <span class="number">4</span>
-		  <br>
-		  <span class="number">4</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		<td>
-		  <span class="number">53.3</span>
-		</td>
-		<td>
-		  <span class="number">100.0</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="similar_symbol_overview_17"></a><a href="#similar_symbol_details_17"  >
-      
-		  17
       
 		  &#9432;
 		  </a>
@@ -2105,10 +1972,109 @@ table.bin_col td:nth-child(3) {
 			<span class="deterioration number">4</span>
 		</td>
 		<td>
-		  <span class="number">51.9</span>
+		  <span class="number">60.9</span>
 		</td>
 		<td>
 		  <span class="number">89.7</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  13
+      
+		</td>
+		<td>
+		  g()::lsvI<span class="diff_highlight">AmGon</span>e
+		  <br>
+		  g()::lsvI<span class="diff_highlight">StayButDiff</span>e<span class="diff_highlight">r</span>
+		</td>
+		<td>
+		  d
+		  <br>
+		  d
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">57.8</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  14
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">c</span>IAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne</span>
+		  <br>
+		  <span class="diff_highlight">f</span>IAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">rt)</span>
+		</td>
+		<td>
+		  r
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">20</span>
+		</td>
+		<td>
+			<span class="deterioration number">16</span>
+		</td>
+		<td>
+		  <span class="number">52.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  15
+      
+		</td>
+		<td>
+		  <span class="diff_highlight">f</span>IAm<span class="diff_highlight">Gon</span>e<span class="diff_highlight">(int)</span>
+		  <br>
+		  <span class="diff_highlight">c</span>IAm<span class="diff_highlight">N</span>e<span class="diff_highlight">w</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  r
+		</td>
+		<td>
+		  <span class="number">16</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-12</span>
+		</td>
+		<td>
+		  <span class="number">52.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
 		</td>
 		</tr>
 		
@@ -2126,6 +2092,148 @@ table.bin_col td:nth-child(3) {
 	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
 </table>
 
+  
+
+  
+  <H3><a id="symbols_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+<table class="sortable migrated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <tbody>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_1"></a><a href="#migrated_symbol_details_1"  >
+		  
+		  g() 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:32:6
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:32:6
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_2"></a><a href="#migrated_symbol_details_2"  >
+		  
+		  implementationChanged(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:68:5
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:68:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_3"></a><a href="#migrated_symbol_details_3"  >
+		  
+		  fIStay(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>:8
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>:8
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  Test::smvIStayButDiffer 
+      
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">2</span>:5
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  Test::smvIStay 
+      
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+		</td>
+		<td>
+			/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">0</span>:5
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<p>
+<b>Please Note:</b> Use the settings <i>source_prefix</i>, <i>old_source_prefix</i> or <i>new_source_prefix</i> to eliminate false positives by removing path prefix from source file paths.
+</p>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+</table>
+
+   <p>
   
 
   
@@ -2153,42 +2261,21 @@ table.bin_col td:nth-child(3) {
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_24"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_1"></a>Persisting symbol
 
-<a href="#persisting_symbol_overview_24">
-
-fIStay(double)
-
-</a>
-
-: old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
-
-Instructions unchanged
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<H4><span class="monospace"><a name="persisting_symbol_details_26"></a>Persisting symbol
-
-<a href="#persisting_symbol_overview_26">
+<a href="#persisting_symbol_overview_1">
 
 g()
 
 </a>
 
 : old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: /home/flo/Documents/elf_diff/tests/src/old/test2.cpp:32:6<br>
+New source: /home/flo/Documents/elf_diff/tests/src/new/test2.cpp:32:6
+</p>
+</span>
 
 Instructions unchanged
 
@@ -2207,15 +2294,21 @@ Instructions unchanged
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_30"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_2"></a>Persisting symbol
 
-<a href="#persisting_symbol_overview_30">
+<a href="#persisting_symbol_overview_2">
 
 implementationChanged(int)
 
 </a>
 
 : old size: 98 bytes, new size: 106 bytes, delta: <span class="deterioration number">8</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: /home/flo/Documents/elf_diff/tests/src/old/test2.cpp:68:5<br>
+New source: /home/flo/Documents/elf_diff/tests/src/new/test2.cpp:68:5
+</p>
+</span>
 
 
     <table class="diff" id="difflib_chg_to0__top"
@@ -2237,7 +2330,7 @@ implementationChanged(int)
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_9">9</td><td nowrap="nowrap">movl&nbsp;&nbsp;&nbsp;$0x0,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to0_11">11</td><td nowrap="nowrap">movl&nbsp;&nbsp;&nbsp;$0x0,-0x4(%rbp)</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_10">10</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x4(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_12">12</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x4(%rbp),%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_11">11</td><td nowrap="nowrap">cmp&nbsp;&nbsp;&nbsp;&nbsp;-0x14(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_13">13</td><td nowrap="nowrap">cmp&nbsp;&nbsp;&nbsp;&nbsp;-0x14(%rbp),%eax</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to0__3">n</a></td><td class="diff_header" id="from0_12">12</td><td nowrap="nowrap">jge&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">aa</span>&nbsp;&lt;implementationChanged(int)+0x<span class="diff_chg">5d</span>&gt;</td><td class="diff_next"><a href="#difflib_chg_to0__3">n</a></td><td class="diff_header" id="to0_14">14</td><td nowrap="nowrap">jge&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">b1</span>&nbsp;&lt;implementationChanged(int)+0x<span class="diff_chg">61</span>&gt;</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to0__3">n</a></td><td class="diff_header" id="from0_12">12</td><td nowrap="nowrap">jge&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">aa</span>&nbsp;&lt;_Z21implementationChangedi+0x<span class="diff_chg">5d</span>&gt;</td><td class="diff_next"><a href="#difflib_chg_to0__3">n</a></td><td class="diff_header" id="to0_14">14</td><td nowrap="nowrap">jge&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">b1</span>&nbsp;&lt;_Z21implementationChangedi+0x<span class="diff_chg">61</span>&gt;</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_13">13</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%e<span class="diff_chg">d</span>x</td><td class="diff_next"></td><td class="diff_header" id="to0_15">15</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%e<span class="diff_chg">a</span>x</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_14">14</td><td nowrap="nowrap"><span class="diff_chg">mov</span>&nbsp;&nbsp;&nbsp;&nbsp;-0x4(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_16">16</td><td nowrap="nowrap"><span class="diff_chg">sub</span>&nbsp;&nbsp;&nbsp;&nbsp;-0x4(%rbp),%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_15">15</td><td nowrap="nowrap"><span class="diff_sub">add&nbsp;&nbsp;&nbsp;&nbsp;%edx,%eax</span></td><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
@@ -2257,7 +2350,7 @@ implementationChanged(int)
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_28">28</td><td nowrap="nowrap">sub&nbsp;&nbsp;&nbsp;&nbsp;%edx,%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_30">30</td><td nowrap="nowrap">sub&nbsp;&nbsp;&nbsp;&nbsp;%edx,%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_29">29</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%eax,-0x8(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to0_31">31</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%eax,-0x8(%rbp)</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_30">30</td><td nowrap="nowrap">addl&nbsp;&nbsp;&nbsp;$0x1,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to0_32">32</td><td nowrap="nowrap">addl&nbsp;&nbsp;&nbsp;$0x1,-0x4(%rbp)</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_31">31</td><td nowrap="nowrap">jmp&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">6a</span>&nbsp;&lt;implementationChanged(int)+0x1<span class="diff_sub">d</span>&gt;</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_33">33</td><td nowrap="nowrap">jmp&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">71</span>&nbsp;&lt;implementationChanged(int)+0x<span class="diff_add">2</span>1&gt;</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_31">31</td><td nowrap="nowrap">jmp&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">6a</span>&nbsp;&lt;_Z21implementationChangedi+0x1<span class="diff_sub">d</span>&gt;</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_33">33</td><td nowrap="nowrap">jmp&nbsp;&nbsp;&nbsp;&nbsp;<span class="diff_chg">71</span>&nbsp;&lt;_Z21implementationChangedi+0x<span class="diff_add">2</span>1&gt;</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to0_34">34</td><td nowrap="nowrap"><span class="diff_add">addl&nbsp;&nbsp;&nbsp;$0x1,-0x8(%rbp)</span></td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_32">32</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%eax</td><td class="diff_next"></td><td class="diff_header" id="to0_35">35</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;-0x8(%rbp),%eax</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_33">33</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_36">36</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
@@ -2265,6 +2358,39 @@ implementationChanged(int)
             <tr><td class="diff_next"></td><td class="diff_header" id="from0_35">35</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to0_38">38</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_3"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_3">
+
+fIStay(double)
+
+</a>
+
+: old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: /home/flo/Documents/elf_diff/tests/src/old/test2.cpp:21:8<br>
+New source: /home/flo/Documents/elf_diff/tests/src/new/test2.cpp:20:8
+</p>
+</span>
+
+Instructions unchanged
 
 
 
@@ -2280,21 +2406,29 @@ implementationChanged(int)
 
 
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_23"></a>Disappeared symbol
+<H4><span class="monospace"><a name="disappeared_symbol_details_0"></a>Disappeared symbol
 
-<a href="#disappeared_symbol_overview_23">
+<a href="#disappeared_symbol_overview_0">
 
-fIAmGone(int)
+fIStayButDiffer(float)
 
 </a>
 
-: size: 16 bytes</span></H4>
+: size: 20 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+/home/flo/Documents/elf_diff/tests/src/old/test2.cpp:22:7
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
 mov    %rsp,%rbp
-mov    %edi,-0x4(%rbp)
-mov    -0x4(%rbp),%eax
+movss  %xmm0,-0x4(%rbp)
+movss  -0x4(%rbp),%xmm0
 pop    %rbp
 ret
 
@@ -2311,21 +2445,29 @@ ret
 
 
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_25"></a>Disappeared symbol
+<H4><span class="monospace"><a name="disappeared_symbol_details_4"></a>Disappeared symbol
 
-<a href="#disappeared_symbol_overview_25">
+<a href="#disappeared_symbol_overview_4">
 
-fIStayButDiffer(float)
+fIAmGone(int)
 
 </a>
 
-: size: 20 bytes</span></H4>
+: size: 16 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+/home/flo/Documents/elf_diff/tests/src/old/test2.cpp:20:5
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
 mov    %rsp,%rbp
-movss  %xmm0,-0x4(%rbp)
-movss  -0x4(%rbp),%xmm0
+mov    %edi,-0x4(%rbp)
+mov    -0x4(%rbp),%eax
 pop    %rbp
 ret
 
@@ -2344,22 +2486,30 @@ ret
 
 
 
-<H4><span class="monospace"><a name="appeared_symbol_details_57"></a>Appeared symbol
+<H4><span class="monospace"><a name="appeared_symbol_details_17"></a>Appeared symbol
 
-<a href="#appeared_symbol_overview_57">
+<a href="#appeared_symbol_overview_17">
 
-fIAmNew(short)
+fIStayButDiffer(char)
 
 </a>
 
-: size: 20 bytes</span></H4>
+: size: 19 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+/home/flo/Documents/elf_diff/tests/src/new/test2.cpp:21:6
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
 mov    %rsp,%rbp
 mov    %edi,%eax
-mov    %ax,-0x4(%rbp)
-movzwl -0x4(%rbp),%eax
+mov    %al,-0x4(%rbp)
+movzbl -0x4(%rbp),%eax
 pop    %rbp
 ret
 
@@ -2376,22 +2526,30 @@ ret
 
 
 
-<H4><span class="monospace"><a name="appeared_symbol_details_59"></a>Appeared symbol
+<H4><span class="monospace"><a name="appeared_symbol_details_21"></a>Appeared symbol
 
-<a href="#appeared_symbol_overview_59">
+<a href="#appeared_symbol_overview_21">
 
-fIStayButDiffer(char)
+fIAmNew(short)
 
 </a>
 
-: size: 19 bytes</span></H4>
+: size: 20 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+/home/flo/Documents/elf_diff/tests/src/new/test2.cpp:22:7
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
 mov    %rsp,%rbp
 mov    %edi,%eax
-mov    %al,-0x4(%rbp)
-movzbl -0x4(%rbp),%eax
+mov    %ax,-0x4(%rbp)
+movzwl -0x4(%rbp),%eax
 pop    %rbp
 ret
 
@@ -2414,19 +2572,19 @@ ret
 
 
 <H4><span class="monospace">
-<a name="similar_symbol_details_1"></a>
+<a name="similar_symbol_details_0"></a>
 
-<a href="#similar_symbol_overview_1">
+<a href="#similar_symbol_overview_0">
 
-Similar pair 1
+Similar pair 0
 
 </a>
 
-: old size: 20 bytes, new size: 19 bytes, delta: <span class="improvement number">-1</span> bytes, sig. sim.: 83.7 %, instr. sim.: 84.3 %</span></H4>
+: old size: 20 bytes, new size: 19 bytes, delta: <span class="improvement number">-1</span> bytes, sig. sim.: 95.0 %, instr. sim.: 84.3 %</span></H4>
 <p>
-<span class="monospace">Old: fIStayButDiffer(<span class="diff_highlight">flo</span>a<span class="diff_highlight">t</span>)</span>
+<span class="monospace">Old: fIStayButDiffer(<span class="diff_highlight">flo</span>a<span class="diff_highlight">t</span>) [/home/flo/Documents/elf_diff/tests/src/old/test2.cpp:22:7]</span>
 <br>
-<span class="monospace">New: fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>)</span>
+<span class="monospace">New: fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>) [/home/flo/Documents/elf_diff/tests/src/new/test2.cpp:21:6]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to1__top"
@@ -2461,19 +2619,19 @@ Similar pair 1
 
 
 <H4><span class="monospace">
-<a name="similar_symbol_details_17"></a>
+<a name="similar_symbol_details_12"></a>
 
-<a href="#similar_symbol_overview_17">
+<a href="#similar_symbol_overview_12">
 
-Similar pair 17
+Similar pair 12
 
 </a>
 
-: old size: 16 bytes, new size: 20 bytes, delta: <span class="deterioration number">4</span> bytes, sig. sim.: 51.9 %, instr. sim.: 89.7 %</span></H4>
+: old size: 16 bytes, new size: 20 bytes, delta: <span class="deterioration number">4</span> bytes, sig. sim.: 60.9 %, instr. sim.: 89.7 %</span></H4>
 <p>
-<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t)</span>
+<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t) [/home/flo/Documents/elf_diff/tests/src/old/test2.cpp:20:5]</span>
 <br>
-<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t)</span>
+<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t) [/home/flo/Documents/elf_diff/tests/src/new/test2.cpp:22:7]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2496,6 +2654,106 @@ Similar pair 17
 
 
   
+
+  
+  <H3><a id="symbol_details_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_1"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_1">
+
+g()
+
+</a>
+
+: old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:32:6<br>
+New source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:32:6</p>
+</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_2"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_2">
+
+implementationChanged(int)
+
+</a>
+
+: old size: 98 bytes, new size: 106 bytes, delta: <span class="deterioration number">8</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:68:5<br>
+New source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:68:5</p>
+</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_3"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_3">
+
+fIStay(double)
+
+</a>
+
+: old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>:8<br>
+New source: /home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>:8</p>
+</span>
+
+
+  
   
   </div>
   <div id="footer">
@@ -2503,7 +2761,7 @@ Similar pair 17
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-11-19 15:17:16 by elf_diff ea53493f3a8043040e4d5f131624ab593b0a7875 (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-11-23 17:09:52 by elf_diff 4b3a5930592f6492f88b84e6fc2db0e9a019b7ff (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>

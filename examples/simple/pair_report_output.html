@@ -818,6 +818,25 @@ table.similar_symbols td:nth-child(7) {
   font-family: monospace;
 }
 
+table.migrated_symbols th:nth-child(1) { text-align: left; }
+table.migrated_symbols th:nth-child(2) { text-align: left; }
+table.migrated_symbols th:nth-child(3) { text-align: left; }
+
+table.migrated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(3) {
+  text-align: left;
+  font-family: monospace;
+}
+
 table.quad_col th:nth-child(1) { text-align: left; }
 table.quad_col th:nth-child(2) { text-align: right; }
 table.quad_col th:nth-child(3) { text-align: right; }
@@ -888,20 +907,33 @@ table.bin_col td:nth-child(3) {
     </li>
     <li><a href="#symbols">Symbols</a>
         <ul>
-          <li><a href="#symbols_persisting_symbols">Persisting Symbols</a></li>
-          <li><a href="#symbols_disappeared_symbols">Symbols Disappeared</a></li>
-          <li><a href="#symbols_appeared_symbols">New Symbols</a></li>
+          <li><a href="#symbols_persisting_symbols">Persisting</a></li>
+          <li><a href="#symbols_disappeared_symbols">Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">Appeared</a></li>
 					
-          <li><a href="#symbols_similar_symbols">Similar Symbols</a></li>
+          <li><a href="#symbols_similar_symbols">Similar</a></li>
           
+					
+          <li><a href="#symbols_migrated_symbols">Migrated</a></li>
+					
         </ul>
     </li>
     
   </ul>
 
   <H2><a id="binaries"></a>Binaries <a href="#home">&#x21A9;</a></H2>
-  <p>old: ../../tests/x86_64/libelf_diff_test_debug_old.a</p>
-  <p>new: ../../tests/x86_64/libelf_diff_test_debug_new.a</p>
+  <p>
+  old: ../../tests/x86_64/libelf_diff_test_debug_old.a
+	
+	(debug)
+	
+	</p>
+  <p>
+  new: ../../tests/x86_64/libelf_diff_test_debug_new.a
+	
+	(debug)
+	
+	</p>
 
   <H2><a id="rc"></a>Statistics <a href="#home">&#x21A9;</a></H2>
   
@@ -1006,7 +1038,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_11"></a><a href="#persisting_symbol_details_11"  >
+		  <a name="persisting_symbol_overview_0"></a><a href="#persisting_symbol_details_0"  >
 		  
 		  persisting1(int) 
       
@@ -1032,7 +1064,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="persisting_symbol_overview_12"></a><a href="#persisting_symbol_details_12"  >
+		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
 		  
 		  persisting2(int) 
       
@@ -1103,7 +1135,26 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_7"></a><a href="#disappeared_symbol_details_7" >
+		  <a name="disappeared_symbol_overview_2"></a><a href="#disappeared_symbol_details_2" >
+		  
+		  func(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_3"></a><a href="#disappeared_symbol_details_3" >
 		  
 		  Test::f(int, int) 
       
@@ -1122,7 +1173,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_8"></a><a href="#disappeared_symbol_details_8" >
+		  <a name="disappeared_symbol_overview_4"></a><a href="#disappeared_symbol_details_4" >
 		  
 		  Test::g(float, float) 
       
@@ -1152,25 +1203,6 @@ table.bin_col td:nth-child(3) {
 		</td>
 		</tr>
 		
-		<tr>
-		<td>
-      
-		  <a name="disappeared_symbol_overview_10"></a><a href="#disappeared_symbol_details_10" >
-		  
-		  func(int) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">18</span>
-		</td>
-		</tr>
-		
   </tbody>
 </table>
 
@@ -1196,7 +1228,26 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_21"></a><a href="#appeared_symbol_details_21" >
+		  <a name="appeared_symbol_overview_9"></a><a href="#appeared_symbol_details_9" >
+		  
+		  func(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">20</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_10"></a><a href="#appeared_symbol_details_10" >
 		  
 		  Test1::f(int, int) 
       
@@ -1215,7 +1266,7 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_22"></a><a href="#appeared_symbol_details_22" >
+		  <a name="appeared_symbol_overview_11"></a><a href="#appeared_symbol_details_11" >
 		  
 		  Test1::g(float, float) 
       
@@ -1242,25 +1293,6 @@ table.bin_col td:nth-child(3) {
 		</td>
 		<td>
 			<span class="number">4</span>
-		</td>
-		</tr>
-		
-		<tr>
-		<td>
-      
-		  <a name="appeared_symbol_overview_24"></a><a href="#appeared_symbol_details_24" >
-		  
-		  func(double) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">20</span>
 		</td>
 		</tr>
 		
@@ -1302,9 +1334,9 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-		  Test::g(float, float)
+		  Test::f(int, int)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::g(float, float)
+		  Test<span class="diff_highlight">1</span>::f(int, int)
 		</td>
 		<td>
 		  T
@@ -1312,15 +1344,15 @@ table.bin_col td:nth-child(3) {
 		  T
 		</td>
 		<td>
-		  <span class="number">29</span>
+		  <span class="number">21</span>
 		  <br>
-		  <span class="number">29</span>
+		  <span class="number">21</span>
 		</td>
 		<td>
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">97.7</span>
+		  <span class="number">88.9</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
@@ -1340,9 +1372,9 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-		  Test::f(int, int)
+		  Test::g(float, float)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::f(int, int)
+		  Test<span class="diff_highlight">1</span>::g(float, float)
 		</td>
 		<td>
 		  T
@@ -1350,15 +1382,15 @@ table.bin_col td:nth-child(3) {
 		  T
 		</td>
 		<td>
-		  <span class="number">21</span>
+		  <span class="number">29</span>
 		  <br>
-		  <span class="number">21</span>
+		  <span class="number">29</span>
 		</td>
 		<td>
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">97.1</span>
+		  <span class="number">88.9</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
@@ -1391,7 +1423,7 @@ table.bin_col td:nth-child(3) {
 			<span class="unchanged number">0</span>
 		</td>
 		<td>
-		  <span class="number">94.1</span>
+		  <span class="number">88.0</span>
 		</td>
 		<td>
 		  <span class="number">100.0</span>
@@ -1405,82 +1437,6 @@ table.bin_col td:nth-child(3) {
 		  <a name="similar_symbol_overview_3"></a><a href="#similar_symbol_details_3"  >
       
 		  3
-      
-		  &#9432;
-		  </a>
-      
-		</td>
-		<td>
-		  Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)
-		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)
-		</td>
-		<td>
-		  T
-		  <br>
-		  T
-		</td>
-		<td>
-		  <span class="number">21</span>
-		  <br>
-		  <span class="number">29</span>
-		</td>
-		<td>
-			<span class="deterioration number">8</span>
-		</td>
-		<td>
-		  <span class="number">61.5</span>
-		</td>
-		<td>
-		  <span class="number">81.4</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="similar_symbol_overview_4"></a><a href="#similar_symbol_details_4"  >
-      
-		  4
-      
-		  &#9432;
-		  </a>
-      
-		</td>
-		<td>
-		  Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)
-		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)
-		</td>
-		<td>
-		  T
-		  <br>
-		  T
-		</td>
-		<td>
-		  <span class="number">29</span>
-		  <br>
-		  <span class="number">21</span>
-		</td>
-		<td>
-			<span class="improvement number">-8</span>
-		</td>
-		<td>
-		  <span class="number">61.5</span>
-		</td>
-		<td>
-		  <span class="number">81.4</span>
-		</td>
-		</tr>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="similar_symbol_overview_5"></a><a href="#similar_symbol_details_5"  >
-      
-		  5
       
 		  &#9432;
 		  </a>
@@ -1505,10 +1461,218 @@ table.bin_col td:nth-child(3) {
 			<span class="deterioration number">2</span>
 		</td>
 		<td>
-		  <span class="number">57.1</span>
+		  <span class="number">87.5</span>
 		</td>
 		<td>
 		  <span class="number">93.1</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  4
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">f(int, int)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-17</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  5
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g(float, float)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-25</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_6"></a><a href="#similar_symbol_details_6"  >
+      
+		  6
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_7"></a><a href="#similar_symbol_details_7"  >
+      
+		  7
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="improvement number">-8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  8
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(float, float)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">25</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  9
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f(int, int)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="deterioration number">17</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
 		</td>
 		</tr>
 		
@@ -1526,6 +1690,105 @@ table.bin_col td:nth-child(3) {
 	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
 </table>
 
+  
+
+  
+  <H3><a id="symbols_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+<table class="sortable migrated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <tbody>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_0"></a><a href="#migrated_symbol_details_0"  >
+		  
+		  persisting1(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:42:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:42:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_1"></a><a href="#migrated_symbol_details_1"  >
+		  
+		  persisting2(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:43:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:43:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  var 
+      
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:24:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:24:5
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<p>
+<b>Please Note:</b> Use the settings <i>source_prefix</i>, <i>old_source_prefix</i> or <i>new_source_prefix</i> to eliminate false positives by removing path prefix from source file paths.
+</p>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+</table>
+
+   <p>
   
 
   
@@ -1553,15 +1816,21 @@ table.bin_col td:nth-child(3) {
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_11"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_0"></a>Persisting symbol
 
-<a href="#persisting_symbol_overview_11">
+<a href="#persisting_symbol_overview_0">
 
 persisting1(int)
 
 </a>
 
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: src/old/test.cpp:42:5<br>
+New source: src/new/test.cpp:42:5
+</p>
+</span>
 
 
     <table class="diff" id="difflib_chg_to0__top"
@@ -1596,15 +1865,21 @@ persisting1(int)
 
 
 
-<H4><span class="monospace"><a name="persisting_symbol_details_12"></a>Persisting symbol
+<H4><span class="monospace"><a name="persisting_symbol_details_1"></a>Persisting symbol
 
-<a href="#persisting_symbol_overview_12">
+<a href="#persisting_symbol_overview_1">
 
 persisting2(int)
 
 </a>
 
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: src/old/test.cpp:43:5<br>
+New source: src/new/test.cpp:43:5
+</p>
+</span>
 
 
     <table class="diff" id="difflib_chg_to1__top"
@@ -1638,15 +1913,62 @@ persisting2(int)
 
 
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_7"></a>Disappeared symbol
+<H4><span class="monospace"><a name="disappeared_symbol_details_2"></a>Disappeared symbol
 
-<a href="#disappeared_symbol_overview_7">
+<a href="#disappeared_symbol_overview_2">
+
+func(int)
+
+</a>
+
+: size: 18 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:20:5
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %edi,-0x4(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_3"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_3">
 
 Test::f(int, int)
 
 </a>
 
 : size: 21 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:29:18
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
@@ -1671,15 +1993,23 @@ nop
 
 
 
-<H4><span class="monospace"><a name="disappeared_symbol_details_8"></a>Disappeared symbol
+<H4><span class="monospace"><a name="disappeared_symbol_details_4"></a>Disappeared symbol
 
-<a href="#disappeared_symbol_overview_8">
+<a href="#disappeared_symbol_overview_4">
 
 Test::g(float, float)
 
 </a>
 
 : size: 29 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:30:11
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
@@ -1688,37 +2018,6 @@ mov    %rdi,-0x8(%rbp)
 movss  %xmm0,-0xc(%rbp)
 movss  %xmm1,-0x10(%rbp)
 mov    $0x1,%eax
-pop    %rbp
-ret
-
-</pre>
-
-
-
-
-
-
-
-
-
-
-
-
-<H4><span class="monospace"><a name="disappeared_symbol_details_10"></a>Disappeared symbol
-
-<a href="#disappeared_symbol_overview_10">
-
-func(int)
-
-</a>
-
-: size: 18 bytes</span></H4>
-<pre>
-endbr64
-push   %rbp
-mov    %rsp,%rbp
-mov    %edi,-0x4(%rbp)
-mov    $0x2a,%eax
 pop    %rbp
 ret
 
@@ -1737,15 +2036,62 @@ ret
 
 
 
-<H4><span class="monospace"><a name="appeared_symbol_details_21"></a>Appeared symbol
+<H4><span class="monospace"><a name="appeared_symbol_details_9"></a>Appeared symbol
 
-<a href="#appeared_symbol_overview_21">
+<a href="#appeared_symbol_overview_9">
+
+func(double)
+
+</a>
+
+: size: 20 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:20:5
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+movsd  %xmm0,-0x8(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_10"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_10">
 
 Test1::f(int, int)
 
 </a>
 
 : size: 21 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:29:18
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
@@ -1770,15 +2116,23 @@ nop
 
 
 
-<H4><span class="monospace"><a name="appeared_symbol_details_22"></a>Appeared symbol
+<H4><span class="monospace"><a name="appeared_symbol_details_11"></a>Appeared symbol
 
-<a href="#appeared_symbol_overview_22">
+<a href="#appeared_symbol_overview_11">
 
 Test1::g(float, float)
 
 </a>
 
 : size: 29 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:30:11
+
+</p>
+</span>
 <pre>
 endbr64
 push   %rbp
@@ -1787,37 +2141,6 @@ mov    %rdi,-0x8(%rbp)
 movss  %xmm0,-0xc(%rbp)
 movss  %xmm1,-0x10(%rbp)
 mov    $0x1,%eax
-pop    %rbp
-ret
-
-</pre>
-
-
-
-
-
-
-
-
-
-
-
-
-<H4><span class="monospace"><a name="appeared_symbol_details_24"></a>Appeared symbol
-
-<a href="#appeared_symbol_overview_24">
-
-func(double)
-
-</a>
-
-: size: 20 bytes</span></H4>
-<pre>
-endbr64
-push   %rbp
-mov    %rsp,%rbp
-movsd  %xmm0,-0x8(%rbp)
-mov    $0x2a,%eax
 pop    %rbp
 ret
 
@@ -1848,11 +2171,11 @@ Similar pair 0
 
 </a>
 
-: old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 97.7 %, instr. sim.: 100.0 %</span></H4>
+: old size: 21 bytes, new size: 21 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::g(float, float)</span>
+<span class="monospace">Old: Test::f(int, int) [src/old/test.cpp:29:18]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float)</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [src/new/test.cpp:29:18]</span>
 </p>
 Instructions unchanged
 
@@ -1878,11 +2201,11 @@ Similar pair 1
 
 </a>
 
-: old size: 21 bytes, new size: 21 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 97.1 %, instr. sim.: 100.0 %</span></H4>
+: old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f(int, int)</span>
+<span class="monospace">Old: Test::g(float, float) [src/old/test.cpp:30:11]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int)</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [src/new/test.cpp:30:11]</span>
 </p>
 Instructions unchanged
 
@@ -1908,11 +2231,11 @@ Similar pair 3
 
 </a>
 
-: old size: 21 bytes, new size: 29 bytes, delta: <span class="deterioration number">8</span> bytes, sig. sim.: 61.5 %, instr. sim.: 81.4 %</span></H4>
+: old size: 18 bytes, new size: 20 bytes, delta: <span class="deterioration number">2</span> bytes, sig. sim.: 87.5 %, instr. sim.: 93.1 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)</span>
+<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [src/old/test.cpp:20:5]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)</span>
+<span class="monospace">New: func(<span class="diff_highlight">double</span>) [src/new/test.cpp:20:5]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -1921,17 +2244,14 @@ Similar pair 3
         <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
         <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
         <tbody>
-            <tr><td class="diff_next" id="difflib_chg_to2__1"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="from2_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="to2_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next" id="difflib_chg_to2__0"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="from2_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="to2_1">1</td><td nowrap="nowrap">endbr64</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to2__1">n</a></td><td class="diff_header" id="from2_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to2__1">n</a></td><td class="diff_header" id="to2_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_5">5</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to2_5">5</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to2_6">6</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to2_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_8">8</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to2_9">9</td><td nowrap="nowrap">ret</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="from2_9">9</td><td nowrap="nowrap"><span class="diff_sub">nop</span></td><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from2_10">10</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to2_10">10</td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="from2_4">4</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</span></td><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="to2_4">4</td><td nowrap="nowrap"><span class="diff_add">movsd&nbsp;&nbsp;%xmm0,-0x8(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td><td class="diff_next"></td><td class="diff_header" id="to2_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to2_7">7</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to2_8">8</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
 
@@ -1949,19 +2269,19 @@ Similar pair 3
 
 
 <H4><span class="monospace">
-<a name="similar_symbol_details_4"></a>
+<a name="similar_symbol_details_6"></a>
 
-<a href="#similar_symbol_overview_4">
+<a href="#similar_symbol_overview_6">
 
-Similar pair 4
+Similar pair 6
 
 </a>
 
-: old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 61.5 %, instr. sim.: 81.4 %</span></H4>
+: old size: 21 bytes, new size: 29 bytes, delta: <span class="deterioration number">8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)</span>
+<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [src/old/test.cpp:29:18]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [src/new/test.cpp:30:11]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to3__top"
@@ -1973,13 +2293,13 @@ Similar pair 4
             <tr><td class="diff_next" id="difflib_chg_to3__1"><a href="#difflib_chg_to3__0">f</a></td><td class="diff_header" id="from3_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to3__0">f</a></td><td class="diff_header" id="to3_1">1</td><td nowrap="nowrap">endbr64</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from3_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from3_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="from3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="to3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from3_5">5</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to3_5">5</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from3_6">6</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from3_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to3_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from3_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from3_9">9</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to3_8">8</td><td nowrap="nowrap">ret</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header" id="to3_9">9</td><td nowrap="nowrap"><span class="diff_add">nop</span></td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="from3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="to3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_5">5</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to3_5">5</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to3_6">6</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to3_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_8">8</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to3_9">9</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header" id="from3_9">9</td><td nowrap="nowrap"><span class="diff_sub">nop</span></td><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from3_10">10</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to3_10">10</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
@@ -1998,19 +2318,19 @@ Similar pair 4
 
 
 <H4><span class="monospace">
-<a name="similar_symbol_details_5"></a>
+<a name="similar_symbol_details_7"></a>
 
-<a href="#similar_symbol_overview_5">
+<a href="#similar_symbol_overview_7">
 
-Similar pair 5
+Similar pair 7
 
 </a>
 
-: old size: 18 bytes, new size: 20 bytes, delta: <span class="deterioration number">2</span> bytes, sig. sim.: 57.1 %, instr. sim.: 93.1 %</span></H4>
+: old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: func(<span class="diff_highlight">int</span>)</span>
+<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [src/old/test.cpp:30:11]</span>
 <br>
-<span class="monospace">New: func(<span class="diff_highlight">double</span>)</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [src/new/test.cpp:29:18]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to4__top"
@@ -2019,16 +2339,87 @@ Similar pair 5
         <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
         <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
         <tbody>
-            <tr><td class="diff_next" id="difflib_chg_to4__0"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="from4_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="to4_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next" id="difflib_chg_to4__1"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="from4_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="to4_1">1</td><td nowrap="nowrap">endbr64</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from4_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
             <tr><td class="diff_next"></td><td class="diff_header" id="from4_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
-            <tr><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header" id="from4_4">4</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</span></td><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header" id="to4_4">4</td><td nowrap="nowrap"><span class="diff_add">movsd&nbsp;&nbsp;%xmm0,-0x8(%rbp)</span></td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from4_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td><td class="diff_next"></td><td class="diff_header" id="to4_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from4_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from4_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to4_7">7</td><td nowrap="nowrap">ret</td></tr>
-            <tr><td class="diff_next"></td><td class="diff_header" id="from4_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to4_8">8</td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to4__1">n</a></td><td class="diff_header" id="from4_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to4__1">n</a></td><td class="diff_header" id="to4_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_5">5</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to4_5">5</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_6">6</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to4_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_9">9</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to4_8">8</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header" id="to4_9">9</td><td nowrap="nowrap"><span class="diff_add">nop</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_10">10</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to4_10">10</td><td nowrap="nowrap"></td></tr>
         </tbody>
     </table>
+
+
+  
+
+  
+  <H3><a id="symbol_details_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_0"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_0">
+
+persisting1(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: src/<span class="diff_highlight">old</span>/test.cpp:42:5<br>
+New source: src/<span class="diff_highlight">new</span>/test.cpp:42:5</p>
+</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_1"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_1">
+
+persisting2(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: src/<span class="diff_highlight">old</span>/test.cpp:43:5<br>
+New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
+</span>
 
 
   
@@ -2039,7 +2430,7 @@ Similar pair 5
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-11-19 15:17:15 by elf_diff ea53493f3a8043040e4d5f131624ab593b0a7875 (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-11-23 17:09:50 by elf_diff 4b3a5930592f6492f88b84e6fc2db0e9a019b7ff (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>

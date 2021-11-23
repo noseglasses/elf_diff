@@ -26,6 +26,8 @@ document
 │   ├── display_build_info = &#39;False&#39; &lt;bool&gt; [True if build information is supposed to be displayed]
 │   ├── display_details = &#39;True&#39; &lt;bool&gt; [True if symbol detail information is supposed to be displayed]
 │   ├── display_disappeared_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about disappeared symbols is supposed to be displayed]
+│   ├── display_migrated_symbols = &#39;True&#39; &lt;bool&gt; [True if migrated symbols are supposed to be displayed]
+│   ├── display_migrated_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about migrated symbols is supposed to be displayed]
 │   ├── display_new_binary_info = &#39;False&#39; &lt;bool&gt; [True if new binary info is supposed to be displayed]
 │   ├── display_old_binary_info = &#39;False&#39; &lt;bool&gt; [True if old binary info is supposed to be displayed]
 │   ├── display_persisting_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about persisting symbols is supposed to be displayed]
@@ -35,15 +37,19 @@ document
 ├── files [Information about relevant files]
 │   └── input [Information about relevant input files]
 │       ├── new [Information about relevant input files]
-│       │   └── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_new.a&#39; &lt;str&gt; [The path to the binary file]
+│       │   ├── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_new.a&#39; &lt;str&gt; [The path to the binary file]
+│       │   ├── debug_info_available = &#39;True&#39; &lt;bool&gt; [True if Dwarf debug info avaiable in the elf binary]
+│       │   └── source_files [Source file by file id (dict values of type SourceFile)]
 │       └── old [Information about relevant input files]
-│           └── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_old.a&#39; &lt;str&gt; [The path to the binary file]
+│           ├── binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_old.a&#39; &lt;str&gt; [The path to the binary file]
+│           ├── debug_info_available = &#39;True&#39; &lt;bool&gt; [True if Dwarf debug info avaiable in the elf binary]
+│           └── source_files [Source file by file id (dict values of type SourceFile)]
 ├── general [General information about the document]
 │   ├── doc_title = &#39;ELF Binary Comparison&#39; &lt;str&gt; [Document title]
 │   ├── document_version = &#39;1&#39; &lt;int&gt; [The document version of this document]
 │   ├── elf_diff_repo_root = &#39;/home/runner/work/elf_diff/elf_diff/src/elf_diff&#39; &lt;str&gt; [Path to the root of the elf_diff git repo]
-│   ├── elf_diff_version = &#39;ea53493f3a8043040e4d5f131624ab593b0a7875&#39; &lt;str&gt; [The elf_diff version that generated the page]
-│   ├── generation_date = &#39;2021-11-19 15:17:15&#39; &lt;str&gt; [The document generation date]
+│   ├── elf_diff_version = &#39;4b3a5930592f6492f88b84e6fc2db0e9a019b7ff&#39; &lt;str&gt; [The elf_diff version that generated the page]
+│   ├── generation_date = &#39;2021-11-23 17:09:51&#39; &lt;str&gt; [The document generation date]
 │   └── page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39; &lt;str&gt; [The title of the document page]
 ├── new_binary_info = &#39;&#39; &lt;str&gt; [Info about the new binary]
 ├── old_binary_info = &#39;&#39; &lt;str&gt; [Info about the old binary]
@@ -98,16 +104,32 @@ document
 │       │       ├── new = &#39;179&#39; &lt;int&gt; [Overall number of bytes consumed in the old version]
 │       │       └── old = &#39;171&#39; &lt;int&gt; [Overall number of bytes consumed in the old version]
 │       └── similar
-│           └── count = &#39;18&#39; &lt;int&gt; [Number of symbols]
+│           └── count = &#39;16&#39; &lt;int&gt; [Number of symbols]
 └── symbols [Symbols by id/table id ]
+    ├── appeared [Dict of appeared symbols by symbol id (dict values of type AppearedSymbol)]
+    ├── disappeared [Disappeared symbols by symbol id (dict values of type DisappearedSymbol)]
+    ├── migrated [Migrated symbols by symbol id (dict values of type MigratedSymbol)]
+    ├── new [Dict of selected symbols of the new binary by symbol id (dict values of type Symbol)]
+    ├── old [Dict of selected symbols of the old binary by symbol id (dict values of type Symbol)]
+    ├── persisting [Persisting symbols by symbol id (dict values of type PersistingSymbol)]
+    └── similar [Similar symbols by symbol id (dict values of type SimilarSymbols)]
 </pre>
 
-<H3>Symbol Classes</H3>
-The section <span class="monospace">document.symbols</span> contains dictionaries that map symbol-ids (symbol pair-ids)
-to symbols of different classes. The subdocument structure of those classes is displayed below.
-<br>
-<b>Please note:</b> The actual symbol representations are not listed due to space constraints.
+<H3>Dynamic Tree Node Types</H3>
+Some branches of the document tree are dynamically generated based on the content of the compared elf binaries.
+Dynamically generated node types are listed below.
+<p>
+<b>Please note:</b> The actual node representations are not listed due to space constraints.
+</p>
 
+<H4>SourceFile</H4>
+<pre>
+source_file
+├── id &lt;int&gt; [The id of the source file]
+├── path_base &lt;str&gt; [The name of the source file with user defined prefix stripped]
+├── path_complete &lt;str&gt; [The complete name of the source file]
+└── producer &lt;str&gt; [Compiler and command line options that produced the code of the source file]
+</pre>
 
 <H4>Symbol</H4>
 <pre>
@@ -117,7 +139,12 @@ symbol
 ├── is_demangled &lt;bool&gt; [True if the symbol name is demangled]
 ├── is_stored_in_program_memory &lt;bool&gt; [True if the symbol is stored in program memory]
 ├── name &lt;str&gt; [The symbol name (demangled if supported)]
+├── name_mangled &lt;str&gt; [The mangled symbol name]
 ├── size &lt;int&gt; [Number of bytes occupied by the symbol]
+├── source
+│   ├── column &lt;int&gt; [The column number in the source file where the symbol is defined]
+│   ├── file_id &lt;int&gt; [The id of the source file]
+│   └── line &lt;int&gt; [The line number in the source file where the symbol is defined]
 └── type &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
 </pre>
 
@@ -175,6 +202,19 @@ similar_symbols
     └── signature &lt;float&gt; [The percentage of symbol signature similarity]
 </pre>
 
+<H4>MigratedSymbol</H4>
+<pre>
+migrated_symbol
+├── display_info [Information that configures how things are displayed]
+│   ├── anchor_id &lt;str&gt; [Unique string identifier token that can be used to generate a HTML anchor for cross references]
+│   ├── display_symbol_details &lt;bool&gt; [True if symbol details are supposed to be displayed]
+│   └── symbol_class &lt;str&gt; [The class of symbol old/new/appeared/disappeared/persisting/similar]
+└── related_symbols [A relation between two symbols]
+    ├── new &lt;Symbol&gt; [The new symbol]
+    ├── old &lt;Symbol&gt; [The old symbol]
+    └── size_delta &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
+</pre>
+
 
 <H2>Jinja2 Template Variables</H2>
 The following exported variables may be used to configure Jinja2 Template files.
@@ -185,6 +225,8 @@ document.configuration.display_binary_details = &#39;False&#39;
 document.configuration.display_build_info = &#39;False&#39;
 document.configuration.display_details = &#39;True&#39;
 document.configuration.display_disappeared_symbols_overview = &#39;True&#39;
+document.configuration.display_migrated_symbols = &#39;True&#39;
+document.configuration.display_migrated_symbols_overview = &#39;True&#39;
 document.configuration.display_new_binary_info = &#39;False&#39;
 document.configuration.display_old_binary_info = &#39;False&#39;
 document.configuration.display_persisting_symbols_overview = &#39;True&#39;
@@ -192,12 +234,16 @@ document.configuration.display_similar_symbols = &#39;True&#39;
 document.configuration.display_similar_symbols_overview = &#39;True&#39;
 document.configuration.instructions_available = &#39;True&#39;
 document.files.input.new.binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_new.a&#39;
+document.files.input.new.debug_info_available = &#39;True&#39;
+document.files.input.new.source_files = &#39;{1: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e192b0&gt;}&#39;
 document.files.input.old.binary_path = &#39;../../tests/x86_64/libelf_diff_test2_debug_old.a&#39;
+document.files.input.old.debug_info_available = &#39;True&#39;
+document.files.input.old.source_files = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfdb20&gt;}&#39;
 document.general.doc_title = &#39;ELF Binary Comparison&#39;
 document.general.document_version = &#39;1&#39;
 document.general.elf_diff_repo_root = &#39;/home/runner/work/elf_diff/elf_diff/src/elf_diff&#39;
-document.general.elf_diff_version = &#39;ea53493f3a8043040e4d5f131624ab593b0a7875&#39;
-document.general.generation_date = &#39;2021-11-19 15:17:15&#39;
+document.general.elf_diff_version = &#39;4b3a5930592f6492f88b84e6fc2db0e9a019b7ff&#39;
+document.general.generation_date = &#39;2021-11-23 17:09:51&#39;
 document.general.page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39;
 document.new_binary_info = &#39;&#39;
 document.old_binary_info = &#39;&#39;
@@ -232,7 +278,14 @@ document.statistics.symbols.persisting.count = &#39;11&#39;
 document.statistics.symbols.persisting.resource_consumption.delta = &#39;8&#39;
 document.statistics.symbols.persisting.resource_consumption.new = &#39;179&#39;
 document.statistics.symbols.persisting.resource_consumption.old = &#39;171&#39;
-document.statistics.symbols.similar.count = &#39;18&#39;
+document.statistics.symbols.similar.count = &#39;16&#39;
+document.symbols.appeared = &#39;{17: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9970&gt;, 21: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de99a0&gt;, 24: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9a00&gt;, 27: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9a90&gt;, 30: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9af0&gt;, 31: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9b50&gt;}&#39;
+document.symbols.disappeared = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec460&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec490&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec4f0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec580&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec5e0&gt;, 14: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dec640&gt;}&#39;
+document.symbols.migrated = &#39;{1: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e8aaf0&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e8a910&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e8a7f0&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e8a880&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e8a730&gt;}&#39;
+document.symbols.new = &#39;{22: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4b20&gt;, 23: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4b50&gt;, 24: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4bb0&gt;, 25: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4c40&gt;, 26: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4ca0&gt;, 27: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4d00&gt;, 28: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4d60&gt;, 29: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4dc0&gt;, 30: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4e20&gt;, 31: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4e80&gt;, 32: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e2a5e0&gt;, 33: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e417f0&gt;, 18: &lt;elf_diff.value_tree.Node object at 0x7ff6c6e416a0&gt;, 17: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4f40&gt;, 21: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de4fa0&gt;, 20: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de9040&gt;, 19: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de90a0&gt;}&#39;
+document.symbols.old = &#39;{5: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0220&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0250&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de02b0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0340&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de03a0&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0400&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0460&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de04c0&gt;, 13: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0520&gt;, 14: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0580&gt;, 15: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de05e0&gt;, 16: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0640&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de06a0&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0700&gt;, 0: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0760&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de07c0&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7ff6c6de0820&gt;}&#39;
+document.symbols.persisting = &#39;{1: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def400&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def430&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def4f0&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def580&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def610&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def6a0&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def760&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def7f0&gt;, 13: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def880&gt;, 15: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def910&gt;, 16: &lt;elf_diff.value_tree.Node object at 0x7ff6c6def9a0&gt;}&#39;
+document.symbols.similar = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df65b0&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df65e0&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6730&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6850&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6970&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6a90&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6bb0&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6cd0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6df0&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7ff6c6df6f10&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd070&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd190&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd2b0&gt;, 13: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd3d0&gt;, 14: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd4f0&gt;, 15: &lt;elf_diff.value_tree.Node object at 0x7ff6c6dfd610&gt;}&#39;
 </pre>
 
 
