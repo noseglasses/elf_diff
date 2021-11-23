@@ -27,9 +27,8 @@ from elf_diff.plugin import (
 from elf_diff.document_explorer import generateDictionary, TREE_TRAVERSAL_ALL
 from elf_diff.settings import Settings
 from elf_diff.pair_report_document import ValueTreeNode
-from dicttoxml import dicttoxml  # type: ignore # Make mypy ignore this module
+from dict2xml import dict2xml  # type: ignore # Make mypy ignore this module
 from typing import Dict
-from defusedxml.minidom import parseString  # type: ignore # Make mypy ignore this module
 
 
 class XMLExportPairReportPlugin(ExportPairReportPlugin):
@@ -46,12 +45,15 @@ class XMLExportPairReportPlugin(ExportPairReportPlugin):
             document, tree_traversal_options=TREE_TRAVERSAL_ALL
         )
 
-        xml = dicttoxml(dict_, custom_root="elf_diff", attr_type=False)
+        # xml = dicttoxml(dict_, custom_root="elf_diff", attr_type=False)
+        xml = dict2xml(dict_, wrap="elf_diff", indent="\t")
+        print(xml)
 
-        dom = parseString(xml)
+        # dom = parseString(xml)
 
         with open(self.getConfigurationParameter("output_file"), "w") as f:
-            f.write(str(dom.toprettyxml()))
+            # f.write(str(dom.toprettyxml()))
+            f.write(xml)
 
     @staticmethod
     def getConfigurationInformation() -> PluginConfigurationInformation:
