@@ -553,6 +553,7 @@ class Binary(object):
                 if self._name_mangled in self._binary.symbols.keys():
                     symbol = self._binary.symbols[self._name_mangled]
 
+                    assert self._source_id is not None
                     symbol.source_id = self._source_id
                     symbol.source_line = self._source_line
                     symbol.source_column = self._source_column
@@ -574,7 +575,6 @@ class Binary(object):
                 self._source_file_mapping[dwarf_source_id] = source_file
 
             self._name_mangled = None
-            self._source_id = None
             self._source_line = None
             self._source_column = None
 
@@ -632,6 +632,7 @@ class Binary(object):
             elif tag == "DW_AT_decl_file":
                 dwarf_source_id = int(add_info)
                 self._source_id = self._source_file_mapping[dwarf_source_id].id_
+                print("Source id reset: %s" % self._source_id)
             elif tag == "DW_AT_decl_line":
                 self._source_line = int(add_info)
             elif tag == "DW_AT_decl_column":
