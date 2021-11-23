@@ -119,12 +119,12 @@ class BinaryPair(object):
         if not settings.skip_symbol_similarities:
             self._computeSimilarities()
 
-        self.migrated_symbols_avilable: bool = (
+        self.migrated_symbols_available: bool = (
             self.new_binary.debug_info_available
             and self.old_binary.debug_info_available
         )
         self.migrated_symbol_names: List[str] = []
-        if self.migrated_symbols_avilable:
+        if self.migrated_symbols_available:
             self._determineMigratedSymbols()
 
         self._summarizeSymbols()
@@ -151,12 +151,17 @@ class BinaryPair(object):
         )
         print(f"      {len(self.new_symbol_names)} symbol(s) selected")
         print("")
-        print(f"   {len(self.persisting_symbol_names)} persisting symbol(s)")
+
+        if self.migrated_symbols_available:
+            migrated_symbols_info = f" ({len(self.migrated_symbol_names)} migrated)"
+        else:
+            migrated_symbols_info = ""
+
+        print(
+            f"   {len(self.persisting_symbol_names)} persisting symbol(s){migrated_symbols_info}"
+        )
         print(f"   {len(self.disappeared_symbol_names)} disappeared symbol(s)")
         print(f"   {len(self.new_symbol_names)} new symbol(s)")
-
-        if self.migrated_symbols_avilable:
-            print(f"   {len(self.migrated_symbol_names)} migrated symbol(s)")
 
     def _prepareSymbols(self) -> None:
         """Prepare symbols"""
@@ -186,6 +191,10 @@ class BinaryPair(object):
             new_symbol = self.new_binary.symbols[persisting_symbol_name]
 
             if (old_symbol.source_id is None) or (new_symbol.source_id is None):
+                print(
+                    "--------------Skipping symbol %s from migrated symbol subset"
+                    % old_symbol.name
+                )
                 continue
 
             old_source_file = self.old_binary.source_files[

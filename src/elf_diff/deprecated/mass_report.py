@@ -108,17 +108,17 @@ class MassReport(object):
                    </tr>
                 """.format(
                     short_name=binary_pair.pair_settings.short_name,
-                    code_size_old_overall=binary_pair.old_binary.progmem_size,
-                    code_size_new_overall=binary_pair.new_binary.progmem_size,
+                    code_size_old_overall=binary_pair.old_binary.symbol_sizes.progmem_size,
+                    code_size_new_overall=binary_pair.new_binary.symbol_sizes.progmem_size,
                     code_size_delta_overall=highlightNumberDelta(
-                        binary_pair.old_binary.progmem_size,
-                        binary_pair.new_binary.progmem_size,
+                        binary_pair.old_binary.symbol_sizes.progmem_size,
+                        binary_pair.new_binary.symbol_sizes.progmem_size,
                     ),
-                    static_ram_old_overall=binary_pair.old_binary.static_ram_size,
-                    static_ram_new_overall=binary_pair.new_binary.static_ram_size,
+                    static_ram_old_overall=binary_pair.old_binary.symbol_sizes.static_ram_size,
+                    static_ram_new_overall=binary_pair.new_binary.symbol_sizes.static_ram_size,
                     static_ram_change_overall=highlightNumberDelta(
-                        binary_pair.old_binary.static_ram_size,
-                        binary_pair.new_binary.static_ram_size,
+                        binary_pair.old_binary.symbol_sizes.static_ram_size,
+                        binary_pair.new_binary.symbol_sizes.static_ram_size,
                     ),
                 )
             )

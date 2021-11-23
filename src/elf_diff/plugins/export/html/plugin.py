@@ -26,7 +26,7 @@ from elf_diff.plugin import (
 from elf_diff.jinja import Configurator
 from elf_diff.symbol import Symbol
 from elf_diff.auxiliary import recursiveCopy, getDirectoryThatStoresModule
-from elf_diff.binary import SOURCE_CODE_START_TAG, SOURCE_CODE_END_TAG
+from elf_diff.instruction_collector import SOURCE_CODE_START_TAG, SOURCE_CODE_END_TAG
 from elf_diff.pair_report_document import ValueTreeNode
 from elf_diff.settings import Settings
 import os
