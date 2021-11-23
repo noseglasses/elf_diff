@@ -52,8 +52,8 @@
             "doc_title": "ELF Binary Comparison",
             "document_version": 1,
             "elf_diff_repo_root": "/home/flo/Documents/elf_diff/src/elf_diff",
-            "elf_diff_version": "205dd91c7cb87ede3a3eb2b674b6776e0c0ea6e4",
-            "generation_date": "2021-11-22 16:12:44",
+            "elf_diff_version": "93cb2745ad3c7a43e25f0af5dc0c143515af4d11",
+            "generation_date": "2021-11-23 16:35:00",
             "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses"
         },
         "new_binary_info": "",
@@ -132,39 +132,15 @@
         },
         "symbols": {
             "appeared": {
-                "33": {
+                "10": {
                     "appeared_symbol": {
                         "display_info": {
-                            "anchor_id": "33",
+                            "anchor_id": "10",
                             "display_symbol_details": true,
                             "symbol_class": "appeared"
                         },
                         "new_symbol": {
-                            "id": 33,
-                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                            "is_demangled": true,
-                            "is_stored_in_program_memory": true,
-                            "name": "func(double)",
-                            "name_mangled": "_Z4funcd",
-                            "size": 20,
-                            "source": {
-                                "column": 5,
-                                "file_id": 1,
-                                "line": 20
-                            },
-                            "type": "T"
-                        }
-                    }
-                },
-                "34": {
-                    "appeared_symbol": {
-                        "display_info": {
-                            "anchor_id": "34",
-                            "display_symbol_details": true,
-                            "symbol_class": "appeared"
-                        },
-                        "new_symbol": {
-                            "id": 34,
+                            "id": 10,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -180,15 +156,15 @@
                         }
                     }
                 },
-                "35": {
+                "11": {
                     "appeared_symbol": {
                         "display_info": {
-                            "anchor_id": "35",
+                            "anchor_id": "11",
                             "display_symbol_details": true,
                             "symbol_class": "appeared"
                         },
                         "new_symbol": {
-                            "id": 35,
+                            "id": 11,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -204,15 +180,15 @@
                         }
                     }
                 },
-                "36": {
+                "12": {
                     "appeared_symbol": {
                         "display_info": {
-                            "anchor_id": "36",
+                            "anchor_id": "12",
                             "display_symbol_details": false,
                             "symbol_class": "appeared"
                         },
                         "new_symbol": {
-                            "id": 36,
+                            "id": 12,
                             "instructions": "",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -221,24 +197,48 @@
                             "size": 4,
                             "source": {
                                 "column": 5,
-                                "file_id": null,
+                                "file_id": 1,
                                 "line": 40
                             },
                             "type": "D"
                         }
                     }
+                },
+                "9": {
+                    "appeared_symbol": {
+                        "display_info": {
+                            "anchor_id": "9",
+                            "display_symbol_details": true,
+                            "symbol_class": "appeared"
+                        },
+                        "new_symbol": {
+                            "id": 9,
+                            "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                            "is_demangled": true,
+                            "is_stored_in_program_memory": true,
+                            "name": "func(double)",
+                            "name_mangled": "_Z4funcd",
+                            "size": 20,
+                            "source": {
+                                "column": 5,
+                                "file_id": 1,
+                                "line": 20
+                            },
+                            "type": "T"
+                        }
+                    }
                 }
             },
             "disappeared": {
-                "14": {
+                "2": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "14",
+                            "anchor_id": "2",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 14,
+                            "id": 2,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -254,15 +254,15 @@
                         }
                     }
                 },
-                "15": {
+                "3": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "15",
+                            "anchor_id": "3",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 15,
+                            "id": 3,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -278,15 +278,15 @@
                         }
                     }
                 },
-                "16": {
+                "4": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "16",
+                            "anchor_id": "4",
                             "display_symbol_details": true,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 16,
+                            "id": 4,
                             "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -302,15 +302,15 @@
                         }
                     }
                 },
-                "17": {
+                "5": {
                     "disappeared_symbol": {
                         "display_info": {
-                            "anchor_id": "17",
+                            "anchor_id": "5",
                             "display_symbol_details": false,
                             "symbol_class": "disappeared"
                         },
                         "old_symbol": {
-                            "id": 17,
+                            "id": 5,
                             "instructions": "",
                             "is_demangled": true,
                             "is_stored_in_program_memory": true,
@@ -319,7 +319,7 @@
                             "size": 4,
                             "source": {
                                 "column": 5,
-                                "file_id": null,
+                                "file_id": 0,
                                 "line": 40
                             },
                             "type": "D"
@@ -328,16 +328,16 @@
                 }
             },
             "migrated": {
-                "12": {
+                "0": {
                     "migrated_symbol": {
                         "display_info": {
-                            "anchor_id": "12",
+                            "anchor_id": "0",
                             "display_symbol_details": true,
                             "symbol_class": "migrated"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 31,
+                                "id": 7,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -352,7 +352,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 12,
+                                "id": 0,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -370,16 +370,16 @@
                         }
                     }
                 },
-                "13": {
+                "1": {
                     "migrated_symbol": {
                         "display_info": {
-                            "anchor_id": "13",
+                            "anchor_id": "1",
                             "display_symbol_details": true,
                             "symbol_class": "migrated"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 32,
+                                "id": 8,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -394,7 +394,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 13,
+                                "id": 1,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -407,6 +407,48 @@
                                     "line": 43
                                 },
                                 "type": "T"
+                            },
+                            "size_delta": 0
+                        }
+                    }
+                },
+                "6": {
+                    "migrated_symbol": {
+                        "display_info": {
+                            "anchor_id": "6",
+                            "display_symbol_details": false,
+                            "symbol_class": "migrated"
+                        },
+                        "related_symbols": {
+                            "new_symbol": {
+                                "id": 13,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "var",
+                                "name_mangled": "var",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 1,
+                                    "line": 24
+                                },
+                                "type": "D"
+                            },
+                            "old_symbol": {
+                                "id": 6,
+                                "instructions": "",
+                                "is_demangled": true,
+                                "is_stored_in_program_memory": true,
+                                "name": "var",
+                                "name_mangled": "var",
+                                "size": 4,
+                                "source": {
+                                    "column": 5,
+                                    "file_id": 0,
+                                    "line": 24
+                                },
+                                "type": "D"
                             },
                             "size_delta": 0
                         }
@@ -414,60 +456,9 @@
                 }
             },
             "new": {
-                "31": {
+                "10": {
                     "new_symbol": {
-                        "id": 31,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "persisting1(int)",
-                        "name_mangled": "_Z11persisting1i",
-                        "size": 18,
-                        "source": {
-                            "column": 5,
-                            "file_id": 1,
-                            "line": 42
-                        },
-                        "type": "T"
-                    }
-                },
-                "32": {
-                    "new_symbol": {
-                        "id": 32,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "persisting2(int)",
-                        "name_mangled": "_Z11persisting2i",
-                        "size": 18,
-                        "source": {
-                            "column": 5,
-                            "file_id": 1,
-                            "line": 43
-                        },
-                        "type": "T"
-                    }
-                },
-                "33": {
-                    "new_symbol": {
-                        "id": 33,
-                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
-                        "is_demangled": true,
-                        "is_stored_in_program_memory": true,
-                        "name": "func(double)",
-                        "name_mangled": "_Z4funcd",
-                        "size": 20,
-                        "source": {
-                            "column": 5,
-                            "file_id": 1,
-                            "line": 20
-                        },
-                        "type": "T"
-                    }
-                },
-                "34": {
-                    "new_symbol": {
-                        "id": 34,
+                        "id": 10,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -482,9 +473,9 @@
                         "type": "T"
                     }
                 },
-                "35": {
+                "11": {
                     "new_symbol": {
-                        "id": 35,
+                        "id": 11,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -499,9 +490,9 @@
                         "type": "T"
                     }
                 },
-                "36": {
+                "12": {
                     "new_symbol": {
-                        "id": 36,
+                        "id": 12,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -510,15 +501,15 @@
                         "size": 4,
                         "source": {
                             "column": 5,
-                            "file_id": null,
+                            "file_id": 1,
                             "line": 40
                         },
                         "type": "D"
                     }
                 },
-                "37": {
+                "13": {
                     "new_symbol": {
-                        "id": 37,
+                        "id": 13,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -526,18 +517,69 @@
                         "name_mangled": "var",
                         "size": 4,
                         "source": {
-                            "column": null,
-                            "file_id": null,
-                            "line": null
+                            "column": 5,
+                            "file_id": 1,
+                            "line": 24
                         },
                         "type": "D"
+                    }
+                },
+                "7": {
+                    "new_symbol": {
+                        "id": 7,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting1(int)",
+                        "name_mangled": "_Z11persisting1i",
+                        "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 1,
+                            "line": 42
+                        },
+                        "type": "T"
+                    }
+                },
+                "8": {
+                    "new_symbol": {
+                        "id": 8,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "persisting2(int)",
+                        "name_mangled": "_Z11persisting2i",
+                        "size": 18,
+                        "source": {
+                            "column": 5,
+                            "file_id": 1,
+                            "line": 43
+                        },
+                        "type": "T"
+                    }
+                },
+                "9": {
+                    "new_symbol": {
+                        "id": 9,
+                        "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
+                        "is_demangled": true,
+                        "is_stored_in_program_memory": true,
+                        "name": "func(double)",
+                        "name_mangled": "_Z4funcd",
+                        "size": 20,
+                        "source": {
+                            "column": 5,
+                            "file_id": 1,
+                            "line": 20
+                        },
+                        "type": "T"
                     }
                 }
             },
             "old": {
-                "12": {
+                "0": {
                     "old_symbol": {
-                        "id": 12,
+                        "id": 0,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -552,9 +594,9 @@
                         "type": "T"
                     }
                 },
-                "13": {
+                "1": {
                     "old_symbol": {
-                        "id": 13,
+                        "id": 1,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -569,9 +611,9 @@
                         "type": "T"
                     }
                 },
-                "14": {
+                "2": {
                     "old_symbol": {
-                        "id": 14,
+                        "id": 2,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -586,9 +628,9 @@
                         "type": "T"
                     }
                 },
-                "15": {
+                "3": {
                     "old_symbol": {
-                        "id": 15,
+                        "id": 3,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -603,9 +645,9 @@
                         "type": "T"
                     }
                 },
-                "16": {
+                "4": {
                     "old_symbol": {
-                        "id": 16,
+                        "id": 4,
                         "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -620,9 +662,9 @@
                         "type": "T"
                     }
                 },
-                "17": {
+                "5": {
                     "old_symbol": {
-                        "id": 17,
+                        "id": 5,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -631,15 +673,15 @@
                         "size": 4,
                         "source": {
                             "column": 5,
-                            "file_id": null,
+                            "file_id": 0,
                             "line": 40
                         },
                         "type": "D"
                     }
                 },
-                "18": {
+                "6": {
                     "old_symbol": {
-                        "id": 18,
+                        "id": 6,
                         "instructions": "",
                         "is_demangled": true,
                         "is_stored_in_program_memory": true,
@@ -647,25 +689,25 @@
                         "name_mangled": "var",
                         "size": 4,
                         "source": {
-                            "column": null,
-                            "file_id": null,
-                            "line": null
+                            "column": 5,
+                            "file_id": 0,
+                            "line": 24
                         },
                         "type": "D"
                     }
                 }
             },
             "persisting": {
-                "12": {
+                "0": {
                     "persisting_symbol": {
                         "display_info": {
-                            "anchor_id": "12",
+                            "anchor_id": "0",
                             "display_symbol_details": true,
                             "symbol_class": "persisting"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 31,
+                                "id": 7,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -680,7 +722,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 12,
+                                "id": 0,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -698,16 +740,16 @@
                         }
                     }
                 },
-                "13": {
+                "1": {
                     "persisting_symbol": {
                         "display_info": {
-                            "anchor_id": "13",
+                            "anchor_id": "1",
                             "display_symbol_details": true,
                             "symbol_class": "persisting"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 32,
+                                "id": 8,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -722,7 +764,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 13,
+                                "id": 1,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2b,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -740,16 +782,16 @@
                         }
                     }
                 },
-                "18": {
+                "6": {
                     "persisting_symbol": {
                         "display_info": {
-                            "anchor_id": "18",
+                            "anchor_id": "6",
                             "display_symbol_details": false,
                             "symbol_class": "persisting"
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 37,
+                                "id": 13,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -757,14 +799,14 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": null,
-                                    "file_id": null,
-                                    "line": null
+                                    "column": 5,
+                                    "file_id": 1,
+                                    "line": 24
                                 },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 18,
+                                "id": 6,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -772,9 +814,9 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": null,
-                                    "file_id": null,
-                                    "line": null
+                                    "column": 5,
+                                    "file_id": 0,
+                                    "line": 24
                                 },
                                 "type": "D"
                             },
@@ -787,7 +829,7 @@
                 "0": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "15",
+                            "anchor_id": "3",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
@@ -800,7 +842,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 34,
+                                "id": 10,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -815,7 +857,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 15,
+                                "id": 3,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -840,7 +882,7 @@
                 "1": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "16",
+                            "anchor_id": "4",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
@@ -853,7 +895,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 35,
+                                "id": 11,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -868,7 +910,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 16,
+                                "id": 4,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -893,7 +935,7 @@
                 "2": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "17",
+                            "anchor_id": "5",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -906,7 +948,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 36,
+                                "id": 12,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -915,13 +957,13 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 1,
                                     "line": 40
                                 },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 17,
+                                "id": 5,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -930,7 +972,7 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 0,
                                     "line": 40
                                 },
                                 "type": "D"
@@ -946,7 +988,7 @@
                 "3": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "14",
+                            "anchor_id": "2",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
@@ -959,7 +1001,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 33,
+                                "id": 9,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmovsd  %xmm0,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -974,7 +1016,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 14,
+                                "id": 2,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -999,7 +1041,7 @@
                 "4": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "15",
+                            "anchor_id": "3",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -1012,7 +1054,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 36,
+                                "id": 12,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1021,13 +1063,13 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 1,
                                     "line": 40
                                 },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 15,
+                                "id": 3,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1052,7 +1094,7 @@
                 "5": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "16",
+                            "anchor_id": "4",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -1065,7 +1107,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 36,
+                                "id": 12,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1074,13 +1116,13 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 1,
                                     "line": 40
                                 },
                                 "type": "D"
                             },
                             "old_symbol": {
-                                "id": 16,
+                                "id": 4,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1105,7 +1147,7 @@
                 "6": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "15",
+                            "anchor_id": "3",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
@@ -1118,7 +1160,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 35,
+                                "id": 11,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1133,7 +1175,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 15,
+                                "id": 3,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1158,7 +1200,7 @@
                 "7": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "16",
+                            "anchor_id": "4",
                             "display_symbol_details": true,
                             "symbol_class": "similar"
                         },
@@ -1171,7 +1213,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 34,
+                                "id": 10,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1186,7 +1228,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 16,
+                                "id": 4,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1211,7 +1253,7 @@
                 "8": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "17",
+                            "anchor_id": "5",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -1224,7 +1266,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 35,
+                                "id": 11,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %rdi,-0x8(%rbp)\nmovss  %xmm0,-0xc(%rbp)\nmovss  %xmm1,-0x10(%rbp)\nmov    $0x1,%eax\npop    %rbp\nret\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1239,7 +1281,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 17,
+                                "id": 5,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1248,7 +1290,7 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 0,
                                     "line": 40
                                 },
                                 "type": "D"
@@ -1264,7 +1306,7 @@
                 "9": {
                     "similar_symbols": {
                         "display_info": {
-                            "anchor_id": "17",
+                            "anchor_id": "5",
                             "display_symbol_details": false,
                             "symbol_class": "similar"
                         },
@@ -1277,7 +1319,7 @@
                         },
                         "related_symbols": {
                             "new_symbol": {
-                                "id": 34,
+                                "id": 10,
                                 "instructions": "endbr64\npush   %rbp\nmov    %rsp,%rbp\nmov    %edi,-0x4(%rbp)\nmov    %esi,-0x8(%rbp)\nmov    $0x2a,%eax\npop    %rbp\nret\nnop\n",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1292,7 +1334,7 @@
                                 "type": "T"
                             },
                             "old_symbol": {
-                                "id": 17,
+                                "id": 5,
                                 "instructions": "",
                                 "is_demangled": true,
                                 "is_stored_in_program_memory": true,
@@ -1301,7 +1343,7 @@
                                 "size": 4,
                                 "source": {
                                     "column": 5,
-                                    "file_id": null,
+                                    "file_id": 0,
                                     "line": 40
                                 },
                                 "type": "D"
