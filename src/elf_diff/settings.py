@@ -20,11 +20,10 @@
 #
 
 from elf_diff.binary_pair_settings import BinaryPairSettings
-from elf_diff.error_handling import warning
+from elf_diff.binutils import Binutils
 
 import sys
 import os
-import shutil
 import argparse
 import yaml
 import datetime
@@ -42,6 +41,7 @@ class Parameter(object):
         no_cmd_line: bool = False,
         is_flag: bool = False,
         action: Optional[str] = None,
+        no_member: bool = False,
     ):
         """Initialize parameter class."""
         self.name = name
@@ -52,6 +52,7 @@ class Parameter(object):
         self.no_cmd_line = no_cmd_line
         self.is_flag = is_flag
         self.action = action
+        self.no_member = no_member
 
 
 GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
@@ -134,13 +135,26 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
             default="",
         ),
         Parameter(
-            "objdump_command", "Full path to the objdump untility.", default=None
+            "objdump_command",
+            "Full path to the objdump untility.",
+            default=None,
+            no_member=True,
         ),
-        Parameter("nm_command", "Full path to the nm untility.", default=None),
         Parameter(
-            "readelf_command", "Full path to the readelf untility.", default=None
+            "nm_command", "Full path to the nm untility.", default=None, no_member=True
         ),
-        Parameter("size_command", "Full path to the size untility.", default=None),
+        Parameter(
+            "readelf_command",
+            "Full path to the readelf untility.",
+            default=None,
+            no_member=True,
+        ),
+        Parameter(
+            "size_command",
+            "Full path to the size untility.",
+            default=None,
+            no_member=True,
+        ),
     ],
     "Mangling": [
         Parameter(
@@ -310,6 +324,8 @@ class Settings(object):
         self.list_default_plugins: bool
         self.debug: bool
 
+        self.binutils = Binutils()
+
         self._presetDefaults()
 
         cmd_line_args = Settings._parseCommandLineArgs()
@@ -333,7 +349,8 @@ class Settings(object):
         self.mass_report_members: List[BinaryPairSettings] = []
 
         for parameter in PARAMETERS:
-            setattr(self, parameter.name, parameter.default)
+            if not parameter.no_member:
+                setattr(self, parameter.name, parameter.default)
 
     @staticmethod
     def _addParameterToGroup(
@@ -424,13 +441,18 @@ class Settings(object):
                 raise Exception(exc)
 
         for parameter in PARAMETERS:
-            if parameter.name in my_yaml.keys():
+            if (parameter.name in my_yaml.keys()) and (not parameter.no_member):
                 setattr(self, parameter.name, my_yaml[parameter.name])
+
+        # Important: To make self.bin_prefix available all other parameters
+        #            must have been read from the yaml file already.
+        self.binutils.initialize(
+            my_yaml, bin_prefix=self.bin_prefix, bin_dir=self.bin_dir
+        )
 
         # Read binary pairs
 
         if "binary_pairs" in my_yaml.keys():
-
             bin_pair_id: int = 1
 
             for data_set in my_yaml["binary_pairs"]:
@@ -468,8 +490,14 @@ class Settings(object):
             if hasattr(cmd_line_args, parameter.name):
                 value = getattr(cmd_line_args, parameter.name)
 
-                if value != parameter.default:
+                if (value != parameter.default) and (not parameter.no_member):
                     setattr(self, parameter.name, value)
+
+        # Important: To make self.bin_prefix available the command line arguments for
+        #            all other parameters must have been read from the yaml file already.
+        self.binutils.initialize(
+            cmd_line_args.__dict__, bin_prefix=self.bin_prefix, bin_dir=self.bin_dir
+        )
 
         if len(cmd_line_args.binaries) == 0:
             pass
@@ -485,61 +513,6 @@ class Settings(object):
                 self.new_binary_filename = cmd_line_args.binaries[1]
         else:
             raise Exception("Please specify either none or two binaries")
-
-    def _findUtilityInBinDir(
-        self, name: str, exe_extensions: List[str]
-    ) -> Optional[str]:
-        for exe_extension in exe_extensions:
-            basename: str = self.bin_prefix + name + exe_extension
-
-            if self.bin_dir is not None:
-                command = os.path.join(self.bin_dir, basename)
-                if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
-                    return command
-        return None
-
-    def _findUtilityUsingWhich(
-        self, name: str, exe_extensions: List[str]
-    ) -> Optional[str]:
-        for exe_extension in exe_extensions:
-            basename = self.bin_prefix + name + exe_extension
-            command = shutil.which(basename)
-            if (
-                (command is not None)
-                and (os.path.isfile(command))
-                and (os.access(command, os.X_OK))
-            ):
-                return command
-        return None
-
-    def findUtility(self, name: str) -> None:
-        """Find a utility and set a attribute of this class to the path of the utility executable"""
-        command_name: str = name + "_command"
-        command: Optional[str] = getattr(self, command_name)
-        if command is not None:
-            if (os.path.isfile(command)) and (os.access(command, os.X_OK)):
-                return
-            warning(f"Unable to find predefined {command_name} = {command}")
-
-        exe_extensions: List[str]
-        if os.name == "nt":
-            exe_extensions = [".exe", ""]
-        else:
-            exe_extensions = ["", ".exe"]
-
-        command = self._findUtilityInBinDir(name, exe_extensions)
-
-        if command is not None:
-            setattr(self, command_name, command)
-            return
-
-        command = self._findUtilityUsingWhich(name, exe_extensions)
-
-        if command is not None:
-            setattr(self, command_name, command)
-            return
-
-        raise Exception(f"Unnable to find {name} command")
 
     def _validateBinaries(self) -> None:
         """Validate and initialize the settings"""
@@ -588,35 +561,34 @@ class Settings(object):
     def _validateAndInitSettings(self) -> None:
         self._validateBinaries()
 
-        self.findUtility("objdump")
-        self.findUtility("nm")
-        self.findUtility("readelf")
-        self.findUtility("size")
-
-        print("Tools:")
-        print(f"   objdump: {self.objdump_command}")
-        print(f"   nm:      {self.nm_command}")
-        print(f"   readelf:      {self.readelf_command}")
-        print(f"   size:    {self.size_command}")
-
         self._prepareInfoFiles()
         self._prepareAlias()
+
+    @staticmethod
+    def _writeTemplateFileValue(file_, name: str, value: Any):
+        file_.write("# {desc}\n".format(desc=parameter.description))
+        file_.write("#\n")
+        file_.write('{name}: "{value}"\n'.format(name=parameter.name, value=value))
+        file_.write("\n")
 
     def writeParameterTemplateFile(
         self, filename: str, output_actual_values: bool = False
     ) -> None:
         """Write a template file with all existing parameters"""
-        with open(filename, "w") as f:
+        with open(filename, "w") as file_:
 
-            f.write("# This is an auto generated elf_diff driver file\n")
-            f.write(
+            file_.write("# This is an auto generated elf_diff driver file\n")
+            file_.write(
                 "# Generated by elf_diff {date}\n".format(
                     date=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 )
             )
-            f.write("\n")
+            file_.write("\n")
 
             for parameter in PARAMETERS:
+
+                if parameter.no_member:
+                    continue
 
                 if output_actual_values:
                     value = getattr(self, parameter.name)
@@ -626,10 +598,15 @@ class Settings(object):
                 else:
                     value = parameter.default
 
-                f.write("# {desc}\n".format(desc=parameter.description))
-                f.write("#\n")
-                f.write('{name}: "{value}"\n'.format(name=parameter.name, value=value))
-                f.write("\n")
+                Settings._writeTemplateFileValue(
+                    file_=file_, name=parameter.name, value=value
+                )
+
+            for command in Binutils.COMMANDS:
+                name = "%s_command" % command
+                value = getattr(self.binutils, name)
+
+                Settings._writeTemplateFileValue(file_=file_, name=name, value=value)
 
     def isFirmwareBinaryDefined(self) -> bool:
         """Check if any firmware binary is defined"""

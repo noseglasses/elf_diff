@@ -1002,11 +1002,11 @@ class MetaDocument(Node):
             persisting_symbols_overall_size_new += new_symbol.size
             persisting_symbols_overall_size_difference += size_difference
 
-        symbol_selection_regex_old: str = old_binary.symbol_selection_regex or ".*"
-        symbol_selection_regex_new: str = new_binary.symbol_selection_regex or ".*"
+        symbol_selection_regex_old: str = settings.symbol_selection_regex_old or ".*"
+        symbol_selection_regex_new: str = settings.symbol_selection_regex_new or ".*"
 
-        symbol_exclusion_regex_old: str = old_binary.symbol_exclusion_regex or ""
-        symbol_exclusion_regex_new: str = new_binary.symbol_exclusion_regex or ""
+        symbol_exclusion_regex_old: str = settings.symbol_exclusion_regex_old or ""
+        symbol_exclusion_regex_new: str = settings.symbol_exclusion_regex_new or ""
 
         display_build_info = True
         if settings.build_info == "":
@@ -1034,10 +1034,10 @@ class MetaDocument(Node):
             not settings.skip_symbol_similarities
         )
         document.configuration.display_migrated_symbols = (
-            self.binary_pair.migrated_symbols_avilable
+            self.binary_pair.migrated_symbols_available
         )
         document.configuration.display_migrated_symbols_overview = (
-            self.binary_pair.migrated_symbols_avilable
+            self.binary_pair.migrated_symbols_available
         )
         document.files.input.old.binary_path = settings.old_alias
         document.files.input.new.binary_path = settings.new_alias
@@ -1058,38 +1058,51 @@ class MetaDocument(Node):
         document.new_binary_info = settings.new_binary_info
         document.old_binary_info = settings.old_binary_info
         document.statistics.overall.delta.resource_consumption.bss = (
-            new_binary.bss_size - old_binary.bss_size
+            new_binary.symbol_sizes.bss_size - old_binary.symbol_sizes.bss_size
         )
         document.statistics.overall.delta.resource_consumption.code = (
-            new_binary.progmem_size - old_binary.progmem_size
+            new_binary.symbol_sizes.progmem_size - old_binary.symbol_sizes.progmem_size
         )
         document.statistics.overall.delta.resource_consumption.data = (
-            new_binary.data_size - new_binary.data_size
+            new_binary.symbol_sizes.data_size - new_binary.symbol_sizes.data_size
         )
         document.statistics.overall.delta.resource_consumption.static_ram = (
-            new_binary.static_ram_size - old_binary.static_ram_size
+            new_binary.symbol_sizes.static_ram_size
+            - old_binary.symbol_sizes.static_ram_size
         )
         document.statistics.overall.delta.resource_consumption.text = (
-            new_binary.text_size - old_binary.text_size
+            new_binary.symbol_sizes.text_size - old_binary.symbol_sizes.text_size
         )
-        document.statistics.overall.new.resource_consumption.bss = new_binary.bss_size
+        document.statistics.overall.new.resource_consumption.bss = (
+            new_binary.symbol_sizes.bss_size
+        )
         document.statistics.overall.new.resource_consumption.code = (
-            new_binary.progmem_size
+            new_binary.symbol_sizes.progmem_size
         )
-        document.statistics.overall.new.resource_consumption.data = new_binary.data_size
+        document.statistics.overall.new.resource_consumption.data = (
+            new_binary.symbol_sizes.data_size
+        )
         document.statistics.overall.new.resource_consumption.static_ram = (
-            new_binary.static_ram_size
+            new_binary.symbol_sizes.static_ram_size
         )
-        document.statistics.overall.new.resource_consumption.text = new_binary.text_size
-        document.statistics.overall.old.resource_consumption.bss = old_binary.bss_size
+        document.statistics.overall.new.resource_consumption.text = (
+            new_binary.symbol_sizes.text_size
+        )
+        document.statistics.overall.old.resource_consumption.bss = (
+            old_binary.symbol_sizes.bss_size
+        )
         document.statistics.overall.old.resource_consumption.code = (
-            old_binary.progmem_size
+            old_binary.symbol_sizes.progmem_size
         )
-        document.statistics.overall.old.resource_consumption.data = old_binary.data_size
+        document.statistics.overall.old.resource_consumption.data = (
+            old_binary.symbol_sizes.data_size
+        )
         document.statistics.overall.old.resource_consumption.static_ram = (
-            old_binary.static_ram_size
+            old_binary.symbol_sizes.static_ram_size
         )
-        document.statistics.overall.old.resource_consumption.text = old_binary.text_size
+        document.statistics.overall.old.resource_consumption.text = (
+            old_binary.symbol_sizes.text_size
+        )
         document.statistics.symbols.appeared.count = (
             self.binary_pair.num_symbols_appeared
         )
