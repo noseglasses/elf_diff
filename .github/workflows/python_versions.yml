@@ -29,11 +29,7 @@ jobs:
     - name: Prepare tests
       run: |
         mkdir test_output
-    - name: Command line args test
+    - name: Run tests
       run: |
         cd test_output
-        python3 ../tests/test.py
-    - name: Symbol unit tests
-      run: |
-        cd test_output
-        python3 ../tests/test_cpp_symbols.py
+        python3 ../tests/test_main.py

@@ -117,11 +117,6 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
             default=False,
             is_flag=True,
         ),
-        Parameter(
-            "html_template_dir",
-            "A directory that contains template html files. Defaults to elf_diff's own html directory.",
-            no_cmd_line=True,
-        ),
     ],
     "Binutils": [
         Parameter(
@@ -302,7 +297,6 @@ class Settings(object):
         self.project_title: str
         self.driver_file: str
         self.driver_template_file: str
-        self.html_template_dir: str
         self.dump_document_structure: bool
         self.mass_report: bool
         self.language: str

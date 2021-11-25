@@ -28,16 +28,11 @@ jobs:
     - name: Prepare tests
       run: |
         mkdir test_output
-    - name: Command line args test
+    - name: Run tests
       run: |
         export COVERAGE_RCFILE=$PWD/.coveragerc
         cd test_output
-        python3 -m coverage run --branch --parallel-mode ../tests/test.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
-    - name: Symbol unit tests
-      run: |
-        export COVERAGE_RCFILE=$PWD/.coveragerc
-        cd test_output
-        python3 -m coverage run --branch --parallel-mode ../tests/test_cpp_symbols.py
+        python3 -m coverage run --branch --parallel-mode ../tests/test_main.py -c # This uses the coverage module under the hood to gain coverage info of invoked subprocesses
     - name: Combine coverage
       run: |
         export COVERAGE_RCFILE=$PWD/.coveragerc
@@ -89,5 +84,4 @@ jobs:
         export PATH="${PATH}:/c/tools/msys64/mingw64/bin:/c/msys64/usr/bin" # Ensure that gtk3 dlls are found
         mkdir test_output
         cd test_output
-        python ../tests/test.py
-        python ../tests/test_cpp_symbols.py
+        python ../tests/test_main.py

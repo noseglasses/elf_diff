@@ -111,10 +111,10 @@ int persisting2(int a) { return 42; }
 </tr>
 </table>
 
-Compiled and linked version of the two above code snippets can be found in the `tests` subdirectory of _elf_diff_ git repository. To generate a multi page pair report from these files, please install the _elf_diff_ Python packages as described in the installation section of this document. Then enter the following in a console on a Linux system. Please replace the placeholder `<elf_diff sandbox>` with the absolute path of your local _elf_diff_ sandbox.
+Compiled and linked version of the two above code snippets can be found in the plaform specific subdirectories of the `tests` subdirectory of _elf_diff_ git repository. To generate a multi page pair report from these files, please install the _elf_diff_ Python packages as described in the installation section of this document. Then enter the following in a console on a Linux system. Please replace the placeholder `<elf_diff sandbox>` with the absolute path of your local _elf_diff_ sandbox.
 
 ```sh
-python3 -m elf_diff --html_dir report <elf_diff sandbox>/tests/libelf_diff_test_debug_old.a <elf_diff sandbox>/tests/libelf_diff_test_debug_new.a
+python3 -m elf_diff --html_dir report <elf_diff sandbox>/tests/x86_64/libelf_diff_test_debug_old.a <elf_diff sandbox>/tests/x86_64/libelf_diff_test_debug_new.a
 ```
 
 By means of its self contained HTML reports _elf_diff_ allows for conveniently analyzing the similarities and differences between the symbols contained
@@ -511,21 +511,22 @@ _elf_diff_ comes with a number of tests in the `tests` subdirectory of its git r
 Some tests are unit tests others integration tests that run _elf_diff_ through
 its CLI by supplying different command line parameter sets.
 
-This section explains what tests are there and how they can be run.
-
-### Unit Tests
-
-To run unit tests do the following.
+To run the entire test bench do the following.
 
 ```sh
 cd <repo root>
-python3 ./tests/test_cpp_symbols.py
+python3 ./tests/test_main.py
 ```
 
-### Integration Tests
+### Running Individual Test Cases
+
+Test cases reside in the directory `tests/test_cases` of _elf_diff_'s git repository.
+
+To run individual tests, run the test driver and submit one or more tests using the command line arguments `-t`. To run e.g. the test case `test_command_line_args`, do as follows:
+
 ```sh
 cd <repo root>
-python3 ./tests/test.py
+python3 ./tests/test_main.py -t test_command_line_args
 ```
 
 ## Examples
