@@ -18,26 +18,14 @@
 # You should have received a copy of the GNU General Public License along with along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 #
-
-import unittest
-import os
-import sys
-from typing import Optional
-
-
-def prepareSearchPath() -> None:
-    """Prepare the module search path in order to load elf_diff modules"""
-    module_dir = os.path.dirname(sys.modules[__name__].__file__)
-    sys.path.append(os.path.join(module_dir, "..", "src"))
-
-
-prepareSearchPath()
-
 from elf_diff.symbol import Symbol
 from elf_diff.symbol import CppSymbol
 
+import unittest
+from typing import Optional
 
-class TestCppSymbol(unittest.TestCase):
+
+class TestCppSymbols(unittest.TestCase):
     class _RAIITestAux(CppSymbol):
         def __init__(self, master_test):
             self.master_test = master_test
@@ -180,7 +168,3 @@ class TestCppSymbol(unittest.TestCase):
             test.namespace = "n::c"
             test.template_parameters = self.template_parameters
             test.run()
-
-
-if __name__ == "__main__":
-    unittest.main()
