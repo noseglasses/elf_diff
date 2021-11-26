@@ -39,6 +39,7 @@ class ElfDiffCommandLineArgsWatcher(object):
             str
         ] = ElfDiffCommandLineArgsWatcher._prepareArgsAvailable()
         self.args_tested: Set[str] = set()
+        self.unknown_args: Set[str] = set()
 
     @staticmethod
     def _prepareArgsAvailable() -> Set[str]:
@@ -47,21 +48,32 @@ class ElfDiffCommandLineArgsWatcher(object):
             args_available.add(parameter.name)
         return args_available
 
-    def considerArgUnsed(self, key: str) -> None:
-        self.args_tested.add(key)
+    def considerArgTested(self, key: str) -> None:
+        if key in self.args_available:
+            self.args_tested.add(key)
+        else:
+            self.unknown_args.add(key)
 
     def testIfAllArgsUsedAtLeastOnce(self) -> None:
         """Test if all elf_diff command line args are at least used once while testing"""
-        print("Args available: " + str(len(self.args_available)))
-        print("Args tested: " + str(len(self.args_tested)))
-        args_not_tested: Set[str] = self.args_available - self.args_tested
+        print("Args available: %s" % len(self.args_available))
+        print("Args tested: %s" % len(self.args_tested))
+        for arg in self.args_tested:
+            print(f"   {arg}")
 
+        if len(self.unknown_args) > 0:
+            print("Unknown args: %s" % len(self.unknown_args))
+            for arg in self.unknown_args:
+                print(f"   {arg}")
+
+        args_not_tested: Set[str] = self.args_available - self.args_tested
         if len(args_not_tested) > 0:
             print("Command line args not tested:")
             for arg_not_tested in sorted(args_not_tested):
                 print(f"   {arg_not_tested}")
 
-        assert len(args_not_tested) == 0
+        if len(args_not_tested) != 0:
+            raise Exception("Not all elf_diff command line arguments tested")
 
         print("All elf_diff command lines tested.")
 

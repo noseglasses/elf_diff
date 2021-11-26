@@ -59,7 +59,7 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
         TestCommandLineArgs.ELF_DIFF_COMMAND_LINE_ARGS_WATCHER.testIfAllArgsUsedAtLeastOnce()
 
     def registerArgUsed(self, key: str, value: Optional[str]) -> None:
-        TestCommandLineArgs.ELF_DIFF_COMMAND_LINE_ARGS_WATCHER.considerArgUnsed(key)
+        TestCommandLineArgs.ELF_DIFF_COMMAND_LINE_ARGS_WATCHER.considerArgTested(key)
 
     def test_run_elf_diff_without_debug(self):
         # By resetting the default args, we make sure that the --debug flag is removed
@@ -122,7 +122,7 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
             f.write("html_dir: '" + html_dir + "'\n")
             f.write("pdf_file: '" + pdf_file + "'\n")
             f.write("project_title: '" + "Project title'\n")
-            f.write("elf_diff_test_template_file: '" + template_file + "'\n")
+            f.write("driver_template_file: '" + template_file + "'\n")
 
         self.runElfDiff(args=[("driver_file", elf_diff_test_yaml_file)])
 
@@ -132,12 +132,10 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
         self.assertTrue(os.path.isfile(html_file))
         self.assertTrue(os.path.isfile(template_file))
 
-    def test_elf_diff_test_template_file(self):
-        elf_diff_test_template_file = "elf_diff_test_template.yml"
-        self.runSimpleTest(
-            [("elf_diff_test_template_file", elf_diff_test_template_file)]
-        )
-        self.assertTrue(os.path.isfile(elf_diff_test_template_file))
+    def test_driver_template_file(self):
+        driver_template_file = "elf_diff_test_template.yml"
+        self.runSimpleTest([("driver_template_file", driver_template_file)])
+        self.assertTrue(os.path.isfile(driver_template_file))
 
     def test_dump_document_structure(self):
         self.runSimpleTest([("dump_document_structure", None)])
@@ -251,7 +249,7 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
             f.write("html_file: '" + html_file + "'\n")
             f.write("pdf_file: '" + pdf_file + "'\n")
             f.write("project_title: 'Project title'\n")
-            f.write("elf_diff_test_template_file: '" + template_file + "'\n")
+            f.write("driver_template_file: '" + template_file + "'\n")
 
             f.write("binary_pairs:\n")
             f.write(
