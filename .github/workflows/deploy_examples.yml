@@ -27,11 +27,15 @@ jobs:
         python3 ../../bin/elf_diff \
           --html_dir pair_report_multi_page \
           --old_binary ../../tests/x86_64/libelf_diff_test_debug_old.a \
-          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a
+          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a \
+          --old_source_prefix "src/old/" \
+          --new_source_prefix "src/new/"
         python3 ../../bin/elf_diff \
           --html_file pair_report_output.html \
           --old_binary ../../tests/x86_64/libelf_diff_test_debug_old.a \
-          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a
+          --new_binary ../../tests/x86_64/libelf_diff_test_debug_new.a \
+          --old_source_prefix "src/old/" \
+          --new_source_prefix "src/new/"
     - name: Examples
       run: |
         mkdir -p example_output/simple2
@@ -39,11 +43,15 @@ jobs:
         python3 ../../bin/elf_diff \
           --html_dir pair_report_multi_page \
           --old_binary ../../tests/x86_64/libelf_diff_test2_debug_old.a \
-          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a
+          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a \
+          --old_source_prefix "src/old/" \
+          --new_source_prefix "src/new/"
         python3 ../../bin/elf_diff \
           --html_file pair_report_output.html \
           --old_binary ../../tests/x86_64/libelf_diff_test2_debug_old.a \
-          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a
+          --new_binary ../../tests/x86_64/libelf_diff_test2_debug_new.a \
+          --old_source_prefix "src/old/" \
+          --new_source_prefix "src/new/"
     - name: Prepare Example Deploy 1
       run: |
         mkdir -p example_deploy/examples/simple
