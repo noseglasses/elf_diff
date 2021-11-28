@@ -31,6 +31,10 @@ unchanged
 {%- endif %}
 {%- endmacro -%}
 
+{%- macro highlighted_delta(value) -%}
+<span class="{{ highlighting_css_class(value) }} number">{{ value }}</span>
+{%- endmacro -%}
+
 {%- macro overview_anchor(symbol_class, id) -%}
 {{symbol_class}}_symbol_overview_{{id}}
 {%- endmacro -%}
