@@ -57,6 +57,8 @@ class Binary(object):
 
         self._mangling: Optional[Mangling] = mangling
 
+        self._source_prefix = source_prefix
+
         self.symbol_sizes = SymbolSizes(filename, settings.binutils)
 
         if self.symbol_sizes is None:
@@ -114,7 +116,7 @@ class Binary(object):
     def _gatherDebugInformation(self) -> None:
         """If possible, gather the debug information stored in Dwarf sections in the elf file"""
         debug_information_collector = DebugInformationCollector(
-            symbols=self.symbols, source_prefix=self._settings.source_prefix
+            symbols=self.symbols, source_prefix=self._source_prefix
         )
         debug_information_collector.gatherDebugInformation(
             filename=self.filename, binutils=self._settings.binutils
