@@ -1694,100 +1694,7 @@ table.bin_col td:nth-child(3) {
 
   
   <H3><a id="symbols_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
-  
-
-
-
-
-
-
-
-
-<table class="sortable migrated_symbols">
-  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
-  <tbody>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  <a name="migrated_symbol_overview_0"></a><a href="#migrated_symbol_details_0"  >
-		  
-		  persisting1(int) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:42:5
-		</td>
-		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:42:5
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  <a name="migrated_symbol_overview_1"></a><a href="#migrated_symbol_details_1"  >
-		  
-		  persisting2(int) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:43:5
-		</td>
-		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:43:5
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  var 
-      
-		</td>
-		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:24:5
-		</td>
-		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:24:5
-		</td>
-		</tr>
-		
-  </tbody>
-</table>
-
-<p>
-<b>Please Note:</b> Use the settings <i>source_prefix</i>, <i>old_source_prefix</i> or <i>new_source_prefix</i> to eliminate false positives by removing path prefix from source file paths.
-</p>
-
-<H4>Columns</H4>
-<table>
-  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
-	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
-	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
-</table>
-
+  No migrated symbols
    <p>
   
 
@@ -1827,8 +1734,8 @@ persisting1(int)
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: src/old/test.cpp:42:5<br>
-New source: src/new/test.cpp:42:5
+Old source: test.cpp:42:5<br>
+New source: test.cpp:42:5
 </p>
 </span>
 
@@ -1876,8 +1783,8 @@ persisting2(int)
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: src/old/test.cpp:43:5<br>
-New source: src/new/test.cpp:43:5
+Old source: test.cpp:43:5<br>
+New source: test.cpp:43:5
 </p>
 </span>
 
@@ -1926,7 +1833,7 @@ func(int)
 <p>
 Source:
 
-src/old/test.cpp:20:5
+test.cpp:20:5
 
 </p>
 </span>
@@ -1965,7 +1872,7 @@ Test::f(int, int)
 <p>
 Source:
 
-src/old/test.cpp:29:18
+test.cpp:29:18
 
 </p>
 </span>
@@ -2006,7 +1913,7 @@ Test::g(float, float)
 <p>
 Source:
 
-src/old/test.cpp:30:11
+test.cpp:30:11
 
 </p>
 </span>
@@ -2049,7 +1956,7 @@ func(double)
 <p>
 Source:
 
-src/new/test.cpp:20:5
+test.cpp:20:5
 
 </p>
 </span>
@@ -2088,7 +1995,7 @@ Test1::f(int, int)
 <p>
 Source:
 
-src/new/test.cpp:29:18
+test.cpp:29:18
 
 </p>
 </span>
@@ -2129,7 +2036,7 @@ Test1::g(float, float)
 <p>
 Source:
 
-src/new/test.cpp:30:11
+test.cpp:30:11
 
 </p>
 </span>
@@ -2173,9 +2080,9 @@ Similar pair 0
 
 : old size: 21 bytes, new size: 21 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f(int, int) [src/old/test.cpp:29:18]</span>
+<span class="monospace">Old: Test::f(int, int) [test.cpp:29:18]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [src/new/test.cpp:29:18]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [test.cpp:29:18]</span>
 </p>
 Instructions unchanged
 
@@ -2203,9 +2110,9 @@ Similar pair 1
 
 : old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::g(float, float) [src/old/test.cpp:30:11]</span>
+<span class="monospace">Old: Test::g(float, float) [test.cpp:30:11]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [src/new/test.cpp:30:11]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [test.cpp:30:11]</span>
 </p>
 Instructions unchanged
 
@@ -2233,9 +2140,9 @@ Similar pair 3
 
 : old size: 18 bytes, new size: 20 bytes, delta: <span class="deterioration number">2</span> bytes, sig. sim.: 87.5 %, instr. sim.: 93.1 %</span></H4>
 <p>
-<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [src/old/test.cpp:20:5]</span>
+<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [test.cpp:20:5]</span>
 <br>
-<span class="monospace">New: func(<span class="diff_highlight">double</span>) [src/new/test.cpp:20:5]</span>
+<span class="monospace">New: func(<span class="diff_highlight">double</span>) [test.cpp:20:5]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2279,9 +2186,9 @@ Similar pair 6
 
 : old size: 21 bytes, new size: 29 bytes, delta: <span class="deterioration number">8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [src/old/test.cpp:29:18]</span>
+<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [test.cpp:29:18]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [src/new/test.cpp:30:11]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [test.cpp:30:11]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to3__top"
@@ -2328,9 +2235,9 @@ Similar pair 7
 
 : old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [src/old/test.cpp:30:11]</span>
+<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [test.cpp:30:11]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [src/new/test.cpp:29:18]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [test.cpp:29:18]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to4__top"
@@ -2358,70 +2265,7 @@ Similar pair 7
 
   
   <H3><a id="symbol_details_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-<H4><span class="monospace"><a name="migrated_symbol_details_0"></a>Migrated symbol
-
-<a href="#migrated_symbol_overview_0">
-
-persisting1(int)
-
-</a>
-
-: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
-<span class="monospace">
-<p>
-
-
-
-Old source: src/<span class="diff_highlight">old</span>/test.cpp:42:5<br>
-New source: src/<span class="diff_highlight">new</span>/test.cpp:42:5</p>
-</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<H4><span class="monospace"><a name="migrated_symbol_details_1"></a>Migrated symbol
-
-<a href="#migrated_symbol_overview_1">
-
-persisting2(int)
-
-</a>
-
-: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
-<span class="monospace">
-<p>
-
-
-
-Old source: src/<span class="diff_highlight">old</span>/test.cpp:43:5<br>
-New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
-</span>
-
-
+  No migrated functions or no symbol changes
   
   
   </div>
@@ -2430,7 +2274,7 @@ New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-11-28 15:50:02 by elf_diff 605410db5686c4ac6ce456e847b1c4ef0a73230e (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-11-28 16:05:44 by elf_diff 3702ca3ff8eac5dcc8232d055b6bf08c7a75f209 (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>
