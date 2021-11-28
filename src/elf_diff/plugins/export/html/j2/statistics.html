@@ -38,9 +38,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 					<col align="right">
 					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
 					<tbody>
-						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.code}}</td><td>{{document.statistics.overall.new.resource_consumption.code}}</td><td>{{document.statistics.overall.delta.resource_consumption.code}}</td></tr>
-						<tr><td>text</td><td>{{document.statistics.overall.old.resource_consumption.text}}</td><td>{{document.statistics.overall.new.resource_consumption.text}}</td><td>{{document.statistics.overall.delta.resource_consumption.text}}</td></tr>
-						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.delta.resource_consumption.data}}</td></tr>
+						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.code}}</td><td>{{document.statistics.overall.new.resource_consumption.code}}</td><td>{{ aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.code) }}</td></tr>
+						<tr><td>text</td><td>{{document.statistics.overall.old.resource_consumption.text}}</td><td>{{document.statistics.overall.new.resource_consumption.text}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.text)}}</td></tr>
+						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.data)}}</td></tr>
 					</tbody>
 				</table>
 			</td>
@@ -53,9 +53,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 					<col align="right">
 					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
 					<tbody>
-						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.static_ram}}</td><td>{{document.statistics.overall.new.resource_consumption.static_ram}}</td><td>{{document.statistics.overall.delta.resource_consumption.static_ram}}</td></tr>
-						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.new.resource_consumption.data}}</td><td>{{document.statistics.overall.delta.resource_consumption.data}}</td></tr>
-						<tr><td>bss</td><td>{{document.statistics.overall.old.resource_consumption.bss}}</td><td>{{document.statistics.overall.new.resource_consumption.bss}}</td><td>{{document.statistics.overall.delta.resource_consumption.bss}}</td></tr>
+						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.static_ram}}</td><td>{{document.statistics.overall.new.resource_consumption.static_ram}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.static_ram)}}</td></tr>
+						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.new.resource_consumption.data}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.data)}}</td></tr>
+						<tr><td>bss</td><td>{{document.statistics.overall.old.resource_consumption.bss}}</td><td>{{document.statistics.overall.new.resource_consumption.bss}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.bss)}}</td></tr>
 					</tbody>
 				</table>
 			</td>
