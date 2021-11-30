@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>ELF Binary Comparison - (c) 2021 by noseglasses</title>
+  <link rel="stylesheet" href="./css/elf_diff_general.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <link rel="icon" type="image/png" href="./images/favicon.png"/>
+  <script src="./js/dragbars.js"></script>
+  <script src="./js/sorttable.js"></script>
+</head>
+<body>
+<div id="container">
+  <div id="header">
+		<H3>
+		<img style="vertical-align:text-top" src="./images/favicon.png" alt="elf_diff Logo">
+	elf_diff binary comparison
+	</H3> 
+	<span class="monospace">
+	Old binary: /home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a
+	
+	(debug)
+	
+	<br>
+  New binary:	/home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a
+	
+	(debug)
+	
+	</span>
+	
+	</div>
+  <div id="side">
+	  <ul>
+      <li><a href="./statistics.html" target="overview">Statistics</a></li>
+      <li>Symbols
+        <ul>
+          <li><a href="./persisting_symbols_overview.html" target="overview">Persisting</a></li>
+          <li><a href="./disappeared_symbols_overview.html" target="overview">Disappeared</a></li>
+          <li><a href="./appeared_symbols_overview.html" target="overview">Appeared</a></li>
+					
+          <li><a href="./similar_symbols_overview.html" target="overview">Similar</a></li>
+					
+					
+          <li><a href="./migrated_symbols_overview.html" target="overview">Migrated</a></li>
+					
+        </ul>
+      </li>
+      <li><a href="./document.html" target="overview">Document</a></li>
+    </ul>
+	</div>
+	<div id="leftdragbar"></div>
+	<iframe id="overview" name="overview" frameBorder="0" src="./statistics.html">
+	</iframe>
+	<div id="vertdragbar"></div>
+	<iframe id="details" name="details" frameBorder="0"></iframe>
+	<div id="footer">
+		<footer>
+			<span class="monospace">
+				<p>
+	Generated 2021-11-30 20:51:56 by elf_diff ce9b701ee27962a1e5cd4b8fa610f939c7fc7d24 (https://github.com/noseglasses/elf_diff)<br>
+	© 2021 by noseglasses (shinynoseglasses@gmail.com)
+				</p>
+				<p>
+	Powered by sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
+				</p>
+			 </span>
+		 </footer>
+	</div>
+</div>
+
+<script>
+//document.getElementById("container").addEventListener("mouseup", EndDrag);
+document.addEventListener("mouseup", endDrag);
+document.getElementById("container").addEventListener("mousemove", onDrag);
+document.getElementById("leftdragbar").addEventListener("mousedown", startHorizDrag);
+document.getElementById("vertdragbar").addEventListener("mousedown", startVertDrag);
+</script>
+</body>
+</html>

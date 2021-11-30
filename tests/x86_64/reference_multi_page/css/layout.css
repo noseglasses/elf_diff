@@ -1,0 +1,92 @@
+/*
+-*- coding: utf-8 -*-
+
+-*- mode: css -*-
+
+elf_diff
+
+Copyright (C) 2021  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see <http://www.gnu.org/licenses/>.
+
+*/
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  grid-template-areas:
+    "header header header"
+    "side leftdragbar overview"
+    "side leftdragbar vertdragbar"
+    "side leftdragbar details"
+    "footer footer footer";
+  grid-template-columns: 210px 2px 1fr;
+  grid-template-rows: auto 3fr 2px 2fr auto;
+}
+
+#container > div {
+  border: 1px solid gray;
+}
+
+#header {
+  grid-area: header;
+  background-color: LemonChiffon;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#side {
+  grid-area: side;
+  resize: horizontal;
+  background-color: lightblue;
+}
+
+#overview {
+  grid-area: overview;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+
+#details {
+  grid-area: details;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+
+#footer {
+  grid-area: footer;
+  background-color: LemonChiffon;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+#leftdragbar {
+  background-color: gray;
+  grid-area: leftdragbar;
+  cursor: ew-resize;
+}
+
+#vertdragbar {
+  background-color: gray;
+  grid-area: vertdragbar;
+  cursor: ns-resize;
+}

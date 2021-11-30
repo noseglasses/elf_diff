@@ -1,0 +1,400 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+
+  <meta name="robots" content="noindex">
+  <title>Similar Symbols Overview</title>
+  <link rel="stylesheet" href="./css/elf_diff_general.css">
+  <script src="./js/sorttable.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+<H3>Similar Symbols</H3>
+
+
+
+<table class="sortable similar_symbols">
+  <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
+  <tbody>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_0"></a><a href="details/similar/0.html#similar_symbol_details_0"  target="details">
+      
+		  0
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::f(int, int)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::f(int, int)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.9</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_1"></a><a href="details/similar/1.html#similar_symbol_details_1"  target="details">
+      
+		  1
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::g(float, float)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::g(float, float)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.9</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  2
+      
+		</td>
+		<td>
+		  Test::m_
+		  <br>
+		  Test<span class="diff_highlight">1</span>::m_
+		</td>
+		<td>
+		  D
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.0</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_3"></a><a href="details/similar/3.html#similar_symbol_details_3"  target="details">
+      
+		  3
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  func(<span class="diff_highlight">int</span>)
+		  <br>
+		  func(<span class="diff_highlight">double</span>)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">18</span>
+		  <br>
+		  <span class="number">20</span>
+		</td>
+		<td>
+			<span class="deterioration number">2</span>
+		</td>
+		<td>
+		  <span class="number">87.5</span>
+		</td>
+		<td>
+		  <span class="number">93.1</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  4
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">f(int, int)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-17</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  5
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g(float, float)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-25</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_6"></a><a href="details/similar/6.html#similar_symbol_details_6"  target="details">
+      
+		  6
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_7"></a><a href="details/similar/7.html#similar_symbol_details_7"  target="details">
+      
+		  7
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="improvement number">-8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  8
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(float, float)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">25</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  9
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f(int, int)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="deterioration number">17</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
+  <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
+	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Sizes</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Deltas</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
+	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
+</table>
+
+</body>
+</html>
