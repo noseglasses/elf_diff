@@ -28,10 +28,38 @@ from pprint import pformat
 import json
 import os
 from typing import Dict
+from bs4 import BeautifulSoup  # type: ignore # Make mypy ignore this module
+
+
+def traverse(soup):
+    dom_dictionary = {}
+
+    if soup.name is not None:
+        dom_dictionary["name"] = soup.name
+    else:
+        dom_dictionary["value"] = soup.string
+
+    if hasattr(soup, "attrs"):
+        dom_dictionary["attrs"] = soup.attrs
+    if hasattr(soup, "children"):
+        dom_dictionary["children"] = [
+            traverse(child) for child in soup.children
+        ]  # if child.name is not None]
+
+    return dom_dictionary
+
+
+def htmlDictFromFile(filename: str) -> Dict:
+    with open(filename, "r") as f:
+        # soup = BeautifulSoup(f, 'html.parser')
+        soup = BeautifulSoup(f, "html5lib")
+        # print(soup)
+        # print(soup.__dict__)
+        return traverse(soup)
 
 
 class TestDocumentIntegrity(ElfDiffExecutionMixin, TestCaseWithSubdirs):
-    def test_document_simple(self):
+    def test_document_simple_json(self):
         output_file = "output.json"
         self.runSimpleTest([("json_file", output_file)])
 
@@ -57,6 +85,33 @@ class TestDocumentIntegrity(ElfDiffExecutionMixin, TestCaseWithSubdirs):
             "root['document']['general']['elf_diff_repo_root']",
             "root['document']['general']['elf_diff_version']",
             "root['document']['general']['generation_date']",
+        ]
+        diff = DeepDiff(reference_tree, test_tree, exclude_paths=exclude_paths)
+
+        if len(diff) > 0:
+            diff_str: str = pformat(diff, indent=2)
+            raise Exception("documents differ:\n%s" % diff_str)
+
+    def test_document_simple_html(self):
+        output_file = "output.html"
+        self.runSimpleTestBase(
+            args=[("html_file", output_file)], output_file=output_file
+        )
+
+        # The output file is generated in the current directory
+        if not os.path.exists(output_file):
+            raise Exception(f"Missing output file '{output_file}'")
+        test_tree: Dict = htmlDictFromFile(output_file)
+
+        reference_document: str = os.path.join(
+            TESTING_DIR, "x86_64", "reference_document.html"
+        )
+        if not os.path.exists(reference_document):
+            raise Exception(f"Missing reference document file '{reference_document}'")
+        reference_tree: Dict = htmlDictFromFile(reference_document)
+
+        exclude_paths = [
+            "root['children'][1]['children'][2]['children'][3]['children'][1]['children'][1]['children'][3]['children'][0]['value']"
         ]
         diff = DeepDiff(reference_tree, test_tree, exclude_paths=exclude_paths)
 

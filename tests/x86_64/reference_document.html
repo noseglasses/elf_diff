@@ -1,0 +1,2443 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset=utf-8>
+  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg=="/>
+  <meta name="robots" content="noindex">
+  <title>ELF Binary Comparison - (c) 2021 by noseglasses</title>
+  <script>
+  /*
+  SortTable
+  version 2
+  7th April 2007
+  Stuart Langridge, http://www.kryogenix.org/code/browser/sorttable/
+
+  Instructions:
+  Download this file
+  Add &lt;script src=&#34;sorttable.js&#34;&gt;&lt;/script&gt; to your HTML
+  Add class=&#34;sortable&#34; to any table you&#39;d like to make sortable
+  Click on the headers to sort
+
+  Thanks to many, many people for contributions and suggestions.
+  Licenced as X11: http://www.kryogenix.org/code/browser/licence.html
+  This basically means: do what you want with it.
+*/
+
+
+var stIsIE = /*@cc_on!@*/false;
+
+sorttable = {
+  init: function() {
+    // quit if this function has already been called
+    if (arguments.callee.done) return;
+    // flag this function so we don&#39;t do the same thing twice
+    arguments.callee.done = true;
+    // kill the timer
+    if (_timer) clearInterval(_timer);
+
+    if (!document.createElement || !document.getElementsByTagName) return;
+
+    sorttable.DATE_RE = /^(\d\d?)[\/\.-](\d\d?)[\/\.-]((\d\d)?\d\d)$/;
+
+    forEach(document.getElementsByTagName(&#39;table&#39;), function(table) {
+      if (table.className.search(/\bsortable\b/) != -1) {
+        sorttable.makeSortable(table);
+      }
+    });
+
+  },
+
+  makeSortable: function(table) {
+    if (table.getElementsByTagName(&#39;thead&#39;).length === 0) {
+      // table doesn&#39;t have a tHead. Since it should have, create one and
+      // put the first table row in it.
+      the = document.createElement(&#39;thead&#39;);
+      the.appendChild(table.rows[0]);
+      table.insertBefore(the,table.firstChild);
+    }
+    // Safari doesn&#39;t support table.tHead, sigh
+    if (table.tHead == null) table.tHead = table.getElementsByTagName(&#39;thead&#39;)[0];
+
+    if (table.tHead.rows.length !== 1) return; // can&#39;t cope with two header rows
+
+    // Sorttable v1 put rows with a class of &#34;sortbottom&#34; at the bottom (as
+    // &#34;total&#34; rows, for example). This is B&amp;R, since what you&#39;re supposed
+    // to do is put them in a tfoot. So, if there are sortbottom rows,
+    // for backwards compatibility, move them to tfoot (creating it if needed).
+    sortbottomrows = [];
+    for (var i=0; i&lt;table.rows.length; i++) {
+      if (table.rows[i].className.search(/\bsortbottom\b/) != -1) {
+        sortbottomrows[sortbottomrows.length] = table.rows[i];
+      }
+    }
+    if (sortbottomrows) {
+      if (table.tFoot == null) {
+        // table doesn&#39;t have a tfoot. Create one.
+        tfo = document.createElement(&#39;tfoot&#39;);
+        table.appendChild(tfo);
+      }
+      for (var i=0; i&lt;sortbottomrows.length; i++) {
+        tfo.appendChild(sortbottomrows[i]);
+      }
+      delete sortbottomrows;
+    }
+
+    // work through each column and calculate its type
+    headrow = table.tHead.rows[0].cells;
+    for (var i=0; i&lt;headrow.length; i++) {
+      // manually override the type with a sorttable_type attribute
+      if (!headrow[i].className.match(/\bsorttable_nosort\b/)) { // skip this col
+        mtch = headrow[i].className.match(/\bsorttable_([a-z0-9]+)\b/);
+        if (mtch) { override = mtch[1]; }
+	      if (mtch &amp;&amp; typeof sorttable[&#34;sort_&#34;+override] == &#39;function&#39;) {
+	        headrow[i].sorttable_sortfunction = sorttable[&#34;sort_&#34;+override];
+	      } else {
+	        headrow[i].sorttable_sortfunction = sorttable.guessType(table,i);
+	      }
+	      // make it clickable to sort
+	      headrow[i].sorttable_columnindex = i;
+	      headrow[i].sorttable_tbody = table.tBodies[0];
+	      dean_addEvent(headrow[i],&#34;click&#34;, sorttable.innerSortFunction = function(e) {
+
+          if (this.className.search(/\bsorttable_sorted\b/) != -1) {
+            // if we&#39;re already sorted by this column, just
+            // reverse the table, which is quicker
+            sorttable.reverse(this.sorttable_tbody);
+            this.className = this.className.replace(&#39;sorttable_sorted&#39;,
+                                                    &#39;sorttable_sorted_reverse&#39;);
+            this.removeChild(document.getElementById(&#39;sorttable_sortfwdind&#39;));
+            sortrevind = document.createElement(&#39;span&#39;);
+            sortrevind.id = &#34;sorttable_sortrevind&#34;;
+            sortrevind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;5&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25B4;&#39;;
+            this.appendChild(sortrevind);
+            return;
+          }
+          if (this.className.search(/\bsorttable_sorted_reverse\b/) != -1) {
+            // if we&#39;re already sorted by this column in reverse, just
+            // re-reverse the table, which is quicker
+            sorttable.reverse(this.sorttable_tbody);
+            this.className = this.className.replace(&#39;sorttable_sorted_reverse&#39;,
+                                                    &#39;sorttable_sorted&#39;);
+            this.removeChild(document.getElementById(&#39;sorttable_sortrevind&#39;));
+            sortfwdind = document.createElement(&#39;span&#39;);
+            sortfwdind.id = &#34;sorttable_sortfwdind&#34;;
+            sortfwdind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;6&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25BE;&#39;;
+            this.appendChild(sortfwdind);
+            return;
+          }
+
+          // remove sorttable_sorted classes
+          theadrow = this.parentNode;
+          forEach(theadrow.childNodes, function(cell) {
+            if (cell.nodeType === 1) { // an element
+              cell.className = cell.className.replace(&#39;sorttable_sorted_reverse&#39;,&#39;&#39;);
+              cell.className = cell.className.replace(&#39;sorttable_sorted&#39;,&#39;&#39;);
+            }
+          });
+          sortfwdind = document.getElementById(&#39;sorttable_sortfwdind&#39;);
+          if (sortfwdind) { sortfwdind.parentNode.removeChild(sortfwdind); }
+          sortrevind = document.getElementById(&#39;sorttable_sortrevind&#39;);
+          if (sortrevind) { sortrevind.parentNode.removeChild(sortrevind); }
+
+          this.className += &#39; sorttable_sorted&#39;;
+          sortfwdind = document.createElement(&#39;span&#39;);
+          sortfwdind.id = &#34;sorttable_sortfwdind&#34;;
+          sortfwdind.innerHTML = stIsIE ? &#39;&amp;nbsp&lt;font face=&#34;webdings&#34;&gt;6&lt;/font&gt;&#39; : &#39;&amp;nbsp;&amp;#x25BE;&#39;;
+          this.appendChild(sortfwdind);
+
+	        // build an array to sort. This is a Schwartzian transform thing,
+	        // i.e., we &#34;decorate&#34; each row with the actual sort key,
+	        // sort based on the sort keys, and then put the rows back in order
+	        // which is a lot faster because you only do getInnerText once per row
+	        row_array = [];
+	        col = this.sorttable_columnindex;
+	        rows = this.sorttable_tbody.rows;
+	        for (var j=0; j&lt;rows.length; j++) {
+	          row_array[row_array.length] = [sorttable.getInnerText(rows[j].cells[col]), rows[j]];
+	        }
+	        /* If you want a stable sort, uncomment the following line */
+	        //sorttable.shaker_sort(row_array, this.sorttable_sortfunction);
+	        /* and comment out this one */
+	        row_array.sort(this.sorttable_sortfunction);
+
+	        tb = this.sorttable_tbody;
+	        for (var j=0; j&lt;row_array.length; j++) {
+	          tb.appendChild(row_array[j][1]);
+	        }
+
+	        delete row_array;
+	      });
+	    }
+    }
+  },
+
+  guessType: function(table, column) {
+    // guess the type of a column based on its first non-blank row
+    sortfn = sorttable.sort_alpha;
+    for (var i=0; i&lt;table.tBodies[0].rows.length; i++) {
+      text = sorttable.getInnerText(table.tBodies[0].rows[i].cells[column]);
+      if (text != &#39;&#39;) {
+        if (text.match(/^-?[£$¤]?[\d,.]+%?$/)) {
+          return sorttable.sort_numeric;
+        }
+        // check for a date: dd/mm/yyyy or dd/mm/yy
+        // can have / or . or - as separator
+        // can be mm/dd as well
+        possdate = text.match(sorttable.DATE_RE)
+        if (possdate) {
+          // looks like a date
+          first = parseInt(possdate[1], 10);
+          second = parseInt(possdate[2], 10);
+          if (first &gt; 12) {
+            // definitely dd/mm
+            return sorttable.sort_ddmm;
+          } else if (second &gt; 12) {
+            return sorttable.sort_mmdd;
+          } else {
+            // looks like a date, but we can&#39;t tell which, so assume
+            // that it&#39;s dd/mm (English imperialism!) and keep looking
+            sortfn = sorttable.sort_ddmm;
+          }
+        }
+      }
+    }
+    return sortfn;
+  },
+
+  getInnerText: function(node) {
+    // gets the text we want to use for sorting for a cell.
+    // strips leading and trailing whitespace.
+    // this is *not* a generic getInnerText function; it&#39;s special to sorttable.
+    // for example, you can override the cell text with a customkey attribute.
+    // it also gets .value for &lt;input&gt; fields.
+
+    if (!node) return &#34;&#34;;
+
+    hasInputs = (typeof node.getElementsByTagName == &#39;function&#39;) &amp;&amp;
+                 node.getElementsByTagName(&#39;input&#39;).length;
+
+    if (node.getAttribute(&#34;sorttable_customkey&#34;) != null) {
+      return node.getAttribute(&#34;sorttable_customkey&#34;);
+    }
+    else if (typeof node.textContent != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.textContent.replace(/^\s+|\s+$/g, &#39;&#39;);
+    }
+    else if (typeof node.innerText != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.innerText.replace(/^\s+|\s+$/g, &#39;&#39;);
+    }
+    else if (typeof node.text != &#39;undefined&#39; &amp;&amp; !hasInputs) {
+      return node.text.replace(/^\s+|\s+$/g, &#39;&#39;);
+    }
+    else {
+      switch (node.nodeType) {
+        case 3:
+          if (node.nodeName.toLowerCase() == &#39;input&#39;) {
+            return node.value.replace(/^\s+|\s+$/g, &#39;&#39;);
+          }
+        case 4:
+          return node.nodeValue.replace(/^\s+|\s+$/g, &#39;&#39;);
+          break;
+        case 1:
+        case 11:
+          var innerText = &#39;&#39;;
+          for (var i = 0; i &lt; node.childNodes.length; i++) {
+            innerText += sorttable.getInnerText(node.childNodes[i]);
+          }
+          return innerText.replace(/^\s+|\s+$/g, &#39;&#39;);
+          break;
+        default:
+          return &#39;&#39;;
+      }
+    }
+  },
+
+  reverse: function(tbody) {
+    // reverse the rows in a tbody
+    newrows = [];
+    for (var i=0; i&lt;tbody.rows.length; i++) {
+      newrows[newrows.length] = tbody.rows[i];
+    }
+    for (var i=newrows.length-1; i&gt;=0; i--) {
+       tbody.appendChild(newrows[i]);
+    }
+    delete newrows;
+  },
+
+  /* sort functions
+     each sort function takes two parameters, a and b
+     you are comparing a[0] and b[0] */
+  sort_numeric: function(a,b) {
+    aa = parseFloat(a[0].replace(/[^0-9.-]/g,&#39;&#39;));
+    if (isNaN(aa)) aa = 0;
+    bb = parseFloat(b[0].replace(/[^0-9.-]/g,&#39;&#39;));
+    if (isNaN(bb)) bb = 0;
+    return aa-bb;
+  },
+  sort_alpha: function(a,b) {
+    if (a[0]==b[0]) return 0;
+    if (a[0]&lt;b[0]) return -1;
+    return 1;
+  },
+  sort_ddmm: function(a,b) {
+    mtch = a[0].match(sorttable.DATE_RE);
+    y = mtch[3]; m = mtch[2]; d = mtch[1];
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
+    dt1 = y+m+d;
+    mtch = b[0].match(sorttable.DATE_RE);
+    y = mtch[3]; m = mtch[2]; d = mtch[1];
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
+    dt2 = y+m+d;
+    if (dt1==dt2) return 0;
+    if (dt1&lt;dt2) return -1;
+    return 1;
+  },
+  sort_mmdd: function(a,b) {
+    mtch = a[0].match(sorttable.DATE_RE);
+    y = mtch[3]; d = mtch[2]; m = mtch[1];
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
+    dt1 = y+m+d;
+    mtch = b[0].match(sorttable.DATE_RE);
+    y = mtch[3]; d = mtch[2]; m = mtch[1];
+    if (m.length === 1) m = &#39;0&#39;+m;
+    if (d.length === 1) d = &#39;0&#39;+d;
+    dt2 = y+m+d;
+    if (dt1==dt2) return 0;
+    if (dt1&lt;dt2) return -1;
+    return 1;
+  },
+
+  shaker_sort: function(list, comp_func) {
+    // A stable sort function to allow multi-level sorting of data
+    // see: http://en.wikipedia.org/wiki/Cocktail_sort
+    // thanks to Joseph Nahmias
+    var b = 0;
+    var t = list.length - 1;
+    var swap = true;
+
+    while(swap) {
+        swap = false;
+        for(var i = b; i &lt; t; ++i) {
+            if ( comp_func(list[i], list[i+1]) &gt; 0 ) {
+                var q = list[i]; list[i] = list[i+1]; list[i+1] = q;
+                swap = true;
+            }
+        } // for
+        t--;
+
+        if (!swap) break;
+
+        for(var i = t; i &gt; b; --i) {
+            if ( comp_func(list[i], list[i-1]) &lt; 0 ) {
+                var q = list[i]; list[i] = list[i-1]; list[i-1] = q;
+                swap = true;
+            }
+        } // for
+        b++;
+
+    } // while(swap)
+  }
+}
+
+/* ******************************************************************
+   Supporting functions: bundled here to avoid depending on a library
+   ****************************************************************** */
+
+// Dean Edwards/Matthias Miller/John Resig
+
+/* for Mozilla/Opera9 */
+if (document.addEventListener) {
+    document.addEventListener(&#34;DOMContentLoaded&#34;, sorttable.init, false);
+}
+
+/* for Internet Explorer */
+/*@cc_on @*/
+/*@if (@_win32)
+    document.write(&#34;&lt;script id=__ie_onload defer src=javascript:void(0)&gt;&lt;\/script&gt;&#34;);
+    var script = document.getElementById(&#34;__ie_onload&#34;);
+    script.onreadystatechange = function() {
+        if (this.readyState == &#34;complete&#34;) {
+            sorttable.init(); // call the onload handler
+        }
+    };
+/*@end @*/
+
+/* for Safari */
+if (/WebKit/i.test(navigator.userAgent)) { // sniff
+    var _timer = setInterval(function() {
+        if (/loaded|complete/.test(document.readyState)) {
+            sorttable.init(); // call the onload handler
+        }
+    }, 10);
+}
+
+/* for other browsers */
+window.onload = sorttable.init;
+
+// written by Dean Edwards, 2005
+// with input from Tino Zijdel, Matthias Miller, Diego Perini
+
+// http://dean.edwards.name/weblog/2005/10/add-event/
+
+function dean_addEvent(element, type, handler) {
+	if (element.addEventListener) {
+		element.addEventListener(type, handler, false);
+	} else {
+		// assign each event handler a unique ID
+		if (!handler.$$guid) handler.$$guid = dean_addEvent.guid++;
+		// create a hash table of event types for the element
+		if (!element.events) element.events = {};
+		// create a hash table of event handlers for each element/event pair
+		var handlers = element.events[type];
+		if (!handlers) {
+			handlers = element.events[type] = {};
+			// store the existing event handler (if there is one)
+			if (element[&#34;on&#34; + type]) {
+				handlers[0] = element[&#34;on&#34; + type];
+			}
+		}
+		// store the event handler in the hash table
+		handlers[handler.$$guid] = handler;
+		// assign a global event handler to do all the work
+		element[&#34;on&#34; + type] = handleEvent;
+	}
+};
+// a counter used to create unique IDs
+dean_addEvent.guid = 1;
+
+function removeEvent(element, type, handler) {
+	if (element.removeEventListener) {
+		element.removeEventListener(type, handler, false);
+	} else {
+		// delete the event handler from the hash table
+		if (element.events &amp;&amp; element.events[type]) {
+			delete element.events[type][handler.$$guid];
+		}
+	}
+};
+
+function handleEvent(event) {
+	var returnValue = true;
+	// grab the event object (IE uses a global event object)
+	event = event || fixEvent(((this.ownerDocument || this.document || this).parentWindow || window).event);
+	// get a reference to the hash table of event handlers
+	var handlers = this.events[event.type];
+	// execute each event handler
+	for (var i in handlers) {
+		this.$$handleEvent = handlers[i];
+		if (this.$$handleEvent(event) === false) {
+			returnValue = false;
+		}
+	}
+	return returnValue;
+};
+
+function fixEvent(event) {
+	// add W3C standard event methods
+	event.preventDefault = fixEvent.preventDefault;
+	event.stopPropagation = fixEvent.stopPropagation;
+	return event;
+};
+fixEvent.preventDefault = function() {
+	this.returnValue = false;
+};
+fixEvent.stopPropagation = function() {
+  this.cancelBubble = true;
+}
+
+// Dean&#39;s forEach: http://dean.edwards.name/base/forEach.js
+/*
+	forEach, version 1.0
+	Copyright 2006, Dean Edwards
+	License: http://www.opensource.org/licenses/mit-license.php
+*/
+
+// array-like enumeration
+if (!Array.forEach) { // mozilla already supports this
+	Array.forEach = function(array, block, context) {
+		for (var i = 0; i &lt; array.length; i++) {
+			block.call(context, array[i], i, array);
+		}
+	};
+}
+
+// generic enumeration
+Function.prototype.forEach = function(object, block, context) {
+	for (var key in object) {
+		if (typeof this.prototype[key] == &#34;undefined&#34;) {
+			block.call(context, object[key], key, object);
+		}
+	}
+};
+
+// character enumeration
+String.forEach = function(string, block, context) {
+	Array.forEach(string.split(&#34;&#34;), function(chr, index) {
+		block.call(context, chr, index, string);
+	});
+};
+
+// globally resolve forEach enumeration
+var forEach = function(object, block, context) {
+	if (object) {
+		var resolve = Object; // default
+		if (object instanceof Function) {
+			// functions have a &#34;length&#34; property
+			resolve = Function;
+		} else if (object.forEach instanceof Function) {
+			// the object implements a custom forEach method so use that
+			object.forEach(block, context);
+			return;
+		} else if (typeof object == &#34;string&#34;) {
+			// the object is a string
+			resolve = String;
+		} else if (typeof object.length == &#34;number&#34;) {
+			// the object is array-like
+			resolve = Array;
+		}
+		resolve.forEach(object, block, context);
+	}
+};
+
+
+  </script>
+  <style>
+  /*
+-*- coding: utf-8 -*-
+
+-*- mode: css -*-
+
+elf_diff
+
+Copyright (C) 2019  Noseglasses (shinynoseglasses@gmail.com)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with along with
+this program. If not, see http://www.gnu.org/licenses/
+
+*/
+
+/* Appearance */
+body,
+table {
+  font-family: sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 6px;
+}
+
+th {
+  background: #333;
+  color: white;
+}
+
+/* Frames around table cells */
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+table.stats,
+tr,
+td {
+  border: none;
+}
+
+/* Striped tables */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Sortability of tables */
+table .sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort)::after {
+  content: &#34; \25B4\25BE&#34;;
+}
+
+thead {
+  display: table-header-group; /* makes it sizeable */
+}
+
+tbody {
+  display: table-header-group; /* makes it sizeable */
+}
+
+.fixed_table thead {
+  display: table-header-group;
+  width: 500px;
+}
+
+.fixed_table tbody {
+  display: table-header-group;
+  width: 500px;
+}
+
+.deterioration {
+  background: #faa;
+}
+
+.improvement {
+  background: #afa;
+}
+
+/*
+.unchanged {
+}
+*/
+
+.diff_chg {
+  background: #add8e6;
+}
+
+.diff_add {
+  background: #afa;
+}
+
+.diff_sub {
+  background: #faa;
+}
+
+.diff_highlight {
+  background: #add8e6;
+}
+
+a:link {
+  text-decoration: none;
+  color: darkblue;
+}
+
+a:visited {
+  text-decoration: none;
+  color: darkblue;
+}
+
+a:hover {
+  text-decoration: none;
+  color: darkgreen;
+}
+
+a:active {
+  text-decoration: none;
+  color: blue;
+}
+
+.number {
+  font-family: monospace;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+.source {
+  color: royalblue;
+  font-weight: bold;
+}
+
+table.diff td { font-family: monospace; }
+
+table.size_overview th:nth-child(1) { text-align: left; }
+table.size_overview th:nth-child(2) { text-align: right; }
+table.size_overview th:nth-child(3) { text-align: right; }
+table.size_overview th:nth-child(4) { text-align: right; }
+table.size_overview td:nth-child(1) { text-align: left; }
+
+table.size_overview td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.size_overview td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.size_overview td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
+table.persisting_symbols th:nth-child(1) { text-align: left; }
+table.persisting_symbols th:nth-child(2) { text-align: right; }
+table.persisting_symbols th:nth-child(3) { text-align: right; }
+table.persisting_symbols th:nth-child(4) { text-align: right; }
+table.persisting_symbols th:nth-child(5) { text-align: right; }
+
+table.persisting_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.persisting_symbols td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.persisting_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
+table.isolated_symbols th:nth-child(1) { text-align: left; }
+table.isolated_symbols th:nth-child(2) { text-align: left; }
+table.isolated_symbols th:nth-child(3) { text-align: right; }
+table.isolated_symbols th:nth-child(4) { text-align: right; }
+table.isolated_symbols th:nth-child(5) { text-align: right; }
+table.isolated_symbols th:nth-child(6) { text-align: right; }
+table.isolated_symbols th:nth-child(7) { text-align: right; }
+
+table.isolated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.isolated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(6) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.isolated_symbols td:nth-child(7) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols {
+  table-layout: auto;
+  width: 100%;
+}
+
+table.similar_symbols th:nth-child(1) { text-align: left; }
+table.similar_symbols th:nth-child(2) { text-align: left; }
+table.similar_symbols th:nth-child(3) { text-align: right; }
+table.similar_symbols th:nth-child(4) { text-align: right; }
+table.similar_symbols th:nth-child(5) { text-align: right; }
+table.similar_symbols th:nth-child(6) { text-align: right; }
+table.similar_symbols th:nth-child(7) { text-align: right; }
+
+table.similar_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+  word-wrap: break-word;
+  max-width: 1px;
+  width: 100%;
+}
+
+table.similar_symbols td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(6) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.similar_symbols td:nth-child(7) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.migrated_symbols th:nth-child(1) { text-align: left; }
+table.migrated_symbols th:nth-child(2) { text-align: left; }
+table.migrated_symbols th:nth-child(3) { text-align: left; }
+
+table.migrated_symbols td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(2) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.migrated_symbols td:nth-child(3) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.quad_col th:nth-child(1) { text-align: left; }
+table.quad_col th:nth-child(2) { text-align: right; }
+table.quad_col th:nth-child(3) { text-align: right; }
+table.quad_col th:nth-child(4) { text-align: right; }
+table.quad_col th:nth-child(5) { text-align: right; }
+
+table.quad_col td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.quad_col td:nth-child(5) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.bin_col th:nth-child(1) { text-align: left; }
+table.bin_col th:nth-child(2) { text-align: right; }
+table.bin_col th:nth-child(3) { text-align: right; }
+
+table.bin_col td:nth-child(1) {
+  text-align: left;
+  font-family: monospace;
+}
+
+table.bin_col td:nth-child(2) {
+  text-align: right;
+  font-family: monospace;
+}
+
+table.bin_col td:nth-child(3) {
+  text-align: right;
+  font-family: monospace;
+}
+
+	</style>
+</head>
+<body>
+  <div id="content">
+  <H1><a id="home"></a>
+	<img style="vertical-align:text-top" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA35JREFUWIXt1l9olWUcB/DP+55zdjY3TZ1rKWpbYISbKy+iCBRLL7KULrwoBCHwIouQrjJv4hhhFwZBqAhBVhdKEAVZYRcKmZBp/yz/jYEJYUk2E0Tdznb2dHHebWdn77FNiiD8wnvzfX6/5/t9nuf3e56XW7iF/xhRKvuKRYZsQyZhgtke94yBv5sw8BTWV1AnI16YuIGCR7EHM8bwsU4vO3kD4Qib8GqFcbgYcXutvGyFcB0KeLFqgmGFTtINBFrxFlanDLcE7oi4kJYbgy1W4ztsThUfNVAtnAvl7T1RQ3wY43LHGgi2o6OCH8TlqthFKfnz8AZmVXC9ZW+TMTAW3ViC8xOdpAL7sdz42qpt4MBHnn/pLjPwI9ZZqEPBEbRVxbbbprGSOPq+184vF/AZlkSsRF2KTk0D2WJRb2ejdxRsHGG3alEcK4bYdQtxbJgoZp375WHPzT1gV0VctXHoCETR+KORXfmkvdg7hi1qT7VbLsQRA0vW2JQSlZbblBj7uXogrQZIXwVhTKHWQnpujWNINxDV2IH0TvgXDAR3TmaSf95A+jnCHFs111JOruNJmY+T26y6b9ug/U+ipG6n9ZMfRLGiDgrqAksr8loxBc5WvCQXy/10T6hs0TflFTwYYyo+CExLhiLMn97H4bdZe6JMbv+UjV8jKtdBIHNyp0++nW2H0QW0wTdz6HqWc9MZyLD0ab6frQ4LwFbNLjks0hFHXMIKnA50KWiNgykf76HlGq9/zoqzPNHN5i9pvWJxKLfVwYW/e2T/Ap0KDimYibaLjaxay7UcGx9jyzLOzmTDquQYCu5WdBxdgp7h1/AcunDo4Lt2HJvDfRfIlWgqsm8P9YP0Zdm1z2osw9xA35lZMngAp3Yv9uHO++ltIEQcnscX8ylm6G5m7RobcC+m47KcnijZzvewDgYyrvdlNEwtSkV/hnxJSfnV7H1ovaGv5mmB/KCBbJC7mkvPzZUMDWTEAiJXFNw23AVHUUyCaopDvoTRJzvb0+z0iLlsbfFkcWW9csX0IgwbOIWrtVNr448GR0Tj7/gJoIfRe+D0DQJvhF/FfhBuyvzxEQMRv6n8PZs4zoicwtAk867hJ1WiW7CoP6sJDXUl+SiIle+HGI1JfD75YhwxpBu746AlX1I/FEztz4kE9SJTlOulKYmvR04Qi5y5iQXfwv8QfwHg8uv76TtxjwAAAABJRU5ErkJggg==" alt="elf_diff Logo"/>
+	ELF Binary Comparison</H1>
+
+  <H2>Overview</H2>
+  <ul>
+    <li><a href="#binaries">Binaries</a></li>
+    <li><a href="#rc">Resource Consumption</a>
+        <ul>
+          <li><a href="#rc_program_storage">Program Storage</a></li>
+          <li><a href="#rc_static_ram">Static RAM</a></li>
+          <li><a href="#rc_legend">Legend</a></li>
+        </ul>
+    </li>
+    <li><a href="#symbols">Symbols</a>
+        <ul>
+          <li><a href="#symbols_persisting_symbols">Persisting</a></li>
+          <li><a href="#symbols_disappeared_symbols">Disappeared</a></li>
+          <li><a href="#symbols_appeared_symbols">Appeared</a></li>
+					
+          <li><a href="#symbols_similar_symbols">Similar</a></li>
+          
+					
+          <li><a href="#symbols_migrated_symbols">Migrated</a></li>
+					
+        </ul>
+    </li>
+    
+  </ul>
+
+  <H2><a id="binaries"></a>Binaries <a href="#home">&#x21A9;</a></H2>
+  <p>
+  old: /home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a
+	
+	(debug)
+	
+	</p>
+  <p>
+  new: /home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a
+	
+	(debug)
+	
+	</p>
+
+  <H2><a id="rc"></a>Statistics <a href="#home">&#x21A9;</a></H2>
+  
+
+
+
+
+<table cellspacing="5" cellpadding="0" class = "stats">
+  <tbody>
+	  <tr>
+		  <td>
+				<H4><a id="rc_program_storage"></a>Program Storage</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>329</td><td>331</td><td><span class="deterioration number">2</span></td></tr>
+						<tr><td>text</td><td>321</td><td>323</td><td><span class="deterioration number">2</span></td></tr>
+						<tr><td>data</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H4><a id="rc_static_ram"></a>Static RAM</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<col align="right">
+					<thead><tr><th></th><th>Old/bytes</th><th>New/bytes</th><th>Delta/bytes</th></thead>
+					<tbody>
+						<tr><td>overall</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>data</td><td>8</td><td>8</td><td><span class="unchanged number">0</span></td></tr>
+						<tr><td>bss</td><td>0</td><td>0</td><td><span class="unchanged number">0</span></td></tr>
+					</tbody>
+				</table>
+			</td>
+			<td>
+			  <H4><a id="rc_legend"></a>Legend</H4>
+        <table>
+					<col align="left">
+					<col align="left">
+					<tbody>
+						<tr><td>text</td><td>instructions</td></tr>
+						<tr><td>data</td><td>initialized global or static variables</td></tr>
+						<tr><td>bss</td><td>uninitialized global or static variables</td></tr>
+					</tbody>
+				</table>
+			</td>
+	  </tr>
+	</tbody>
+</table>
+
+
+<H3><a id="symbols"></a>Symbols</H3>
+<table class = "fixed_table size_overview">
+	<col align="left">
+	<col align="right">
+	<col align="right">
+  <tbody>
+    <tr>
+      <th></th><th>Old Binary</th><th>New Binary</th>
+    </tr>
+    <tr>
+      <td>Total</td><td>7</td><td>7</td>
+    </tr>
+    <tr>
+      <td>Selected</td><td>7</td><td>7</td>
+    </tr>
+    <tr>
+      <td>Dropped</td><td>0</td><td>0</td>
+    </tr>
+    <tr>
+      <td>Selection Regex</td><td>.*</td><td>.*</td>
+    </tr>
+    <tr>
+      <td>Exclusion Regex</td><td></td><td></td>
+    </tr>
+  </tbody>
+</table>
+
+  <H2><a id="symbols"></a>Symbols <a href="#home">&#x21A9;</a></H2>
+
+  <H3><a id="symbols_persisting_symbols"></a>Persisting Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+<table class="sortable persisting_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
+  <tbody>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_0"></a><a href="#persisting_symbol_details_0"  >
+		  
+		  persisting1(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
+		  
+		  persisting2(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  var 
+      
+		</td>
+		<td>
+			D
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Old Size</td><td>The old symbol size either in RAM or program memory</td></tr>
+	<tr><td>New Size</td><td>The new symbol size either in RAM or program memory</td></tr>
+	<tr><td>Delta</td><td>The change to symbol size</td></tr>
+</table>
+
+
+  <H3><a id="symbols_symbols_disappeared"></a>Disappeared Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+<table class="sortable isolated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
+  <tbody>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_2"></a><a href="#disappeared_symbol_details_2" >
+		  
+		  func(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">18</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_3"></a><a href="#disappeared_symbol_details_3" >
+		  
+		  Test::f(int, int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">21</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="disappeared_symbol_overview_4"></a><a href="#disappeared_symbol_details_4" >
+		  
+		  Test::g(float, float) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">29</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  Test::m_ 
+      
+		</td>
+		<td>
+			D
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly demangled)</td></tr>
+	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
+</table>
+
+  <H3><a id="symbols_appeared_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+<table class="sortable isolated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
+  <tbody>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_9"></a><a href="#appeared_symbol_details_9" >
+		  
+		  func(double) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">20</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_10"></a><a href="#appeared_symbol_details_10" >
+		  
+		  Test1::f(int, int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">21</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_11"></a><a href="#appeared_symbol_details_11" >
+		  
+		  Test1::g(float, float) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">29</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  Test1::m_ 
+      
+		</td>
+		<td>
+			D
+		</td>
+		<td>
+			<span class="number">4</span>
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly demangled)</td></tr>
+	<tr><td>Type</td><td>The symbol type (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Size</td><td>The symbol size either in RAM or program memory</td></tr>
+</table>
+
+  
+  <H3><a id="symbols_similar_symbols"></a>Similar Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+<table class="sortable similar_symbols">
+  <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
+  <tbody>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_0"></a><a href="#similar_symbol_details_0"  >
+      
+		  0
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::f(int, int)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::f(int, int)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.9</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_1"></a><a href="#similar_symbol_details_1"  >
+      
+		  1
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::g(float, float)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::g(float, float)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.9</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  2
+      
+		</td>
+		<td>
+		  Test::m_
+		  <br>
+		  Test<span class="diff_highlight">1</span>::m_
+		</td>
+		<td>
+		  D
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
+		</td>
+		<td>
+		  <span class="number">88.0</span>
+		</td>
+		<td>
+		  <span class="number">100.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_3"></a><a href="#similar_symbol_details_3"  >
+      
+		  3
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  func(<span class="diff_highlight">int</span>)
+		  <br>
+		  func(<span class="diff_highlight">double</span>)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">18</span>
+		  <br>
+		  <span class="number">20</span>
+		</td>
+		<td>
+			<span class="deterioration number">2</span>
+		</td>
+		<td>
+		  <span class="number">87.5</span>
+		</td>
+		<td>
+		  <span class="number">93.1</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  4
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">f(int, int)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-17</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  5
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g(float, float)</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		</td>
+		<td>
+		  T
+		  <br>
+		  D
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">4</span>
+		</td>
+		<td>
+			<span class="improvement number">-25</span>
+		</td>
+		<td>
+		  <span class="number">69.2</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_6"></a><a href="#similar_symbol_details_6"  >
+      
+		  6
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">21</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="similar_symbol_overview_7"></a><a href="#similar_symbol_details_7"  >
+      
+		  7
+      
+		  &#9432;
+		  </a>
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)
+		</td>
+		<td>
+		  T
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">29</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="improvement number">-8</span>
+		</td>
+		<td>
+		  <span class="number">66.7</span>
+		</td>
+		<td>
+		  <span class="number">81.4</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  8
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(float, float)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">29</span>
+		</td>
+		<td>
+			<span class="deterioration number">25</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  9
+      
+		</td>
+		<td>
+		  Test::<span class="diff_highlight">m_</span>
+		  <br>
+		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f(int, int)</span>
+		</td>
+		<td>
+		  D
+		  <br>
+		  T
+		</td>
+		<td>
+		  <span class="number">4</span>
+		  <br>
+		  <span class="number">21</span>
+		</td>
+		<td>
+			<span class="deterioration number">17</span>
+		</td>
+		<td>
+		  <span class="number">61.5</span>
+		</td>
+		<td>
+		  <span class="number">0.0</span>
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>ID</td><td>Integer id assigned to each symbol pair</td></tr>
+  <tr><td>Symbols</td><td>The two similar symbol names (possibly mangled)</td></tr>
+	<tr><td>Types</td><td>The symbol types (see the <a href="https://sourceware.org/binutils/docs/binutils/nm.html">documentation of binutils tool nm</a> for more information)</td></tr>
+	<tr><td>Sizes</td><td>The sizes of the symbols either in RAM or program memory</td></tr>
+	<tr><td>Deltas</td><td>The difference in symbol size</td></tr>
+	<tr><td>Sig. Sim.</td><td>Lexicographic symbol signature similarity</td></tr>
+	<tr><td>Instr. Sim.</td><td>Instruction similarity of the symbols' assembly code</td></tr>
+</table>
+
+  
+
+  
+  <H3><a id="symbols_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+<table class="sortable migrated_symbols">
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <tbody>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_0"></a><a href="#migrated_symbol_details_0"  >
+		  
+		  persisting1(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:42:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:42:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_1"></a><a href="#migrated_symbol_details_1"  >
+		  
+		  persisting2(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:43:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:43:5
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  var 
+      
+		</td>
+		<td>
+			src/<span class="diff_highlight">old</span>/test.cpp:24:5
+		</td>
+		<td>
+			src/<span class="diff_highlight">new</span>/test.cpp:24:5
+		</td>
+		</tr>
+		
+  </tbody>
+</table>
+
+<p>
+<b>Please Note:</b> Use the settings <i>source_prefix</i>, <i>old_source_prefix</i> or <i>new_source_prefix</i> to eliminate false positives by removing path prefix from source file paths.
+</p>
+
+<H4>Columns</H4>
+<table>
+  <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+</table>
+
+   <p>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <H2><a id="symbol_details"></a>Symbol Details <a href="#home">&#x21A9;</a></H2>
+
+  <H3><a id="symbol_details_persisting_symbols"></a>Persisting Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_0"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_0">
+
+persisting1(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: src/old/test.cpp:42:5<br>
+New source: src/new/test.cpp:42:5
+</p>
+</span>
+
+
+    <table class="diff" id="difflib_chg_to0__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to0__0"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="from0_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to0__0">f</a></td><td class="diff_header" id="to0_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to0_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="from0_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">b</span>,%eax</td><td class="diff_next"><a href="#difflib_chg_to0__top">t</a></td><td class="diff_header" id="to0_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">a</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to0_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to0_7">7</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from0_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to0_8">8</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="persisting_symbol_details_1"></a>Persisting symbol
+
+<a href="#persisting_symbol_overview_1">
+
+persisting2(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+Old source: src/old/test.cpp:43:5<br>
+New source: src/new/test.cpp:43:5
+</p>
+</span>
+
+
+    <table class="diff" id="difflib_chg_to1__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to1__0"><a href="#difflib_chg_to1__0">f</a></td><td class="diff_header" id="from1_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to1__0">f</a></td><td class="diff_header" id="to1_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td><td class="diff_next"></td><td class="diff_header" id="to1_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to1__top">t</a></td><td class="diff_header" id="from1_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">b</span>,%eax</td><td class="diff_next"><a href="#difflib_chg_to1__top">t</a></td><td class="diff_header" id="to1_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2<span class="diff_chg">a</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to1_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to1_7">7</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from1_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to1_8">8</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+
+
+  <H3><a id="symbol_details_symbols_disappeared"></a>Disappeared Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_2"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_2">
+
+func(int)
+
+</a>
+
+: size: 18 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:20:5
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %edi,-0x4(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_3"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_3">
+
+Test::f(int, int)
+
+</a>
+
+: size: 21 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:29:18
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %edi,-0x4(%rbp)
+mov    %esi,-0x8(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+nop
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="disappeared_symbol_details_4"></a>Disappeared symbol
+
+<a href="#disappeared_symbol_overview_4">
+
+Test::g(float, float)
+
+</a>
+
+: size: 29 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/old/test.cpp:30:11
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %rdi,-0x8(%rbp)
+movss  %xmm0,-0xc(%rbp)
+movss  %xmm1,-0x10(%rbp)
+mov    $0x1,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+  <H3><a id="symbol_details_appeared_symbols"></a>New Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_9"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_9">
+
+func(double)
+
+</a>
+
+: size: 20 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:20:5
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+movsd  %xmm0,-0x8(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_10"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_10">
+
+Test1::f(int, int)
+
+</a>
+
+: size: 21 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:29:18
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %edi,-0x4(%rbp)
+mov    %esi,-0x8(%rbp)
+mov    $0x2a,%eax
+pop    %rbp
+ret
+nop
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="appeared_symbol_details_11"></a>Appeared symbol
+
+<a href="#appeared_symbol_overview_11">
+
+Test1::g(float, float)
+
+</a>
+
+: size: 29 bytes</span></H4>
+<span class="monospace">
+<p>
+Source:
+
+src/new/test.cpp:30:11
+
+</p>
+</span>
+<pre>
+endbr64
+push   %rbp
+mov    %rsp,%rbp
+mov    %rdi,-0x8(%rbp)
+movss  %xmm0,-0xc(%rbp)
+movss  %xmm1,-0x10(%rbp)
+mov    $0x1,%eax
+pop    %rbp
+ret
+
+</pre>
+
+
+
+  
+  <H3><a id="symbol_details_similar_symbols"></a>Similar Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_0"></a>
+
+<a href="#similar_symbol_overview_0">
+
+Similar pair 0
+
+</a>
+
+: old size: 21 bytes, new size: 21 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
+<p>
+<span class="monospace">Old: Test::f(int, int) [src/old/test.cpp:29:18]</span>
+<br>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [src/new/test.cpp:29:18]</span>
+</p>
+Instructions unchanged
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_1"></a>
+
+<a href="#similar_symbol_overview_1">
+
+Similar pair 1
+
+</a>
+
+: old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
+<p>
+<span class="monospace">Old: Test::g(float, float) [src/old/test.cpp:30:11]</span>
+<br>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [src/new/test.cpp:30:11]</span>
+</p>
+Instructions unchanged
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_3"></a>
+
+<a href="#similar_symbol_overview_3">
+
+Similar pair 3
+
+</a>
+
+: old size: 18 bytes, new size: 20 bytes, delta: <span class="deterioration number">2</span> bytes, sig. sim.: 87.5 %, instr. sim.: 93.1 %</span></H4>
+<p>
+<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [src/old/test.cpp:20:5]</span>
+<br>
+<span class="monospace">New: func(<span class="diff_highlight">double</span>) [src/new/test.cpp:20:5]</span>
+</p>
+
+    <table class="diff" id="difflib_chg_to2__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to2__0"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="from2_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to2__0">f</a></td><td class="diff_header" id="to2_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="from2_4">4</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%edi,-0x4(%rbp)</span></td><td class="diff_next"><a href="#difflib_chg_to2__top">t</a></td><td class="diff_header" id="to2_4">4</td><td nowrap="nowrap"><span class="diff_add">movsd&nbsp;&nbsp;%xmm0,-0x8(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td><td class="diff_next"></td><td class="diff_header" id="to2_5">5</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x2a,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to2_6">6</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_7">7</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to2_7">7</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from2_8">8</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to2_8">8</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_6"></a>
+
+<a href="#similar_symbol_overview_6">
+
+Similar pair 6
+
+</a>
+
+: old size: 21 bytes, new size: 29 bytes, delta: <span class="deterioration number">8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
+<p>
+<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [src/old/test.cpp:29:18]</span>
+<br>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [src/new/test.cpp:30:11]</span>
+</p>
+
+    <table class="diff" id="difflib_chg_to3__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to3__1"><a href="#difflib_chg_to3__0">f</a></td><td class="diff_header" id="from3_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to3__0">f</a></td><td class="diff_header" id="to3_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="from3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to3__1">n</a></td><td class="diff_header" id="to3_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_5">5</td><td nowrap="nowrap"><span class="diff_sub">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to3_5">5</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to3_6">6</td><td nowrap="nowrap"><span class="diff_add">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to3_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to3_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_8">8</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to3_9">9</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header" id="from3_9">9</td><td nowrap="nowrap"><span class="diff_sub">nop</span></td><td class="diff_next"><a href="#difflib_chg_to3__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from3_10">10</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to3_10">10</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace">
+<a name="similar_symbol_details_7"></a>
+
+<a href="#similar_symbol_overview_7">
+
+Similar pair 7
+
+</a>
+
+: old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
+<p>
+<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [src/old/test.cpp:30:11]</span>
+<br>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [src/new/test.cpp:29:18]</span>
+</p>
+
+    <table class="diff" id="difflib_chg_to4__top"
+           cellspacing="0" cellpadding="0" rules="groups" >
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <colgroup></colgroup> <colgroup></colgroup> <colgroup></colgroup>
+        <thead><tr><th class="diff_next"><br /></th><th colspan="2" class="diff_header">Old</th><th class="diff_next"><br /></th><th colspan="2" class="diff_header">New</th></tr></thead>
+        <tbody>
+            <tr><td class="diff_next" id="difflib_chg_to4__1"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="from4_1">1</td><td nowrap="nowrap">endbr64</td><td class="diff_next"><a href="#difflib_chg_to4__0">f</a></td><td class="diff_header" id="to4_1">1</td><td nowrap="nowrap">endbr64</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_2">2</td><td nowrap="nowrap">push&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_3">3</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%rsp,%rbp</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to4__1">n</a></td><td class="diff_header" id="from4_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">r</span>di,-0x<span class="diff_chg">8</span>(%rbp)</td><td class="diff_next"><a href="#difflib_chg_to4__1">n</a></td><td class="diff_header" id="to4_4">4</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;%<span class="diff_chg">e</span>di,-0x<span class="diff_chg">4</span>(%rbp)</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_5">5</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm0,-0xc(%rbp)</span></td><td class="diff_next"></td><td class="diff_header" id="to4_5">5</td><td nowrap="nowrap"><span class="diff_add">mov&nbsp;&nbsp;&nbsp;&nbsp;%esi,-0x8(%rbp)</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_6">6</td><td nowrap="nowrap"><span class="diff_sub">movss&nbsp;&nbsp;%xmm1,-0x10(%rbp)</span></td><td class="diff_next"></td><td class="diff_header"></td><td nowrap="nowrap"></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_7">7</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">1</span>,%eax</td><td class="diff_next"></td><td class="diff_header" id="to4_6">6</td><td nowrap="nowrap">mov&nbsp;&nbsp;&nbsp;&nbsp;$0x<span class="diff_chg">2a</span>,%eax</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_8">8</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td><td class="diff_next"></td><td class="diff_header" id="to4_7">7</td><td nowrap="nowrap">pop&nbsp;&nbsp;&nbsp;&nbsp;%rbp</td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_9">9</td><td nowrap="nowrap">ret</td><td class="diff_next"></td><td class="diff_header" id="to4_8">8</td><td nowrap="nowrap">ret</td></tr>
+            <tr><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header"></td><td nowrap="nowrap"></td><td class="diff_next"><a href="#difflib_chg_to4__top">t</a></td><td class="diff_header" id="to4_9">9</td><td nowrap="nowrap"><span class="diff_add">nop</span></td></tr>
+            <tr><td class="diff_next"></td><td class="diff_header" id="from4_10">10</td><td nowrap="nowrap"></td><td class="diff_next"></td><td class="diff_header" id="to4_10">10</td><td nowrap="nowrap"></td></tr>
+        </tbody>
+    </table>
+
+
+  
+
+  
+  <H3><a id="symbol_details_migrated_symbols"></a>Migrated Symbols <a href="#home">&#x21A9;</a></H3>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_0"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_0">
+
+persisting1(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: src/<span class="diff_highlight">old</span>/test.cpp:42:5<br>
+New source: src/<span class="diff_highlight">new</span>/test.cpp:42:5</p>
+</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<H4><span class="monospace"><a name="migrated_symbol_details_1"></a>Migrated symbol
+
+<a href="#migrated_symbol_overview_1">
+
+persisting2(int)
+
+</a>
+
+: old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
+<span class="monospace">
+<p>
+
+
+
+Old source: src/<span class="diff_highlight">old</span>/test.cpp:43:5<br>
+New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
+</span>
+
+
+  
+  
+  </div>
+  <div id="footer">
+  <footer>
+    <span class="monospace">
+      <hr>
+      <p>
+Generated 2021-11-30 20:51:57 by elf_diff ce9b701ee27962a1e5cd4b8fa610f939c7fc7d24 (https://github.com/noseglasses/elf_diff)<br>
+© 2021 by noseglasses (shinynoseglasses@gmail.com)
+      </p>
+      <p>
+Using sortable tables from <a href="https://kryogenix.org/code/browser/sorttable/">kryogenix.org</a>
+      </p>
+     </span>
+   </footer>
+   </div>
+</body>
+</html>
