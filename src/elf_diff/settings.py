@@ -67,9 +67,18 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
         Parameter(
             "source_prefix",
             "A path prefix to remove from old and new source files (overridden by [old|new]_source_prefix)",
+            action="append",
         ),
-        Parameter("old_source_prefix", "A path prefix to remove from old source files"),
-        Parameter("new_source_prefix", "A path prefix to remove from new source files"),
+        Parameter(
+            "old_source_prefix",
+            "A path prefix to remove from old source files",
+            action="append",
+        ),
+        Parameter(
+            "new_source_prefix",
+            "A path prefix to remove from new source files",
+            action="append",
+        ),
     ],
     "Report Content": [
         Parameter("project_title", "A project title to use for all reports."),
@@ -102,6 +111,12 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
         Parameter(
             "skip_symbol_similarities",
             "If this flag is provided, symbol similarities (which are quite expensive to determine) are skipped",
+            default=False,
+            is_flag=True,
+        ),
+        Parameter(
+            "skip_persisting_same_size",
+            "If this flag is provided, persisting symbols without size changes are skipped",
             default=False,
             is_flag=True,
         ),
@@ -300,11 +315,12 @@ class Settings(object):
         self.dump_document_structure: bool
         self.mass_report: bool
         self.language: str
-        self.source_prefix: str
-        self.old_source_prefix: str
-        self.new_source_prefix: str
+        self.source_prefix: List[str]
+        self.old_source_prefix: List[str]
+        self.new_source_prefix: List[str]
         self.similarity_threshold: float
         self.skip_symbol_similarities: bool
+        self.skip_persisting_same_size: bool
         self.consider_equal_sized_identical: bool
         self.skip_details: bool
         self.symbol_selection_regex: str

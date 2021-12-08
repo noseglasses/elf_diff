@@ -67,23 +67,29 @@ source_end_tag = "...ED_SOURCE_END..."
 {% set overview_header_tag='H3' %}
 
 {%- macro symbol_old_location_of_definition(document, symbol) -%}
-{%- if document.files.input.old.debug_info_available == True -%}
-{{ document.files.input.old.source_files[symbol.source.file_id].path_base }}:{{ symbol.source.line }}:{{ symbol.source.column }}
+{%- if (document.files.input.old.debug_info_available == True) and (symbol.source.file_id is not none) -%}
+{{ document.files.input.old.source_files[symbol.source.file_id].path_wo_prefix }}:{{ symbol.source.line }}
+{%- if document.files.input.old.source_files[symbol.source.file_id].path_wo_prefix != document.files.input.old.source_files[symbol.source.file_id].path -%}
+ ({{ document.files.input.old.source_files[symbol.source.file_id].path }})
+{%- endif -%}
 {%- else -%}
 ?
 {%- endif -%}
 {%- endmacro -%}
 
 {%- macro symbol_new_location_of_definition(document, symbol) -%}
-{%- if document.files.input.new.debug_info_available == True -%}
-{{ document.files.input.new.source_files[symbol.source.file_id].path_base }}:{{ symbol.source.line }}:{{ symbol.source.column }}
+{%- if (document.files.input.old.debug_info_available == True) and (symbol.source.file_id is not none) -%}
+{{ document.files.input.new.source_files[symbol.source.file_id].path_wo_prefix }}:{{ symbol.source.line }}
+{%- if document.files.input.new.source_files[symbol.source.file_id].path_wo_prefix != document.files.input.new.source_files[symbol.source.file_id].path -%}
+ ({{ document.files.input.new.source_files[symbol.source.file_id].path }})
+{%- endif -%}
 {%- else -%}
 ?
 {%- endif -%}
 {%- endmacro -%}
 
 {%- macro symbols_location_of_definition(document, old_symbol, new_symbol) -%}
-{%- if (document.configuration.display_migrated_symbols == False) -%}
+{%- if (document.configuration.debug_info_available == False) -%}
 No symbol location information available.
 {%- else -%}
 Old source: {{ symbol_old_location_of_definition(document, old_symbol) }}<br>

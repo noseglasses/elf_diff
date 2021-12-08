@@ -36,7 +36,7 @@ No symbols considered.<br>
 <table class="sortable similar_symbols">
   <thead><tr><th><div title="Integer id assigned to each symbol pair">Id</div></th><th><div title="The two similar symbol names (possibly mangled)">Symbols</div></th><th><div title="Symbol types (see nm tool documentation for a list of symbol types)">Types</div></th><th><div title="Symbol sizes either in RAM or program memory">Sizes/bytes</div></th><th><div title="The changes to symbol sizes">Deltas/bytes</div></th><th><div title="Lexicographic symbol signature similarity">Sig. Sim./%</div></th><th><div title="Instruction similarity of the symbols' assembly code">Instr. Sim./%</div></th></thead>
   <tbody>
-		{% for symbol in symbols -%}
+		{% for symbol in symbols | sort(attribute='similarities.signature', reverse = True) -%}
         {% set old_symbol=symbol.related_symbols.old %}
         {% set new_symbol=symbol.related_symbols.new %}
 		<tr>
@@ -51,9 +51,9 @@ No symbols considered.<br>
       {% endif %}
 		</td>
 		<td>
-		  {{ aux.replace_highlighting_tags(symbol.old.signature_tagged) }}
+		  {{ aux.replace_highlighting_tags(symbol.old.signature_tagged | e) }}
 		  <br>
-		  {{ aux.replace_highlighting_tags(symbol.new.signature_tagged) }}
+		  {{ aux.replace_highlighting_tags(symbol.new.signature_tagged | e) }}
 		</td>
 		<td>
 		  {{ old_symbol.type }}

@@ -115,16 +115,18 @@ class BinaryPair(object):
 
         self._computeSizeChanges()
 
+        self.persisting_symbol_names: List[str]
+
         self.similar_symbols: List[SimilarityPair] = []
         if not settings.skip_symbol_similarities:
             self._computeSimilarities()
 
-        self.migrated_symbols_available: bool = (
+        self.debug_info_available: bool = (
             self.new_binary.debug_info_available
             and self.old_binary.debug_info_available
         )
         self.migrated_symbol_names: List[str] = []
-        if self.migrated_symbols_available:
+        if self.debug_info_available:
             self._determineMigratedSymbols()
 
         self._summarizeSymbols()
@@ -152,7 +154,7 @@ class BinaryPair(object):
         print(f"      {len(self.new_symbol_names)} symbol(s) selected")
         print("")
 
-        if self.migrated_symbols_available:
+        if self.debug_info_available:
             migrated_symbols_info = f" ({len(self.migrated_symbol_names)} migrated)"
         else:
             migrated_symbols_info = ""
@@ -163,14 +165,31 @@ class BinaryPair(object):
         print(f"   {len(self.disappeared_symbol_names)} disappeared symbol(s)")
         print(f"   {len(self.new_symbol_names)} new symbol(s)")
 
+    def _preparePersistingSymbols(self) -> None:
+        persisting_candidates = setIntersection(
+            self.old_symbol_names, self.new_symbol_names
+        )
+        if not self.settings.skip_persisting_same_size:
+            self.persisting_symbol_names = persisting_candidates
+            return
+
+        self.persisting_symbol_names = []
+        for persisting_symbol_name in persisting_candidates:
+            old_symbol = self.old_binary.symbols[persisting_symbol_name]
+            new_symbol = self.new_binary.symbols[persisting_symbol_name]
+
+            if old_symbol.size == new_symbol.size:
+                continue
+
+            self.persisting_symbol_names.append(persisting_symbol_name)
+
     def _prepareSymbols(self) -> None:
         """Prepare symbols"""
         self.old_symbol_names = set(self.old_binary.symbols.keys())
         self.new_symbol_names = set(self.new_binary.symbols.keys())
 
-        self.persisting_symbol_names = setIntersection(
-            self.old_symbol_names, self.new_symbol_names
-        )
+        self._preparePersistingSymbols()
+
         self.disappeared_symbol_names = sorted(
             self.old_symbol_names - self.new_symbol_names
         )
@@ -191,20 +210,16 @@ class BinaryPair(object):
             new_symbol = self.new_binary.symbols[persisting_symbol_name]
 
             if (old_symbol.source_id is None) or (new_symbol.source_id is None):
-                print(
-                    "--------------Skipping symbol %s from migrated symbol subset"
-                    % old_symbol.name
-                )
                 continue
 
-            old_source_file = self.old_binary.source_files[
+            old_source_file_wo_prefix = self.old_binary.source_files[
                 old_symbol.source_id
-            ].path_base
-            new_source_file = self.new_binary.source_files[
+            ].path_wo_prefix
+            new_source_file_wo_prefix = self.new_binary.source_files[
                 new_symbol.source_id
-            ].path_base
+            ].path_wo_prefix
 
-            if old_source_file != new_source_file:
+            if old_source_file_wo_prefix != new_source_file_wo_prefix:
                 self.migrated_symbol_names.append(old_symbol.name_mangled)
 
     def _computeSimilarities(self) -> None:

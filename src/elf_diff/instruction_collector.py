@@ -25,6 +25,8 @@ from elf_diff.error_handling import warning
 
 from typing import Optional, Dict, List
 import re
+import progressbar  # type: ignore # Make mypy ignore this module
+import sys
 
 SOURCE_CODE_START_TAG = "...ED_SOURCE_START..."
 SOURCE_CODE_END_TAG = "...ED_SOURCE_END..."
@@ -128,6 +130,9 @@ class InstructionCollector(object):
 
         self.file_format = file_format
 
+        print("Gathering instructions")
+        sys.stdout.flush()
+
         objdump_output: str = runSystemCommand(
             [
                 binutils.objdump_command,
@@ -138,7 +143,7 @@ class InstructionCollector(object):
         )
 
         in_instruction_lines: bool = False
-        for line in objdump_output.splitlines():
+        for line in progressbar.progressbar(objdump_output.splitlines()):
             unified_line = self._unifyInstructionLine(line)
 
             is_header_line: bool = self._checkSymbolHeaderLine(unified_line)

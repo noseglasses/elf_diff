@@ -27,12 +27,11 @@ from elf_diff.source_file import SourceFile
 from elf_diff.instruction_collector import InstructionCollector
 from elf_diff.symbol_sizes import SymbolSizes
 from elf_diff.symbol_selection import SymbolSelection
-from elf_diff.debug_information import DebugInformationCollector
 from elf_diff.binary_file_format import determineBinaryFileFormat
 from elf_diff.symbol_extractor import SymbolExtractor
 
 import os
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 
 class Binary(object):
@@ -43,7 +42,7 @@ class Binary(object):
         symbol_selection_regex: Optional[str] = None,
         symbol_exclusion_regex: Optional[str] = None,
         mangling: Optional[Mangling] = None,
-        source_prefix: str = "",
+        source_prefix: Optional[List[str]] = None,
     ):
         """Init binary object."""
         self._settings: Settings = settings
@@ -57,7 +56,7 @@ class Binary(object):
 
         self._mangling: Optional[Mangling] = mangling
 
-        self._source_prefix = source_prefix
+        self._source_prefix: Optional[List[str]] = source_prefix
 
         self.symbol_sizes = SymbolSizes(filename, settings.binutils)
 
@@ -93,11 +92,15 @@ class Binary(object):
             symbol_type=symbol_type,
             mangling=self._mangling,
             symbol_selection=self._symbol_selection,
+            source_prefix=self._source_prefix,
         )
         symbol_extractor.extractSymbols(self.filename)
 
         self.symbols = symbol_extractor.symbols
         self.num_symbols_dropped = symbol_extractor.num_symbols_dropped
+        self.source_files = symbol_extractor.source_files
+
+        self.debug_info_available = symbol_extractor.debug_info_available
 
     def _gatherSymbolInstructions(self) -> None:
         """Gather the instructions associated with a symbol"""
@@ -113,23 +116,10 @@ class Binary(object):
         if instruction_collector.n_instruction_lines == 0:
             warning(f"Unable to read assembly from binary '{self.filename}'.")
 
-    def _gatherDebugInformation(self) -> None:
-        """If possible, gather the debug information stored in Dwarf sections in the elf file"""
-        debug_information_collector = DebugInformationCollector(
-            symbols=self.symbols, source_prefix=self._source_prefix
-        )
-        debug_information_collector.gatherDebugInformation(
-            filename=self.filename, binutils=self._settings.binutils
-        )
-
-        self.source_files = debug_information_collector.source_files
-        self.debug_info_available = debug_information_collector.debug_info_available
-
     def _initSymbols(self) -> None:
         """Parse symbols from the binary"""
         self._extractSymbols()
         self._gatherSymbolInstructions()
-        self._gatherDebugInformation()
 
         for symbol_name_mangled in sorted(self.symbols.keys()):
             symbol = self.symbols[symbol_name_mangled]

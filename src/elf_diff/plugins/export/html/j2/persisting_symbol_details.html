@@ -38,7 +38,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 {% if display_return_links == True %}
 <a href="{{ overview_file }}#{{ aux.overview_anchor('persisting', old_symbol.id) }}">
 {% endif %}
-{{ old_symbol.name }}
+{{ old_symbol.name | e}}
 {% if display_return_links == True %}
 </a>
 {% endif %}
