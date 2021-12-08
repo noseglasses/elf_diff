@@ -32,7 +32,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 <table class="sortable isolated_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="Symbol size either in RAM or program memory">Size/bytes</div></th></thead>
   <tbody>
-		{% for isolated_symbol in symbols -%}
+		{% for isolated_symbol in symbols | sort(attribute='actual.size', reverse = True) -%}
         {% set symbol = isolated_symbol.actual %}
 		<tr>
 		<td>

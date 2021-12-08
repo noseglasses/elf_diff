@@ -144,13 +144,13 @@ class Symbol(Node):
                     ),
                     Type(int),
                 ),
-                Value(
-                    "column",
-                    Doc(
-                        "The column number in the source file where the symbol is defined"
-                    ),
-                    Type(int),
-                ),
+                # Value(
+                #    "column",
+                #    Doc(
+                #        "The column number in the source file where the symbol is defined"
+                #    ),
+                #    Type(int),
+                # ),
             ),
         )
         self.connectNodes()
@@ -168,7 +168,7 @@ class Symbol(Node):
         value_tree_node.is_stored_in_program_memory = symbol.livesInProgramMemory()
         value_tree_node.source.file_id = symbol.source_id
         value_tree_node.source.line = symbol.source_line
-        value_tree_node.source.column = symbol.source_column
+        # value_tree_node.source.column = symbol.source_column
 
 
 class DisplayInfo(Node):
@@ -432,18 +432,13 @@ class SourceFile(Node):
         super().__init__(
             "source_file",
             Value(
-                "path_base",
-                Doc("The name of the source file with user defined prefix stripped"),
+                "path",
+                Doc("The full path of the source file as reported by binutils/nm"),
                 Type(str),
             ),
             Value(
-                "path_complete", Doc("The complete name of the source file"), Type(str)
-            ),
-            Value(
-                "producer",
-                Doc(
-                    "Compiler and command line options that produced the code of the source file"
-                ),
+                "path_wo_prefix",
+                Doc("The name of the source file with user defined prefix stripped"),
                 Type(str),
             ),
             Value("id", Doc("The id of the source file"), Type(int)),
@@ -454,9 +449,8 @@ class SourceFile(Node):
         """Configure the source file"""
         source_file: binary.SourceFile = kwargs["source_file"]
 
-        value_tree_node.path_base = source_file.path_base
-        value_tree_node.path_complete = source_file.path_complete
-        value_tree_node.producer = source_file.producer
+        value_tree_node.path = source_file.path
+        value_tree_node.path_wo_prefix = source_file.path_wo_prefix
         value_tree_node.id = source_file.id_
 
 
@@ -581,6 +575,12 @@ class MetaDocument(Node):
                 Value(
                     "display_migrated_symbols",
                     Doc("True if migrated symbols are supposed to be displayed"),
+                ),
+                Value(
+                    "debug_info_available",
+                    Doc(
+                        "True if Dwarf debugging information was found in both binaries"
+                    ),
                 ),
             ),
             Value("old_binary_info", Doc("Info about the old binary"), Type(str)),
@@ -1034,10 +1034,10 @@ class MetaDocument(Node):
             not settings.skip_symbol_similarities
         )
         document.configuration.display_migrated_symbols = (
-            self.binary_pair.migrated_symbols_available
+            self.binary_pair.debug_info_available
         )
         document.configuration.display_migrated_symbols_overview = (
-            self.binary_pair.migrated_symbols_available
+            self.binary_pair.debug_info_available
         )
         document.files.input.old.binary_path = settings.old_alias
         document.files.input.new.binary_path = settings.new_alias
@@ -1064,7 +1064,7 @@ class MetaDocument(Node):
             new_binary.symbol_sizes.progmem_size - old_binary.symbol_sizes.progmem_size
         )
         document.statistics.overall.delta.resource_consumption.data = (
-            new_binary.symbol_sizes.data_size - new_binary.symbol_sizes.data_size
+            new_binary.symbol_sizes.data_size - old_binary.symbol_sizes.data_size
         )
         document.statistics.overall.delta.resource_consumption.static_ram = (
             new_binary.symbol_sizes.static_ram_size

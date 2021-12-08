@@ -38,7 +38,6 @@ class Symbol(object):
         self.type_: str = "?"
         self.source_id: Optional[int] = None
         self.source_line: Optional[int] = None
-        self.source_column: Optional[int] = None
         self.id_: int
 
     @staticmethod

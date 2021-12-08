@@ -36,7 +36,7 @@ No symbols considered.<br>
 <table class="sortable persisting_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
-		{% for persisting_symbol in symbols -%}
+		{% for persisting_symbol in symbols | sort(attribute='related_symbols.size_delta', reverse = True) -%}
         {% set old_symbol=persisting_symbol.related_symbols.old %}
         {% set new_symbol=persisting_symbol.related_symbols.new %}
 		<tr>

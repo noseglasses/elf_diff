@@ -23,10 +23,9 @@
 class SourceFile(object):
     _CONSECUTIVE_ID = 0
 
-    def __init__(self, path_base: str, path_complete: str, producer: str):
-        self.path_base: str = path_base
-        self.path_complete: str = path_complete
-        self.producer: str = producer  # Compiler and command line flags
+    def __init__(self, path: str, path_wo_prefix: str):
+        self.path: str = path
+        self.path_wo_prefix: str = path_wo_prefix
         self.id_: int = SourceFile._getConsecutiveId()
 
     @staticmethod

@@ -40,7 +40,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 					<tbody>
 						<tr><td>overall</td><td>{{document.statistics.overall.old.resource_consumption.code}}</td><td>{{document.statistics.overall.new.resource_consumption.code}}</td><td>{{ aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.code) }}</td></tr>
 						<tr><td>text</td><td>{{document.statistics.overall.old.resource_consumption.text}}</td><td>{{document.statistics.overall.new.resource_consumption.text}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.text)}}</td></tr>
-						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.data)}}</td></tr>
+						<tr><td>data</td><td>{{document.statistics.overall.old.resource_consumption.data}}</td><td>{{document.statistics.overall.new.resource_consumption.data}}</td><td>{{aux.highlighted_delta(document.statistics.overall.delta.resource_consumption.data)}}</td></tr>
 					</tbody>
 				</table>
 			</td>
@@ -75,30 +75,70 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 	</tbody>
 </table>
 
-
-<{{ aux.overview_header_tag}}><a id="symbols"></a>Symbols</{{ aux.overview_header_tag}}>
-<table class = "fixed_table size_overview">
-	<col align="left">
-	<col align="right">
-	<col align="right">
+<table cellspacing="5" cellpadding="0" class = "stats">
   <tbody>
-    <tr>
-      <th></th><th>Old Binary</th><th>New Binary</th>
-    </tr>
-    <tr>
-      <td>Total</td><td>{{document.statistics.symbols.old.count.total}}</td><td>{{document.statistics.symbols.new.count.total}}</td>
-    </tr>
-    <tr>
-      <td>Selected</td><td>{{document.statistics.symbols.old.count.selected}}</td><td>{{document.statistics.symbols.new.count.selected}}</td>
-    </tr>
-    <tr>
-      <td>Dropped</td><td>{{document.statistics.symbols.old.count.dropped}}</td><td>{{document.statistics.symbols.new.count.dropped}}</td>
-    </tr>
-    <tr>
-      <td>Selection Regex</td><td>{{document.statistics.symbols.old.regex.selection}}</td><td>{{document.statistics.symbols.new.regex.selection}}</td>
-    </tr>
-    <tr>
-      <td>Exclusion Regex</td><td>{{document.statistics.symbols.old.regex.exclusion}}</td><td>{{document.statistics.symbols.new.regex.exclusion}}</td>
-    </tr>
-  </tbody>
+	  <tr>
+			<td>
+				<H4><a id="symbols"></a>Symbol Classes</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th>Class</th><th>Entities</th>
+						</tr>
+						<tr>
+							<td>Old</td><td>{{ document.symbols.old | length }}</td>
+						</tr>
+						<tr>
+							<td>New</td><td>{{ document.symbols.new | length }}</td>
+						</tr>
+						<tr>
+							<td>Persisting</td><td>{{ document.symbols.persisting | length }}</td>
+						</tr>
+						<tr>
+							<td>Disappeared</td><td>{{ document.symbols.disappeared | length }}</td>
+						</tr>
+						<tr>
+							<td>Appeared</td><td>{{ document.symbols.appeared | length }}</td>
+						</tr>
+						<tr>
+							<td>Similar</td><td>{{ document.symbols.similar | length }}</td>
+						</tr>
+						<tr>
+							<td>Migrated</td><td>{{ document.symbols.migrated | length }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H4><a id="symbols"></a>Symbol Selection</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th></th><th>Old Binary</th><th>New Binary</th>
+						</tr>
+						<tr>
+							<td>Total</td><td>{{document.statistics.symbols.old.count.total}}</td><td>{{document.statistics.symbols.new.count.total}}</td>
+						</tr>
+						<tr>
+							<td>Selected</td><td>{{document.statistics.symbols.old.count.selected}}</td><td>{{document.statistics.symbols.new.count.selected}}</td>
+						</tr>
+						<tr>
+							<td>Dropped</td><td>{{document.statistics.symbols.old.count.dropped}}</td><td>{{document.statistics.symbols.new.count.dropped}}</td>
+						</tr>
+						<tr>
+							<td>Selection Regex</td><td>{{document.statistics.symbols.old.regex.selection}}</td><td>{{document.statistics.symbols.new.regex.selection}}</td>
+						</tr>
+						<tr>
+							<td>Exclusion Regex</td><td>{{document.statistics.symbols.old.regex.exclusion}}</td><td>{{document.statistics.symbols.new.regex.exclusion}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
 </table>

@@ -34,9 +34,9 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 No symbols considered.<br>
 {% else %}
 <table class="sortable migrated_symbols">
-  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line]">Old Source Location</div></th><th><div title="New Source Location [file:line]">New Source Location</div></th></thead>
   <tbody>
-		{% for migrated_symbol in symbols -%}
+		{% for migrated_symbol in symbols | sort(attribute='related_symbols.size_delta') -%}
         {% set old_symbol=migrated_symbol.related_symbols.old %}
         {% set new_symbol=migrated_symbol.related_symbols.new %}
         {% set source_location_old = aux.symbol_old_location_of_definition(document, old_symbol) %}
@@ -72,7 +72,7 @@ No symbols considered.<br>
 <H4>Columns</H4>
 <table>
   <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
-	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
-	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line]</td></tr>
 </table>
 {% endif %}
