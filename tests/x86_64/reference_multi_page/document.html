@@ -21,6 +21,7 @@ elf_diffs configuration is stored in a tree structure.
 document
 ├── build_info = &#39;&#39; &lt;str&gt; [Information about the build]
 ├── configuration [Boolean flags that configure what is supposed to be displayed and how]
+│   ├── debug_info_available = &#39;None&#39; &lt;NoneType&gt; [True if Dwarf debugging information was found in both binaries]
 │   ├── display_appeared_symbols_overview = &#39;True&#39; &lt;bool&gt; [True if an overview about appeared symbols is supposed to be displayed]
 │   ├── display_binary_details = &#39;False&#39; &lt;bool&gt; [True if details about binaries are supposed to be displayed]
 │   ├── display_build_info = &#39;False&#39; &lt;bool&gt; [True if build information is supposed to be displayed]
@@ -37,19 +38,19 @@ document
 ├── files [Information about relevant files]
 │   └── input [Information about relevant input files]
 │       ├── new [Information about relevant input files]
-│       │   ├── binary_path = &#39;/home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a&#39; &lt;str&gt; [The path to the binary file]
+│       │   ├── binary_path = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a&#39; &lt;str&gt; [The path to the binary file]
 │       │   ├── debug_info_available = &#39;True&#39; &lt;bool&gt; [True if Dwarf debug info avaiable in the elf binary]
 │       │   └── source_files [Source file by file id (dict values of type SourceFile)]
 │       └── old [Information about relevant input files]
-│           ├── binary_path = &#39;/home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a&#39; &lt;str&gt; [The path to the binary file]
+│           ├── binary_path = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a&#39; &lt;str&gt; [The path to the binary file]
 │           ├── debug_info_available = &#39;True&#39; &lt;bool&gt; [True if Dwarf debug info avaiable in the elf binary]
 │           └── source_files [Source file by file id (dict values of type SourceFile)]
 ├── general [General information about the document]
 │   ├── doc_title = &#39;ELF Binary Comparison&#39; &lt;str&gt; [Document title]
 │   ├── document_version = &#39;1&#39; &lt;int&gt; [The document version of this document]
-│   ├── elf_diff_repo_root = &#39;/home/flo/Documents/elf_diff/src/elf_diff&#39; &lt;str&gt; [Path to the root of the elf_diff git repo]
-│   ├── elf_diff_version = &#39;ce9b701ee27962a1e5cd4b8fa610f939c7fc7d24&#39; &lt;str&gt; [The elf_diff version that generated the page]
-│   ├── generation_date = &#39;2021-11-30 20:51:56&#39; &lt;str&gt; [The document generation date]
+│   ├── elf_diff_repo_root = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/src/elf_diff&#39; &lt;str&gt; [Path to the root of the elf_diff git repo]
+│   ├── elf_diff_version = &#39;0.5.0&#39; &lt;str&gt; [The elf_diff version that generated the page]
+│   ├── generation_date = &#39;2021-12-09 10:59:25&#39; &lt;str&gt; [The document generation date]
 │   └── page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39; &lt;str&gt; [The title of the document page]
 ├── new_binary_info = &#39;&#39; &lt;str&gt; [Info about the new binary]
 ├── old_binary_info = &#39;&#39; &lt;str&gt; [Info about the old binary]
@@ -126,9 +127,8 @@ Dynamically generated node types are listed below.
 <pre>
 source_file
 ├── id &lt;int&gt; [The id of the source file]
-├── path_base &lt;str&gt; [The name of the source file with user defined prefix stripped]
-├── path_complete &lt;str&gt; [The complete name of the source file]
-└── producer &lt;str&gt; [Compiler and command line options that produced the code of the source file]
+├── path &lt;str&gt; [The full path of the source file as reported by binutils/nm]
+└── path_wo_prefix &lt;str&gt; [The name of the source file with user defined prefix stripped]
 </pre>
 
 <H4>Symbol</H4>
@@ -142,7 +142,6 @@ symbol
 ├── name_mangled &lt;str&gt; [The mangled symbol name]
 ├── size &lt;int&gt; [Number of bytes occupied by the symbol]
 ├── source
-│   ├── column &lt;int&gt; [The column number in the source file where the symbol is defined]
 │   ├── file_id &lt;int&gt; [The id of the source file]
 │   └── line &lt;int&gt; [The line number in the source file where the symbol is defined]
 └── type &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
@@ -220,6 +219,7 @@ migrated_symbol
 The following exported variables may be used to configure Jinja2 Template files.
 <pre>
 document.build_info = &#39;&#39;
+document.configuration.debug_info_available = &#39;None&#39;
 document.configuration.display_appeared_symbols_overview = &#39;True&#39;
 document.configuration.display_binary_details = &#39;False&#39;
 document.configuration.display_build_info = &#39;False&#39;
@@ -233,17 +233,17 @@ document.configuration.display_persisting_symbols_overview = &#39;True&#39;
 document.configuration.display_similar_symbols = &#39;True&#39;
 document.configuration.display_similar_symbols_overview = &#39;True&#39;
 document.configuration.instructions_available = &#39;True&#39;
-document.files.input.new.binary_path = &#39;/home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a&#39;
+document.files.input.new.binary_path = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a&#39;
 document.files.input.new.debug_info_available = &#39;True&#39;
-document.files.input.new.source_files = &#39;{1: &lt;elf_diff.value_tree.Node object at 0x7f8412eab5b0&gt;}&#39;
-document.files.input.old.binary_path = &#39;/home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a&#39;
+document.files.input.new.source_files = &#39;{6: &lt;elf_diff.value_tree.Node object at 0x7fe44b184df0&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7fe44b184e20&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7fe44b184e50&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7fe44b184e80&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7fe44b184ee0&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7fe44b184f10&gt;}&#39;
+document.files.input.old.binary_path = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a&#39;
 document.files.input.old.debug_info_available = &#39;True&#39;
-document.files.input.old.source_files = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7f8412f1df10&gt;}&#39;
+document.files.input.old.source_files = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7fe44b184730&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7fe44b184790&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7fe44b184760&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7fe44b1847c0&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7fe44b184820&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7fe44b184850&gt;}&#39;
 document.general.doc_title = &#39;ELF Binary Comparison&#39;
 document.general.document_version = &#39;1&#39;
-document.general.elf_diff_repo_root = &#39;/home/flo/Documents/elf_diff/src/elf_diff&#39;
-document.general.elf_diff_version = &#39;ce9b701ee27962a1e5cd4b8fa610f939c7fc7d24&#39;
-document.general.generation_date = &#39;2021-11-30 20:51:56&#39;
+document.general.elf_diff_repo_root = &#39;/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/src/elf_diff&#39;
+document.general.elf_diff_version = &#39;0.5.0&#39;
+document.general.generation_date = &#39;2021-12-09 10:59:25&#39;
 document.general.page_title = &#39;ELF Binary Comparison - (c) 2021 by noseglasses&#39;
 document.new_binary_info = &#39;&#39;
 document.old_binary_info = &#39;&#39;
@@ -279,13 +279,13 @@ document.statistics.symbols.persisting.resource_consumption.delta = &#39;0&#39;
 document.statistics.symbols.persisting.resource_consumption.new = &#39;40&#39;
 document.statistics.symbols.persisting.resource_consumption.old = &#39;40&#39;
 document.statistics.symbols.similar.count = &#39;10&#39;
-document.symbols.appeared = &#39;{9: &lt;elf_diff.value_tree.Node object at 0x7f8412f158b0&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7f8412f158e0&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7f8412f15940&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7f8412f159d0&gt;}&#39;
-document.symbols.disappeared = &#39;{2: &lt;elf_diff.value_tree.Node object at 0x7f8412f1b2e0&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7f8412f1b310&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7f8412f1b370&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7f8412f1b400&gt;}&#39;
-document.symbols.migrated = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7f8412f28730&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7f8412f28760&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7f8412f28820&gt;}&#39;
-document.symbols.new = &#39;{13: &lt;elf_diff.value_tree.Node object at 0x7f8412f12f10&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7f8412f12f40&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7f8412f12fa0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7f8412f66e50&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7f8412f61eb0&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7f8412eedfa0&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7f8412f012b0&gt;}&#39;
-document.symbols.old = &#39;{6: &lt;elf_diff.value_tree.Node object at 0x7f8412f0f9d0&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7f8412f0fa00&gt;, 0: &lt;elf_diff.value_tree.Node object at 0x7f8412f0fa60&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7f8412f0faf0&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7f8412f0fb50&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7f8412f0fbb0&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7f8412f0fc10&gt;}&#39;
-document.symbols.persisting = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7f8412f1d1c0&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7f8412f1d1f0&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7f8412f1d2b0&gt;}&#39;
-document.symbols.similar = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7f8412f1ee80&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7f8412f1eeb0&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7f8412f23040&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7f8412f23160&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7f8412f23280&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7f8412f233a0&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7f8412f234c0&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7f8412f235e0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7f8412f23700&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7f8412f23820&gt;}&#39;
+document.symbols.appeared = &#39;{9: &lt;elf_diff.value_tree.Node object at 0x7fe44b174340&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7fe44b174370&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7fe44b1743d0&gt;, 12: &lt;elf_diff.value_tree.Node object at 0x7fe44b174460&gt;}&#39;
+document.symbols.disappeared = &#39;{2: &lt;elf_diff.value_tree.Node object at 0x7fe44b174d30&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7fe44b174d60&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7fe44b174dc0&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7fe44b174e50&gt;}&#39;
+document.symbols.migrated = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7fe44b1841c0&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7fe44b184220&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7fe44b1842e0&gt;}&#39;
+document.symbols.new = &#39;{12: &lt;elf_diff.value_tree.Node object at 0x7fe44b1707f0&gt;, 13: &lt;elf_diff.value_tree.Node object at 0x7fe44b170820&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7fe44b170880&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7fe44b170910&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7fe44b170970&gt;, 10: &lt;elf_diff.value_tree.Node object at 0x7fe44b1709d0&gt;, 11: &lt;elf_diff.value_tree.Node object at 0x7fe44b170a30&gt;}&#39;
+document.symbols.old = &#39;{5: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d4f0&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d520&gt;, 0: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d580&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d610&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d670&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d6d0&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7fe44b16d730&gt;}&#39;
+document.symbols.persisting = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7fe44b179c10&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7fe44b179c70&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7fe44b179d30&gt;}&#39;
+document.symbols.similar = &#39;{0: &lt;elf_diff.value_tree.Node object at 0x7fe44b17c910&gt;, 1: &lt;elf_diff.value_tree.Node object at 0x7fe44b17c940&gt;, 2: &lt;elf_diff.value_tree.Node object at 0x7fe44b17ca90&gt;, 3: &lt;elf_diff.value_tree.Node object at 0x7fe44b17cbb0&gt;, 4: &lt;elf_diff.value_tree.Node object at 0x7fe44b17ccd0&gt;, 5: &lt;elf_diff.value_tree.Node object at 0x7fe44b17ce20&gt;, 6: &lt;elf_diff.value_tree.Node object at 0x7fe44b17cf40&gt;, 7: &lt;elf_diff.value_tree.Node object at 0x7fe44b1810a0&gt;, 8: &lt;elf_diff.value_tree.Node object at 0x7fe44b181190&gt;, 9: &lt;elf_diff.value_tree.Node object at 0x7fe44b1812b0&gt;}&#39;
 </pre>
 
 

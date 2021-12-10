@@ -370,6 +370,9 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
     def test_skip_details(self):
         self.runSimpleTest([("skip_details", None)])
 
+    def test_skip_persisting_same_size(self):
+        self.runSimpleTest([("skip_persisting_same_size", None)])
+
     def test_skip_symbol_similarities(self):
         self.runSimpleTest([("skip_symbol_similarities", None)])
 

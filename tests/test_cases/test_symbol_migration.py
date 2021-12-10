@@ -31,12 +31,16 @@ class TestSymbolMigration(ElfDiffExecutionMixin, TestCaseWithSubdirs):
         html_dir = "migration_test_multi_page_pair_report"
         output_file = os.path.join(html_dir, "index.html")
         self.runSimpleTestBase(
-            args=[("html_dir", html_dir)],
+            args=[
+                ("html_dir", html_dir),
+                ("old_source_prefix", "/home/flo/Documents/elf_diff/tests/src/old/"),
+                ("new_source_prefix", "/home/flo/Documents/elf_diff/tests/src/new/"),
+            ],
             old_binary_filename=getTestBinary(
-                "x86_64", "migration_test", "release", "new"
+                "x86_64", "migration_test", "debug", "old"
             ),
             new_binary_filename=getTestBinary(
-                "x86_64", "migration_test", "release", "new"
+                "x86_64", "migration_test", "debug", "new"
             ),
             output_file=output_file,
         )

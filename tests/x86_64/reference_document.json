@@ -2,6 +2,7 @@
     "document": {
         "build_info": "",
         "configuration": {
+            "debug_info_available": null,
             "display_appeared_symbols_overview": true,
             "display_binary_details": false,
             "display_build_info": false,
@@ -19,29 +20,97 @@
         "files": {
             "input": {
                 "new": {
-                    "binary_path": "/home/flo/Documents/elf_diff/tests/x86_64/libelf_diff_test_debug_new.a",
+                    "binary_path": "/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a",
                     "debug_info_available": true,
                     "source_files": {
-                        "1": {
+                        "10": {
                             "source_file": {
-                                "id": 1,
-                                "path_base": "src/new/test.cpp",
-                                "path_complete": "src/new/test.cpp",
-                                "producer": "GNU C++14 10.3.0 -mtune=generic -march=x86-64 -g -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
+                                "id": 10,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
+                            }
+                        },
+                        "11": {
+                            "source_file": {
+                                "id": 11,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
+                            }
+                        },
+                        "6": {
+                            "source_file": {
+                                "id": 6,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
+                            }
+                        },
+                        "7": {
+                            "source_file": {
+                                "id": 7,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
+                            }
+                        },
+                        "8": {
+                            "source_file": {
+                                "id": 8,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
+                            }
+                        },
+                        "9": {
+                            "source_file": {
+                                "id": 9,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/new/test.cpp"
                             }
                         }
                     }
                 },
                 "old": {
-                    "binary_path": "/home/flo/Documents/elf_diff/tests/x86_64/libelf_diff_test_debug_old.a",
+                    "binary_path": "/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a",
                     "debug_info_available": true,
                     "source_files": {
                         "0": {
                             "source_file": {
                                 "id": 0,
-                                "path_base": "src/old/test.cpp",
-                                "path_complete": "src/old/test.cpp",
-                                "producer": "GNU C++14 10.3.0 -mtune=generic -march=x86-64 -g -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
+                            }
+                        },
+                        "1": {
+                            "source_file": {
+                                "id": 1,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
+                            }
+                        },
+                        "2": {
+                            "source_file": {
+                                "id": 2,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
+                            }
+                        },
+                        "3": {
+                            "source_file": {
+                                "id": 3,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
+                            }
+                        },
+                        "4": {
+                            "source_file": {
+                                "id": 4,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
+                            }
+                        },
+                        "5": {
+                            "source_file": {
+                                "id": 5,
+                                "path": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp",
+                                "path_wo_prefix": "/home/flo/Tmp/elf_diff/testing/src/old/test.cpp"
                             }
                         }
                     }
@@ -51,9 +120,9 @@
         "general": {
             "doc_title": "ELF Binary Comparison",
             "document_version": 1,
-            "elf_diff_repo_root": "/home/flo/Documents/elf_diff/src/elf_diff",
-            "elf_diff_version": "93cb2745ad3c7a43e25f0af5dc0c143515af4d11",
-            "generation_date": "2021-11-23 16:35:00",
+            "elf_diff_repo_root": "/mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/src/elf_diff",
+            "elf_diff_version": "0.5.0",
+            "generation_date": "2021-12-09 10:59:35",
             "page_title": "ELF Binary Comparison - (c) 2021 by noseglasses"
         },
         "new_binary_info": "",
@@ -148,9 +217,8 @@
                             "name_mangled": "_ZN5Test11fEii",
                             "size": 21,
                             "source": {
-                                "column": 18,
-                                "file_id": 1,
-                                "line": 29
+                                "file_id": 10,
+                                "line": 37
                             },
                             "type": "T"
                         }
@@ -172,9 +240,8 @@
                             "name_mangled": "_ZN5Test11gEff",
                             "size": 29,
                             "source": {
-                                "column": 11,
-                                "file_id": 1,
-                                "line": 30
+                                "file_id": 11,
+                                "line": 38
                             },
                             "type": "T"
                         }
@@ -196,9 +263,8 @@
                             "name_mangled": "_ZN5Test12m_E",
                             "size": 4,
                             "source": {
-                                "column": 5,
-                                "file_id": 1,
-                                "line": 40
+                                "file_id": null,
+                                "line": null
                             },
                             "type": "D"
                         }
@@ -220,8 +286,7 @@
                             "name_mangled": "_Z4funcd",
                             "size": 20,
                             "source": {
-                                "column": 5,
-                                "file_id": 1,
+                                "file_id": 9,
                                 "line": 20
                             },
                             "type": "T"
@@ -246,8 +311,7 @@
                             "name_mangled": "_Z4funci",
                             "size": 18,
                             "source": {
-                                "column": 5,
-                                "file_id": 0,
+                                "file_id": 3,
                                 "line": 20
                             },
                             "type": "T"
@@ -270,9 +334,8 @@
                             "name_mangled": "_ZN4Test1fEii",
                             "size": 21,
                             "source": {
-                                "column": 18,
-                                "file_id": 0,
-                                "line": 29
+                                "file_id": 4,
+                                "line": 37
                             },
                             "type": "T"
                         }
@@ -294,9 +357,8 @@
                             "name_mangled": "_ZN4Test1gEff",
                             "size": 29,
                             "source": {
-                                "column": 11,
-                                "file_id": 0,
-                                "line": 30
+                                "file_id": 5,
+                                "line": 38
                             },
                             "type": "T"
                         }
@@ -318,9 +380,8 @@
                             "name_mangled": "_ZN4Test2m_E",
                             "size": 4,
                             "source": {
-                                "column": 5,
-                                "file_id": 0,
-                                "line": 40
+                                "file_id": null,
+                                "line": null
                             },
                             "type": "D"
                         }
@@ -345,8 +406,7 @@
                                 "name_mangled": "_Z11persisting1i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 7,
                                     "line": 42
                                 },
                                 "type": "T"
@@ -360,8 +420,7 @@
                                 "name_mangled": "_Z11persisting1i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
+                                    "file_id": 1,
                                     "line": 42
                                 },
                                 "type": "T"
@@ -387,8 +446,7 @@
                                 "name_mangled": "_Z11persisting2i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 8,
                                     "line": 43
                                 },
                                 "type": "T"
@@ -402,8 +460,7 @@
                                 "name_mangled": "_Z11persisting2i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
+                                    "file_id": 2,
                                     "line": 43
                                 },
                                 "type": "T"
@@ -429,8 +486,7 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 6,
                                     "line": 24
                                 },
                                 "type": "D"
@@ -444,7 +500,6 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
                                     "file_id": 0,
                                     "line": 24
                                 },
@@ -466,9 +521,8 @@
                         "name_mangled": "_ZN5Test11fEii",
                         "size": 21,
                         "source": {
-                            "column": 18,
-                            "file_id": 1,
-                            "line": 29
+                            "file_id": 10,
+                            "line": 37
                         },
                         "type": "T"
                     }
@@ -483,9 +537,8 @@
                         "name_mangled": "_ZN5Test11gEff",
                         "size": 29,
                         "source": {
-                            "column": 11,
-                            "file_id": 1,
-                            "line": 30
+                            "file_id": 11,
+                            "line": 38
                         },
                         "type": "T"
                     }
@@ -500,9 +553,8 @@
                         "name_mangled": "_ZN5Test12m_E",
                         "size": 4,
                         "source": {
-                            "column": 5,
-                            "file_id": 1,
-                            "line": 40
+                            "file_id": null,
+                            "line": null
                         },
                         "type": "D"
                     }
@@ -517,8 +569,7 @@
                         "name_mangled": "var",
                         "size": 4,
                         "source": {
-                            "column": 5,
-                            "file_id": 1,
+                            "file_id": 6,
                             "line": 24
                         },
                         "type": "D"
@@ -534,8 +585,7 @@
                         "name_mangled": "_Z11persisting1i",
                         "size": 18,
                         "source": {
-                            "column": 5,
-                            "file_id": 1,
+                            "file_id": 7,
                             "line": 42
                         },
                         "type": "T"
@@ -551,8 +601,7 @@
                         "name_mangled": "_Z11persisting2i",
                         "size": 18,
                         "source": {
-                            "column": 5,
-                            "file_id": 1,
+                            "file_id": 8,
                             "line": 43
                         },
                         "type": "T"
@@ -568,8 +617,7 @@
                         "name_mangled": "_Z4funcd",
                         "size": 20,
                         "source": {
-                            "column": 5,
-                            "file_id": 1,
+                            "file_id": 9,
                             "line": 20
                         },
                         "type": "T"
@@ -587,8 +635,7 @@
                         "name_mangled": "_Z11persisting1i",
                         "size": 18,
                         "source": {
-                            "column": 5,
-                            "file_id": 0,
+                            "file_id": 1,
                             "line": 42
                         },
                         "type": "T"
@@ -604,8 +651,7 @@
                         "name_mangled": "_Z11persisting2i",
                         "size": 18,
                         "source": {
-                            "column": 5,
-                            "file_id": 0,
+                            "file_id": 2,
                             "line": 43
                         },
                         "type": "T"
@@ -621,8 +667,7 @@
                         "name_mangled": "_Z4funci",
                         "size": 18,
                         "source": {
-                            "column": 5,
-                            "file_id": 0,
+                            "file_id": 3,
                             "line": 20
                         },
                         "type": "T"
@@ -638,9 +683,8 @@
                         "name_mangled": "_ZN4Test1fEii",
                         "size": 21,
                         "source": {
-                            "column": 18,
-                            "file_id": 0,
-                            "line": 29
+                            "file_id": 4,
+                            "line": 37
                         },
                         "type": "T"
                     }
@@ -655,9 +699,8 @@
                         "name_mangled": "_ZN4Test1gEff",
                         "size": 29,
                         "source": {
-                            "column": 11,
-                            "file_id": 0,
-                            "line": 30
+                            "file_id": 5,
+                            "line": 38
                         },
                         "type": "T"
                     }
@@ -672,9 +715,8 @@
                         "name_mangled": "_ZN4Test2m_E",
                         "size": 4,
                         "source": {
-                            "column": 5,
-                            "file_id": 0,
-                            "line": 40
+                            "file_id": null,
+                            "line": null
                         },
                         "type": "D"
                     }
@@ -689,7 +731,6 @@
                         "name_mangled": "var",
                         "size": 4,
                         "source": {
-                            "column": 5,
                             "file_id": 0,
                             "line": 24
                         },
@@ -715,8 +756,7 @@
                                 "name_mangled": "_Z11persisting1i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 7,
                                     "line": 42
                                 },
                                 "type": "T"
@@ -730,8 +770,7 @@
                                 "name_mangled": "_Z11persisting1i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
+                                    "file_id": 1,
                                     "line": 42
                                 },
                                 "type": "T"
@@ -757,8 +796,7 @@
                                 "name_mangled": "_Z11persisting2i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 8,
                                     "line": 43
                                 },
                                 "type": "T"
@@ -772,8 +810,7 @@
                                 "name_mangled": "_Z11persisting2i",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
+                                    "file_id": 2,
                                     "line": 43
                                 },
                                 "type": "T"
@@ -799,8 +836,7 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 6,
                                     "line": 24
                                 },
                                 "type": "D"
@@ -814,7 +850,6 @@
                                 "name_mangled": "var",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
                                     "file_id": 0,
                                     "line": 24
                                 },
@@ -850,9 +885,8 @@
                                 "name_mangled": "_ZN5Test11fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 1,
-                                    "line": 29
+                                    "file_id": 10,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -865,9 +899,8 @@
                                 "name_mangled": "_ZN4Test1fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 0,
-                                    "line": 29
+                                    "file_id": 4,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -903,9 +936,8 @@
                                 "name_mangled": "_ZN5Test11gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 1,
-                                    "line": 30
+                                    "file_id": 11,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -918,9 +950,8 @@
                                 "name_mangled": "_ZN4Test1gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 0,
-                                    "line": 30
+                                    "file_id": 5,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -956,9 +987,8 @@
                                 "name_mangled": "_ZN5Test12m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },
@@ -971,9 +1001,8 @@
                                 "name_mangled": "_ZN4Test2m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },
@@ -1009,8 +1038,7 @@
                                 "name_mangled": "_Z4funcd",
                                 "size": 20,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
+                                    "file_id": 9,
                                     "line": 20
                                 },
                                 "type": "T"
@@ -1024,8 +1052,7 @@
                                 "name_mangled": "_Z4funci",
                                 "size": 18,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
+                                    "file_id": 3,
                                     "line": 20
                                 },
                                 "type": "T"
@@ -1062,9 +1089,8 @@
                                 "name_mangled": "_ZN5Test12m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },
@@ -1077,9 +1103,8 @@
                                 "name_mangled": "_ZN4Test1fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 0,
-                                    "line": 29
+                                    "file_id": 4,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -1115,9 +1140,8 @@
                                 "name_mangled": "_ZN5Test12m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 1,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },
@@ -1130,9 +1154,8 @@
                                 "name_mangled": "_ZN4Test1gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 0,
-                                    "line": 30
+                                    "file_id": 5,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -1168,9 +1191,8 @@
                                 "name_mangled": "_ZN5Test11gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 1,
-                                    "line": 30
+                                    "file_id": 11,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -1183,9 +1205,8 @@
                                 "name_mangled": "_ZN4Test1fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 0,
-                                    "line": 29
+                                    "file_id": 4,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -1221,9 +1242,8 @@
                                 "name_mangled": "_ZN5Test11fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 1,
-                                    "line": 29
+                                    "file_id": 10,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -1236,9 +1256,8 @@
                                 "name_mangled": "_ZN4Test1gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 0,
-                                    "line": 30
+                                    "file_id": 5,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -1274,9 +1293,8 @@
                                 "name_mangled": "_ZN5Test11gEff",
                                 "size": 29,
                                 "source": {
-                                    "column": 11,
-                                    "file_id": 1,
-                                    "line": 30
+                                    "file_id": 11,
+                                    "line": 38
                                 },
                                 "type": "T"
                             },
@@ -1289,9 +1307,8 @@
                                 "name_mangled": "_ZN4Test2m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },
@@ -1327,9 +1344,8 @@
                                 "name_mangled": "_ZN5Test11fEii",
                                 "size": 21,
                                 "source": {
-                                    "column": 18,
-                                    "file_id": 1,
-                                    "line": 29
+                                    "file_id": 10,
+                                    "line": 37
                                 },
                                 "type": "T"
                             },
@@ -1342,9 +1358,8 @@
                                 "name_mangled": "_ZN4Test2m_E",
                                 "size": 4,
                                 "source": {
-                                    "column": 5,
-                                    "file_id": 0,
-                                    "line": 40
+                                    "file_id": null,
+                                    "line": null
                                 },
                                 "type": "D"
                             },

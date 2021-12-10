@@ -562,6 +562,7 @@ table.stats,
 tr,
 td {
   border: none;
+  vertical-align: top;
 }
 
 /* Striped tables */
@@ -923,13 +924,13 @@ table.bin_col td:nth-child(3) {
 
   <H2><a id="binaries"></a>Binaries <a href="#home">&#x21A9;</a></H2>
   <p>
-  old: /home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a
+  old: /mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_old.a
 	
 	(debug)
 	
 	</p>
   <p>
-  new: /home/flo/Documents/elf_diff/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a
+  new: /mnt/c/Users/FLF7RT/Documents/Software/elf_diff/elf_diff_linux/tests/elf_diff_test/../x86_64/libelf_diff_test_debug_new.a
 	
 	(debug)
 	
@@ -990,32 +991,72 @@ table.bin_col td:nth-child(3) {
 	</tbody>
 </table>
 
-
-<H3><a id="symbols"></a>Symbols</H3>
-<table class = "fixed_table size_overview">
-	<col align="left">
-	<col align="right">
-	<col align="right">
+<table cellspacing="5" cellpadding="0" class = "stats">
   <tbody>
-    <tr>
-      <th></th><th>Old Binary</th><th>New Binary</th>
-    </tr>
-    <tr>
-      <td>Total</td><td>7</td><td>7</td>
-    </tr>
-    <tr>
-      <td>Selected</td><td>7</td><td>7</td>
-    </tr>
-    <tr>
-      <td>Dropped</td><td>0</td><td>0</td>
-    </tr>
-    <tr>
-      <td>Selection Regex</td><td>.*</td><td>.*</td>
-    </tr>
-    <tr>
-      <td>Exclusion Regex</td><td></td><td></td>
-    </tr>
-  </tbody>
+	  <tr>
+			<td>
+				<H4><a id="symbols"></a>Symbol Classes</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th>Class</th><th>Entities</th>
+						</tr>
+						<tr>
+							<td>Old</td><td>7</td>
+						</tr>
+						<tr>
+							<td>New</td><td>7</td>
+						</tr>
+						<tr>
+							<td>Persisting</td><td>3</td>
+						</tr>
+						<tr>
+							<td>Disappeared</td><td>4</td>
+						</tr>
+						<tr>
+							<td>Appeared</td><td>4</td>
+						</tr>
+						<tr>
+							<td>Similar</td><td>10</td>
+						</tr>
+						<tr>
+							<td>Migrated</td><td>3</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H4><a id="symbols"></a>Symbol Selection</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th></th><th>Old Binary</th><th>New Binary</th>
+						</tr>
+						<tr>
+							<td>Total</td><td>7</td><td>7</td>
+						</tr>
+						<tr>
+							<td>Selected</td><td>7</td><td>7</td>
+						</tr>
+						<tr>
+							<td>Dropped</td><td>0</td><td>0</td>
+						</tr>
+						<tr>
+							<td>Selection Regex</td><td>.*</td><td>.*</td>
+						</tr>
+						<tr>
+							<td>Exclusion Regex</td><td></td><td></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
 </table>
 
   <H2><a id="symbols"></a>Symbols <a href="#home">&#x21A9;</a></H2>
@@ -1135,9 +1176,9 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_2"></a><a href="#disappeared_symbol_details_2" >
+		  <a name="disappeared_symbol_overview_4"></a><a href="#disappeared_symbol_details_4" >
 		  
-		  func(int) 
+		  Test::g(float, float) 
       
 		  &#9432;
 		  </a>
@@ -1147,7 +1188,7 @@ table.bin_col td:nth-child(3) {
 			T
 		</td>
 		<td>
-			<span class="number">18</span>
+			<span class="number">29</span>
 		</td>
 		</tr>
 		
@@ -1173,9 +1214,9 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="disappeared_symbol_overview_4"></a><a href="#disappeared_symbol_details_4" >
+		  <a name="disappeared_symbol_overview_2"></a><a href="#disappeared_symbol_details_2" >
 		  
-		  Test::g(float, float) 
+		  func(int) 
       
 		  &#9432;
 		  </a>
@@ -1185,7 +1226,7 @@ table.bin_col td:nth-child(3) {
 			T
 		</td>
 		<td>
-			<span class="number">29</span>
+			<span class="number">18</span>
 		</td>
 		</tr>
 		
@@ -1228,9 +1269,9 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_9"></a><a href="#appeared_symbol_details_9" >
+		  <a name="appeared_symbol_overview_11"></a><a href="#appeared_symbol_details_11" >
 		  
-		  func(double) 
+		  Test1::g(float, float) 
       
 		  &#9432;
 		  </a>
@@ -1240,7 +1281,7 @@ table.bin_col td:nth-child(3) {
 			T
 		</td>
 		<td>
-			<span class="number">20</span>
+			<span class="number">29</span>
 		</td>
 		</tr>
 		
@@ -1266,9 +1307,9 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_11"></a><a href="#appeared_symbol_details_11" >
+		  <a name="appeared_symbol_overview_9"></a><a href="#appeared_symbol_details_9" >
 		  
-		  Test1::g(float, float) 
+		  func(double) 
       
 		  &#9432;
 		  </a>
@@ -1278,7 +1319,7 @@ table.bin_col td:nth-child(3) {
 			T
 		</td>
 		<td>
-			<span class="number">29</span>
+			<span class="number">20</span>
 		</td>
 		</tr>
 		
@@ -1704,7 +1745,7 @@ table.bin_col td:nth-child(3) {
 
 
 <table class="sortable migrated_symbols">
-  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line]">Old Source Location</div></th><th><div title="New Source Location [file:line]">New Source Location</div></th></thead>
   <tbody>
 		
         
@@ -1724,10 +1765,10 @@ table.bin_col td:nth-child(3) {
 		  
 		</td>
 		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:42:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">old</span>/test.cpp:42
 		</td>
 		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:42:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new</span>/test.cpp:42
 		</td>
 		</tr>
 		
@@ -1748,10 +1789,10 @@ table.bin_col td:nth-child(3) {
 		  
 		</td>
 		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:43:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">old</span>/test.cpp:43
 		</td>
 		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:43:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new</span>/test.cpp:43
 		</td>
 		</tr>
 		
@@ -1767,10 +1808,10 @@ table.bin_col td:nth-child(3) {
       
 		</td>
 		<td>
-			src/<span class="diff_highlight">old</span>/test.cpp:24:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">old</span>/test.cpp:24
 		</td>
 		<td>
-			src/<span class="diff_highlight">new</span>/test.cpp:24:5
+			/home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new</span>/test.cpp:24
 		</td>
 		</tr>
 		
@@ -1784,8 +1825,8 @@ table.bin_col td:nth-child(3) {
 <H4>Columns</H4>
 <table>
   <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
-	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
-	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line]</td></tr>
 </table>
 
    <p>
@@ -1827,8 +1868,8 @@ persisting1(int)
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: src/old/test.cpp:42:5<br>
-New source: src/new/test.cpp:42:5
+Old source: /home/flo/Tmp/elf_diff/testing/src/old/test.cpp:42<br>
+New source: /home/flo/Tmp/elf_diff/testing/src/new/test.cpp:42
 </p>
 </span>
 
@@ -1876,8 +1917,8 @@ persisting2(int)
 : old size: 18 bytes, new size: 18 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: src/old/test.cpp:43:5<br>
-New source: src/new/test.cpp:43:5
+Old source: /home/flo/Tmp/elf_diff/testing/src/old/test.cpp:43<br>
+New source: /home/flo/Tmp/elf_diff/testing/src/new/test.cpp:43
 </p>
 </span>
 
@@ -1926,7 +1967,7 @@ func(int)
 <p>
 Source:
 
-src/old/test.cpp:20:5
+/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:20
 
 </p>
 </span>
@@ -1965,7 +2006,7 @@ Test::f(int, int)
 <p>
 Source:
 
-src/old/test.cpp:29:18
+/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:37
 
 </p>
 </span>
@@ -2006,7 +2047,7 @@ Test::g(float, float)
 <p>
 Source:
 
-src/old/test.cpp:30:11
+/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38
 
 </p>
 </span>
@@ -2049,7 +2090,7 @@ func(double)
 <p>
 Source:
 
-src/new/test.cpp:20:5
+/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:20
 
 </p>
 </span>
@@ -2088,7 +2129,7 @@ Test1::f(int, int)
 <p>
 Source:
 
-src/new/test.cpp:29:18
+/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37
 
 </p>
 </span>
@@ -2129,7 +2170,7 @@ Test1::g(float, float)
 <p>
 Source:
 
-src/new/test.cpp:30:11
+/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38
 
 </p>
 </span>
@@ -2173,9 +2214,9 @@ Similar pair 0
 
 : old size: 21 bytes, new size: 21 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f(int, int) [src/old/test.cpp:29:18]</span>
+<span class="monospace">Old: Test::f(int, int) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:37]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [src/new/test.cpp:29:18]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
 </p>
 Instructions unchanged
 
@@ -2203,9 +2244,9 @@ Similar pair 1
 
 : old size: 29 bytes, new size: 29 bytes, delta: <span class="unchanged number">0</span> bytes, sig. sim.: 88.9 %, instr. sim.: 100.0 %</span></H4>
 <p>
-<span class="monospace">Old: Test::g(float, float) [src/old/test.cpp:30:11]</span>
+<span class="monospace">Old: Test::g(float, float) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [src/new/test.cpp:30:11]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
 </p>
 Instructions unchanged
 
@@ -2233,9 +2274,9 @@ Similar pair 3
 
 : old size: 18 bytes, new size: 20 bytes, delta: <span class="deterioration number">2</span> bytes, sig. sim.: 87.5 %, instr. sim.: 93.1 %</span></H4>
 <p>
-<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [src/old/test.cpp:20:5]</span>
+<span class="monospace">Old: func(<span class="diff_highlight">int</span>) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:20]</span>
 <br>
-<span class="monospace">New: func(<span class="diff_highlight">double</span>) [src/new/test.cpp:20:5]</span>
+<span class="monospace">New: func(<span class="diff_highlight">double</span>) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:20]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2279,9 +2320,9 @@ Similar pair 6
 
 : old size: 21 bytes, new size: 29 bytes, delta: <span class="deterioration number">8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [src/old/test.cpp:29:18]</span>
+<span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:37]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [src/new/test.cpp:30:11]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to3__top"
@@ -2328,9 +2369,9 @@ Similar pair 7
 
 : old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [src/old/test.cpp:30:11]</span>
+<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [src/new/test.cpp:29:18]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to4__top"
@@ -2385,8 +2426,8 @@ persisting1(int)
 
 
 
-Old source: src/<span class="diff_highlight">old</span>/test.cpp:42:5<br>
-New source: src/<span class="diff_highlight">new</span>/test.cpp:42:5</p>
+Old source: /home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">old</span>/test.cpp:42<br>
+New source: /home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new</span>/test.cpp:42</p>
 </span>
 
 
@@ -2417,8 +2458,8 @@ persisting2(int)
 
 
 
-Old source: src/<span class="diff_highlight">old</span>/test.cpp:43:5<br>
-New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
+Old source: /home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">old</span>/test.cpp:43<br>
+New source: /home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new</span>/test.cpp:43</p>
 </span>
 
 
@@ -2430,7 +2471,7 @@ New source: src/<span class="diff_highlight">new</span>/test.cpp:43:5</p>
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-11-30 20:51:57 by elf_diff ce9b701ee27962a1e5cd4b8fa610f939c7fc7d24 (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-12-09 10:59:30 by elf_diff 0.5.0 (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>
