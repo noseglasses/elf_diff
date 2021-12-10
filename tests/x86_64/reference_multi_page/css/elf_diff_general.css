@@ -52,6 +52,7 @@ table.stats,
 tr,
 td {
   border: none;
+  vertical-align: top;
 }
 
 /* Striped tables */
