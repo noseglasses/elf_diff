@@ -24,7 +24,7 @@
 
 
 <table class="sortable migrated_symbols">
-  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line]">Old Source Location</div></th><th><div title="New Source Location [file:line]">New Source Location</div></th></thead>
   <tbody>
 		
         
@@ -44,34 +44,10 @@
 		  
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:32:6
+			<span class="diff_highlight">old</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:32:6
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  <a name="migrated_symbol_overview_2"></a><a href="details/migrated/2.html#migrated_symbol_details_2"  target="details">
-		  
-		  implementationChanged(int) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:68:5
-		</td>
-		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:68:5
+			<span class="diff_highlight">new</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -92,29 +68,10 @@
 		  
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>:8
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>:8
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  Test::smvIStayButDiffer 
-      
-		</td>
-		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">2</span>:5
-		</td>
-		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -126,14 +83,57 @@
 		<tr>
 		<td>
       
-		  Test::smvIStay 
+		  vIStay 
       
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">5</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">0</span>:5
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">4</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  vIStayButDiffer 
+      
+		</td>
+		<td>
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">6</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
+		</td>
+		<td>
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">5</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_2"></a><a href="details/migrated/2.html#migrated_symbol_details_2"  target="details">
+		  
+		  implementationChanged(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			<span class="diff_highlight">old</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
+		</td>
+		<td>
+			<span class="diff_highlight">new</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -147,8 +147,8 @@
 <H4>Columns</H4>
 <table>
   <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
-	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
-	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line]</td></tr>
 </table>
 
 </body>

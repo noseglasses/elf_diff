@@ -562,6 +562,7 @@ table.stats,
 tr,
 td {
   border: none;
+  vertical-align: top;
 }
 
 /* Striped tables */
@@ -990,32 +991,72 @@ table.bin_col td:nth-child(3) {
 	</tbody>
 </table>
 
-
-<H3><a id="symbols"></a>Symbols</H3>
-<table class = "fixed_table size_overview">
-	<col align="left">
-	<col align="right">
-	<col align="right">
+<table cellspacing="5" cellpadding="0" class = "stats">
   <tbody>
-    <tr>
-      <th></th><th>Old Binary</th><th>New Binary</th>
-    </tr>
-    <tr>
-      <td>Total</td><td>17</td><td>17</td>
-    </tr>
-    <tr>
-      <td>Selected</td><td>17</td><td>17</td>
-    </tr>
-    <tr>
-      <td>Dropped</td><td>0</td><td>0</td>
-    </tr>
-    <tr>
-      <td>Selection Regex</td><td>.*</td><td>.*</td>
-    </tr>
-    <tr>
-      <td>Exclusion Regex</td><td></td><td></td>
-    </tr>
-  </tbody>
+	  <tr>
+			<td>
+				<H4><a id="symbols"></a>Symbol Classes</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th>Class</th><th>Entities</th>
+						</tr>
+						<tr>
+							<td>Old</td><td>17</td>
+						</tr>
+						<tr>
+							<td>New</td><td>17</td>
+						</tr>
+						<tr>
+							<td>Persisting</td><td>11</td>
+						</tr>
+						<tr>
+							<td>Disappeared</td><td>6</td>
+						</tr>
+						<tr>
+							<td>Appeared</td><td>6</td>
+						</tr>
+						<tr>
+							<td>Similar</td><td>16</td>
+						</tr>
+						<tr>
+							<td>Migrated</td><td>5</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		  <td>
+				<H4><a id="symbols"></a>Symbol Selection</H4>
+				<table class = "fixed_table size_overview">
+					<col align="left">
+					<col align="right">
+					<col align="right">
+					<tbody>
+						<tr>
+							<th></th><th>Old Binary</th><th>New Binary</th>
+						</tr>
+						<tr>
+							<td>Total</td><td>17</td><td>17</td>
+						</tr>
+						<tr>
+							<td>Selected</td><td>17</td><td>17</td>
+						</tr>
+						<tr>
+							<td>Dropped</td><td>0</td><td>0</td>
+						</tr>
+						<tr>
+							<td>Selection Regex</td><td>.*</td><td>.*</td>
+						</tr>
+						<tr>
+							<td>Exclusion Regex</td><td></td><td></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
 </table>
 
   <H2><a id="symbols"></a>Symbols <a href="#home">&#x21A9;</a></H2>
@@ -1033,32 +1074,6 @@ table.bin_col td:nth-child(3) {
 <table class="sortable persisting_symbols">
   <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Symbol type (see nm tool documentation for a list of symbol types)">Type</div></th><th><div title="The old symbol size either in RAM or program memory">Old Size/bytes</div></th><th><div title="The new symbol size either in RAM or program memory">New Size/bytes</div></th><th><div title="The change to symbol size">Delta/bytes</div></th></thead>
   <tbody>
-		
-        
-		<tr>
-		<td>
-      
-		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
-		  
-		  g() 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="number">11</span>
-		</td>
-		<td>
-			<span class="unchanged number">0</span>
-		</td>
-		</tr>
 		
         
 		<tr>
@@ -1083,6 +1098,32 @@ table.bin_col td:nth-child(3) {
 		</td>
 		<td>
 			<span class="deterioration number">8</span>
+		</td>
+		</tr>
+		
+        
+		<tr>
+		<td>
+      
+		  <a name="persisting_symbol_overview_1"></a><a href="#persisting_symbol_details_1"  >
+		  
+		  g() 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="number">11</span>
+		</td>
+		<td>
+			<span class="unchanged number">0</span>
 		</td>
 		</tr>
 		
@@ -1424,25 +1465,6 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  <a name="appeared_symbol_overview_17"></a><a href="#appeared_symbol_details_17" >
-		  
-		  fIStayButDiffer(char) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			T
-		</td>
-		<td>
-			<span class="number">19</span>
-		</td>
-		</tr>
-		
-		<tr>
-		<td>
-      
 		  <a name="appeared_symbol_overview_21"></a><a href="#appeared_symbol_details_21" >
 		  
 		  fIAmNew(short) 
@@ -1456,6 +1478,25 @@ table.bin_col td:nth-child(3) {
 		</td>
 		<td>
 			<span class="number">20</span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+      
+		  <a name="appeared_symbol_overview_17"></a><a href="#appeared_symbol_details_17" >
+		  
+		  fIStayButDiffer(char) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			T
+		</td>
+		<td>
+			<span class="number">19</span>
 		</td>
 		</tr>
 		
@@ -2106,7 +2147,7 @@ table.bin_col td:nth-child(3) {
 
 
 <table class="sortable migrated_symbols">
-  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line:column]">Old Source Location</div></th><th><div title="New Source Location [file:line:column]">New Source Location</div></th></thead>
+  <thead><tr><th><div title="Symbol name (possibly mangled)">Symbol</div></th><th><div title="Old Source Location [file:line]">Old Source Location</div></th><th><div title="New Source Location [file:line]">New Source Location</div></th></thead>
   <tbody>
 		
         
@@ -2126,34 +2167,10 @@ table.bin_col td:nth-child(3) {
 		  
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:32:6
+			<span class="diff_highlight">old</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:32:6
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  <a name="migrated_symbol_overview_2"></a><a href="#migrated_symbol_details_2"  >
-		  
-		  implementationChanged(int) 
-      
-		  &#9432;
-		  </a>
-		  
-		</td>
-		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:68:5
-		</td>
-		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:68:5
+			<span class="diff_highlight">new</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -2174,29 +2191,10 @@ table.bin_col td:nth-child(3) {
 		  
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>:8
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>:8
-		</td>
-		</tr>
-		
-        
-        
-        
-        
-        
-		<tr>
-		<td>
-      
-		  Test::smvIStayButDiffer 
-      
-		</td>
-		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">2</span>:5
-		</td>
-		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -2208,14 +2206,57 @@ table.bin_col td:nth-child(3) {
 		<tr>
 		<td>
       
-		  Test::smvIStay 
+		  vIStay 
       
 		</td>
 		<td>
-			<span class="diff_highlight">old</span>/test2.cpp:6<span class="diff_highlight">1</span>:5
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">5</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
 		</td>
 		<td>
-			<span class="diff_highlight">new</span>/test2.cpp:6<span class="diff_highlight">0</span>:5
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">4</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  vIStayButDiffer 
+      
+		</td>
+		<td>
+			<span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">6</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
+		</td>
+		<td>
+			<span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">5</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
+		</td>
+		</tr>
+		
+        
+        
+        
+        
+        
+		<tr>
+		<td>
+      
+		  <a name="migrated_symbol_overview_2"></a><a href="#migrated_symbol_details_2"  >
+		  
+		  implementationChanged(int) 
+      
+		  &#9432;
+		  </a>
+		  
+		</td>
+		<td>
+			<span class="diff_highlight">old</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)
+		</td>
+		<td>
+			<span class="diff_highlight">new</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)
 		</td>
 		</tr>
 		
@@ -2229,8 +2270,8 @@ table.bin_col td:nth-child(3) {
 <H4>Columns</H4>
 <table>
   <tr><td>Symbol</td><td>The symbol name (possibly mangled)</td></tr>
-	<tr><td>Old Source Location</td><td>The old source file location [file:line:column]</td></tr>
-	<tr><td>New Source Location</td><td>The new source file location [file:line:column]</td></tr>
+	<tr><td>Old Source Location</td><td>The old source file location [file:line]</td></tr>
+	<tr><td>New Source Location</td><td>The new source file location [file:line]</td></tr>
 </table>
 
    <p>
@@ -2272,8 +2313,8 @@ g()
 : old size: 11 bytes, new size: 11 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: old/test2.cpp:32:6<br>
-New source: new/test2.cpp:32:6
+Old source: old/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)<br>
+New source: new/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)
 </p>
 </span>
 
@@ -2305,8 +2346,8 @@ implementationChanged(int)
 : old size: 98 bytes, new size: 106 bytes, delta: <span class="deterioration number">8</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: old/test2.cpp:68:5<br>
-New source: new/test2.cpp:68:5
+Old source: old/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)<br>
+New source: new/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)
 </p>
 </span>
 
@@ -2385,8 +2426,8 @@ fIStay(double)
 : old size: 30 bytes, new size: 30 bytes, delta: <span class="unchanged number">0</span> bytes</span></H4>
 <span class="monospace">
 <p>
-Old source: old/test2.cpp:21:8<br>
-New source: new/test2.cpp:20:8
+Old source: old/test2.cpp:21(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)<br>
+New source: new/test2.cpp:20(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)
 </p>
 </span>
 
@@ -2419,7 +2460,7 @@ fIStayButDiffer(float)
 <p>
 Source:
 
-old/test2.cpp:22:7
+old/test2.cpp:22(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)
 
 </p>
 </span>
@@ -2458,7 +2499,7 @@ fIAmGone(int)
 <p>
 Source:
 
-old/test2.cpp:20:5
+old/test2.cpp:20(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)
 
 </p>
 </span>
@@ -2499,7 +2540,7 @@ fIStayButDiffer(char)
 <p>
 Source:
 
-new/test2.cpp:21:6
+new/test2.cpp:21(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)
 
 </p>
 </span>
@@ -2539,7 +2580,7 @@ fIAmNew(short)
 <p>
 Source:
 
-new/test2.cpp:22:7
+new/test2.cpp:22(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)
 
 </p>
 </span>
@@ -2582,9 +2623,9 @@ Similar pair 0
 
 : old size: 20 bytes, new size: 19 bytes, delta: <span class="improvement number">-1</span> bytes, sig. sim.: 95.0 %, instr. sim.: 84.3 %</span></H4>
 <p>
-<span class="monospace">Old: fIStayButDiffer(<span class="diff_highlight">flo</span>a<span class="diff_highlight">t</span>) [old/test2.cpp:22:7]</span>
+<span class="monospace">Old: fIStayButDiffer(<span class="diff_highlight">flo</span>a<span class="diff_highlight">t</span>) [old/test2.cpp:22(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)]</span>
 <br>
-<span class="monospace">New: fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>) [new/test2.cpp:21:6]</span>
+<span class="monospace">New: fIStayButDiffer(<span class="diff_highlight">ch</span>a<span class="diff_highlight">r</span>) [new/test2.cpp:21(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to1__top"
@@ -2629,9 +2670,9 @@ Similar pair 12
 
 : old size: 16 bytes, new size: 20 bytes, delta: <span class="deterioration number">4</span> bytes, sig. sim.: 60.9 %, instr. sim.: 89.7 %</span></H4>
 <p>
-<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t) [old/test2.cpp:20:5]</span>
+<span class="monospace">Old: fIAm<span class="diff_highlight">G</span>o<span class="diff_highlight">ne(in</span>t) [old/test2.cpp:20(/home/flo/Documents/elf_diff/tests/src/old/test2.cpp)]</span>
 <br>
-<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t) [new/test2.cpp:22:7]</span>
+<span class="monospace">New: fIAm<span class="diff_highlight">New(sh</span>o<span class="diff_highlight">r</span>t) [new/test2.cpp:22(/home/flo/Documents/elf_diff/tests/src/new/test2.cpp)]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2684,8 +2725,8 @@ g()
 
 
 
-Old source: <span class="diff_highlight">old</span>/test2.cpp:32:6<br>
-New source: <span class="diff_highlight">new</span>/test2.cpp:32:6</p>
+Old source: <span class="diff_highlight">old</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)<br>
+New source: <span class="diff_highlight">new</span>/test2.cpp:32(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)</p>
 </span>
 
 
@@ -2716,8 +2757,8 @@ implementationChanged(int)
 
 
 
-Old source: <span class="diff_highlight">old</span>/test2.cpp:68:5<br>
-New source: <span class="diff_highlight">new</span>/test2.cpp:68:5</p>
+Old source: <span class="diff_highlight">old</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)<br>
+New source: <span class="diff_highlight">new</span>/test2.cpp:68(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)</p>
 </span>
 
 
@@ -2748,8 +2789,8 @@ fIStay(double)
 
 
 
-Old source: <span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>:8<br>
-New source: <span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>:8</p>
+Old source: <span class="diff_highlight">old</span>/test2.cpp:2<span class="diff_highlight">1</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">old</span>/test2.cpp)<br>
+New source: <span class="diff_highlight">new</span>/test2.cpp:2<span class="diff_highlight">0</span>(/home/flo/Documents/elf_diff/tests/src/<span class="diff_highlight">new</span>/test2.cpp)</p>
 </span>
 
 
@@ -2761,7 +2802,7 @@ New source: <span class="diff_highlight">new</span>/test2.cpp:2<span class="diff
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-11-30 21:06:26 by elf_diff cfdad830e9e3445a7705a1440e6d878552a0ec64 (https://github.com/noseglasses/elf_diff)<br>
+Generated 2021-12-10 14:09:49 by elf_diff 8b0b7236fe9cd7bc09aa011528fb904321a0bd5a (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>

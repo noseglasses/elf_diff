@@ -32,9 +32,9 @@ Similar pair 7
 
 : old size: 29 bytes, new size: 21 bytes, delta: <span class="improvement number">-8</span> bytes, sig. sim.: 66.7 %, instr. sim.: 81.4 %</span></H4>
 <p>
-<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [test.cpp:30:11]</span>
+<span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [test.cpp:29:18]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to4__top"
@@ -89,9 +89,8 @@ nop
 │   │   ├── name_mangled = &#39;_ZN5Test11fEii&#39; &lt;str&gt; [The mangled symbol name]
 │   │   ├── size = &#39;21&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
 │   │   ├── source
-│   │   │   ├── column = &#39;18&#39; &lt;int&gt; [The column number in the source file where the symbol is defined]
-│   │   │   ├── file_id = &#39;1&#39; &lt;int&gt; [The id of the source file]
-│   │   │   └── line = &#39;29&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
+│   │   │   ├── file_id = &#39;10&#39; &lt;int&gt; [The id of the source file]
+│   │   │   └── line = &#39;37&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
 │   │   └── type = &#39;T&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
 │   ├── old_symbol
 │   │   ├── id = &#39;4&#39; &lt;int&gt; [Unique symbol identifier]
@@ -111,9 +110,8 @@ ret
 │   │   ├── name_mangled = &#39;_ZN4Test1gEff&#39; &lt;str&gt; [The mangled symbol name]
 │   │   ├── size = &#39;29&#39; &lt;int&gt; [Number of bytes occupied by the symbol]
 │   │   ├── source
-│   │   │   ├── column = &#39;11&#39; &lt;int&gt; [The column number in the source file where the symbol is defined]
-│   │   │   ├── file_id = &#39;0&#39; &lt;int&gt; [The id of the source file]
-│   │   │   └── line = &#39;30&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
+│   │   │   ├── file_id = &#39;5&#39; &lt;int&gt; [The id of the source file]
+│   │   │   └── line = &#39;38&#39; &lt;int&gt; [The line number in the source file where the symbol is defined]
 │   │   └── type = &#39;T&#39; &lt;str&gt; [Type character matching the characters used by the nm binutils tool]
 │   └── size_delta = &#39;-8&#39; &lt;int&gt; [Difference in bytes between the resource occupation of the two symbols]
 └── similarities [Symbol similarity ratios]
