@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2021-12-12
+### Added
+- command line arg `--skip_persisting_same_size enables` skipping those persisting symbols whose size did not change
+- read `nm -l` output to gain symbol source locations (if debug info available)
+- proper HTML escaping of symbol names
+- sort HTML overview tables
+- add symbol class table to HTML statistics
+- CI validate generated HTML documents by comparing with reference documents
+- highlight HTML statistics delta
+- migrated symbols info (if Dwarf debugging info available in elf-binary)
+
+### Changed
+- enable all types of source prefix command line args being supplied multiple times
+- vertically align statistics tables in HTML reports
+- fix errors in symbol statistics tables
+- replace Python package _dicttoxml_ with _dict2xml_ for XML export (the former causes problems with Python 3.10)
+
+### Removed
+- remove spurious instruction context in assembly output
+
 ## [0.5.0] - 2021-11-19
 ### Added
 - CI tests of Python versions 3.5-3.10
