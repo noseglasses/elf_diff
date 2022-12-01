@@ -1377,7 +1377,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::f(int, int)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::f(int, int)
+		  Test<span class="diff_highlight">1</span>:f(int, int)
 		</td>
 		<td>
 		  T
@@ -1415,7 +1415,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::g(float, float)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::g(float, float)
+		  Test<span class="diff_highlight">1</span>:g(float, float)
 		</td>
 		<td>
 		  T
@@ -1448,7 +1448,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::m_
 		  <br>
-		  Test<span class="diff_highlight">1</span>::m_
+		  Test<span class="diff_highlight">1</span>:m_
 		</td>
 		<td>
 		  D
@@ -1486,7 +1486,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  func(<span class="diff_highlight">int</span>)
 		  <br>
-		  func(<span class="diff_highlight">double</span>)
+		  func(<span class="diff_highlight">double</span>
 		</td>
 		<td>
 		  T
@@ -1519,7 +1519,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::<span class="diff_highlight">f(int, int)</span>
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		  Test<span class="diff_highlight">1</span>:f<span class="diff_highlight">m_</span>
 		</td>
 		<td>
 		  T
@@ -1552,7 +1552,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::<span class="diff_highlight">g(float, float)</span>
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">m_</span>
+		  Test<span class="diff_highlight">1</span>:g<span class="diff_highlight">m_</span>
 		</td>
 		<td>
 		  T
@@ -1590,7 +1590,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t)
+		  Test<span class="diff_highlight">1</span>:f<span class="diff_highlight">g(</span>n<span class="diff_highlight">loa</span>int<span class="diff_highlight">floa</span>
 		</td>
 		<td>
 		  T
@@ -1628,7 +1628,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t)
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t)
+		  Test<span class="diff_highlight">1</span>:g<span class="diff_highlight">f</span>f<span class="diff_highlight">in</span>at,<span class="diff_highlight">in</span>lo
 		</td>
 		<td>
 		  T
@@ -1661,7 +1661,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::<span class="diff_highlight">m_</span>
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(float, float)</span>
+		  Test<span class="diff_highlight">1</span>:m<span class="diff_highlight">g(float, float)</span>
 		</td>
 		<td>
 		  D
@@ -1694,7 +1694,7 @@ table.bin_col td:nth-child(3) {
 		<td>
 		  Test::<span class="diff_highlight">m_</span>
 		  <br>
-		  Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f(int, int)</span>
+		  Test<span class="diff_highlight">1</span>:m<span class="diff_highlight">f(int, int)</span>
 		</td>
 		<td>
 		  D
@@ -2216,7 +2216,7 @@ Similar pair 0
 <p>
 <span class="monospace">Old: Test::f(int, int) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:37]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::f(int, int) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>:f(int, int) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
 </p>
 Instructions unchanged
 
@@ -2246,7 +2246,7 @@ Similar pair 1
 <p>
 <span class="monospace">Old: Test::g(float, float) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::g(float, float) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>:g(float, float) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
 </p>
 Instructions unchanged
 
@@ -2276,7 +2276,7 @@ Similar pair 3
 <p>
 <span class="monospace">Old: func(<span class="diff_highlight">int</span>) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:20]</span>
 <br>
-<span class="monospace">New: func(<span class="diff_highlight">double</span>) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:20]</span>
+<span class="monospace">New: func(<span class="diff_highlight">double</span> [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:20]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to2__top"
@@ -2322,7 +2322,7 @@ Similar pair 6
 <p>
 <span class="monospace">Old: Test::f<span class="diff_highlight">(in</span>t, <span class="diff_highlight">in</span>t) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:37]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">g(</span>f<span class="diff_highlight">loa</span>t, <span class="diff_highlight">floa</span>t) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>:f<span class="diff_highlight">g(</span>n<span class="diff_highlight">loa</span>int<span class="diff_highlight">floa</span> [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:38]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to3__top"
@@ -2371,7 +2371,7 @@ Similar pair 7
 <p>
 <span class="monospace">Old: Test::<span class="diff_highlight">g</span>(<span class="diff_highlight">floa</span>t, <span class="diff_highlight">floa</span>t) [/home/flo/Tmp/elf_diff/testing/src/old/test.cpp:38]</span>
 <br>
-<span class="monospace">New: Test<span class="diff_highlight">1</span>::<span class="diff_highlight">f</span>(<span class="diff_highlight">in</span>t, <span class="diff_highlight">in</span>t) [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
+<span class="monospace">New: Test<span class="diff_highlight">1</span>:g<span class="diff_highlight">f</span>f<span class="diff_highlight">in</span>at,<span class="diff_highlight">in</span>lo [/home/flo/Tmp/elf_diff/testing/src/new/test.cpp:37]</span>
 </p>
 
     <table class="diff" id="difflib_chg_to4__top"
@@ -2471,7 +2471,7 @@ New source: /home/flo/Tmp/elf_diff/testing/src/<span class="diff_highlight">new<
     <span class="monospace">
       <hr>
       <p>
-Generated 2021-12-21 08:02:55 by elf_diff faa8ededec148cb3fafdff76f948c951ff846a8b (https://github.com/noseglasses/elf_diff)<br>
+Generated 2022-12-01 09:27:15 by elf_diff 04ce23a86266fa48fb90c24f7bad4695d68ea7ef (https://github.com/noseglasses/elf_diff)<br>
 © 2021 by noseglasses (shinynoseglasses@gmail.com)
       </p>
       <p>
