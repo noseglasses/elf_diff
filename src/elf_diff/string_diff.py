@@ -50,7 +50,7 @@ def tagStringDiffTarget(str1: str, str2: str):
     output = []
     for opcode, a0, a1, b0, b1 in seqm.get_opcodes():
         if opcode == "equal":
-            output.append(str1[b0:b1])
+            output.append(str2[b0:b1])
         elif opcode == "insert":
             output.append(HIGHLIGHT_START_TAG + str2[b0:b1] + HIGHLIGHT_END_TAG)
         elif opcode == "delete":
