@@ -164,7 +164,7 @@ class MassReport(object):
         return {
             "elf_diff_repo_base": self.settings.module_path,
             "doc_title": doc_title,
-            "page_title": u"ELF Binary Comparison - (c) 2019 by noseglasses",
+            "page_title": "ELF Binary Comparison - (c) 2019 by noseglasses",
             "resource_consumption_table": resource_consumtption_table,
             "symbols_table": symbols_table,
             "generation_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
