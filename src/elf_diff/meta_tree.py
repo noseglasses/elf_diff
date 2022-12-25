@@ -23,7 +23,7 @@ from elf_diff.tree_addressable import TreeAddressable
 from elf_diff.tree_exception import TreeException
 
 # Pylint rants about Dict being imported although used in type annotation comments
-from typing import (  # pylint: disable=unused-import
+from typing import (  # pylint: disable=unused-import # noqa: F401
     Optional,
     Callable,
     Tuple,

@@ -22,7 +22,7 @@ import unittest
 import re
 import os
 import sys
-from typing import Optional, Union, Type  # pylint: disable=unused-import
+from typing import Optional, Union, Type  # pylint: disable=unused-import # noqa: F401
 
 
 class TestCaseWithSubdirs(unittest.TestCase):
