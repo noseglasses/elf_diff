@@ -21,11 +21,13 @@
 from elf_diff.meta_tree import Value as MetaTreeValue
 
 # MetaTreeNode used for type checking. Pylint seems not to see that.
-from elf_diff.meta_tree import Node as MetaTreeNode  # pylint: disable=unused-import
+from elf_diff.meta_tree import (  # pylint: disable=unused-import  # noqa: F401
+    Node as MetaTreeNode,
+)
 from elf_diff.tree_exception import TreeException
 
 # Type Any used for type checking. Pylint seems not to see that.
-from typing import (  # pylint: disable=unused-import
+from typing import (  # pylint: disable=unused-import # noqa: F401
     Union,
     Dict,
     Type,
