@@ -287,10 +287,6 @@ class Settings(object):
         self.module_path: str = module_path
 
         # To enable static type checking, we have to pre-define all command line parameters
-        self.old_binary_filename: str
-        self.new_binary_filename: str
-        self.old_alias: str
-        self.new_alias: str
         self.old_info_file: str
         self.new_info_file: str
         self.build_info: str
@@ -346,8 +342,8 @@ class Settings(object):
         self.old_alias: Optional[str] = None
         self.new_alias: Optional[str] = None
 
-        if cmd_line_args.driver_file:
-            self.driver_file: str = cmd_line_args.driver_file
+        if hasattr(cmd_line_args, "driver_file"):
+            self.driver_file = cmd_line_args.driver_file
             self._readDriverFile()
 
         self._considerCommandLineArgs(cmd_line_args)

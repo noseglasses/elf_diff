@@ -28,7 +28,7 @@ class Symbol(object):
 
     _CONSECUTIVE_ID = 0
 
-    def __init__(self, name, name_mangled, is_demangled):
+    def __init__(self, name: str, name_mangled: str, is_demangled: bool):
         """Initialize symbol object."""
         self.name: str = name
         self.name_mangled: str = name_mangled

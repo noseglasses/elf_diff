@@ -103,11 +103,13 @@ def processChoices(settings: Settings) -> None:
 
 
 def main():
-    settings: Optional(Settings) = None
+    settings: Optional[Settings] = None
     try:
-        module_path: str = os.path.dirname(
-            os.path.realpath(inspect.getfile(inspect.currentframe()))
-        )
+        frame = inspect.currentframe()
+        if frame is None:
+            raise Exception("Unable to detremine frame")
+
+        module_path: str = os.path.dirname(os.path.realpath(inspect.getfile(frame)))
         settings = Settings(module_path)
 
         processChoices(settings)
@@ -129,7 +131,8 @@ def main():
                 settings.driver_template_file, output_actual_values=report_generated
             )
     except Exception as exception:
-        errorOutput(settings, exception, force_stacktrace=True)
+        if settings is not None:
+            errorOutput(settings, exception, force_stacktrace=True)
         sys.exit(RETURN_CODE_UNRECOVERABLE_ERROR)
     else:
         print(f"{CHECKERED_FLAG} Done.")

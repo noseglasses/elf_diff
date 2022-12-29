@@ -39,7 +39,7 @@ import elf_diff.string_diff as string_diff
 from elf_diff.symbol import Symbol as ElfSymbol
 from elf_diff.binary_pair import SimilarityPair
 from elf_diff.settings import Settings
-from elf_diff.meta_tree import Node, Value, Multiple
+from elf_diff.meta_tree import Node_, Node, Value, Multiple
 from elf_diff.value_tree import Node as ValueTreeNode
 from elf_diff.meta_tree_properties import Properties, Doc, Type, AliasType
 import datetime
@@ -80,7 +80,7 @@ def _configureChildValueTreeNode(
 
 
 def _generateValueTree(
-    node: Node, parent_value_tree_node: Optional[ValueTreeNode] = None
+    node: Node_, parent_value_tree_node: Optional[ValueTreeNode] = None
 ) -> ValueTreeNode:
     """Recursively attach a value tree to the meta tree"""
     value_tree_node = ValueTreeNode()
@@ -101,7 +101,7 @@ def _generateValueTree(
     return value_tree_node
 
 
-class Symbol(Node):
+class Symbol(Node_):
     """A general symbol"""
 
     def __init__(self):
@@ -171,7 +171,7 @@ class Symbol(Node):
         # value_tree_node.source.column = symbol.source_column
 
 
-class DisplayInfo(Node):
+class DisplayInfo(Node_):
     """An auxiliary display info node shared by other custom nodes"""
 
     def __init__(self):
@@ -221,7 +221,7 @@ class DisplayInfo(Node):
         value_tree_node.display_symbol_details = display_symbol_details
 
 
-class RelatedSymbols(Node):
+class RelatedSymbols(Node_):
     """Represents related symbols of a persisting symbol or a similar symbols pair"""
 
     def __init__(self):
@@ -246,7 +246,7 @@ class RelatedSymbols(Node):
         value_tree_node.size_delta = new_symbol.size - old_symbol.size
 
 
-class IsolatedSymbol(Node):
+class IsolatedSymbol(Node_):
     """An isolated symbol (either appeared or disappeared)"""
 
     def __init__(self, symbol_class: str):
@@ -290,7 +290,7 @@ class DisappearedSymbol(IsolatedSymbol):
         super().__init__(symbol_class="disappeared")
 
 
-class PersistingSymbol(Node):
+class PersistingSymbol(Node_):
     """A persisting symbol"""
 
     def __init__(self):
@@ -319,7 +319,7 @@ class PersistingSymbol(Node):
         )
 
 
-class MigratedSymbol(Node):
+class MigratedSymbol(Node_):
     """A migrated symbol"""
 
     def __init__(self):
@@ -348,7 +348,7 @@ class MigratedSymbol(Node):
         )
 
 
-class SimilarSymbols(Node):
+class SimilarSymbols(Node_):
     """A similar symbols pair"""
 
     def __init__(self):
@@ -358,9 +358,9 @@ class SimilarSymbols(Node):
             RelatedSymbols(),
             Value("id", Doc("The id of the symbol pair"), Type(int)),
             Multiple(
-                ("old", "new"),
+                ["old", "new"],
                 Node(
-                    None,
+                    "",
                     Value(
                         "signature_tagged",
                         Doc(
@@ -427,7 +427,7 @@ class SimilarSymbols(Node):
         value_tree_node.similarities.instruction = instruction_similarity
 
 
-class SourceFile(Node):
+class SourceFile(Node_):
     def __init__(self):
         super().__init__(
             "source_file",
@@ -464,6 +464,7 @@ SYMBOL_TYPES: Tuple = (
 )
 
 SymbolType = Union[
+    SourceFile,
     Symbol,
     PersistingSymbol,
     AppearedSymbol,
@@ -473,7 +474,7 @@ SymbolType = Union[
 ]
 
 
-class MetaDocument(Node):
+class MetaDocument(Node_):
     """A meta document"""
 
     def __init__(self):
@@ -593,9 +594,9 @@ class MetaDocument(Node):
                     "input",
                     Properties(Doc("Information about relevant input files")),
                     Multiple(
-                        ("old", "new"),
+                        ["old", "new"],
                         Node(
-                            None,
+                            "",
                             Value(
                                 "binary_path",
                                 Doc("The path to the binary file"),
@@ -624,9 +625,9 @@ class MetaDocument(Node):
                     "overall",
                     Properties(Doc("Overall statistics")),
                     Multiple(
-                        ("old", "new", "delta"),
+                        ["old", "new", "delta"],
                         Node(
-                            None,
+                            "",
                             Properties(Doc(None)),
                             Node(
                                 "resource_consumption",
@@ -647,9 +648,9 @@ class MetaDocument(Node):
                     "symbols",
                     Properties(Doc("Statistics of symbols")),
                     Multiple(
-                        ("old", "new"),
+                        ["old", "new"],
                         Node(
-                            None,
+                            "",
                             Properties(
                                 Doc("Overall statistics about symbols considered")
                             ),
@@ -681,9 +682,9 @@ class MetaDocument(Node):
                         ),
                     ),
                     Multiple(
-                        ("appeared", "disappeared"),
+                        ["appeared", "disappeared"],
                         Node(
-                            None,
+                            "",
                             Properties(Type(int), Doc(None)),
                             Value("count", Doc("Number of symbols")),
                         ),
@@ -970,8 +971,8 @@ class MetaDocument(Node):
         _validateSettings(settings)
         binary_pair_settings = BinaryPairSettings(
             short_name="",
-            old_binary_filename=settings.old_binary_filename,
-            new_binary_filename=settings.new_binary_filename,
+            old_binary_filename=settings.old_binary_filename or "",
+            new_binary_filename=settings.new_binary_filename or "",
         )
         self.binary_pair = BinaryPair(
             settings=settings, pair_settings=binary_pair_settings
@@ -1170,7 +1171,7 @@ def generateDocument(settings: Settings) -> ValueTreeNode:
 
 def getDocumentTreesOfDynamicTreeNodes():
     """Returns a list that contains the meta tree nodes of all available symbol types (old/new/appeared/disappeared/persisting/similar)"""
-    tree_dumps: Dict[str, SymbolType] = {}
+    tree_dumps: Dict[str, ValueTreeNode] = {}
     node_types = [SourceFile]
     node_types += SYMBOL_TYPES
     for node_type in node_types:

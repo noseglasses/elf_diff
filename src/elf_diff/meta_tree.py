@@ -26,9 +26,8 @@ from elf_diff.tree_exception import TreeException
 from typing import (  # pylint: disable=unused-import # noqa: F401
     Optional,
     Callable,
-    Tuple,
     Union,
-    Dict,
+    Dict,  # pylint: disable=unused-import # noqa: F401
     List,
     Any,
 )  # pylint: disable=unused-import
@@ -36,7 +35,7 @@ import copy
 import abc
 
 
-class Node(TreeAddressable):
+class Node_(TreeAddressable):
     """A common base class for all meta tree node types"""
 
     def __init__(self, name: str, *args):
@@ -45,8 +44,8 @@ class Node(TreeAddressable):
 
         self._properties: Optional[Properties] = None
         self._values = {}  # type: Dict[str, Value]
-        self._children = {}  # type: Dict[str, Node]
-        self._parent = None  # type: Optional[Node]
+        self._children = {}  # type: Dict[str, Node_]
+        self._parent = None  # type: Optional[Node_]
 
         self.parseOptionalArgs(*args)
 
@@ -59,8 +58,8 @@ class Node(TreeAddressable):
                 self._properties = opt_arg
                 self._properties.validate(self)
 
-            elif issubclass(type(opt_arg), Node):
-                node: Node = opt_arg
+            elif issubclass(type(opt_arg), Node_):
+                node: Node_ = opt_arg
                 self._children[node._name] = node
             elif isinstance(opt_arg, Value):
                 value: Value = opt_arg
@@ -105,10 +104,15 @@ class Node(TreeAddressable):
     def forEachChild(self, callable_: Callable) -> None:
         """Apply a callable to all children"""
         for key in sorted(self._children):
-            child: Node = self._children[key]
+            child: Node_ = self._children[key]
             callable_(self, child)
 
     @abc.abstractmethod
+    def configureValueTree(self, value_tree_node: Any, **kwargs: Any) -> None:
+        pass
+
+
+class Node(Node_):
     def configureValueTree(self, value_tree_node: Any, **kwargs: Any) -> None:
         pass
 
@@ -119,13 +123,16 @@ class Value(TreeAddressable):
     def __init__(self, name, *args):
         self._name = name
         self._properties = Properties(*args)
-        self._parent: Node = None
+        self._parent: Optional[Node_] = None
 
     def getPath(self) -> str:
-        return "%s.%s" % (self._parent.getPath(), self._name)
+        if self._parent is not None:
+            return "%s.%s" % (self._parent.getPath(), self._name)
+        return ""
 
     def configureProperties(self) -> None:
-        self._properties.configure(self._parent._properties)
+        if self._parent is not None:
+            self._properties.configure(self._parent._properties)
 
 
 class Multiple(object):
@@ -133,7 +140,7 @@ class Multiple(object):
     in meta tree definitions
     """
 
-    def __init__(self, names: Tuple[str], nested: Union[Node, Value]):
+    def __init__(self, names: List[str], nested: Union[Node, Value]):
         self._names = names
         self._nested = nested
 

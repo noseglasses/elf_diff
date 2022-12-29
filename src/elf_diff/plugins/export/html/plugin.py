@@ -117,14 +117,14 @@ class Content(object):
 
     def getOutputFilepath(self) -> str:  # pylint: disable=no-self-use
         """Return the output filename assocrated with the HTML content"""
-        pass
+        return ""
 
     def getRelPathToIndexFileDirectory(self) -> str:
         """Return the relative path from the location of the html file
         that stores the HTML file and the directory that holds
         the index.html file
         """
-        pass
+        return ""
 
     def getTitle(self) -> str:  # pylint: disable=no-self-use
         """Return a title that relates to the content"""
