@@ -321,7 +321,7 @@ class OutputSink(object):
         pass
 
     def flush(self) -> str:
-        pass
+        return ""
 
 
 class PrintSink(OutputSink):

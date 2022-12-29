@@ -22,7 +22,7 @@ from elf_diff.meta_tree import Value as MetaTreeValue
 
 # MetaTreeNode used for type checking. Pylint seems not to see that.
 from elf_diff.meta_tree import (  # pylint: disable=unused-import  # noqa: F401
-    Node as MetaTreeNode,
+    Node_ as MetaTreeNode,  # pylint: disable=unused-import # noqa: F401
 )
 from elf_diff.tree_exception import TreeException
 
@@ -30,8 +30,9 @@ from elf_diff.tree_exception import TreeException
 from typing import (  # pylint: disable=unused-import # noqa: F401
     Union,
     Dict,
+    Optional,
     Type,
-    Any,  # pylint: disable=unused-import
+    Any,  # pylint: disable=unused-import # noqa: F401
 )
 
 ValueType = Union[str, int, float, dict]
@@ -117,7 +118,7 @@ class Node(object):
             self.getValue(name).validate()
 
     def attachMetaTreeNode(self, meta_tree_node):
-        # type: (MetaTreeNode) -> None
+        # type: (Optional[MetaTreeNode]) -> None
         """Attach the associated meta tree node"""
         self.__dict__[
             "_m"

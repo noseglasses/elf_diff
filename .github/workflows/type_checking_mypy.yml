@@ -31,6 +31,4 @@ jobs:
     - name: Type check
       run: |
         cd src
-        python3 -m mypy -p elf_diff
-        cd ..
-        python3 -m mypy ./tests/elf_diff_test
+        python3 -m mypy --no-namespace-packages --check-untyped-defs .
