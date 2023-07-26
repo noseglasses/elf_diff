@@ -28,7 +28,7 @@ For all those symbols that have been subject to changes and also for the new and
 
 The following types of output files are currently supported: HTML, PDF, YAML, JSON, XML, TXT.
 
-HTML documents are cross-linked to conveniently allow jumping back and forth between bits of information, e.g. tabular information and symbol disassemblies. Du to the potentially large amount of information, some parts of the HTML reports are ommitted in the pdf files.
+HTML documents are cross-linked to conveniently allow jumping back and forth between bits of information, e.g. tabular information and symbol disassemblies. Due to the potentially large amount of information, some parts of the HTML reports are ommitted in the pdf files.
 
 _elf_diff_ has two modes of operation, pair-reports and mass-reports. While the former compares two binaries, the latter generates an overview-report for a set of binary-pairs. Such overview-reports list only the changes in terms of symbol sizes and the amount of symbols, no disassembly is provided to gain feasible document sizes.
 
