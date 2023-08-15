@@ -107,7 +107,7 @@ def main():
     try:
         frame = inspect.currentframe()
         if frame is None:
-            raise Exception("Unable to detremine frame")
+            raise Exception("Unable to determine frame")
 
         module_path: str = os.path.dirname(os.path.realpath(inspect.getfile(frame)))
         settings = Settings(module_path)
