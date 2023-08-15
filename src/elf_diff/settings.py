@@ -342,7 +342,7 @@ class Settings(object):
         self.old_alias: Optional[str] = None
         self.new_alias: Optional[str] = None
 
-        if hasattr(cmd_line_args, "driver_file"):
+        if hasattr(cmd_line_args, "driver_file") and cmd_line_args.driver_file:
             self.driver_file = cmd_line_args.driver_file
             self._readDriverFile()
 
