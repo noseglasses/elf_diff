@@ -187,6 +187,9 @@ GROUPED_PARAMETERS: Dict[str, List[Parameter]] = {
         Parameter("yaml_file", "The filename of the generated YAML report."),
         Parameter("json_file", "The filename of the generated JSON report."),
         Parameter("txt_file", "The filename of the generated text based report."),
+        Parameter(
+            "stats_txt_file", "The filename of the generated statistics text file."
+        ),
         Parameter("xml_file", "The filename of the generated XML report."),
         Parameter(
             "dump_document_structure",
@@ -304,6 +307,7 @@ class Settings(object):
         self.yaml_file: str
         self.json_file: str
         self.txt_file: str
+        self.stats_txt_file: str
         self.xml_file: str
         self.project_title: str
         self.driver_file: str

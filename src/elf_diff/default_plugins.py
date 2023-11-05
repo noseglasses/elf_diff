@@ -29,7 +29,10 @@ from elf_diff.plugins.export.html.plugin import HTMLExportPairReportPlugin
 from elf_diff.plugins.export.pdf.plugin import PDFExportPairReportPlugin
 from elf_diff.plugins.export.yaml.plugin import YAMLExportPairReportPlugin
 from elf_diff.plugins.export.json.plugin import JSONExportPairReportPlugin
-from elf_diff.plugins.export.txt.plugin import TXTExportPairReportPlugin
+from elf_diff.plugins.export.txt.plugin import (
+    TXTExportPairReportPlugin,
+    TXTExportStatisticsPlugin,
+)
 from elf_diff.plugins.export.xml.plugin import XMLExportPairReportPlugin
 from elf_diff.settings import Settings
 from typing import Dict, Type, List
@@ -40,6 +43,7 @@ DEFAULT_PLUGIN_TYPES: Dict[str, Type] = {
     "yaml_export": YAMLExportPairReportPlugin,
     "json_export": JSONExportPairReportPlugin,
     "txt_export": TXTExportPairReportPlugin,
+    "stats_txt_export": TXTExportStatisticsPlugin,
     "xml_export": XMLExportPairReportPlugin,
 }
 
@@ -90,6 +94,10 @@ def activateDefaultPlugins(settings: Settings) -> None:
     if settings.txt_file:
         plugin_configuration = {"output_file": settings.txt_file}
         activateDefaultPlugin(settings, TXTExportPairReportPlugin, plugin_configuration)
+
+    if settings.stats_txt_file:
+        plugin_configuration = {"output_file": settings.stats_txt_file}
+        activateDefaultPlugin(settings, TXTExportStatisticsPlugin, plugin_configuration)
 
     if settings.xml_file:
         plugin_configuration = {"output_file": settings.xml_file}
