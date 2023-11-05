@@ -402,6 +402,17 @@ class TestCommandLineArgs(ElfDiffExecutionMixin, TestCaseWithSubdirs):
     def test_symbol_selection_regex_old(self):
         self.runSimpleTest2([("symbol_selection_regex_old", ".*IStay.*")])
 
+    def test_stats_txt_file(self):
+        self.runSimpleTest([("stats_txt_file", "stats.txt")])
+
+    def test_stats_txt_file_same_binaries(self):
+        binary = getTestBinary("x86_64", "test", "debug", "old")
+        self.runSimpleTestBase(
+            args=[("stats_txt_file", "stats.txt")],
+            old_binary_filename=binary,
+            new_binary_filename=binary,
+        )
+
     def test_txt_file(self):
         self.runSimpleTest([("txt_file", "output.txt")])
 

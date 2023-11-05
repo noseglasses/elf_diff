@@ -133,6 +133,8 @@ def main():
     except Exception as exception:
         if settings is not None:
             errorOutput(settings, exception, force_stacktrace=True)
+        else:
+            print(f"Error: {exception}")
         sys.exit(RETURN_CODE_UNRECOVERABLE_ERROR)
     else:
         print(f"{CHECKERED_FLAG} Done.")
