@@ -90,7 +90,7 @@ class Binutils(object):
             setattr(self, command_name, command)
             return
 
-        raise Exception(f"Unnable to find {name} command")
+        raise Exception(f"Unable to find {name} command")
 
     def initialize(
         self, associate: Dict, bin_prefix: Optional[str], bin_dir: Optional[str]
