@@ -21,7 +21,7 @@
 jinja2 >= 2.11.3
 pyyaml >= 5.4
 progressbar2 == 3.53
-GitPython == 3.1.37
+GitPython == 3.1.41
 weasyprint == 53.3
 anytree == 2.8.0
 dict2xml >= 1.7.0
