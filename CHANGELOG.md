@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2024-01-24
+### Added
+- statistics text file output plugin
+
+### Changed
+- handle `driver_file is None`
+- bump gitpython from 3.1 to 3.1.41
+- bump lycheeverse action version
+    
+### Removed
+- support for Python 3.6
+
 ## [0.6.0] - 2021-12-12
 ### Added
 - command line arg `--skip_persisting_same_size enables` skipping those persisting symbols whose size did not change
