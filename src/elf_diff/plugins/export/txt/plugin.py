@@ -78,6 +78,7 @@ class TXTExportStatisticsPlugin(ExportPairReportPlugin):
             or (len(document.symbols.appeared) > 0)
             or (len(document.symbols.similar) > 0)
             or (len(document.symbols.migrated) > 0)
+            or (document.statistics.symbols.persisting.assembly_differs_count > 0)
         )
 
         with open(self.getConfigurationParameter("output_file"), "w") as f:
@@ -98,6 +99,8 @@ Symbol statistics:
     old:         {len(document.symbols.old)}
     new:         {len(document.symbols.new)}
     persisting:  {len(document.symbols.persisting)}
+    persisting with assembly differences:
+                 {document.statistics.symbols.persisting.assembly_differs_count}
     disappeared: {len(document.symbols.disappeared)}
     appeared:    {len(document.symbols.appeared)}
     similar:     {len(document.symbols.similar)}

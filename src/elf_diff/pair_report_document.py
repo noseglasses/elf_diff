@@ -693,6 +693,13 @@ class MetaDocument(Node_):
                         "persisting",
                         Properties(Doc(None)),
                         Value("count", Doc("Number of symbols"), Type(int)),
+                        Value(
+                            "assembly_differs_count",
+                            Doc(
+                                "Number of persisting symbols with assembly differences"
+                            ),
+                            Type(int),
+                        ),
                         Node(
                             "resource_consumption",
                             Properties(
@@ -989,12 +996,16 @@ class MetaDocument(Node_):
         persisting_symbols_overall_size_difference = 0
         persisting_symbols_overall_size_old = 0
         persisting_symbols_overall_size_new = 0
+        persisting_symbols_assembly_differs_count = 0
 
         for symbol_name in self.binary_pair.persisting_symbol_names:
             old_symbol: ElfSymbol = old_binary.symbols[symbol_name]
             new_symbol: ElfSymbol = new_binary.symbols[symbol_name]
 
             size_difference: int = new_symbol.size - old_symbol.size
+
+            if old_symbol.instructions != new_symbol.instructions:
+                persisting_symbols_assembly_differs_count += 1
 
             if (size_difference == 0) and settings.consider_equal_sized_identical:
                 continue
@@ -1128,6 +1139,9 @@ class MetaDocument(Node_):
         document.statistics.symbols.old.regex.selection = symbol_selection_regex_old
         document.statistics.symbols.persisting.count = len(
             self.binary_pair.persisting_symbol_names
+        )
+        document.statistics.symbols.persisting.assembly_differs_count = (
+            persisting_symbols_assembly_differs_count
         )
         document.statistics.symbols.persisting.resource_consumption.delta = (
             persisting_symbols_overall_size_difference
