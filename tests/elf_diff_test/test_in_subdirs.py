@@ -21,6 +21,7 @@
 import unittest
 import re
 import os
+import pathlib
 import sys
 from typing import Optional, Union, Type  # pylint: disable=unused-import # noqa: F401
 
@@ -44,7 +45,7 @@ class TestCaseWithSubdirs(unittest.TestCase):
         """Generate and change to a directory that represents either the test or the test class scope"""
         scope.OLD_PWD = os.getcwd()
         if not os.path.exists(directory):
-            os.mkdir(directory)
+            pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
         os.chdir(directory)
 
     @classmethod
