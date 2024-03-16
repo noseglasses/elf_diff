@@ -30,6 +30,7 @@ from elf_diff.instruction_collector import SOURCE_CODE_START_TAG, SOURCE_CODE_EN
 from elf_diff.pair_report_document import ValueTreeNode
 from elf_diff.settings import Settings
 import os
+import pathlib
 from shutil import copyfile
 import difflib
 import sys
@@ -728,7 +729,7 @@ class HTMLExportPairReportPlugin(ExportPairReportPlugin):
 
         for dir_ in dirs:
             if not os.path.exists(dir_):
-                os.mkdir(dir_)
+                pathlib.Path(dir_).mkdir(parents=True, exist_ok=True)
 
         plugin_module_path: str = self.getModulePath()
 
