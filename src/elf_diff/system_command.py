@@ -30,7 +30,7 @@ def runSystemCommand(cmd: List[str]) -> str:
 
     o, e = proc.communicate()  # pylint: disable=unused-variable
 
-    output: str = o.decode("utf8")
+    output: str = o.decode("utf8", "ignore")
     # error = e.decode('utf8')
 
     return output
