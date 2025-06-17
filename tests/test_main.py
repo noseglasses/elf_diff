@@ -48,4 +48,5 @@ if __name__ == "__main__":
         tests = loader.loadTestsFromNames(test_modules)
 
     test_runner = unittest.runner.TextTestRunner()
-    test_runner.run(tests)
+    result = test_runner.run(tests)
+    sys.exit(not result.wasSuccessful())
