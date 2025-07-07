@@ -21,8 +21,23 @@
 import inspect
 import os
 import re
-from distutils import dir_util
 from typing import List, Set
+
+import sys
+
+if sys.version_info >= (3, 8):
+    import shutil
+
+    def _do_copy(source_dir: str, target_dir: str) -> None:
+        # don't have dirs_exist_ok before 3.8
+        shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
+
+else:
+    # don't have distutils after 3.11
+    from distutils import dir_util
+
+    def _do_copy(source_dir: str, target_dir: str) -> None:
+        dir_util.copy_tree(source_dir, target_dir)
 
 
 def setIntersection(l1: Set, l2: Set) -> List:
@@ -62,7 +77,7 @@ def getRelpath(html_output_file: str, target_dir: str) -> str:
 
 def recursiveCopy(source_dir: str, target_dir: str) -> None:
     """Copy the content of a source directory recursively (including subdirectories) to a target directory"""
-    dir_util.copy_tree(source_dir, target_dir)
+    _do_copy(source_dir, target_dir)
 
 
 def isNameToken(str_: str) -> bool:
