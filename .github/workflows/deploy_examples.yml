@@ -70,7 +70,7 @@ jobs:
         cd example_deploy
         cp ../src/elf_diff/html/example_page.html ./index.html
     - name: HTML Link Check
-      uses: lycheeverse/lychee-action@v1.9.3
+      uses: lycheeverse/lychee-action@v2.0.2
       id: lychee_html
       with:
         args: --verbose --no-progress "example_deploy/**/*.html"
