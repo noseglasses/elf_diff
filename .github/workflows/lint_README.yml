@@ -17,7 +17,7 @@ jobs:
       uses: lycheeverse/lychee-action@v2.6.1
       id: lychee_readme_md
       with:
-        args: --verbose --no-progress "/github/workspace/README.md"
+        args: --verbose --no-progress "$GITHUB_WORKSPACE/README.md"
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Fail on README.md Link Check Errors
