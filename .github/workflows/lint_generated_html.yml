@@ -10,6 +10,7 @@ jobs:
   lint:
     name: Lint generated HTML
     runs-on: ubuntu-latest
+    needs: run_tests
 
     steps:
     - uses: actions/checkout@v3
