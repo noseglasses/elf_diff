@@ -21,8 +21,9 @@
 import inspect
 import os
 import re
-from distutils import dir_util
 from typing import List, Set
+
+from setuptools import distutils
 
 
 def setIntersection(l1: Set, l2: Set) -> List:
@@ -62,7 +63,7 @@ def getRelpath(html_output_file: str, target_dir: str) -> str:
 
 def recursiveCopy(source_dir: str, target_dir: str) -> None:
     """Copy the content of a source directory recursively (including subdirectories) to a target directory"""
-    dir_util.copy_tree(source_dir, target_dir)
+    distutils.dir_util.copy_tree(source_dir, target_dir)
 
 
 def isNameToken(str_: str) -> bool:
