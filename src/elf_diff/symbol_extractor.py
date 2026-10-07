@@ -134,9 +134,9 @@ class SymbolExtractor(object):
 
         self.num_symbols_dropped = 0
         nm_regex_mangled = re.compile(
-            r"^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s([^\t]+)(\t(.+))?"
+            r"^-?[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s([^\t]+)(\t(.+))?"
         )
-        nm_regex_demangled = re.compile(r"^[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
+        nm_regex_demangled = re.compile(r"^-?[0-9A-Fa-f]+\s([0-9A-Fa-f]+)\s(\w)\s(.+)")
         file_line_number_regex = re.compile(r"(.*):(\d+)")
         print("Extracting symbols")
         sys.stdout.flush()
